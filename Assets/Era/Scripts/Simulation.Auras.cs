@@ -21,6 +21,7 @@ namespace Era
                 p.auraDamageTimer-=.25f;float radius=AuraRadius(p);
                 foreach(var enemy in new System.Collections.Generic.List<EnemyState>(State.enemies))
                     if(Vector3.Distance(p.position,enemy.position)<=radius)DamageEnemy(enemy,p,2.5f*DamageMultiplier(p));
+                foreach(var node in State.resourceNodes)if(!node.broken&&Vector3.Distance(p.position,node.position)<=radius)DamageResource(node,2.5f*DamageMultiplier(p),p);
             }
         }
 

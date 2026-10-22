@@ -74,9 +74,11 @@ namespace Era
             var rockMat=Surface("Stone",0,Resources.Load<Texture2D>("Textures/StoneDetail"),Resources.Load<Texture2D>("Textures/StoneNormal"));rockMat.SetColor("_MossColor",grassColor);
             var leafMat=new Material(Shader.Find("Era/Realm Leaves")){name="Canopy / "+stage};leafMat.mainTexture=Resources.Load<Texture2D>("Textures/LeafDetail");
             var grassMat=new Material(Shader.Find("Era/Meadow Grass")){name="Living grass / "+stage};grassMat.mainTexture=Resources.Load<Texture2D>("Textures/GrassClump");
-            const int chunks=11,side=20;const float width=40,extent=220;
+            const int side=20;const float width=40;int chunks=Mathf.CeilToInt((GameData.ArenaRadius+12)*2/width);float extent=chunks*width*.5f;
             for(int cx=0;cx<chunks;cx++)for(int cz=0;cz<chunks;cz++)
             {
+                float nearX=Mathf.Max(0,Mathf.Abs(-extent+(cx+.5f)*width)-width*.5f),nearZ=Mathf.Max(0,Mathf.Abs(-extent+(cz+.5f)*width)-width*.5f);
+                if(nearX*nearX+nearZ*nearZ>(GameData.ArenaRadius+12)*(GameData.ArenaRadius+12))continue;
                 var d=new Draft();
                 for(int z=0;z<=side;z++)for(int x=0;x<=side;x++)
                 {float wx=-extent+cx*width+x*width/side,wz=-extent+cz*width+z*width/side;d.Add(WorldMap.OnGround(wx,wz),new Vector2(wx*.2f,wz*.2f),Color.white);}

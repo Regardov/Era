@@ -5,7 +5,7 @@ namespace Era
 {
     public sealed class WorldEnvironment : MonoBehaviour
     {
-        public const int CurrentVersion=9;
+        public const int CurrentVersion=11;
         public int bakedVersion,stage=1;
         public string mapName="Seven Realms / sculpted terrain / reactive grass";
         bool runtimeGenerated;
@@ -29,6 +29,15 @@ namespace Era
                 }
             }
             SurfaceDetail.Apply(landmarks);
+            var walls=v.Group("07 / Continuous stone perimeter",transform);float wallRadius=GameData.ArenaRadius-2;
+            for(int i=0;i<96;i++)
+            {
+                float angle=i*360f/96,rad=angle*Mathf.Deg2Rad;var point=WorldMap.OnGround(Mathf.Sin(rad)*wallRadius,Mathf.Cos(rad)*wallRadius);
+                var block=v.Shape("Stone boundary wall",PrimitiveType.Cube,walls,point+Vector3.up*1.5f,new Vector3(2*wallRadius*Mathf.Tan(Mathf.PI/96)+.3f,10,2.5f),new Color(.43f,.45f,.44f));block.transform.rotation=Quaternion.Euler(0,angle,0);
+                var cap=v.Shape("Stone wall coping",PrimitiveType.Cube,walls,point+Vector3.up*6.6f,new Vector3(2*wallRadius*Mathf.Tan(Mathf.PI/96)+.4f,.35f,2.9f),new Color(.55f,.56f,.52f));cap.transform.rotation=block.transform.rotation;
+            }
+            SurfaceDetail.Apply(walls);
+            CombineWalls(walls);
             var lighting=v.Group("06 / Realm lighting",transform);
             var sun=new GameObject("Realm sun").AddComponent<Light>();sun.transform.SetParent(lighting,false);sun.type=LightType.Directional;
             sun.color=stage==3?new Color(.81f,.91f,1):stage>=5?new Color(.82f,.77f,1):new Color(1,.88f,.70f);
@@ -36,6 +45,13 @@ namespace Era
             var fill=new GameObject("Sky bounce").AddComponent<Light>();fill.transform.SetParent(lighting,false);fill.type=LightType.Directional;
             fill.color=new Color(.56f,.69f,.86f);fill.intensity=.16f;fill.transform.rotation=Quaternion.Euler(28,140,0);
             ApplyAtmosphere();
+        }
+        static void CombineWalls(Transform walls)
+        {
+            var groups=new System.Collections.Generic.Dictionary<Material,System.Collections.Generic.List<CombineInstance>>();var original=walls.GetComponentsInChildren<MeshFilter>();
+            foreach(var filter in original){var material=filter.GetComponent<Renderer>().sharedMaterial;if(!groups.TryGetValue(material,out var list)){list=new System.Collections.Generic.List<CombineInstance>();groups[material]=list;}list.Add(new CombineInstance{mesh=filter.sharedMesh,transform=walls.worldToLocalMatrix*filter.transform.localToWorldMatrix});}
+            foreach(var pair in groups){var part=new GameObject("Stone perimeter / combined blocks");part.transform.SetParent(walls,false);var mesh=new Mesh{name="Continuous perimeter wall"};mesh.CombineMeshes(pair.Value.ToArray());part.AddComponent<MeshFilter>().sharedMesh=mesh;part.AddComponent<MeshRenderer>().sharedMaterial=pair.Key;}
+            foreach(var filter in original){if(Application.isPlaying){filter.gameObject.SetActive(false);Destroy(filter.gameObject);}else DestroyImmediate(filter.gameObject);}
         }
         public static void ApplyAtmosphere()
         {

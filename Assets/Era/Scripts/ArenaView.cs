@@ -8,6 +8,7 @@ namespace Era
         public Camera Camera {get;private set;}
         public HeroMotion Preview {get;private set;}
         readonly VisualFactory v=new VisualFactory();
+        EncounterView encounters;
         readonly Dictionary<int,Actor> actors=new Dictionary<int,Actor>();
         readonly Dictionary<int,GameObject> bullets=new Dictionary<int,GameObject>(),drops=new Dictionary<int,GameObject>(),effects=new Dictionary<int,GameObject>(),loot=new Dictionary<int,GameObject>();
         readonly Dictionary<int,ChestVisual> chests=new Dictionary<int,ChestVisual>();
@@ -51,15 +52,16 @@ namespace Era
             }
             if(!app.InRun)
             {
-                Camera.fieldOfView=50;
+                Camera.fieldOfView=app.Page==MenuPage.Characters?42:50;
                 if(Preview==null || Preview.Hero!=app.SelectedHero)
                 {if(Preview!=null)Destroy(Preview.gameObject);Preview=HeroMotion.Create(v,previewRoot,app.SelectedHero,"Selected wanderer");Preview.transform.position=new Vector3(1,0,-1);Preview.transform.localScale=Vector3.one*2;}
                 Preview.gameObject.SetActive(true);Preview.Pose(Vector3.zero,true,0,0,false,false);
                 Preview.transform.rotation=Quaternion.Euler(0,150+Mathf.Sin(Time.unscaledTime*0.3f)*7,0);
                 bool character=app.Page==MenuPage.Characters || app.State!=null;
-                var target=character?new Vector3(8,5.2f,-12):new Vector3(12,7,-18);
+                Preview.transform.position=character?new Vector3(-.4f,0,0):new Vector3(1,0,-1);Preview.transform.localScale=Vector3.one*(character?1.65f:2);
+                var target=character?new Vector3(4.2f,2.9f,-6.3f):new Vector3(12,7,-18);
                 Camera.transform.position=Vector3.Lerp(Camera.transform.position,target,1-Mathf.Exp(-Time.unscaledDeltaTime*3));
-                Camera.transform.LookAt(character?new Vector3(-2,1.7f,0):new Vector3(-3,1.6f,3));
+                Camera.transform.LookAt(character?new Vector3(.15f,1.65f,0):new Vector3(-3,1.6f,3));
                 if(app.State!=null)SyncChests(app.State);
                 return;
             }
@@ -104,6 +106,7 @@ namespace Era
                 if(!actors.TryGetValue(e.id,out var actor))
                 {var creature=e.kind==EnemyKind.Warden?BossArt.Create(v,dynamicRoot,Mathf.Max(1,e.bossStage)):CreatureMotion.Create(v,dynamicRoot,e.kind);actor=new Actor{root=creature.gameObject,creature=creature};actor.renderers=actor.root.GetComponentsInChildren<Renderer>();actor.colors=new Color[actor.renderers.Length];for(int r=0;r<actor.renderers.Length;r++){var mat=actor.renderers[r].sharedMaterial;actor.colors[r]=mat!=null&&mat.HasProperty("_Color")?mat.color:Color.white;}actors[e.id]=actor;actor.root.transform.position=e.position;var target=state.players.Find(p=>!p.downed&&!p.eliminated);if(target!=null){var facing=target.position-e.position;facing.y=0;if(facing.sqrMagnitude>.01f)actor.root.transform.rotation=Quaternion.LookRotation(facing);}}
                 var direction=e.position-actor.root.transform.position;direction.y=0;
+                if(e.eliteShrine>=0&&actor.root.transform.Find("Elite guardian halo")==null){actor.root.transform.localScale*=1.2f;v.Ring("Elite guardian halo",actor.root.transform,.9f,new Color(1,.25f,.12f),.065f).transform.localPosition=Vector3.up*.06f;}
                 if(direction.sqrMagnitude>0.0004f)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.LookRotation(direction),blend);
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,e.position,blend);
                 if(e.hitSerial!=actor.hitSerial){actor.creature.hit=1;actor.hitFlash=.18f;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
@@ -115,6 +118,7 @@ namespace Era
             foreach(int id in dead)
             {var a=actors[id];if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.creature?.skeletal!=null)a.creature.skeletal.Die();else Destroy(a.root);actors.Remove(id);}
             SyncAuras(state);SyncPortal(state);SyncHazards(state);SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
+            encounters??=new EncounterView(v,dynamicRoot);encounters.Present(state);
             if(state.coins>lastCoins)SynthAudio.Instance?.Play(7);
             if(state.level>lastLevel)SynthAudio.Instance?.Play(9);
             lastCoins=state.coins;lastLevel=state.level;FollowCamera(app);
@@ -180,8 +184,8 @@ namespace Era
                     if(drop.kind==RewardKind.Weapon){var model=WeaponVisuals.Create(v,go.transform,(WeaponKind)drop.content);model.transform.localScale=Vector3.one*.65f;}
                     else
                     {
-                        var texture=IconLibrary.Get(GameData.ItemIcons[drop.content]);var picture=new GameObject("Item picture");picture.transform.SetParent(go.transform,false);
-                        var renderer=picture.AddComponent<SpriteRenderer>();renderer.sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),Vector2.one*.5f,128);renderer.color=Color.white;
+                        var picture=new GameObject("Item picture");picture.transform.SetParent(go.transform,false);
+                        var renderer=picture.AddComponent<SpriteRenderer>();renderer.sprite=IconLibrary.ItemSprite(drop.content);renderer.color=Color.white;
                     }
                     v.Ring("Reward halo",go.transform,.50f,GameData.Items[drop.content].color,.025f).transform.localPosition=Vector3.down*.38f;loot[drop.id]=go;
                 }
@@ -279,7 +283,7 @@ namespace Era
         public void ClearActors()
         {
             if(dynamicRoot!=null)foreach(Transform child in dynamicRoot)Destroy(child.gameObject);
-            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();auraRings.Clear();hazardRings.Clear();portalVisual=null;lastCoins=0;lastLevel=1;
+            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();auraRings.Clear();hazardRings.Clear();portalVisual=null;encounters=null;lastCoins=0;lastLevel=1;
         }
     }
 }

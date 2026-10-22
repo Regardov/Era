@@ -1,6 +1,10 @@
-# v0.9 architecture
+# v0.10 architecture
 
-ChestState stores immutable baseCost and authoritative cost. After an atomic shared-wallet purchase, openedChests increases and every unopened chest is repriced using ceil(baseCost × (1 + openedChests / 10)). Failed purchases do not mutate prices; portal population uses the cumulative counter. The opened chest retains the amount actually paid. Protocol 8 carries these prices and PlayerState.currentAura. Aura rank minus one is its upgrade count, excluding initial acquisition; currentAura identifies the last selected buff, while every owned aura stays active.
+Simulation.Encounters owns finite wave quotas, eight-second breaks, the one-shot boss statue, four elite trials and 72 breakable graphics cards. Enemies carry a wave ID and optional eliteShrine ID. Only the five deaths belonging to an active trial complete it; a completed trial creates one free chest. The boss summon refuses while an elite trial is active, preventing threat cleanup from completing trials for free. GPU damage is authoritative; each node drops its gold/XP exactly once. Protocol 9 carries all encounter state and the short knockback vector/timer.
+
+WorldMap has radius 300 m, 60 starting chests and 350 props. Movement clamps six meters inside the arena radius, before the continuous visible stone wall. Generated geometry is saved in several mesh libraries with a conservative 24 MB estimated budget per chunk. HumanArtBuilder retains untouched prefab templates, subdivides and smooths surfaces while preserving UVs/skin weights, and saves adult proportions with updated bind poses. HumanRigShape remaps animated bone positions after SkeletalActor and before WeaponGrip. The supplied item-atlas.png is imported at 1536×1024 without NPOT resizing; the same precise regions feed HUD icons and floor sprites. Menu and battle audio crossfade between separate original scores.
+
+ChestState stores immutable baseCost and authoritative cost. After an atomic shared-wallet purchase, openedChests increases and every unopened chest is repriced using ceil(baseCost × (1 + openedChests / 10)). Failed purchases do not mutate prices; portal population uses the cumulative counter. The opened chest retains the amount actually paid. Protocol 9 carries these prices and PlayerState.currentAura. Aura rank minus one is its upgrade count, excluding initial acquisition; currentAura identifies the last selected buff, while every owned aura stays active.
 
 ChestArt builds hollow beveled plank coffers with separate animated barrel lids, arched bands, rivets, side handles, feet, lining and an inset jewel. Six mesh renderers plus a treasure marker per chest share cached meshes/materials for each of two variants. WorldAssetLibrary uses PreferBinarySerialization for large generated meshes; scenes, prefabs and code remain text. Every generated file fits GitHub's per-file limit without Git LFS.
 
@@ -8,7 +12,7 @@ Only the host runs Simulation at 30 Hz. Clients send movement, action and choice
 
 ## Session and transport
 
-CoopTransport supports one host and two guests on TCP 7777. Protocol 8 uses length-prefixed UTF-8 JSON (512 KiB maximum). Each connection has its own background receive/send threads, bounded command queue and replaceable snapshot slot. Every event retains a unique connection ID. GameApp maps authenticated-by-connection hello messages to available player IDs 1 and 2, and sends a targeted welcome message. Input/ready/loadout always use that mapping, never an ID supplied by the client. A guest disconnect removes only that player. Malformed guest data cannot close the whole host session.
+CoopTransport supports one host and two guests on TCP 7777. Protocol 9 uses length-prefixed UTF-8 JSON (512 KiB maximum). Each connection has its own background receive/send threads, bounded command queue and replaceable snapshot slot. Every event retains a unique connection ID. GameApp maps authenticated-by-connection hello messages to available player IDs 1 and 2, and sends a targeted welcome message. Input/ready/loadout always use that mapping, never an ID supplied by the client. A guest disconnect removes only that player. Malformed guest data cannot close the whole host session.
 
 A lobby can start with 2 or 3 players. All present players must ready up; joining, leaving or changing loadout cancels readiness. After three seconds the host starts the run. Late joins are rejected. Solo can start immediately. Public matchmaking, reconnect, host migration, split screen and local movement prediction are not implemented.
 
@@ -34,7 +38,7 @@ TryOpenChest atomically spends shared gold, opens one chest and rolls one rarity
 
 ## Presentation and editable assets
 
-Rift.unity contains the baked 420 m sculpted first-realm map, groves, rocks, flowers, landmarks and lighting. WorldMap supplies shared height/collision queries. Normal builds preserve the current baked world; ERA/Rebuild Stillwater map intentionally replaces it.
+Rift.unity contains the baked 600 m sculpted first-realm map, groves, rocks, flowers, landmarks and lighting. WorldMap supplies shared height/collision queries. Normal builds preserve the current baked world; ERA/Rebuild Stillwater map intentionally replaces it.
 
 Resources/Characters and Resources/Creatures contain editable runtime prefabs. Ember, Echo and enemies use CC0 KayKit skinned models and native clips; Lumen now uses a refined skeletal mage with an ivory/gold palette and jeweled halo. HeroMotion and CreatureMotion retain procedural fallback rigs. SkeletalActor drives clips; WeaponGrip aligns hand weapons. ArenaView creates aura rings, item pictures, floor halos, camera smoothing and hit feedback.
 
@@ -50,7 +54,7 @@ Test-Coop.ps1 requires the explicit -ThreeProcesses switch before launching host
 
 ## Seven-realm campaign
 
-WorldState carries stage (1–7), stageSerial, stageElapsed, portal and hazards. Total elapsed time, player level, gold and builds span the whole campaign. Each stage spawns its boss at 150 seconds. Normal enemies scale with stage and party size; each boss has its own prefab/identity and stronger HP/damage. BossAttack schedules delayed hazards with stage-specific patterns, radius, damage and lifetime; pools tick over time. Host snapshots serialize all warnings and impacts.
+WorldState carries stage (1–7), stageSerial, stageElapsed, portal and hazards. Total elapsed time, player level, gold and builds span the whole campaign. Each stage exposes a stone statue; only a validated nearby interaction summons its boss. There is no automatic boss timer. Normal enemies scale with stage and party size; each boss has its own prefab/identity and stronger HP/damage. BossAttack schedules delayed hazards with stage-specific patterns, radius, damage and lifetime; pools tick over time. Host snapshots serialize all warnings and impacts.
 
 Defeating bosses 1–6 clears threats and opens a portal at their resolved ground position. A live player within 3.5 m presses F to atomically advance the entire party. TryUsePortal increments stageSerial, preserves builds/queued offers, revives/heals all players, resets motion and regenerates treasure/shrines. Only stage 7 sets Victory. GameApp sets the received WorldMap stage before client presentation. ArenaView detects stage changes, clears old actors/loot, replaces the environment and rebuilds the new realm. No seven-scene preload is required.
 

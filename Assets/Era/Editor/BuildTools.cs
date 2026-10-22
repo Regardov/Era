@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.9.0";
+            PlayerSettings.bundleVersion = "0.10.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -54,8 +54,8 @@ namespace Era.Editor
                 if (!found) { included.InsertArrayElementAtIndex(included.arraySize); included.GetArrayElementAtIndex(included.arraySize - 1).objectReferenceValue = shader; }
             }
             graphics.ApplyModifiedPropertiesWithoutUndo();
-            IconBuilder.Prepare();SurfaceTextureBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();
+            IconBuilder.Prepare();PrepareItemArtwork();SurfaceTextureBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();HumanArtBuilder.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);
@@ -67,16 +67,23 @@ namespace Era.Editor
             var compactLibraries=Array.FindAll(Directory.GetFiles("Assets/Era/Generated","*.asset"),p=>new FileInfo(p).Length>50_000_000);
             if(compactLibraries.Length>0)AssetDatabase.ForceReserializeAssets(compactLibraries);
         }
+        static void PrepareItemArtwork()
+        {
+            const string path="Assets/Era/Resources/UI/item-atlas.png";var importer=(TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType=TextureImporterType.GUI;importer.npotScale=TextureImporterNPOTScale.None;importer.maxTextureSize=2048;importer.mipmapEnabled=false;importer.filterMode=FilterMode.Bilinear;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
+        }
         static void PrepareMusic()
         {
-            const string path="Assets/Era/Resources/Audio/Stillwater-at-Dawn.wav";
-            if(!File.Exists(path))MusicComposer.WriteWave(path);
-            AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
-            var importer=(AudioImporter)AssetImporter.GetAtPath(path);
-            if(importer!=null)
+            foreach(string path in new[]{"Assets/Era/Resources/Audio/Stillwater-at-Dawn.wav","Assets/Era/Resources/Audio/Storm-of-the-Seven.wav"})
             {
-                var settings=importer.defaultSampleSettings;settings.loadType=AudioClipLoadType.DecompressOnLoad;settings.compressionFormat=AudioCompressionFormat.Vorbis;settings.quality=.7f;
-                importer.defaultSampleSettings=settings;importer.forceToMono=false;importer.SaveAndReimport();
+                if(!File.Exists(path)){if(path.Contains("Storm-of-the-Seven"))MusicComposer.WriteBattleWave(path);else MusicComposer.WriteWave(path);}
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
+                var importer=(AudioImporter)AssetImporter.GetAtPath(path);
+                if(importer!=null)
+                {
+                    var settings=importer.defaultSampleSettings;settings.loadType=AudioClipLoadType.DecompressOnLoad;settings.compressionFormat=AudioCompressionFormat.Vorbis;settings.quality=.7f;
+                    importer.defaultSampleSettings=settings;importer.forceToMono=false;importer.SaveAndReimport();
+                }
             }
         }
         [MenuItem("ERA/Create missing character prefabs")]
@@ -111,8 +118,14 @@ namespace Era.Editor
             Directory.CreateDirectory("Assets/Era/Generated");
             string path=AssetDatabase.GenerateUniqueAssetPath("Assets/Era/Generated/StillwaterWorld.asset");
             var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,path);
+            long chunkBytes=0;int chunk=0;var meshLibrary=library;
             foreach(var filter in env.GetComponentsInChildren<MeshFilter>())
-            {var mesh=filter.sharedMesh;if(mesh!=null&&!AssetDatabase.Contains(mesh))AssetDatabase.AddObjectToAsset(mesh,library);}
+            {
+                var mesh=filter.sharedMesh;if(mesh==null||AssetDatabase.Contains(mesh))continue;
+                long bytes=mesh.vertexCount*72L+mesh.GetIndexCount(0)*4L;
+                if(chunkBytes+bytes>24_000_000&&chunkBytes>0){meshLibrary=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(meshLibrary,AssetDatabase.GenerateUniqueAssetPath("Assets/Era/Generated/Realm10-chunk-"+(++chunk)+".asset"));chunkBytes=0;}
+                AssetDatabase.AddObjectToAsset(mesh,meshLibrary);chunkBytes+=bytes;
+            }
             foreach(var renderer in env.GetComponentsInChildren<Renderer>())
             {
                 foreach(var material in renderer.sharedMaterials)if(material!=null&&!AssetDatabase.Contains(material))AssetDatabase.AddObjectToAsset(material,library);

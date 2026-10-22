@@ -14,7 +14,7 @@ namespace Era
             WorldMap.SetStage(1);
             random = new System.Random(seed);
             State = new WorldState { seed = seed, phase = RunPhase.Lobby, multiplayer = multiplayer };
-            WorldMap.PopulateChests(State);PopulateShrines();
+            WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
         }
         public PlayerState AddPlayer(int id, string name, Hero hero, Relic relic = Relic.StormCompass)
         {
@@ -24,6 +24,7 @@ namespace Era
             if (hero == Hero.Echo) { p.maxHp = p.hp = 115; p.damage = 0.9f; }
             if (hero == Hero.Lumen) { p.maxHp=p.hp=110;p.auraLevels[0]=1; }
             GiveStarterWeapon(p);
+            p.projectileSpeed=hero==Hero.Ember?1.15f:1;
             State.players.Add(p);
             ResetReadiness();
             return p;
@@ -46,6 +47,7 @@ namespace Era
             p.hero=(Hero)Mathf.Clamp((int)hero,0,2); p.relic=(Relic)Mathf.Clamp((int)relic,0,2);
             p.name=string.IsNullOrWhiteSpace(name)?"Wanderer":name.Substring(0,Math.Min(18,name.Length));
             p.damage=p.hero==Hero.Echo?0.9f:1; p.maxHp=p.hp=p.hero==Hero.Echo?115:p.hero==Hero.Lumen?110:100;
+            p.projectileSpeed=p.hero==Hero.Ember?1.15f:1;
             Array.Clear(p.auraLevels,0,p.auraLevels.Length);p.currentAura=0;if(p.hero==Hero.Lumen)p.auraLevels[0]=1;
             GiveStarterWeapon(p);
             return true;
@@ -70,8 +72,6 @@ namespace Era
             State.elapsed += dt;
             if(!State.portal.active)State.stageElapsed+=dt;
             State.noticeTime=Mathf.Max(0,State.noticeTime-dt);
-            State.wave = 1 + Mathf.FloorToInt(State.stageElapsed / 30);
-            State.nextWave = 30 - State.stageElapsed % 30;
             foreach (var p in State.players)
             {
                 inputs.TryGetValue(p.id, out var input);
@@ -83,18 +83,7 @@ namespace Era
             CollectPickups(dt);
             State.effects.RemoveAll(e => (e.life -= dt) <= 0);
             State.hits.RemoveAll(e => (e.life -= dt) <= 0);
-            State.spawnTimer -= dt;
-            if (State.spawnTimer <= 0 && !State.bossSpawned)
-            {
-                State.spawnTimer = Mathf.Max(0.25f, 1.35f - State.wave * 0.105f);
-                int count = Mathf.Min(6, 1 + State.wave / 3 + State.players.Count - 1);
-                for (int i = 0; i < count && State.enemies.Count < GameData.MaxEnemies; i++) SpawnEnemy();
-            }
-            if (State.stageElapsed >= GameData.BossTime && !State.bossSpawned)
-            {
-                State.bossSpawned = true;
-                SpawnEnemy(EnemyKind.Warden);
-            }
+            TickEliteShrines();TickWaves(dt);
             if (State.players.TrueForAll(p => p.downed || p.eliminated)) State.phase = RunPhase.Defeat;
         }
         void TickPlayer(PlayerState p, InputFrame input, float dt)
@@ -136,10 +125,11 @@ namespace Era
                 return;
             }
             p.crouching=input.crouch&&p.grounded&&p.dashTime<=0;
-            if(input.interact&&!TryUsePortal(p)&&!TryCollectLoot(p))TryOpenChest(p);
+            if(input.interact&&!TryUsePortal(p)&&!TryCollectLoot(p)&&!TrySummonBoss(p)&&!TryActivateEliteShrine(p)&&!TryBreakResource(p))TryOpenChest(p);
             Vector3 before=p.position;
             var move = Vector3.ClampMagnitude(new Vector3(Safe(input.x), 0, Safe(input.z)), 1);
             float facing=move.sqrMagnitude>0.02f?Mathf.Atan2(move.x,move.z)*Mathf.Rad2Deg:Safe(input.yaw);
+            if(move.sqrMagnitude<=.02f&&p.weaponPoseTime>0)facing=p.weaponAimYaw;
             p.yaw = Mathf.MoveTowardsAngle(p.yaw,facing,720*dt);
             if (input.dash && p.dashCooldown <= 0)
             {
@@ -148,7 +138,8 @@ namespace Era
                 Effect(2, p.position + Vector3.up * 0.2f, 2);
             }
             if (p.dashTime > 0) { p.position=WorldMap.Resolve(p.position,p.dashDirection*24*dt,0.4f); p.dashTime -= dt; }
-            else p.position=WorldMap.Resolve(p.position,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1))*dt,0.4f);
+            else p.position=WorldMap.Resolve(p.position,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt,0.4f);
+            if(p.hitSlide>0){p.position=WorldMap.Resolve(p.position,p.knockback*dt,.4f);p.knockback*=Mathf.Exp(-11*dt);p.hitSlide=Mathf.Max(0,p.hitSlide-dt);}
             float ground=WorldMap.Ground(p.position);
             if(p.grounded && ground-p.position.y<0.5f)p.position.y=ground;
             p.coyoteTime=p.grounded?0.12f:Mathf.Max(0,p.coyoteTime-dt);
@@ -248,7 +239,7 @@ namespace Era
             if(State.coins<nearest.cost)
             { State.noticeKind=1;State.noticeContent=nearest.cost;State.noticeTime=2;return false; }
             State.coins-=nearest.cost;nearest.opened=true;nearest.owner=p.id;State.openedChests++;
-            foreach(var chest in State.chests)if(!chest.opened)chest.cost=GameData.ChestPrice(chest.baseCost,State.openedChests);
+            foreach(var chest in State.chests)if(!chest.opened&&!chest.free)chest.cost=GameData.ChestPrice(chest.baseCost,State.openedChests);
             RollChestReward(nearest,p);
             Effect(7,nearest.position+Vector3.up*0.7f,3);return true;
         }
@@ -311,7 +302,7 @@ namespace Era
                     e.position=WorldMap.Resolve(e.position,Vector3.zero,0.4f);e.position.y=WorldMap.Ground(e.position);
                 }
                 if (distance < reach * reach && nearest.position.y-WorldMap.Ground(nearest.position) < 1.25f && e.attackTimer <= 0)
-                { e.attackTimer = 1; DamagePlayer(nearest, e.damage); }
+                { e.attackTimer = 1; DamagePlayer(nearest, e.damage,e.position); }
             }
         }
         void TickProjectiles(float dt)
@@ -330,6 +321,7 @@ namespace Era
                     if (SegmentDistance(b.position, end, e.position + Vector3.up * 0.7f) > radius) continue;
                     DamageEnemy(e, State.Player(b.owner), b.damage); hit = true; break;
                 }
+                if(!hit)foreach(var node in State.resourceNodes)if(!node.broken&&SegmentDistance(b.position,end,node.position+Vector3.up*.45f)<.8f){DamageResource(node,b.damage,projectileOwner);hit=true;break;}
                 b.position = end;
                 if (hit || b.life <= 0) State.projectiles.Remove(b);
             }
@@ -362,7 +354,7 @@ namespace Era
             if(proc&&owner!=null&&owner.items[20]>0&&random.NextDouble()<.22)
             {var spirit=State.enemies.Find(other=>Vector3.Distance(other.position,e.position)<8);if(spirit!=null){WeaponEffect(10,e.position+Vector3.up,spirit.position+Vector3.up,1,WeaponKind.LightningStaff);DamageEnemy(spirit,owner,35*owner.items[20],false);}}
             if (e.kind == EnemyKind.Warden) { DefeatBoss(e); return; }
-            float xp=(e.kind==EnemyKind.Brute?5:2)*(owner?.xpGain??1)*(1+(owner?.auraBonuses[7]??0))+(owner?.xpRemainder??0);
+            float xp=(e.kind==EnemyKind.Brute?15:e.kind==EnemyKind.Stalker?9:6)*(e.eliteShrine>=0?3:1)*(owner?.xpGain??1)*(1+(owner?.auraBonuses[7]??0))+(owner?.xpRemainder??0);
             int earnedXp=Mathf.Max(1,Mathf.FloorToInt(xp));if(owner!=null)owner.xpRemainder=xp-earnedXp;
             var pickup = new PickupState { id = State.nextId++, position = e.position, value = earnedXp };
             if (State.pickups.Count < 180) State.pickups.Add(pickup);
@@ -373,7 +365,7 @@ namespace Era
             if(State.pickups.Count<260)State.pickups.Add(coin);
             else { State.coins+=coin.value;State.earnedCoins+=coin.value; }
         }
-        public void DamagePlayer(PlayerState p, float damage)
+        public void DamagePlayer(PlayerState p, float damage,Vector3? source=null)
         {
             if (p.downed || p.eliminated || p.invulnerability > 0) return;
             if(random.NextDouble()<Mathf.Clamp01(p.dodge))return;
@@ -382,9 +374,12 @@ namespace Era
             AddHit(p.id,p.position+Vector3.up*1.8f,damage,false,true);
             float absorb = Mathf.Min(p.shield, damage); p.shield -= absorb; damage -= absorb;
             p.hp = Mathf.Max(0, p.hp - damage); p.invulnerability = 0.5f;
+            var push=source.HasValue?p.position-source.Value:-(Quaternion.Euler(0,p.yaw,0)*Vector3.forward);push.y=0;if(push.sqrMagnitude<.001f)push=Vector3.back;
+            p.knockback=push.normalized*4;p.hitSlide=.24f;
+            if(p.grounded)Effect(2,p.position+Vector3.up*.05f,.9f);
             Effect(5, p.position + Vector3.up, 0.7f);
             if(p.hp<=0&&p.reviveCharges>0){p.reviveCharges--;p.hp=p.maxHp*.55f;p.invulnerability=3;Effect(3,p.position,4);return;}
-            if (p.hp <= 0) { p.downed = true;p.crouching=false;p.chargingShrine=-1; p.bleedout = 25; p.position.y = WorldMap.Ground(p.position);p.grounded=true;p.velocity=Vector3.zero; }
+            if (p.hp <= 0) { p.downed = true;p.knockback=Vector3.zero;p.hitSlide=0;p.crouching=false;p.chargingShrine=-1; p.bleedout = 25; p.position.y = WorldMap.Ground(p.position);p.grounded=true;p.velocity=Vector3.zero; }
         }
         void CollectPickups(float dt)
         {

@@ -43,6 +43,8 @@ namespace Era
             var root=v.Group("Wildwood arrow",parent);v.Branch(root,new Vector3(0,0,-.45f),new Vector3(0,0,.35f),.022f,new Color(.51f,.35f,.23f));
             var tip=v.Cone("Arrowhead",root,new Vector3(0,0,.32f),.075f,.23f,new Color(.85f,.9f,.85f),4);tip.transform.localRotation=Quaternion.Euler(90,0,0);
             for(int i=0;i<3;i++){var feather=v.Ellipsoid("Feather",root,new Vector3(0,0,-.35f),new Vector3(.17f,.025f,.24f),GameData.Mint);feather.transform.localRotation=Quaternion.Euler(0,0,i*120);}
+            v.Ellipsoid("Bright arrow core",root,new Vector3(0,0,.2f),Vector3.one*.17f,new Color(1,.90f,.35f),true);
+            var trail=root.gameObject.AddComponent<TrailRenderer>();trail.time=.25f;trail.minVertexDistance=.06f;trail.startWidth=.16f;trail.endWidth=.018f;trail.startColor=new Color(1,.78f,.14f,.95f);trail.endColor=new Color(1,.32f,.05f,0);trail.sharedMaterial=new Material(Shader.Find("Sprites/Default"));trail.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;trail.receiveShadows=false;
             return root.gameObject;
         }
     }

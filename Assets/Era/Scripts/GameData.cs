@@ -35,6 +35,9 @@ namespace Era
         public bool ready, grounded = true;
         public Vector3 position;
         public Vector3 velocity;
+        public Vector3 knockback;
+        public float hitSlide;
+        public float weaponAimYaw;
         public float yaw, verticalSpeed;
         public float jumpBuffer, coyoteTime, castTime;
         public int jumpSerial, landSerial, castSerial, castKind;
@@ -74,7 +77,7 @@ namespace Era
     [Serializable]
     public sealed class EnemyState
     {
-        public int id, hitSerial, bossStage, attackCycle;
+        public int id, hitSerial, bossStage, attackCycle, wave, eliteShrine=-1;
         public EnemyKind kind;
         public Vector3 position;
         public float hp, maxHp, speed, damage, attackTimer, frozen, windup, specialTimer;
@@ -105,7 +108,7 @@ namespace Era
     {
         public int id, cost, baseCost, tier, owner = -1, reward = -1, rewardRarity;
         public Vector3 position;
-        public bool opened;
+        public bool opened, free;
         public RewardKind rewardKind;
     }
 
@@ -165,6 +168,21 @@ namespace Era
     }
 
     [Serializable]
+    public sealed class ResourceNodeState
+    {
+        public int id,hitSerial;
+        public Vector3 position;
+        public PickupKind kind;
+        public float hp=24;
+        public bool broken;
+    }
+    [Serializable]public sealed class EliteShrineState
+    {
+        public int id;
+        public Vector3 position;
+        public bool active,completed;
+    }
+    [Serializable]
     public sealed class WorldState
     {
         public RunPhase phase;
@@ -173,6 +191,9 @@ namespace Era
         public int stage = 1, stageSerial;
         public PortalState portal = new PortalState();
         public bool bossSpawned;
+        public Vector3 bossStatuePosition;
+        public int waveQuota,waveSpawned;
+        public bool waveActive=true;
         public int coins = 30, earnedCoins, openedChests;
         public float readyCountdown = -1, noticeTime;
         public string notice = "";
@@ -189,6 +210,8 @@ namespace Era
         public List<LootState> loot = new List<LootState>();
         public List<ShrineState> shrines = new List<ShrineState>();
         public List<RewardNotice> rewards = new List<RewardNotice>();
+        public List<ResourceNodeState> resourceNodes = new List<ResourceNodeState>();
+        public List<EliteShrineState> eliteShrines = new List<EliteShrineState>();
         public PlayerState Player(int id) => players.Find(p => p.id == id);
     }
 
@@ -233,9 +256,12 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 8;
+        public const int Protocol = 9;
         public const int MaxPlayers = 3;
-        public const float ArenaRadius = 210;
+        public const float ArenaRadius = 300;
+        public const int ChestCount=60,ResourceNodeCount=72;
+        public static WeaponKind StarterWeapon(Hero hero)=>hero==Hero.Lumen?WeaponKind.Aura:hero==Hero.Ember?WeaponKind.Bow:WeaponKind.LightningStaff;
+        public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Aura keeper: one aura decision at each level. Add a new buff or improve an owned aura; up to five types.","Хранитель аур: на каждом уровне новая аура или улучшение изученной. До пяти типов; бонусы получают союзники в радиусе."):hero==Hero.Ember?I18n.P("Hunter's training: arrows travel 15% faster, making distant targets easier to hit.","Охотничья подготовка: снаряды летят на 15% быстрее — легче попадать по дальним целям."):I18n.P("Hardiness: 115 starting health, 15 more than the base hero. Base outgoing damage is 90%.","Закалка: 115 начальных ХП, на 15 больше базового героя. Базовый исходящий урон — 90%.");
         public const float BossTime = 150;
         public const int MaxEnemies = 90;
         public static readonly Color Amber = new Color(0.93f, 0.65f, 0.49f);

@@ -51,6 +51,7 @@ namespace Era
             Address=PlayerPrefs.GetString("era.address","127.0.0.1");
             SelectedHero=(Hero)Mathf.Clamp(PlayerPrefs.GetInt("era.hero",0),0,2);
             SelectedRelic=(Relic)Mathf.Clamp(PlayerPrefs.GetInt("era.relic",0),0,2);
+            if(!Automated)SetFullscreen(PlayerPrefs.GetInt("era.fullscreen",0)==1);
             MouseSensitivity=PlayerPrefs.GetFloat("era.sensitivity",2.2f);Volume=PlayerPrefs.GetFloat("era.volume",0.5f);MusicVolume=PlayerPrefs.GetFloat("era.music",0.30f);
             HostAddresses=CoopTransport.LocalAddresses();
             View=gameObject.AddComponent<ArenaView>();gameObject.AddComponent<GameHud>();gameObject.AddComponent<SynthAudio>();
@@ -58,7 +59,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
-            if(Automated){if(Array.IndexOf(args,"--smoke-chests")>=0)gameObject.AddComponent<ChestDiagnostics>();else if(Array.IndexOf(args,"--smoke-campaign")>=0)gameObject.AddComponent<CampaignDiagnostics>();else if(Array.IndexOf(args,"--smoke-art")>=0)gameObject.AddComponent<ArtDiagnostics>();else if(Array.IndexOf(args,"--smoke-solo")>=0)gameObject.AddComponent<SoloDiagnostics>();else gameObject.AddComponent<RuntimeDiagnostics>();return;}
+            if(Automated){if(Array.IndexOf(args,"--smoke-update")>=0)gameObject.AddComponent<UpdateDiagnostics>();else if(Array.IndexOf(args,"--smoke-chests")>=0)gameObject.AddComponent<ChestDiagnostics>();else if(Array.IndexOf(args,"--smoke-campaign")>=0)gameObject.AddComponent<CampaignDiagnostics>();else if(Array.IndexOf(args,"--smoke-art")>=0)gameObject.AddComponent<ArtDiagnostics>();else if(Array.IndexOf(args,"--smoke-solo")>=0)gameObject.AddComponent<SoloDiagnostics>();else gameObject.AddComponent<RuntimeDiagnostics>();return;}
             if(Array.IndexOf(args,"--solo")>=0)Solo();
             else if(Array.IndexOf(args,"--host")>=0)Host();
             else if(Array.IndexOf(args,"--join")>=0)Join();
@@ -150,6 +151,8 @@ namespace Era
             local.jump|=Input.GetKeyDown(KeyCode.Space);local.jumpHeld=Input.GetKey(KeyCode.Space);local.crouch=Input.GetKey(KeyCode.LeftControl)||Input.GetKey(KeyCode.C);
             local.dash|=Input.GetKeyDown(KeyCode.LeftShift);local.primary|=Input.GetKeyDown(KeyCode.Q);local.secondary|=Input.GetKeyDown(KeyCode.E);local.relic|=Input.GetKeyDown(KeyCode.R);
             local.revive=Input.GetKey(KeyCode.F);local.interact|=Input.GetKeyDown(KeyCode.F);
+            if(Input.GetMouseButtonDown(0)&&LocalPlayer!=null&&Physics.Raycast(View.Camera.ScreenPointToRay(Input.mousePosition),out var hit,20))
+            {var target=hit.collider.GetComponentInParent<ClickInteractable>();if(target!=null&&Vector3.Distance(LocalPlayer.position,target.transform.position)<target.radius)local.interact=true;}
             if(Input.GetKeyDown(KeyCode.Alpha1))Choose(0);if(Input.GetKeyDown(KeyCode.Alpha2))Choose(1);if(Input.GetKeyDown(KeyCode.Alpha3))Choose(2);
         }
         void Send(string kind,string payload="",bool snapshot=false)=>transport?.Send(JsonUtility.ToJson(new WireMessage{kind=kind,payload=payload}),snapshot);
@@ -212,11 +215,17 @@ namespace Era
         public void SavePreferences()
         {
             if(Automated)return;
+            PlayerPrefs.SetInt("era.fullscreen",Screen.fullScreen?1:0);
             PlayerPrefs.SetInt("era.language",(int)I18n.Language);PlayerPrefs.SetString("era.name",PlayerName);PlayerPrefs.SetString("era.address",Address);PlayerPrefs.SetInt("era.hero",(int)SelectedHero);PlayerPrefs.SetInt("era.relic",(int)SelectedRelic);
             PlayerPrefs.SetFloat("era.sensitivity",MouseSensitivity);PlayerPrefs.SetFloat("era.volume",Volume);PlayerPrefs.SetFloat("era.music",MusicVolume);PlayerPrefs.Save();
         }
         void OnApplicationQuit(){SavePreferences();transport?.Dispose();}
         public void SetLanguage(GameLanguage language){I18n.Language=language;SavePreferences();}
+        public void SetFullscreen(bool enabled)
+        {
+            if(enabled)Screen.SetResolution(Display.main.systemWidth,Display.main.systemHeight,FullScreenMode.FullScreenWindow);
+            else Screen.SetResolution(1280,720,FullScreenMode.Windowed);
+        }
         void OnDestroy(){Time.timeScale=1;transport?.Dispose();if(Instance==this)Instance=null;}
     }
 }

@@ -39,7 +39,7 @@ namespace Era
             var matrix=GUI.matrix;GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2),Quaternion.identity,Vector3.one*scale);
             Draw();GUI.matrix=matrix;
         }
-        void Draw(){DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused)RewardToast();}
+        void Draw(){DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();}
         void DrawPage()
         {
             if(App.InRun){if(App.Inventory&&!App.Paused&&App.State.phase==RunPhase.Playing){Inventory();return;}HUD();if(App.State.phase==RunPhase.Victory || App.State.phase==RunPhase.Defeat)Results();else if(App.Paused)Settings(true);else if(App.LocalPlayer?.pendingLevels>0&&!App.LocalPlayer.downed&&!App.LocalPlayer.eliminated)Upgrades();return;}
@@ -62,7 +62,12 @@ namespace Era
         {value=I18n.T(value);if(capturing){capture.Text(value,new Rect(x,y,w,h),size,c??Ink,heavy,align);return;}var style=heavy?bold:label;style.fontSize=size;style.normal.textColor=c??Ink;style.alignment=align;GUI.Label(new Rect(x,y,w,h),value,style);}
         void Icon(string name,float x,float y,float size)
         {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
-        void ItemIcon(int item,float x,float y,float size)=>Icon(GameData.ItemIcons[item],x,y,size);
+        void ItemIcon(int item,float x,float y,float size)
+        {
+            var texture=IconLibrary.ItemAtlas;if(texture==null){Icon(GameData.ItemIcons[item],x,y,size);return;}
+            var uv=IconLibrary.ItemUV(item);float height=size*uv.height*texture.height/(uv.width*texture.width);var rect=new Rect(x,y+(size-height)/2,size,height);
+            if(capturing)capture.Rect(rect,Color.white,texture,uv);else{var previous=GUI.color;GUI.color=Color.white;GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
+        }
         void AttributeIcon(int attribute,float x,float y,float size)=>Icon(GameData.AccessoryIcons[attribute],x,y,size);
         void LanguageToggle(float x,float y)
         {if(Button("RU",x,y,62,32,I18n.Russian))App.SetLanguage(GameLanguage.Russian);if(Button("EN",x+70,y,62,32,!I18n.Russian))App.SetLanguage(GameLanguage.English);}
@@ -90,28 +95,27 @@ namespace Era
             Text(I18n.P("A 3D survivor for 1–3 wanderers","3D-выживание для 1–3 игроков"),94,774,490,40,17,Muted);
             Box(1060,704,476,117,Panel,22);Text("A WORLD WORTH GETTING LOST IN",1085,724,426,25,14,Sage,true);
             Text("Explore the groves. Find treasure.\nClose the rift before it takes you.",1085,763,426,52,19,Muted);
-            Text(I18n.P("v0.9   /   Seven Realms","v0.9   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
+            Text(I18n.P("v0.10   /   Seven Realms","v0.10   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
             if(App.Status.Length>0)Text(App.Status,674,56,840,55,19,Ink);
         }
         void Characters()
         {
-            Box(54,36,590,830,Panel,28);Text("CHOOSE YOUR WANDERER",88,64,518,34,16,Sage,true);
-            bool ember=App.SelectedHero==Hero.Ember;
-            for(int i=0;i<3;i++)if(Button(GameData.HeroName((Hero)i),88+i*174,121,166,58,(int)App.SelectedHero==i))App.SelectedHero=(Hero)i;
-            bool lumen=App.SelectedHero==Hero.Lumen;
-            Text(lumen?I18n.P("A light for everyone.","Свет для всей команды."):ember?"A spark of courage.":"A quiet kind of magic.",88,213,516,50,32,Ink,true);
-            Text(lumen?I18n.P("LUMEN / AURA KEEPER / 110 HP","ЛЮМЕН / ХРАНИТЕЛЬ АУР / 110 ХП"):ember?"EMBER  /  FIRE WEAVER  /  100 HP":"ECHO  /  FROST KEEPER  /  115 HP",90,278,512,30,15,Sage,true);
-            Text(lumen?I18n.P("Weapon: 9.2 m aura, 10 base DPS. Starts with Fortune +15%. Every level: accessory + upgrade an owned aura OR add a new buff aura. Up to 5 types.","Оружие: аура 9.2 м, 10 базового урона/с. На старте удача +15%. Каждый уровень: аксессуар + усиление своей ауры ИЛИ новая аура баффа. До 5 разных."):ember?"Fast, fearless and just a little reckless. Turn a tiny spark into a storm.":"Keep your companion close. A little frost and kindness go a long way.",90,317,510,82,17,Muted);
-            AbilityInfo(GameData.QIcon(App.SelectedHero),GameData.Q(App.SelectedHero),GameData.QDescription(App.SelectedHero),90,407,510);
-            AbilityInfo(GameData.EIcon(App.SelectedHero),GameData.E(App.SelectedHero),GameData.EDescription(App.SelectedHero),90,493,510);
-            Text("TAKE ONE RELIC  /  PRESS R TO USE IT",90,588,510,25,13,Sage,true);
-            for(int i=0;i<3;i++)if(Button(i==0?"Storm Compass":i==1?"Hourglass":"Home Shard",90+i*174,623,162,45,(int)App.SelectedRelic==i))App.SelectedRelic=(Relic)i;
-            Text(GameData.RelicDescription(App.SelectedRelic),90,686,510,52,16,Muted);
-            App.PlayerName=Field(App.PlayerName,90,746,510,18);
-            if(Button(App.State!=null?"Confirm loadout":App.Mode==SessionMode.Solo?"Begin the journey":"Enter the lobby",90,805,510,45,true))App.ConfirmCharacter();
-            if(Button("Back",1358,48,180,48)){if(App.State!=null)App.Page=MenuPage.Home;else App.Page=App.Mode==SessionMode.Solo?MenuPage.Home:App.Mode==SessionMode.Host?MenuPage.HostLobby:MenuPage.JoinLobby;}
-            Box(1033,699,456,115,Panel,22);Text(ember?"FOLLOW THE WARMTH":"LEAVE A LITTLE LIGHT",1057,720,409,24,14,Sage,true);
-            Text(lumen?I18n.P("Keep allies inside your aura rings.\nIdentical auras use the strongest source.","Держите союзников внутри колец ауры.\nОдинаковые ауры берут сильнейший бонус."):ember?"Sunburst clears the way.\nOverdrive keeps you moving.":"Frost Bloom holds enemies still.\nResonance heals you both.",1057,757,409,52,17,Muted);
+            var hero=App.SelectedHero;int weapon=(int)GameData.StarterWeapon(hero);
+            Box(54,78,430,788,Panel);Text(I18n.P("CHOOSE YOUR HERO","ВЫБОР ПЕРСОНАЖА"),82,105,374,36,22,Sage,true);
+            for(int i=0;i<3;i++)if(Button(GameData.HeroName((Hero)i),82,162+i*61,374,49,(int)hero==i))App.SelectedHero=(Hero)i;
+            Text(I18n.P("YOUR NAME","ВАШЕ ИМЯ"),82,367,374,23,13,Muted,true);App.PlayerName=Field(App.PlayerName,82,398,374,18);
+            Text("TAKE ONE RELIC  /  PRESS R TO USE IT",82,465,374,23,12,Sage,true);
+            for(int i=0;i<3;i++)if(Button(i==0?"Storm Compass":i==1?"Hourglass":"Home Shard",82+i*128,504,118,55,(int)App.SelectedRelic==i))App.SelectedRelic=(Relic)i;
+            Text(GameData.RelicDescription(App.SelectedRelic),82,583,374,84,16,Muted);
+            if(Button(App.State!=null?"Confirm loadout":App.Mode==SessionMode.Solo?"Begin the journey":"Enter the lobby",82,712,374,61,true))App.ConfirmCharacter();
+            if(Button("Back",82,794,374,44)){if(App.State!=null)App.Page=MenuPage.Home;else App.Page=App.Mode==SessionMode.Solo?MenuPage.Home:App.Mode==SessionMode.Host?MenuPage.HostLobby:MenuPage.JoinLobby;}
+            Box(1030,106,516,700,Panel);Text(GameData.HeroName(hero),1054,128,468,45,33,Ink,true);
+            Text(I18n.P("WEAPON","ОРУЖИЕ"),1054,195,468,23,12,Sage,true);Icon(GameData.Weapons[weapon].icon,1056,232,43);
+            Text(GameData.Weapons[weapon].name,1113,232,405,30,22,Ink,true);Text(GameData.Weapons[weapon].description,1054,281,468,61,16,Muted);
+            Text(I18n.P("PASSIVE ABILITY","ПАССИВНОЕ УМЕНИЕ"),1054,365,468,23,12,Sage,true);Text(GameData.PassiveDescription(hero),1054,400,468,90,17,Ink);
+            AbilityInfo(GameData.QIcon(hero),GameData.Q(hero),GameData.QDescription(hero),1054,514,468);
+            AbilityInfo(GameData.EIcon(hero),GameData.E(hero),GameData.EDescription(hero),1054,611,468);
+            Text(I18n.P("Starting health: ","Начальное здоровье: ")+(hero==Hero.Echo?115:hero==Hero.Lumen?110:100)+I18n.P(" HP · Two weapon slots"," ХП · Два слота оружия"),1054,729,468,45,15,Sage,true);
         }
         void AbilityInfo(string key,string name,string description,float x,float y,float width)
         {Box(x,y,width,80,Soft,14);Icon(key,x+13,y+17,38);Text(name,x+62,y+9,width-75,28,19,Ink,true);Text(description,x+62,y+39,width-75,38,13,Muted);}
@@ -188,6 +192,8 @@ namespace Era
             Text(s.xp+" / "+s.xpRequired+" XP",684,57,232,20,11,Muted,false,TextAnchor.UpperCenter);Bar(690,79,220,4,s.xp/(float)s.xpRequired,Blue);
             Text(Clock(s.stageElapsed),750,146,100,24,16,Ink,true,TextAnchor.UpperCenter);
             Box(1394,24,182,48,Panel,14);Icon("gold",1405,35,24);Text(s.coins.ToString(),1432,34,52,28,18,Ink,true);Icon("skull",1491,35,24);Text(s.kills.ToString(),1520,34,48,28,18,Ink,true);
+            Box(1000,24,370,48,Panel);int waveAlive=s.enemies.FindAll(e=>e.wave>0).Count;
+            Text(s.portal.active||s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.bossSpawned?I18n.P("BOSS SUMMONED","БОСС ПРИЗВАН"):s.waveActive?I18n.P("WAVE ","ВОЛНА ")+s.wave+" · "+I18n.P("remaining ","осталось ")+(Mathf.Max(0,s.waveQuota-s.waveSpawned)+waveAlive):I18n.P("NEXT WAVE IN ","СЛЕДУЮЩАЯ ВОЛНА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
             Box(1178,86,398,57,Panel);Text(I18n.P("REALM ","ЭТАП ")+s.stage+" / 7",1193,94,367,18,11,CampaignData.Color(s.stage),true);Text(CampaignData.Name(s.stage),1193,116,367,24,17,Ink,true);
             if(App.Online)
             {
@@ -205,10 +211,10 @@ namespace Era
             foreach(var chest in s.chests)
             {
                 if(chest.opened)continue;float d=Vector3.Distance(p.position,chest.position);if(d<dist){dist=d;nearest=chest;}
-                if(d<14)WorldLabel(chest.position+Vector3.up*1.55f,I18n.T(chest.tier>0?"Moon chest":"Chest")+" · "+chest.cost,Panel);
+                if(d<14)WorldLabel(chest.position+Vector3.up*1.55f,chest.free?I18n.P("FREE CHEST","БЕСПЛАТНЫЙ СУНДУК"):I18n.T(chest.tier>0?"Moon chest":"Chest")+" · "+chest.cost,Panel);
             }
             if(nearest!=null&&!p.downed&&!p.eliminated)
-            {Box(600,692,400,65,Panel,12);Text("[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Team chest prices: +","Цены сундуков команды: +")+(s.openedChests*10)+I18n.P("% · next opening +10%","% · следующее открытие +10%"),610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
+            {Box(600,692,400,65,Panel,12);Text(nearest.free?I18n.P("[ F ]  Open free chest","[ F ]  Открыть бесплатно"):"[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Team chest prices: +","Цены сундуков команды: +")+(s.openedChests*10)+I18n.P("% · next opening +10%","% · следующее открытие +10%"),610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
             foreach(var shrine in s.shrines)
             {
                 float d=Vector3.Distance(p.position,shrine.position);if(d>18)continue;
@@ -222,7 +228,6 @@ namespace Era
             foreach(var drop in s.loot)
             {
                 var pos=Project(drop.position+Vector3.up*1.15f);if(pos.z<=0||pos.x<100||pos.x>1500||pos.y<160||pos.y>720)continue;
-                Box(pos.x-23,pos.y-23,46,46,Panel,12);if(drop.kind==RewardKind.Weapon)Icon(GameData.Weapons[drop.content].icon,pos.x-19,pos.y-19,38);else ItemIcon(drop.content,pos.x-20,pos.y-20,40);
                 if(!drop.collecting&&Vector3.Distance(p.position,drop.position)<2.5f)Text("[ F ] "+GameData.Items[drop.content].name,pos.x-150,pos.y+28,300,40,15,GameData.Items[drop.content].color,true,TextAnchor.UpperCenter);
             }
             foreach(var e in s.enemies)if(e.kind==EnemyKind.Warden)
@@ -234,7 +239,7 @@ namespace Era
                 {Box(460,610,680,74,Panel);Text(I18n.P("[ F ]  Enter portal · moves the whole party","[ F ]  Войти в портал · переход всей команды"),477,622,646,26,19,Sage,true,TextAnchor.UpperCenter);Text(CampaignData.Name(s.stage+1),477,655,646,21,14,Muted,false,TextAnchor.UpperCenter);}
             }
             for(int i=0;i<GameData.WeaponSlots;i++)WeaponSlot(p,i,747+i*57,94);
-            AuraHud(p);DamageNumbers(s);
+            EncounterHud(s,p);AuraHud(p);DamageNumbers(s);
             Ability("Q",GameData.QIcon(p.hero),GameData.Q(p.hero),p.qCooldown,p.hero==Hero.Echo?10:8,690);
             Ability("E",GameData.EIcon(p.hero),GameData.E(p.hero),p.eCooldown,p.hero==Hero.Echo?16:18,747);
             Ability("R",GameData.RelicIcon(p.relic),GameData.RelicName(p.relic),p.relicCooldown,GameData.RelicDuration(p.relic),804);
@@ -287,6 +292,28 @@ namespace Era
             else{Flat(x+19,y+24,11,1,Muted);Text("·",x+4,y+29,13,14,11,Muted);}
             if(type<0)Text("25",x+10,y+9,29,24,16,Muted,true,TextAnchor.UpperCenter);
             if(!capturing&&new Rect(x,y,49,49).Contains(Event.current.mousePosition))Tooltip(type>=0?GameData.Weapons[type].name+" · "+I18n.P("Lv. ","Ур. ")+p.weaponLevels[slot]:I18n.P("Choose your second weapon at level 25","Выберите второе оружие на 25-м уровне"),x+25,y<160?y+58:y-42);
+        }
+        void EncounterHud(WorldState s,PlayerState p)
+        {
+            if(!s.bossSpawned&&!s.portal.active)
+            {
+                float distance=Vector3.Distance(p.position,s.bossStatuePosition);
+                if(distance<65)WorldLabel(s.bossStatuePosition+Vector3.up*5.2f,I18n.P("BOSS STATUE","СТАТУЯ БОССА"),Panel);
+                if(distance<4&&!p.downed&&!p.eliminated)
+                {Box(450,594,700,70,Panel);Text(I18n.P("[ F ]  Touch the stone statue · summon the boss","[ F ]  Коснуться каменной статуи · призвать босса"),465,606,670,24,18,Sage,true,TextAnchor.UpperCenter);Text(CampaignData.BossName(s.stage),465,639,670,21,14,Muted,false,TextAnchor.UpperCenter);}
+            }
+            foreach(var shrine in s.eliteShrines)
+            {
+                int remaining=s.enemies.FindAll(e=>e.eliteShrine==shrine.id).Count;float distance=Vector3.Distance(p.position,shrine.position);
+                if(distance<50)WorldLabel(shrine.position+Vector3.up*3.1f,shrine.completed?I18n.P("TRIAL COMPLETE","ИСПЫТАНИЕ ПРОЙДЕНО"):shrine.active?I18n.P("ELITES LEFT: ","ОСТАЛОСЬ ЭЛИТЫ: ")+remaining:I18n.P("ELITE SHRINE","СВЯТИЛИЩЕ ЭЛИТЫ"),Panel);
+                if(!shrine.active&&!shrine.completed&&distance<3.8f&&!s.bossSpawned&&!s.portal.active&&!p.downed&&!p.eliminated)
+                {Box(470,594,660,70,Panel);Text(I18n.P("[ F ]  Summon five elite guardians","[ F ]  Призвать пять элитных стражей"),488,606,624,25,18,Sage,true,TextAnchor.UpperCenter);Text(I18n.P("Defeat all five to earn a free chest","Победите всех пятерых и получите бесплатный сундук"),488,640,624,21,13,Muted,false,TextAnchor.UpperCenter);}
+            }
+            foreach(var node in s.resourceNodes)if(!node.broken)
+            {
+                float distance=Vector3.Distance(p.position,node.position);if(distance<13)WorldLabel(node.position+Vector3.up*1.3f,node.kind==PickupKind.Gold?I18n.P("GPU · GOLD","GPU · ЗОЛОТО"):I18n.P("GPU · EXPERIENCE","GPU · ОПЫТ"),Panel);
+                if(distance<2.7f&&!p.downed&&!p.eliminated){Box(580,635,440,43,Panel);Text(I18n.P("[ F ]  Break graphics card","[ F ]  Разбить видеокарту"),592,645,416,24,17,node.kind==PickupKind.Gold?Sage:Blue,true,TextAnchor.UpperCenter);}
+            }
         }
         void AuraHud(PlayerState p)
         {
@@ -431,9 +458,12 @@ namespace Era
             Text("Music",513,304,574,28,20,Ink,true);if(!capturing)App.MusicVolume=GUI.HorizontalSlider(new Rect(513,353,574,24),App.MusicVolume,0,.7f);else Bar(513,353,574,6,App.MusicVolume/.7f,Sage);
             Text("Sound effects",513,402,574,28,20,Ink,true);if(!capturing)App.Volume=GUI.HorizontalSlider(new Rect(513,451,574,24),App.Volume,0,1);else Bar(513,451,574,6,App.Volume,Sage);
             Text("Mouse sensitivity",513,498,574,28,20,Ink,true);if(!capturing)App.MouseSensitivity=GUI.HorizontalSlider(new Rect(513,547,574,24),App.MouseSensitivity,.5f,5);else Bar(513,547,574,6,App.MouseSensitivity/5,Sage);
-            Text("Language",513,586,360,28,20,Ink,true);LanguageToggle(950,580);
-            if(Button(paused?"Keep wandering":"Save & return",512,640,576,55,true)){App.SavePreferences();if(paused)App.Paused=false;else App.Page=MenuPage.Home;}
-            if(paused&&Button("Return to main menu",512,719,576,48))App.ReturnToMenu();
+            Text(I18n.P("Display mode","Режим экрана"),513,577,280,25,18,Ink,true);
+            if(Button(I18n.P("Windowed","Окно"),806,570,120,35,!Screen.fullScreen))App.SetFullscreen(false);
+            if(Button(I18n.P("Fullscreen","Полный экран"),934,570,153,35,Screen.fullScreen))App.SetFullscreen(true);
+            Text("Language",513,619,360,28,18,Ink,true);LanguageToggle(950,614);
+            if(Button(paused?"Keep wandering":"Save & return",512,664,576,48,true)){App.SavePreferences();if(paused)App.Paused=false;else App.Page=MenuPage.Home;}
+            if(paused&&Button("Return to main menu",512,730,576,40))App.ReturnToMenu();
         }
         void Results()
         {

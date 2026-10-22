@@ -6,8 +6,9 @@ namespace Era
     {
         public static SynthAudio Instance {get;private set;}
         public bool MusicPlaying=>music!=null && music.isPlaying;
-        public bool MusicReady=>music!=null && music.clip!=null;
-        AudioSource source,music;
+        public bool MusicReady=>music!=null && music.clip!=null&&battle!=null&&battle.clip!=null;
+        public bool BattlePlaying=>battle!=null&&battle.isPlaying&&battle.volume>.001f;
+        AudioSource source,music,battle;
         AudioClip[] clips;
         AudioClip step;
         float lastShot,lastCoin,lastHit;
@@ -17,6 +18,7 @@ namespace Era
             music=gameObject.AddComponent<AudioSource>();music.spatialBlend=0;music.loop=true;
             music.clip=Resources.Load<AudioClip>("Audio/Stillwater-at-Dawn");
             music.volume=GameApp.Instance!=null?GameApp.Instance.MusicVolume:.3f;if(music.clip!=null)music.Play();
+            battle=gameObject.AddComponent<AudioSource>();battle.spatialBlend=0;battle.loop=true;battle.clip=Resources.Load<AudioClip>("Audio/Storm-of-the-Seven");battle.volume=0;if(battle.clip!=null)battle.Play();
             clips=new[]{Tone("Seeker",720,350,.11f,.13f),Tone("Sunburst",200,70,.46f,.25f,0.13f),Tone("Mote",900,1300,.12f,.12f),
                 Tone("Resonance",410,820,.65f,.19f),Tone("Jump",160,500,.23f,.14f),Tone("Landing",110,50,.17f,.16f,0.65f),
                 Tone("Dash",300,720,.20f,.14f,0.5f),Tone("Coin",1250,1700,.15f,.14f),Tone("Chest",410,1040,.70f,.23f),
@@ -26,8 +28,9 @@ namespace Era
         void Update()
         {
             var app=GameApp.Instance;if(app==null)return;
-            float target=app.MusicVolume*(app.InRun?0.78f:1);
+            bool combat=app.InRun&&app.State.phase==RunPhase.Playing;float target=app.MusicVolume*(combat?0:1);
             music.volume=Mathf.Lerp(music.volume,target,1-Mathf.Exp(-Time.unscaledDeltaTime*2));
+            battle.volume=Mathf.Lerp(battle.volume,combat?app.MusicVolume:0,1-Mathf.Exp(-Time.unscaledDeltaTime*2));
         }
         static AudioClip Tone(string name,float start,float end,float length,float volume,float noise=0)
         {

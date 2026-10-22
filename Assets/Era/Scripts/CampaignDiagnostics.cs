@@ -23,6 +23,7 @@ namespace Era
         {
             foreach(var p in App.State.players){p.invulnerability=999;p.position=WorldMap.OnGround(-51+p.id*2,-19+p.id);p.hp=p.maxHp;}
             App.CameraYaw=0;App.CameraPitch=22;App.State.spawnTimer=1000;App.State.stageElapsed=GameData.BossTime-.01f;
+            App.State.resourceNodes.Clear();App.LocalPlayer.position=App.State.bossStatuePosition;App.Simulation.TrySummonBoss(App.LocalPlayer);foreach(var p in App.State.players)p.position=WorldMap.OnGround(-51+p.id*2,-19+p.id);
             boss=null;phase=0;phaseAt=Time.realtimeSinceStartup;jumpSent=false;report.realms++;
         }
         void Update()

@@ -42,12 +42,12 @@ namespace Era
         static List<WorldProp> CreateProps()
         {
             var result = new List<WorldProp>(); var random = new System.Random(91247+Stage*513);
-            for (int i = 0; i < 230; i++)
+            for (int i = 0; i < 350; i++)
             {
                 float a = (float)random.NextDouble() * Mathf.PI * 2;
-                float r = 24 + Mathf.Sqrt((float)random.NextDouble()) * 174;
+                float r = 24 + Mathf.Sqrt((float)random.NextDouble()) * (GameData.ArenaRadius-40);
                 var p = OnGround(Mathf.Sin(a)*r, Mathf.Cos(a)*r);
-                int kind = i < 155 ? 0 : 1; float size = kind == 0 ? 0.8f+(float)random.NextDouble()*0.8f : 0.7f+(float)random.NextDouble()*1.8f;
+                int kind = i < 240 ? 0 : 1; float size = kind == 0 ? 0.8f+(float)random.NextDouble()*0.8f : 0.7f+(float)random.NextDouble()*1.8f;
                 result.Add(new WorldProp { position = p, size = size, kind = kind, angle = (float)random.NextDouble()*360 });
             }
             return result;
@@ -55,7 +55,7 @@ namespace Era
         public static Vector3 Resolve(Vector3 from, Vector3 delta, float radius)
         {
             Vector3 next = from + delta;
-            var planar = Vector2.ClampMagnitude(new Vector2(next.x,next.z), GameData.ArenaRadius-radius);
+            var planar = Vector2.ClampMagnitude(new Vector2(next.x,next.z), GameData.ArenaRadius-radius-6);
             next.x=planar.x; next.z=planar.y;
             for (int pass=0; pass<2; pass++)
             foreach (var prop in Props)
@@ -67,12 +67,13 @@ namespace Era
                 if (sq<0.0001f) { dx=1; dz=0; sq=1; }
                 float scale=extent/Mathf.Sqrt(sq); next.x=prop.position.x+dx*scale; next.z=prop.position.z+dz*scale;
             }
+            var inside=Vector2.ClampMagnitude(new Vector2(next.x,next.z),GameData.ArenaRadius-radius-6);next.x=inside.x;next.z=inside.y;
             return next;
         }
         public static void PopulateChests(WorldState state)
         {
             var positions = new List<Vector2> { new Vector2(6,2), new Vector2(-11,10), new Vector2(16,-12) };
-            for(int i=0;i<27;i++) { float a=i*2.399963f; float r=35+Mathf.Sqrt(i/26f)*150; positions.Add(new Vector2(Mathf.Cos(a)*r,Mathf.Sin(a)*r)); }
+            for(int i=0;i<GameData.ChestCount-3;i++) { float a=i*2.399963f; float r=35+Mathf.Sqrt(i/(float)(GameData.ChestCount-4))*(GameData.ArenaRadius-60); positions.Add(new Vector2(Mathf.Cos(a)*r,Mathf.Sin(a)*r)); }
             for(int i=0;i<positions.Count;i++)
             {
                 var v=positions[i];if(i>2){float a=(state.stage-1)*.63f;v=new Vector2(v.x*Mathf.Cos(a)-v.y*Mathf.Sin(a),v.x*Mathf.Sin(a)+v.y*Mathf.Cos(a));} var p=Resolve(OnGround(v.x,v.y),Vector3.zero,1);

@@ -9,6 +9,7 @@ namespace Era
         string locomotion="",upper="";float actionTime,crouch,landingTime;int attackSerial,castSerial,jumpSerial,landSerial;float previousAttack;bool wantsCrouch;
         Transform rigBone,leftArm,rightArm;Vector3 rigScale=Vector3.one;
         bool heroPose,airborne;float airBlend,verticalPose,runPose,takeoffTime;
+        float slide,aimTwist,draw;
         public float JumpBlend=>airBlend;
         public Transform Bone(string name){foreach(var t in GetComponentsInChildren<Transform>(true))if(t.name==name)return t;return null;}
         public void Bind(){hips=Bone("hips");spine=Bone("spine");leftThigh=Bone("upperleg.l");rightThigh=Bone("upperleg.r");leftKnee=Bone("lowerleg.l");rightKnee=Bone("lowerleg.r");rightHand=Bone("handslot.r");}
@@ -26,10 +27,12 @@ namespace Era
             if(GameApp.Instance?.WorldPaused==true){animationPlayer.enabled=false;return;}animationPlayer.enabled=true;wantsCrouch=p.crouching;
             float speed=new Vector2(p.velocity.x,p.velocity.z).magnitude;
             heroPose=!p.downed;airborne=!p.grounded;verticalPose=p.verticalSpeed;runPose=Mathf.Clamp01(speed/7.8f);
+            slide=Mathf.Clamp01(p.hitSlide/.24f);aimTwist=p.weaponPoseTime>0?Mathf.Clamp(Mathf.DeltaAngle(p.yaw,p.weaponAimYaw),-60,60):0;draw=p.lastWeapon==(int)WeaponKind.Bow?Mathf.Sin(Mathf.Clamp01(p.weaponPoseTime/.32f)*Mathf.PI):0;
             if(p.downed){wantsCrouch=false;Base("Death_A_Pose");return;}
             if(p.landSerial!=landSerial)landingTime=.28f;
             if(p.jumpSerial!=jumpSerial){animationPlayer.Rewind(Clip("Jump_Start"));takeoffTime=.12f;}
-            if(p.dashTime>0)Base("Dodge_Forward",1.6f);
+            if(slide>0)Base("Hit_A",.8f);
+            else if(p.dashTime>0)Base("Dodge_Forward",1.6f);
             else if(!p.grounded)Base(p.verticalSpeed>4?"Jump_Start":"Jump_Idle");
             else if(landingTime>0){Base("Jump_Land",1.15f);}
             else Base(speed>.2f?(p.crouching?"Walking_A":"Running_A"):"Idle",speed>.2f?Mathf.Clamp(speed/(p.crouching?2.8f:5.2f),.6f,1.65f):1);
@@ -62,6 +65,10 @@ namespace Era
             }
             if(heroPose&&hips!=null)
             {
+                spine.localRotation*=Quaternion.Euler(-slide*12,aimTwist*.65f,0);
+                leftKnee.localRotation*=Quaternion.Euler(slide*22,0,0);rightKnee.localRotation*=Quaternion.Euler(slide*15,0,0);
+                if(rightArm!=null)rightArm.localRotation*=Quaternion.Euler(-draw*8,draw*7,0);
+                if(leftArm!=null)leftArm.localRotation*=Quaternion.Euler(-draw*4,0,-draw*5);
                 airBlend=Mathf.MoveTowards(airBlend,airborne?1:0,Time.deltaTime*9);
                 float rising=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-5,8,verticalPose));
                 float tuck=airBlend*(.35f+rising*.65f),impact=airborne?0:Mathf.Sin((1-landingTime/.28f)*Mathf.PI)*Mathf.Clamp01(landingTime/.08f);

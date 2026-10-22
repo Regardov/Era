@@ -18,7 +18,7 @@ namespace Era.Editor
         {
             var sim = new Simulation(23,coop); sim.AddPlayer(0, "Искра", Hero.Ember);
             if (coop) {sim.AddPlayer(1, "Echo", Hero.Echo);sim.SetReady(0,true);sim.SetReady(1,true);}
-            sim.Start(); sim.State.spawnTimer = 1000; return sim;
+            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear(); return sim;
         }
         static void Step(Simulation sim, float seconds, Dictionary<int, InputFrame> inputs = null)
         {
@@ -29,7 +29,7 @@ namespace Era.Editor
         public static void Run()
         {
             assertions = 0;
-            Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
+            Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -79,7 +79,7 @@ namespace Era.Editor
         static void Economy()
         {
             var sim=New(true);var a=sim.State.Player(0);var b=sim.State.Player(1);var chest=sim.State.chests[0];a.position=chest.position;
-            Check(sim.State.chests.Count==30,"large map contains thirty chests");int money=sim.State.coins;
+            Check(sim.State.chests.Count==GameData.ChestCount,"expanded map contains sixty chests");int money=sim.State.coins;
             Check(sim.TryOpenChest(a)&&sim.State.coins==money-chest.cost&&chest.owner==0,"opening chest atomically spends shared gold");
             b.position=chest.position;int after=sim.State.coins;Check(!sim.TryOpenChest(b)&&sim.State.coins==after,"opened chest cannot be bought twice");
             Check(sim.State.loot.Count==1&&chest.reward>=0&&(chest.rewardKind==RewardKind.Weapon?chest.reward<GameData.Weapons.Length:chest.reward<GameData.Items.Length&&(int)GameData.Items[chest.reward].rarity==chest.rewardRarity),"chest rolls a valid rarity-matched reward");
@@ -109,6 +109,44 @@ namespace Era.Editor
             sim.LearnAura(lumen,3);Check(lumen.currentAura==3&&lumen.auraLevels[3]==1&&GameData.AuraUpgradeCount(lumen,3)==0,"new aura becomes current without counting acquisition as an upgrade");
             var snapshot=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
             Check(snapshot.Player(2).currentAura==3&&snapshot.Player(2).auraLevels[0]==3&&snapshot.chests[0].baseCost==sim.State.chests[0].baseCost&&snapshot.chests[0].cost==sim.State.chests[0].cost&&snapshot.openedChests==2,"network snapshot retains aura progress and shared chest prices");
+            WorldMap.SetStage(1);
+        }
+        static void Encounters()
+        {
+            var sim=New(true);foreach(var player in sim.State.players){player.weapons=new[]{-1,-1};player.invulnerability=999;}
+            sim.State.spawnTimer=0;Step(sim,2);int quota=sim.State.waveQuota;
+            Check(sim.State.wave==1&&quota>10&&sim.State.waveSpawned>0&&sim.State.waveSpawned<=quota,"finite wave spawns a bounded quota");
+            sim.State.waveSpawned=quota;foreach(var e in new List<EnemyState>(sim.State.enemies))sim.DamageEnemy(e,sim.State.Player(0),99999);Step(sim,.05f);
+            Check(!sim.State.waveActive&&sim.State.wave==1&&sim.State.nextWave>7.8f,"killing the entire wave starts an eight-second break");
+            Step(sim,7);Check(sim.State.wave==1&&!sim.State.waveActive,"wave cannot advance before its break expires");Step(sim,1.2f);
+            Check(sim.State.wave==2&&sim.State.waveActive,"next wave starts after the break");
+            sim.State.stageElapsed=999;Step(sim,.1f);Check(!sim.State.enemies.Exists(e=>e.kind==EnemyKind.Warden),"elapsed time never auto-spawns the boss");
+            var p=sim.State.Player(0);Check(!sim.TrySummonBoss(p),"statue requires proximity");p.position=sim.State.bossStatuePosition;
+            Check(sim.TrySummonBoss(p)&&sim.State.enemies.FindAll(e=>e.kind==EnemyKind.Warden).Count==1&&!sim.TrySummonBoss(p),"boss statue is a single authoritative summon");
+            sim=New(true);foreach(var player in sim.State.players){player.weapons=new[]{-1,-1};player.invulnerability=999;}p=sim.State.Player(0);
+            Check(sim.State.eliteShrines.Count==4,"each realm has four elite shrines");var shrine=sim.State.eliteShrines[0];p.position=shrine.position;
+            Check(sim.TryActivateEliteShrine(p)&&sim.State.enemies.FindAll(e=>e.eliteShrine==shrine.id).Count==5,"one shrine summons exactly five elite guards");
+            Check(!sim.TryActivateEliteShrine(p),"elite shrine cannot summon duplicate groups");
+            var guards=sim.State.enemies.FindAll(e=>e.eliteShrine==shrine.id);for(int i=0;i<4;i++)sim.DamageEnemy(guards[i],p,99999);Step(sim,.05f);
+            Check(!shrine.completed&&!sim.State.chests.Exists(c=>c.free),"four kills do not award the elite chest");sim.DamageEnemy(guards[4],p,99999);Step(sim,.05f);
+            var free=sim.State.chests.Find(c=>c.free);Check(shrine.completed&&free!=null&&free.cost==0&&sim.State.chests.Count==GameData.ChestCount+1,"all five elite kills create one free chest");Step(sim,.2f);
+            Check(sim.State.chests.FindAll(c=>c.free).Count==1,"completed elite shrine cannot duplicate its reward");
+            var ally=sim.State.Player(1);ally.position=free.position;int gold=sim.State.coins;
+            Check(sim.TryOpenChest(ally)&&sim.State.coins==gold&&free.opened&&sim.State.loot.Count>0,"any ally can open the free chest without paying");
+            sim=new Simulation(12);p=sim.AddPlayer(0,"Test",Hero.Ember);p.weapons=new[]{-1,-1};sim.Start();sim.State.spawnTimer=1000;
+            Check(sim.State.resourceNodes.Count==72&&sim.State.resourceNodes.FindAll(n=>n.kind==PickupKind.Gold).Count==36,"map contains seventy-two evenly split GPU resource nodes");
+            var node=sim.State.resourceNodes[0];p.position=node.position;Check(sim.TryBreakResource(p)&&node.broken&&sim.State.pickups.Count==4&&sim.State.pickups.TrueForAll(d=>d.kind==PickupKind.Gold),"gold GPU drops four gold bundles");
+            int count=sim.State.pickups.Count;Check(!sim.TryBreakResource(p)&&sim.State.pickups.Count==count,"broken graphics cards cannot be farmed twice");
+            var blue=sim.State.resourceNodes[1];sim.DamageResource(blue,100,p);Check(blue.broken&&sim.State.pickups.FindAll(d=>d.kind==PickupKind.Experience).Count==4,"blue GPU drops experience");
+            var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.resourceNodes[0].broken&&copy.eliteShrines.Count==4&&copy.bossStatuePosition==sim.State.bossStatuePosition,"snapshot retains resource nodes and encounter objects");
+            sim=New(true);p=sim.State.Player(0);p.weapons=new[]{-1,-1};var origin=p.position;sim.DamagePlayer(p,5,p.position+Vector3.forward);
+            Check(p.hitSlide>.2f&&p.knockback.z<0,"enemy hit starts a short backward slide");Step(sim,.4f);float slide=Vector2.Distance(new Vector2(origin.x,origin.z),new Vector2(p.position.x,p.position.z));
+            Check(slide>.2f&&slide<.6f&&p.hitSlide==0&&p.grounded,"slide remains below sixty centimeters and finishes on the floor");
+            var edge=WorldMap.Resolve(Vector3.zero,Vector3.right*1000,.4f);Check(new Vector2(edge.x,edge.z).magnitude<GameData.ArenaRadius-6,"collision keeps players inside the visible perimeter wall");
+            var atlas=IconLibrary.ItemAtlas;Check(atlas!=null&&atlas.width==1536&&atlas.height==1024,"supplied item artwork atlas is used at its original size");
+            for(int i=0;i<31;i++){var r=IconLibrary.ItemPixels(i);Check(r.x>=0&&r.y>=0&&r.xMax<=atlas.width&&r.yMax<=atlas.height,"item sprite lies inside the supplied artwork: "+i);}
+            foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);Check(model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses the smooth adult proportion rig: "+hero);}
+            Check(Resources.Load<AudioClip>("Audio/Storm-of-the-Seven")?.length>25,"separate battle score is included");
             WorldMap.SetStage(1);
         }
         static void Crouching()
@@ -320,7 +358,7 @@ namespace Era.Editor
             var fractions=New();var owner=fractions.State.Player(0);owner.xpGain=1.08f;owner.goldGain=1.08f;
             for(int i=0;i<10;i++){var enemy=fractions.SpawnEnemy(EnemyKind.Wisp);fractions.DamageEnemy(enemy,owner,9999);}
             int xp=0,gold=0;foreach(var pickup in fractions.State.pickups){if(pickup.kind==PickupKind.Experience)xp+=pickup.value;else gold+=pickup.value;}
-            Check(xp==21&&gold==43,"small XP and gold bonuses accumulate instead of disappearing to per-kill rounding");
+            Check(xp==64&&gold==43,"small XP and gold bonuses accumulate instead of disappearing to per-kill rounding");
         }
         static void Cooperation()
         {
@@ -359,7 +397,7 @@ namespace Era.Editor
                 int level=sim.State.level,weapon=a.weapons[0],accessories=a.attributes[0];sim.ApplyAccessory(a,0,0);
                 Check(sim.TryUsePortal(b)&&sim.State.stage==stage+1&&sim.State.stageSerial==++serial,"any ally can move the party through a portal: "+stage);
                 Check(sim.State.level==level&&a.weapons[0]==weapon&&a.attributes[0]==accessories+1&&!c.downed&&!c.eliminated&&c.hp>0,"party transition preserves builds and restores fallen allies");
-                Check(sim.State.players.TrueForAll(p=>Vector3.Distance(p.position,Vector3.zero)<4)&&sim.State.chests.Count==30&&sim.State.shrines.Count==12&&sim.State.stageElapsed==0&&!sim.State.bossSpawned,"new stage resets enemies, treasure, clock and party positions");
+                Check(sim.State.players.TrueForAll(p=>Vector3.Distance(p.position,Vector3.zero)<4)&&sim.State.chests.Count==GameData.ChestCount&&sim.State.shrines.Count==12&&sim.State.stageElapsed==0&&!sim.State.bossSpawned,"new stage resets enemies, treasure, clock and party positions");
                 Check(!sim.TryUsePortal(b),"one interaction cannot skip two stages");
             }
             WorldMap.SetStage(1);
@@ -376,7 +414,7 @@ namespace Era.Editor
             Check(sim.State.phase == RunPhase.Defeat, "solo death ends run");
             sim = New(); sim.State.stageElapsed = GameData.BossTime-.01f; Step(sim, 0.05f);
             var boss = sim.State.enemies.Find(e => e.kind == EnemyKind.Warden);
-            Check(boss != null && sim.State.bossSpawned, "boss appears after the stage survival timer");
+            Check(boss==null&&!sim.State.bossSpawned,"timer never summons a boss automatically");sim.State.Player(0).position=sim.State.bossStatuePosition;Check(sim.TrySummonBoss(sim.State.Player(0)),"stone statue summons boss on interaction");boss=sim.State.enemies.Find(e=>e.kind==EnemyKind.Warden);
             sim.DamageEnemy(boss, sim.State.Player(0), 999999);
             Check(sim.State.phase == RunPhase.Playing&&sim.State.portal.active, "first boss kill opens the next-realm portal");
         }
