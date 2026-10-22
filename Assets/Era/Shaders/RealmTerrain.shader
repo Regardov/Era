@@ -14,6 +14,7 @@ Shader "Era/Realm Terrain"
             float slope=saturate((.98-i.worldNormal.y)*3.3);
             float road=1-smoothstep(1.1,2.1,abs(p.y-sin(p.x*.026)*8));
             float mottling=.94+sin(p.x*.17+sin(p.y*.21))*.05;
+            meadow=lerp(float3(.80,.80,.80),meadow,.22);stone=lerp(float3(.76,.76,.76),stone,.28);
             float3 ground=_Color.rgb*meadow*mottling;
             ground=lerp(ground,float3(.43,.37,.27)*stone,road*.82);
             o.Albedo=lerp(ground,stone*float3(.46,.48,.45),slope*.8);

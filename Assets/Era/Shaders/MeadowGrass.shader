@@ -1,10 +1,10 @@
 Shader "Era/Meadow Grass"
 {
-    Properties {_Color("Tint",Color)=(1,1,1,1) _MainTex("Painted blade clump",2D)="white"{}}
+    Properties {_Color("Tint",Color)=(1,1,1,1) _MainTex("Painted blade clump",2D)="white"{} _Cutoff("Blade cutout",Range(0,1))=.38}
     SubShader {
         Tags {"Queue"="AlphaTest" "RenderType"="TransparentCutout"} Cull Off
         CGPROGRAM
-        #pragma surface surf Standard vertex:vert addshadow fullforwardshadows
+        #pragma surface surf Standard vertex:vert addshadow fullforwardshadows alphatest:_Cutoff
         #pragma target 3.0
         fixed4 _Color;sampler2D _MainTex;float4 _GrassBend0,_GrassBend1,_GrassBend2;
         struct Input {float4 color:COLOR;float2 uv_MainTex;float3 worldPos;};
@@ -27,9 +27,9 @@ Shader "Era/Meadow Grass"
             float4 blade=tex2D(_MainTex,i.uv_MainTex);clip(blade.a-.38);
             float3 root=i.color.rgb*.53,tip=i.color.rgb*1.19;
             o.Albedo=lerp(root,tip,saturate(i.uv_MainTex.y)) * _Color.rgb*blade.rgb;
-            o.Emission=o.Albedo*.08;o.Metallic=0;o.Smoothness=.06;o.Occlusion=lerp(.55,1,i.uv_MainTex.y);o.Alpha=1;
+            o.Emission=o.Albedo*.08;o.Metallic=0;o.Smoothness=0;o.Occlusion=lerp(.75,1,i.uv_MainTex.y);o.Alpha=blade.a;
         }
         ENDCG
     }
-    Fallback "Diffuse"
+    Fallback "Transparent/Cutout/VertexLit"
 }

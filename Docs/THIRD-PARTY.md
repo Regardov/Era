@@ -14,3 +14,7 @@ The terrain geometry, detail textures, icons, shrine meshes, crystal mesh, weapo
 # v0.10 additions
 
 Storm of the Seven is an original programmatically composed battle score (128 BPM, minor orchestral synth/pulse/percussion), authored in MusicComposer.cs. HumanArtBuilder derives smooth, adult-proportioned meshes from the existing CC0 KayKit models while retaining their UVs, skin weights and clips. Original templates and KayKit licensing remain in the project. The supplied item artwork in Resources/UI/item-atlas.png is preserved; UI and loot use sprite regions from that file. Stone walls, resource graphics cards and trial altar decorations are original code-authored meshes.
+
+# v0.11 additions
+
+FacetedArtBuilder replaces the smoothed hero surfaces with original triangle meshes and per-face colors. The ranger, monk, bearded aura keeper, wolf and jester were authored from the visual references supplied by the project owner; reference images are not redistributed. Existing CC0 KayKit skeletons and animation clips are reused. The original pre-smoothing templates remain in Art/KayKit/HumanTemplates. FacetedRealm.shader and the simplified terrain/rock/canopy shading are original project code. HumanArtBuilder is retained as historical source and is no longer part of project preparation.

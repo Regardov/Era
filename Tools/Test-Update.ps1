@@ -1,9 +1,10 @@
+param([int]$Width=800,[int]$Height=450)
 $ErrorActionPreference = 'Stop'
 $eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $eraFolder = Join-Path $eraProject 'Artifacts'
 $eraReport = Join-Path $eraFolder 'smoke-update.json'
 if (Test-Path -LiteralPath $eraReport) { Remove-Item -LiteralPath $eraReport }
-$eraArguments = @('--smoke-update','-job-worker-count','1','-screen-width','800','-screen-height','450','-screen-fullscreen','0','--capture-folder',"`"$eraFolder`"",'-logFile',"`"$(Join-Path $eraFolder 'update-player.log')`"")
+$eraArguments = @('--smoke-update','-job-worker-count','1','-screen-width',$Width.ToString(),'-screen-height',$Height.ToString(),'-screen-fullscreen','0','--capture-folder',"`"$eraFolder`"",'-logFile',"`"$(Join-Path $eraFolder 'update-player.log')`"")
 $eraProcess = Start-Process -FilePath (Join-Path $eraProject 'Builds\Windows\Era.exe') -ArgumentList $eraArguments -PassThru -WindowStyle Hidden
 try {
     $eraProcess.PriorityClass = 'BelowNormal'

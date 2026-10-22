@@ -111,18 +111,43 @@ namespace Era.Editor
             Check(snapshot.Player(2).currentAura==3&&snapshot.Player(2).auraLevels[0]==3&&snapshot.chests[0].baseCost==sim.State.chests[0].baseCost&&snapshot.chests[0].cost==sim.State.chests[0].cost&&snapshot.openedChests==2,"network snapshot retains aura progress and shared chest prices");
             WorldMap.SetStage(1);
         }
+        static void MeleeWindups()
+        {
+            var sim=New(true);foreach(var p in sim.State.players)p.weapons=new[]{-1,-1};var target=sim.State.Player(0);sim.State.Player(1).position=WorldMap.OnGround(35,0);
+            var attacker=sim.SpawnEnemy(EnemyKind.Wisp);attacker.position=target.position+Vector3.forward*.8f;attacker.attackTimer=0;float health=target.hp;
+            Step(sim,.5f);Check(target.hp==health,"newly arriving enemy cannot immediately damage a player");Step(sim,.2f);
+            Check(attacker.meleeWindup>0&&target.hp==health,"melee attack announces a windup before damage");target.position+=Vector3.right*4;Step(sim,.4f);
+            Check(target.hp==health,"moving out of a melee windup avoids its damage");attacker.position=target.position+Vector3.forward*.8f;attacker.attackTimer=0;Step(sim,.45f);
+            Check(target.hp<health,"remaining inside the announced melee strike takes damage");
+        }
         static void Encounters()
         {
+            MeleeWindups();
             var sim=New(true);foreach(var player in sim.State.players){player.weapons=new[]{-1,-1};player.invulnerability=999;}
-            sim.State.spawnTimer=0;Step(sim,2);int quota=sim.State.waveQuota;
-            Check(sim.State.wave==1&&quota>10&&sim.State.waveSpawned>0&&sim.State.waveSpawned<=quota,"finite wave spawns a bounded quota");
-            sim.State.waveSpawned=quota;foreach(var e in new List<EnemyState>(sim.State.enemies))sim.DamageEnemy(e,sim.State.Player(0),99999);Step(sim,.05f);
-            Check(!sim.State.waveActive&&sim.State.wave==1&&sim.State.nextWave>7.8f,"killing the entire wave starts an eight-second break");
-            Step(sim,7);Check(sim.State.wave==1&&!sim.State.waveActive,"wave cannot advance before its break expires");Step(sim,1.2f);
-            Check(sim.State.wave==2&&sim.State.waveActive,"next wave starts after the break");
+            sim.State.spawnTimer=0;Step(sim,2);
+            Check(sim.State.wave==1&&sim.State.waveSpawned>=6&&sim.State.nextWave>57,"continuous nearby spawning begins at stage start");
+            sim.State.enemies.Clear();int spawned=sim.State.waveSpawned;Step(sim,1.5f);
+            Check(sim.State.waveSpawned>spawned&&sim.State.enemies.Count>0,"clearing all enemies does not pause spawning");
+            sim.State.stageElapsed=59.94f;Step(sim,.033f);Check(sim.State.wave==1,"a minute wave cannot begin early");Step(sim,.1f);
+            Check(sim.State.wave==2&&sim.State.waveActive&&sim.State.waveQuota>0&&sim.State.nextWave>59,"first expired minute adds a horde without requiring kills");
+            float firstInterval=sim.State.spawnTimer;int previousEnemies=sim.State.enemies.Count;sim.State.stageElapsed=119.99f;Step(sim,.05f);
+            Check(sim.State.wave==3&&sim.State.enemies.Count>previousEnemies&&sim.State.spawnTimer<firstInterval,"each minute adds enemies and increases spawn frequency");
+            sim.State.stageElapsed=599.99f;Step(sim,.1f);Check(sim.State.wave==11&&sim.State.stageElapsed==600&&CampaignData.Remaining(sim.State.stageElapsed)==0,"ten minute countdown expires exactly once at zero");
+            int finalWave=sim.State.wave;Step(sim,2);Check(sim.State.wave==finalWave&&sim.State.nextWave==0,"zero timer cannot trigger repeated minute hordes");
+            sim.State.enemies.Clear();sim.State.spawnTimer=0;Step(sim,.1f);Check(sim.State.enemies.Count>0,"nearby spawning continues while players prepare to summon the boss");
             sim.State.stageElapsed=999;Step(sim,.1f);Check(!sim.State.enemies.Exists(e=>e.kind==EnemyKind.Warden),"elapsed time never auto-spawns the boss");
             var p=sim.State.Player(0);Check(!sim.TrySummonBoss(p),"statue requires proximity");p.position=sim.State.bossStatuePosition;
             Check(sim.TrySummonBoss(p)&&sim.State.enemies.FindAll(e=>e.kind==EnemyKind.Warden).Count==1&&!sim.TrySummonBoss(p),"boss statue is a single authoritative summon");
+            var locations=New(true);locations.State.Player(0).position=WorldMap.OnGround(285,0);locations.State.Player(1).position=WorldMap.OnGround(275,8);
+            for(int i=0;i<60;i++)
+            {
+                var enemy=locations.SpawnEnemy();float nearest=float.MaxValue;
+                foreach(var player in locations.State.players)nearest=Mathf.Min(nearest,Vector2.Distance(new Vector2(player.position.x,player.position.z),new Vector2(enemy.position.x,enemy.position.z)));
+                Check(nearest>=CampaignData.SpawnMinDistance-.1f&&nearest<=CampaignData.SpawnMaxDistance+.1f,"resolved spawn stays near party and outside safety radius at map edge "+i);
+                locations.State.enemies.Remove(enemy);
+            }
+            locations.State.spawnTimer=0;foreach(var player in locations.State.players){player.weapons=new[]{-1,-1};player.invulnerability=999;}Step(locations,45);
+            Check(locations.State.enemies.Count<=GameData.MaxEnemies,"continuous spawning respects the performance cap");
             sim=New(true);foreach(var player in sim.State.players){player.weapons=new[]{-1,-1};player.invulnerability=999;}p=sim.State.Player(0);
             Check(sim.State.eliteShrines.Count==4,"each realm has four elite shrines");var shrine=sim.State.eliteShrines[0];p.position=shrine.position;
             Check(sim.TryActivateEliteShrine(p)&&sim.State.enemies.FindAll(e=>e.eliteShrine==shrine.id).Count==5,"one shrine summons exactly five elite guards");
@@ -195,17 +220,20 @@ namespace Era.Editor
             foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"})
             {
                 var model=Resources.Load<GameObject>(character);var skeletal=model.GetComponent<SkeletalActor>();
-                Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=6,"textured skeletal actor has real animation clips: "+character);
-                Check(model.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial.mainTexture!=null,"painted atlas is assigned: "+character);
+                Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=1,"skeletal actor retains real animation clips: "+character);
+                var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
+                bool faceted=character.StartsWith("Characters/")||character.EndsWith("Stalker")||character.EndsWith("Wisp");
+                Check(faceted?skin.sharedMaterial.shader.name=="Era/Faceted Realm"&&skin.sharedMesh.vertexCount<15000&&skin.sharedMesh.vertexCount==skin.sharedMesh.triangles.Length:skin.sharedMaterial.mainTexture!=null,"bounded original faceted mesh or existing painted atlas: "+character);
             }
             for(int stage=1;stage<=7;stage++)
             {
                 var boss=Resources.Load<GameObject>("Bosses/Stage"+stage);
                 Check(boss!=null&&boss.GetComponent<CreatureMotion>().kind==EnemyKind.Warden&&boss.GetComponent<SkeletalActor>()!=null,"distinct animated boss prefab for stage "+stage);
             }
-            var lumenArt=Resources.Load<GameObject>("Characters/Lumen");var cloak=lumenArt.GetComponent<SkeletalActor>().Bone("Mage_Cape").GetComponent<Renderer>();
-            Check(cloak.sharedMaterial.shader.name=="Era/Actor Satin"&&cloak.sharedMaterial.GetFloat("_Lumen")==2,"Lumen's static cape uses the ivory palette as well as the skinned body");
-            Check(lumenArt.transform.Find("Lumen golden halo").localPosition.y>2,"Lumen halo sits above the head rather than inside the hair");
+            var lumenArt=Resources.Load<GameObject>("Characters/Lumen");
+            Check(lumenArt.GetComponentsInChildren<SkinnedMeshRenderer>().Length==1&&lumenArt.GetComponent<HumanRigShape>()!=null,"aura keeper costume is a single animated faceted mesh");
+            Check(lumenArt.GetComponentInChildren<SkinnedMeshRenderer>().name=="Faceted silhouette / Lumen","bearded aura keeper uses the authored reference costume");
+            TextLayouts();
             var environment=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
             Check(environment.bakedVersion==WorldEnvironment.CurrentVersion&&environment.GetComponentsInChildren<Renderer>().Length<800,"terrain, trees and grass use bounded chunk renderer count");
             Check(environment.GetComponentInChildren<LivingGrass>().patches.Length>70,"grass covers the complete realm in reusable patches");
@@ -228,6 +256,27 @@ namespace Era.Editor
                 Check(Quaternion.Angle(left,skeletal.leftThigh.localRotation)>5,"imported running clip actually articulates skeleton joints");
             }
             finally{UnityEngine.Object.DestroyImmediate(animated);}
+        }
+        static void TextLayouts()
+        {
+            var font=Font.CreateDynamicFontFromOSFont("Arial",20);
+            try
+            {
+                font.RequestCharactersInTexture("Пример text",19,FontStyle.Normal);Check(HudTextLayout.Width(font,"Пример text",19,FontStyle.Normal)>40,"text measurements use real Cyrillic and Latin glyph advances");
+                foreach(string value in new[]{"Хранитель аур: на каждом уровне новая аура или улучшение изученной. До пяти типов.","New minute, new horde. Enemies keep arriving while you explore.","192.168.100.250:7777/ОченьДлинноеНазваниеПерсонажа"})
+                {
+                    string previous=null;
+                    foreach(float scale in new[]{.5f,.64f,.8f,1,1.2f})
+                    {
+                        var block=HudTextLayout.Fit(font,value,19,300*scale/scale,90,false);font.RequestCharactersInTexture(value,block.size,FontStyle.Normal);
+                        foreach(var line in block.lines)Check(HudTextLayout.Width(font,line,block.size,FontStyle.Normal)<=300.1f,"wrapped Russian/English text and long tokens fit the panel");
+                        string current=string.Join("\n",block.lines);Check(previous==null||previous==current,"line breaks remain stable across screen scales");previous=current;
+                        Check(block.lines.Length*block.lineHeight<=90.1f,"text block fits available height");
+                    }
+                }
+                Check(HudTextLayout.Fit(font,"Первая строка\n\nТретья строка",16,400,90,false).lines.Length==3,"explicit paragraphs and blank lines are retained");
+            }
+            finally{UnityEngine.Object.DestroyImmediate(font);}
         }
         static void Localization()
         {
@@ -386,7 +435,7 @@ namespace Era.Editor
                 Check(high-low>5&&Mathf.Abs(WorldMap.Height(0,0))<.001f,"stage has traversable relief and a flat arrival clearing: "+stage);
                 sim.State.spawnTimer=1000;var boss=sim.SpawnEnemy(EnemyKind.Warden);
                 Check(boss.bossStage==stage&&boss.maxHp>previousHp,"boss appearance ID and health increase on stage "+stage);previousHp=boss.maxHp;
-                boss.position=WorldMap.OnGround(0,10);boss.specialTimer=0;boss.frozen=0;sim.Step(1f/30,new Dictionary<int,InputFrame>());
+                boss.position=WorldMap.OnGround(0,10);boss.specialTimer=0;boss.frozen=0;boss.spawnGrace=0;sim.Step(1f/30,new Dictionary<int,InputFrame>());
                 Check(sim.State.hazards.Count>0&&sim.State.hazards.TrueForAll(h=>h.delay>0&&h.style==stage),"boss attacks have stage-specific telegraphed hazards: "+stage);
                 var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.stage==stage&&copy.hazards.Count==sim.State.hazards.Count,"stage and boss hazards survive snapshot: "+stage);
                 sim.DamageEnemy(boss,a,999999);

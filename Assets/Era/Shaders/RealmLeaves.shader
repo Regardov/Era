@@ -7,7 +7,7 @@ Shader "Era/Realm Leaves"
         #pragma surface surf Standard vertex:vert addshadow fullforwardshadows
         #pragma target 3.0
         sampler2D _MainTex;
-        struct Input {float4 color:COLOR;float2 uv_MainTex;float3 worldPos;};
+        struct Input {float4 color:COLOR;float2 uv_MainTex;float3 worldPos;float3 worldNormal;INTERNAL_DATA};
         void vert(inout appdata_full v,out Input o){
             UNITY_INITIALIZE_OUTPUT(Input,o);o.color=v.color;
             float3 p=mul(unity_ObjectToWorld,v.vertex).xyz;
@@ -17,7 +17,9 @@ Shader "Era/Realm Leaves"
         }
         void surf(Input i,inout SurfaceOutputStandard o){
             float grain=tex2D(_MainTex,i.worldPos.xz*.65+i.worldPos.yy*.3).r;
-            o.Albedo=i.color.rgb*(.72+grain*.45);o.Emission=i.color.rgb*.045;o.Smoothness=.08;o.Occlusion=.85;o.Alpha=1;
+            float3 face=normalize(cross(ddy(i.worldPos),ddx(i.worldPos))),normal=WorldNormalVector(i,float3(0,0,1));face*=dot(face,normal)<0?-1:1;
+            o.Normal=normalize(float3(dot(face,WorldNormalVector(i,float3(1,0,0))),dot(face,WorldNormalVector(i,float3(0,1,0))),dot(face,normal)));
+            o.Albedo=i.color.rgb*(.87+grain*.14);o.Emission=i.color.rgb*.045;o.Smoothness=0;o.Occlusion=.94;o.Alpha=1;
         }
         ENDCG
     }

@@ -8,6 +8,7 @@ namespace Era
     {
         public Transform[] bones;
         public Vector3[] originalLocalPositions;
+        public bool extendForearms;
         Vector3[] targets;
         public static Vector3 Shape(Vector3 point,bool head=false,bool halo=false)
         {
@@ -16,6 +17,17 @@ namespace Era
         }
         public static bool HeadBone(Transform bone)
         {for(var t=bone;t!=null;t=t.parent)if(t.name=="head")return true;return false;}
+        public static Vector3 BonePosition(Transform root,Transform bone,bool extend)
+        {
+            var point=Shape(root.InverseTransformPoint(bone.position),HeadBone(bone));
+            if(extend)for(var t=bone;t!=null&&t!=root;t=t.parent)
+            {
+                if(t.name!="hand.l"&&t.name!="hand.r")continue;
+                var wrist=Shape(root.InverseTransformPoint(t.position));var elbow=Shape(root.InverseTransformPoint(t.parent.position));
+                point+=(wrist-elbow).normalized*.17f;break;
+            }
+            return point;
+        }
         void Update()
         {
             if(bones==null||GameApp.Instance?.WorldPaused==true)return;
@@ -25,7 +37,7 @@ namespace Era
         {
             if(bones==null||GameApp.Instance?.WorldPaused==true)return;
             targets??=new Vector3[bones.Length];
-            for(int i=0;i<bones.Length;i++)targets[i]=Shape(transform.InverseTransformPoint(bones[i].position),HeadBone(bones[i]));
+            for(int i=0;i<bones.Length;i++)targets[i]=BonePosition(transform,bones[i],extendForearms);
             for(int i=0;i<bones.Length;i++)bones[i].position=transform.TransformPoint(targets[i]);
         }
     }
