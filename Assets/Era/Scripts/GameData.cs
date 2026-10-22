@@ -80,7 +80,7 @@ namespace Era
         public int id, hitSerial, bossStage, attackCycle, wave, eliteShrine=-1;
         public EnemyKind kind;
         public Vector3 position;
-        public float hp, maxHp, speed, damage, attackTimer, frozen, windup, specialTimer;
+        public float hp, maxHp, speed, damage, attackTimer, frozen, windup, specialTimer, spawnGrace, meleeWindup;
         public Vector3 attackPosition;
     }
 
@@ -187,13 +187,14 @@ namespace Era
     {
         public RunPhase phase;
         public int seed = 7341, wave = 1, level = 1, xp, xpRequired = 12, kills, nextId = 10;
-        public float elapsed, stageElapsed, spawnTimer, nextWave = 30;
+        public float elapsed, stageElapsed, spawnTimer, nextWave = 60;
+        public int spawnCursor;
         public int stage = 1, stageSerial;
         public PortalState portal = new PortalState();
         public bool bossSpawned;
         public Vector3 bossStatuePosition;
         public int waveQuota,waveSpawned;
-        public bool waveActive=true;
+        public bool waveActive;
         public int coins = 30, earnedCoins, openedChests;
         public float readyCountdown = -1, noticeTime;
         public string notice = "";
@@ -256,7 +257,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 9;
+        public const int Protocol = 10;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=60,ResourceNodeCount=72;

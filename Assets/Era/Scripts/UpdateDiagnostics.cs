@@ -14,7 +14,7 @@ namespace Era
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--capture-folder");folder=at>=0?args[at+1]:Path.GetFullPath(Path.Combine(Application.dataPath,"..","Artifacts"));Directory.CreateDirectory(folder);
             start=Time.realtimeSinceStartup;I18n.Language=GameLanguage.Russian;App.SelectedHero=Hero.Lumen;App.BeginSelection(SessionMode.Solo);
         }
-        void Shot(string name)=>App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,name));
+        void Shot(string name)=>App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,name.Replace("v010","v011")));
         void SelectEcho()=>App.SelectedHero=Hero.Echo;
         void SelectEmber()=>App.SelectedHero=Hero.Ember;
         void Update()
@@ -36,11 +36,11 @@ namespace Era
             }
             else if(phase==5&&age>10.5f)
             {
-                report.waves=App.State.waveSpawned>0&&App.State.waveQuota>App.State.waveSpawned&&!App.State.bossSpawned;
+                report.waves=App.State.waveSpawned>0&&App.State.wave==1&&CampaignData.Remaining(App.State.stageElapsed)>590&&!App.State.bossSpawned;
                 report.music=SynthAudio.Instance.BattlePlaying;report.humans=true;foreach(var hero in FindObjectsByType<HeroMotion>(FindObjectsSortMode.None))if(hero.skeletal!=null)report.humans&=hero.GetComponent<HumanRigShape>()!=null;
-                Shot("waves-and-gpus-v010.png");App.State.spawnTimer=1000;App.State.enemies.Clear();phase++;
+                Shot("waves-and-gpus-v010.png");App.State.stageElapsed=59.9f;App.State.enemies.Clear();phase++;
             }
-            else if(phase==6&&age>12){App.LocalPlayer.position=App.State.resourceNodes[0].position;App.LocalInput.interact=true;phase++;}
+            else if(phase==6&&age>12){report.waves&=App.State.wave==2&&App.State.waveSpawned>0;Shot("minute-horde-v011.png");App.State.spawnTimer=1000;App.State.enemies.Clear();App.LocalPlayer.position=App.State.resourceNodes[0].position;App.LocalInput.interact=true;phase++;}
             else if(phase==7&&age>13){report.resources=App.State.resourceNodes[0].broken;App.LocalPlayer.position=App.State.resourceNodes[1].position;App.LocalInput.interact=true;phase++;}
             else if(phase==8&&age>14.5f){report.resources&=App.State.resourceNodes[1].broken;Shot("gpu-drops-v010.png");App.LocalPlayer.position=App.State.eliteShrines[0].position-Vector3.forward*3;App.LocalInput.interact=true;phase++;}
             else if(phase==9&&age>16)

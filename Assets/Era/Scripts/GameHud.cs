@@ -14,7 +14,7 @@ namespace Era
         void Init()
         {
             font=Font.CreateDynamicFontFromOSFont(new[]{"Trebuchet MS","Segoe UI","Arial"},20);
-            label=new GUIStyle{font=font,wordWrap=true,padding=new RectOffset(0,0,0,0)};bold=new GUIStyle(label){fontStyle=FontStyle.Bold};
+            label=new GUIStyle{font=font,wordWrap=false,padding=new RectOffset(0,0,0,0),clipping=TextClipping.Clip};bold=new GUIStyle(label){fontStyle=FontStyle.Bold};
             field=new GUIStyle{font=font,fontSize=20,padding=new RectOffset(14,14,10,10)};field.normal.textColor=Ink;field.focused.textColor=Ink;
             disc=new Texture2D(64,64,TextureFormat.RGBA32,false);var pixels=new Color[4096];
             for(int y=0;y<64;y++)for(int x=0;x<64;x++){float d=Vector2.Distance(new Vector2(x,y),new Vector2(31.5f,31.5f));pixels[y*64+x]=new Color(1,1,1,Mathf.Clamp01(31.5f-d));}disc.SetPixels(pixels);disc.Apply();
@@ -59,7 +59,18 @@ namespace Era
             Flat(x,y,w,h,border);Flat(x+2,y+2,w-4,h-4,c);
         }
         void Text(string value,float x,float y,float w,float h,int size=20,Color? c=null,bool heavy=false,TextAnchor align=TextAnchor.UpperLeft)
-        {value=I18n.T(value);if(capturing){capture.Text(value,new Rect(x,y,w,h),size,c??Ink,heavy,align);return;}var style=heavy?bold:label;style.fontSize=size;style.normal.textColor=c??Ink;style.alignment=align;GUI.Label(new Rect(x,y,w,h),value,style);}
+        {
+            value=I18n.T(value);var rect=new Rect(x,y,w,h);
+            if(capturing){capture.Text(value,rect,size,c??Ink,heavy,align);return;}
+            var block=HudTextLayout.Fit(font,value,size,w,h,heavy);var style=heavy?bold:label;style.fontSize=block.size;style.normal.textColor=c??Ink;
+            bool center=align==TextAnchor.UpperCenter||align==TextAnchor.MiddleCenter||align==TextAnchor.LowerCenter;
+            bool right=align==TextAnchor.UpperRight||align==TextAnchor.MiddleRight||align==TextAnchor.LowerRight;
+            style.alignment=center?TextAnchor.UpperCenter:right?TextAnchor.UpperRight:TextAnchor.UpperLeft;
+            float top=HudTextLayout.Top(rect,block,align);
+            GUI.BeginGroup(rect);
+            for(int i=0;i<block.lines.Length;i++)GUI.Label(new Rect(0,top-y+i*block.lineHeight,w,block.lineHeight),block.lines[i],style);
+            GUI.EndGroup();
+        }
         void Icon(string name,float x,float y,float size)
         {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
         void ItemIcon(int item,float x,float y,float size)
@@ -190,10 +201,10 @@ namespace Era
             Text(I18n.P("2 weapon slots · second at Lv.25","2 слота оружия · второй на ур.25"),40,85,260,21,11,Muted);
             Box(672,18,256,70,Panel,14);Text(I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,682,23,236,32,25,Ink,true,TextAnchor.UpperCenter);
             Text(s.xp+" / "+s.xpRequired+" XP",684,57,232,20,11,Muted,false,TextAnchor.UpperCenter);Bar(690,79,220,4,s.xp/(float)s.xpRequired,Blue);
-            Text(Clock(s.stageElapsed),750,146,100,24,16,Ink,true,TextAnchor.UpperCenter);
+            Text(Clock(Mathf.Ceil(CampaignData.Remaining(s.stageElapsed))),724,146,152,28,21,CampaignData.Remaining(s.stageElapsed)<60?Red:Ink,true,TextAnchor.UpperCenter);
             Box(1394,24,182,48,Panel,14);Icon("gold",1405,35,24);Text(s.coins.ToString(),1432,34,52,28,18,Ink,true);Icon("skull",1491,35,24);Text(s.kills.ToString(),1520,34,48,28,18,Ink,true);
-            Box(1000,24,370,48,Panel);int waveAlive=s.enemies.FindAll(e=>e.wave>0).Count;
-            Text(s.portal.active||s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.bossSpawned?I18n.P("BOSS SUMMONED","БОСС ПРИЗВАН"):s.waveActive?I18n.P("WAVE ","ВОЛНА ")+s.wave+" · "+I18n.P("remaining ","осталось ")+(Mathf.Max(0,s.waveQuota-s.waveSpawned)+waveAlive):I18n.P("NEXT WAVE IN ","СЛЕДУЮЩАЯ ВОЛНА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
+            Box(1000,24,370,48,Panel);
+            Text(s.portal.active||s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.waveActive?I18n.P("HORDE ","ОРДА ")+(s.wave-1)+" · "+I18n.P("INCOMING ","ПРИБЫВАЕТ ")+s.waveQuota:s.nextWave>0?I18n.P("NEXT HORDE IN ","СЛЕДУЮЩАЯ ОРДА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"):I18n.P("TEN MINUTES SURVIVED","ДЕСЯТЬ МИНУТ ПРОЙДЕНЫ"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
             Box(1178,86,398,57,Panel);Text(I18n.P("REALM ","ЭТАП ")+s.stage+" / 7",1193,94,367,18,11,CampaignData.Color(s.stage),true);Text(CampaignData.Name(s.stage),1193,116,367,24,17,Ink,true);
             if(App.Online)
             {

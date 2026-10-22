@@ -70,7 +70,7 @@ namespace Era
             if(UpgradePaused)return;
             RefreshAuras();
             State.elapsed += dt;
-            if(!State.portal.active)State.stageElapsed+=dt;
+            if(!State.portal.active)State.stageElapsed=Mathf.Min(CampaignData.StageDuration,State.stageElapsed+dt);
             State.noticeTime=Mathf.Max(0,State.noticeTime-dt);
             foreach (var p in State.players)
             {
@@ -247,19 +247,26 @@ namespace Era
         {
             var kind = forced ?? (State.wave >= 3 && random.NextDouble() < 0.22 ? EnemyKind.Brute :
                 State.wave >= 2 && random.NextDouble() < 0.35 ? EnemyKind.Stalker : EnemyKind.Wisp);
-            float angle = (float)random.NextDouble() * Mathf.PI * 2;
             var alive = State.players.FindAll(p => !p.downed && !p.eliminated);
-            Vector3 origin = alive.Count > 0 ? alive[random.Next(alive.Count)].position : Vector3.zero;
-            Vector3 pos = origin + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * 21;
-            var flat = Vector2.ClampMagnitude(new Vector2(pos.x, pos.z), GameData.ArenaRadius - 1);
-            pos = WorldMap.Resolve(WorldMap.OnGround(flat.x,flat.y),Vector3.zero,0.6f);pos.y=WorldMap.Ground(pos);
+            Vector3 origin = alive.Count > 0 ? alive[State.spawnCursor++ % alive.Count].position : Vector3.zero;
+            Vector3 pos=origin;float best=-1;
+            // Resolve against terrain and walls first, then check every living player.
+            for(int attempt=0;attempt<48;attempt++)
+            {
+                float angle=(float)random.NextDouble()*Mathf.PI*2;
+                float radius=Mathf.Lerp(CampaignData.SpawnMinDistance,CampaignData.SpawnMaxDistance,(float)random.NextDouble());
+                var candidate=WorldMap.Resolve(origin,new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*radius,.7f);candidate.y=WorldMap.Ground(candidate);
+                float nearest=float.MaxValue;foreach(var player in alive){var delta=player.position-candidate;delta.y=0;nearest=Mathf.Min(nearest,delta.magnitude);}
+                if(nearest>best){best=nearest;pos=candidate;}
+                if(nearest>=CampaignData.SpawnMinDistance)break;
+            }
             float scaling = (1 + (State.wave - 1) * 0.14f)*CampaignData.EnemyScale(State.stage);
             float hp = (kind == EnemyKind.Warden ? 2200 : kind == EnemyKind.Brute ? 110 : kind == EnemyKind.Stalker ? 32 : 44) * scaling;
             hp *= 1+.5f*(State.players.Count-1);
             if(kind==EnemyKind.Warden)hp=1700*CampaignData.BossHpScale(State.stage)*(1+.5f*(State.players.Count-1));
             var e = new EnemyState { id = State.nextId++, kind = kind, position = pos, hp = hp, maxHp = hp,
                 speed = kind == EnemyKind.Warden ? 1.9f : kind == EnemyKind.Brute ? 1.55f : kind == EnemyKind.Stalker ? 4.1f : 2.65f,
-                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute ? 20 : 10)*(1+.18f*(State.stage-1)), specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
+                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute ? 20 : 10)*(1+.18f*(State.stage-1)), spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
             State.enemies.Add(e);
             return e;
         }
@@ -268,13 +275,14 @@ namespace Era
             foreach (var e in new List<EnemyState>(State.enemies))
             {
                 if(!State.enemies.Contains(e))continue;
+                if(e.spawnGrace>0){e.spawnGrace=Mathf.Max(0,e.spawnGrace-dt);continue;}
                 e.attackTimer -= dt;
                 if (e.frozen > 0) { e.frozen -= dt; continue; }
                 PlayerState nearest = null; float distance = float.MaxValue;
                 foreach (var p in State.players)
                 {
                     if (p.downed || p.eliminated) continue;
-                    float d = (p.position - e.position).sqrMagnitude;
+                    var offset=p.position-e.position;offset.y=0;float d=offset.sqrMagnitude;
                     if (d < distance) { distance = d; nearest = p; }
                 }
                 if (nearest == null) continue;
@@ -285,6 +293,16 @@ namespace Era
                     { BossAttack(e,nearest); }
                 }
                 float reach = e.kind == EnemyKind.Warden ? 2.3f : 1.05f;
+                if(e.meleeWindup>0)
+                {
+                    e.meleeWindup=Mathf.Max(0,e.meleeWindup-dt);
+                    if(e.meleeWindup<=0)
+                    {
+                        var aim=nearest.position-e.attackPosition;aim.y=0;
+                        if(aim.sqrMagnitude<(reach+.45f)*(reach+.45f)&&nearest.position.y-WorldMap.Ground(nearest.position)<1.25f)DamagePlayer(nearest,e.damage,e.position);
+                    }
+                    continue;
+                }
                 if (distance > reach * reach && e.windup <= 0)
                 {
                     Vector3 dir = nearest.position - e.position; dir.y = 0;
@@ -293,16 +311,17 @@ namespace Era
                         next=WorldMap.Resolve(e.position,Quaternion.Euler(0,e.id%2==0?80:-80,0)*dir.normalized*e.speed*dt,0.4f);
                     e.position=next;
                     // Cheap local separation prevents the entire horde collapsing into one point.
-                    int index = State.enemies.IndexOf(e);
-                    for (int j = Math.Max(0, index - 6); j < index; j++)
+                    Vector3 separation=Vector3.zero;
+                    foreach(var other in State.enemies)
                     {
-                        var delta = e.position - State.enemies[j].position;
-                        if (delta.sqrMagnitude < 0.65f && delta.sqrMagnitude > 0.001f) e.position += delta.normalized * dt * 1.6f;
+                        if(other==e)continue;var delta=e.position-other.position;delta.y=0;float d=delta.sqrMagnitude;
+                        if(d<1.1f&&d>.001f)separation+=delta.normalized*(1-Mathf.Sqrt(d)/1.05f);
                     }
+                    e.position=WorldMap.Resolve(e.position,Vector3.ClampMagnitude(separation,1)*dt*2,.4f);
                     e.position=WorldMap.Resolve(e.position,Vector3.zero,0.4f);e.position.y=WorldMap.Ground(e.position);
                 }
                 if (distance < reach * reach && nearest.position.y-WorldMap.Ground(nearest.position) < 1.25f && e.attackTimer <= 0)
-                { e.attackTimer = 1; DamagePlayer(nearest, e.damage,e.position); }
+                { e.attackTimer = e.kind==EnemyKind.Brute?1.6f:1.15f;e.meleeWindup=e.kind==EnemyKind.Brute?.42f:.28f;e.attackPosition=nearest.position; }
             }
         }
         void TickProjectiles(float dt)

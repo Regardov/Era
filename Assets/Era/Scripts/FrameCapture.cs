@@ -33,23 +33,12 @@ namespace Era
             if (string.IsNullOrEmpty(value)) return;
             var style = bold ? FontStyle.Bold : FontStyle.Normal;
             font.RequestCharactersInTexture(value, size, style);
-            var lines = new List<string>();
-            foreach (var paragraph in value.Split('\n'))
-            {
-                string line = "";
-                foreach (var word in paragraph.Split(' '))
-                {
-                    string next = line.Length == 0 ? word : line + " " + word;
-                    if (line.Length > 0 && Width(next, size, style) > rect.width) { lines.Add(line); line = word; }
-                    else line = next;
-                }
-                lines.Add(line);
-            }
-            float height = size * 1.3f;
-            bool middle = align == TextAnchor.MiddleCenter || align == TextAnchor.MiddleLeft || align == TextAnchor.MiddleRight;
+            var block=HudTextLayout.Fit(font,value,size,rect.width,rect.height,bold);size=block.size;
+            font.RequestCharactersInTexture(value,size,style);
+            var lines=block.lines;float height=block.lineHeight;
             bool center = align == TextAnchor.UpperCenter || align == TextAnchor.MiddleCenter || align == TextAnchor.LowerCenter;
             bool right = align == TextAnchor.UpperRight || align == TextAnchor.MiddleRight || align == TextAnchor.LowerRight;
-            float baseline = rect.y + size + (middle ? Mathf.Max(0, (rect.height - height * lines.Count) / 2) : 0);
+            float baseline=HudTextLayout.Top(rect,block,align)+size;
             foreach (var line in lines)
             {
                 float width = Width(line, size, style);

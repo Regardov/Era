@@ -5,6 +5,9 @@ namespace Era
     public static class CampaignData
     {
         public const int StageCount=7;
+        public const float StageDuration=600;
+        public const float SpawnMinDistance=12, SpawnMaxDistance=19;
+        public static float Remaining(float elapsed)=>Mathf.Max(0,StageDuration-elapsed);
         static readonly string[] NamesEn={"Mistveil Meadows","Amberwood","Azure Highlands","Cinder Crags","Twilight Mire","Stormpass Citadel","Heart of the Rift"};
         static readonly string[] NamesRu={"Туманные луга","Янтарный лес","Лазурные нагорья","Пепельные скалы","Сумеречная топь","Грозовой перевал","Сердце разлома"};
         static readonly string[] BossesEn={"Grove Warden","Antlered Executioner","Glacial Oracle","Forge Colossus","Mire Matriarch","Storm Paladin","Rift Sovereign"};

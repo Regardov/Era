@@ -112,7 +112,9 @@ namespace Era
                 if(e.hitSerial!=actor.hitSerial){actor.creature.hit=1;actor.hitFlash=.18f;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
                 if(!app.WorldPaused)actor.hitFlash=Mathf.Max(0,actor.hitFlash-Time.unscaledDeltaTime);
                 for(int r=0;r<actor.renderers.Length;r++){hitBlock.Clear();hitBlock.SetColor("_Color",Color.Lerp(actor.colors[r],Color.white,Mathf.Clamp01(actor.hitFlash/.18f)*.85f));actor.renderers[r].SetPropertyBlock(hitBlock);}
-                if(!app.WorldPaused){if(actor.creature.skeletal!=null)actor.creature.skeletal.Enemy(direction.magnitude>.005f?e.speed:0,e.frozen>0,e.windup,e.attackTimer);else actor.creature.Pose(state.elapsed,e.frozen>0,e.windup);}
+                if(actor.telegraph==null&&e.spawnGrace>0){actor.telegraph=v.Ring("Enemy arrival warning",dynamicRoot,.75f,new Color(.91f,.32f,.15f),.045f).transform;actor.telegraph.position=e.position+Vector3.up*.06f;}
+                if(actor.telegraph!=null&&e.spawnGrace<=0){Destroy(actor.telegraph.gameObject);actor.telegraph=null;}
+                if(!app.WorldPaused){if(actor.creature.skeletal!=null)actor.creature.skeletal.Enemy(direction.magnitude>.005f?e.speed:0,e.frozen>0||e.spawnGrace>0,Mathf.Max(e.windup,e.meleeWindup),e.attackTimer);else actor.creature.Pose(state.elapsed,e.frozen>0||e.spawnGrace>0,Mathf.Max(e.windup,e.meleeWindup));}
             }
             var dead=new List<int>();foreach(var pair in actors)if(!seen.Contains(pair.Key))dead.Add(pair.Key);
             foreach(int id in dead)
