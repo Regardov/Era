@@ -32,6 +32,7 @@ namespace Era
         public bool CapturingMouse=>InRun && State.phase==RunPhase.Playing && !Paused && !Inventory && !(UpgradeSelection&&!Online) && !Input.GetKey(KeyCode.LeftAlt);
         CoopTransport transport;
         readonly Dictionary<int,InputFrame> inputs=new Dictionary<int,InputFrame>();
+        readonly Dictionary<int,int> peerPlayers=new Dictionary<int,int>();
         InputFrame local=new InputFrame();
         float accumulator,networkTimer,lastSnapshot;
 
@@ -42,12 +43,13 @@ namespace Era
             Instance=this;Time.timeScale=1;I18n.Load();
             var args=Environment.GetCommandLineArgs();
             Automated=Array.Exists(args,a=>a.StartsWith("--smoke-") || a.StartsWith("--capture-"));
-            Application.targetFrameRate=90;Application.runInBackground=true;
+            Application.targetFrameRate=Automated?20:60;Application.runInBackground=true;
             QualitySettings.vSyncCount=1;QualitySettings.antiAliasing=4;QualitySettings.shadowDistance=110;QualitySettings.shadows=ShadowQuality.All;
             QualitySettings.shadowResolution=ShadowResolution.VeryHigh;QualitySettings.shadowCascades=4;QualitySettings.anisotropicFiltering=AnisotropicFiltering.Enable;
+            if(Automated){QualitySettings.vSyncCount=0;QualitySettings.antiAliasing=0;QualitySettings.shadowDistance=35;QualitySettings.shadowResolution=ShadowResolution.Low;QualitySettings.shadowCascades=0;}
             PlayerName=PlayerPrefs.GetString("era.name","Wanderer");if(PlayerName=="Странник")PlayerName="Wanderer";
             Address=PlayerPrefs.GetString("era.address","127.0.0.1");
-            SelectedHero=(Hero)Mathf.Clamp(PlayerPrefs.GetInt("era.hero",0),0,1);
+            SelectedHero=(Hero)Mathf.Clamp(PlayerPrefs.GetInt("era.hero",0),0,2);
             SelectedRelic=(Relic)Mathf.Clamp(PlayerPrefs.GetInt("era.relic",0),0,2);
             MouseSensitivity=PlayerPrefs.GetFloat("era.sensitivity",2.2f);Volume=PlayerPrefs.GetFloat("era.volume",0.5f);MusicVolume=PlayerPrefs.GetFloat("era.music",0.30f);
             HostAddresses=CoopTransport.LocalAddresses();
@@ -56,7 +58,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
-            if(Automated){if(Array.IndexOf(args,"--smoke-art")>=0)gameObject.AddComponent<ArtDiagnostics>();else if(Array.IndexOf(args,"--smoke-solo")>=0)gameObject.AddComponent<SoloDiagnostics>();else gameObject.AddComponent<RuntimeDiagnostics>();return;}
+            if(Automated){if(Array.IndexOf(args,"--smoke-chests")>=0)gameObject.AddComponent<ChestDiagnostics>();else if(Array.IndexOf(args,"--smoke-campaign")>=0)gameObject.AddComponent<CampaignDiagnostics>();else if(Array.IndexOf(args,"--smoke-art")>=0)gameObject.AddComponent<ArtDiagnostics>();else if(Array.IndexOf(args,"--smoke-solo")>=0)gameObject.AddComponent<SoloDiagnostics>();else gameObject.AddComponent<RuntimeDiagnostics>();return;}
             if(Array.IndexOf(args,"--solo")>=0)Solo();
             else if(Array.IndexOf(args,"--host")>=0)Host();
             else if(Array.IndexOf(args,"--join")>=0)Join();
@@ -94,7 +96,7 @@ namespace Era
         {
             ResetSession();
             if(string.IsNullOrWhiteSpace(Address)){Status="Enter the host computer's IP address.";Page=MenuPage.JoinLobby;return;}
-            transport=new CoopTransport();Online=true;Connecting=true;LocalId=1;
+            transport=new CoopTransport();Online=true;Connecting=true;LocalId=-1;
             Status="Finding your companion...";lastSnapshot=Time.realtimeSinceStartup;transport.Join(Address.Trim(),GameData.Port);SavePreferences();
         }
         public void ToggleReady()
@@ -109,7 +111,7 @@ namespace Era
         void ResetSession()
         {
             transport?.Dispose();transport=null;State=null;Simulation=null;Online=Connecting=IsHost=Paused=Inventory=false;
-            inputs.Clear();local=new InputFrame();accumulator=networkTimer=0;View?.ClearActors();Time.timeScale=1;
+            inputs.Clear();peerPlayers.Clear();local=new InputFrame();accumulator=networkTimer=0;View?.ClearActors();Time.timeScale=1;
             Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
         }
         void Update()
@@ -140,7 +142,7 @@ namespace Era
         void ReadInput(bool running)
         {
             if(running&&UpgradeSelection&&!Paused&&!Inventory)
-            {if(Input.GetKeyDown(KeyCode.Alpha1))Choose(0);if(Input.GetKeyDown(KeyCode.Alpha2))Choose(1);if(Input.GetKeyDown(KeyCode.Alpha3))Choose(2);}
+            {for(int i=0;i<LocalPlayer.offers.Length&&i<8;i++)if(Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i)))Choose(i);}
             if(!running || Paused || Inventory || (UpgradeSelection&&!Online))
             {int choice=local.choice;local.x=local.z=0;local.crouch=local.jumpHeld=false;local.revive=running&&UpgradeSelection&&!Paused&&!Inventory&&Input.GetKey(KeyCode.F);local.ConsumeEdges();if(running&&!Paused&&!Inventory)local.choice=choice;return;}
             var raw=new Vector3(Input.GetKey(KeyCode.D)?1:Input.GetKey(KeyCode.A)?-1:0,0,Input.GetKey(KeyCode.W)?1:Input.GetKey(KeyCode.S)?-1:0);
@@ -151,6 +153,7 @@ namespace Era
             if(Input.GetKeyDown(KeyCode.Alpha1))Choose(0);if(Input.GetKeyDown(KeyCode.Alpha2))Choose(1);if(Input.GetKeyDown(KeyCode.Alpha3))Choose(2);
         }
         void Send(string kind,string payload="",bool snapshot=false)=>transport?.Send(JsonUtility.ToJson(new WireMessage{kind=kind,payload=payload}),snapshot);
+        void SendTo(int peer,string kind,string payload="",int playerId=-1)=>transport?.SendTo(peer,JsonUtility.ToJson(new WireMessage{kind=kind,payload=payload,playerId=playerId}));
         void SendLoadout(string kind)=>transport?.Send(JsonUtility.ToJson(new WireMessage{kind=kind,name=PlayerName,hero=SelectedHero,relic=SelectedRelic}));
         void PumpNetwork()
         {
@@ -160,37 +163,50 @@ namespace Era
                 if(evt.kind=="connected"){if(!IsHost)SendLoadout("hello");continue;}
                 if(evt.kind=="disconnected" || evt.kind=="error")
                 {
-                    if(IsHost && State!=null){State.players.RemoveAll(p=>p.id==1);inputs.Remove(1);Simulation.ResetReadiness();Status=InRun?"Your companion disconnected. You can finish this run alone.":"Waiting for another companion.";}
+                    if(IsHost && State!=null)
+                    {
+                        if(peerPlayers.TryGetValue(evt.peer,out int departed)){State.players.RemoveAll(p=>p.id==departed);inputs.Remove(departed);peerPlayers.Remove(evt.peer);Simulation.ResetReadiness();Simulation.RefreshAuras();}
+                        Status=I18n.P("A companion disconnected. The remaining party can continue.","Напарник отключился. Остальные могут продолжить.");
+                    }
                     else FailConnection(evt.text);continue;
                 }
                 try
                 {
                     var message=JsonUtility.FromJson<WireMessage>(evt.text);
                     if(message==null || message.version!=GameData.Protocol)
-                    {if(IsHost){Send("reject","Game versions do not match.");}else FailConnection("Game versions do not match.");continue;}
+                    {if(IsHost){SendTo(evt.peer,"reject","Game versions do not match.");}else FailConnection("Game versions do not match.");continue;}
+                    int sender=peerPlayers.TryGetValue(evt.peer,out int assigned)?assigned:-1;
                     switch(message.kind)
                     {
                         case "hello" when IsHost:
-                            if(State.phase!=RunPhase.Lobby){Send("reject","The run has already begun. Join the next lobby.");break;}
-                            if(State.Player(1)==null)Simulation.AddPlayer(1,message.name,message.hero==Hero.Echo?Hero.Echo:Hero.Ember,(Relic)Mathf.Clamp((int)message.relic,0,2));
-                            Status="Both companions must press Ready.";break;
-                        case "ready" when IsHost:Simulation.SetReady(1,message.ready);break;
-                        case "loadout" when IsHost:Simulation.SetLoadout(1,message.hero,message.relic,message.name);break;
+                            if(State.phase!=RunPhase.Lobby){SendTo(evt.peer,"reject","The run has already begun. Join the next lobby.");break;}
+                            if(sender<0)
+                            {
+                                for(int id=1;id<GameData.MaxPlayers;id++)if(State.Player(id)==null)
+                                {Simulation.AddPlayer(id,message.name,(Hero)Mathf.Clamp((int)message.hero,0,2),(Relic)Mathf.Clamp((int)message.relic,0,2));sender=id;peerPlayers[evt.peer]=id;break;}
+                            }
+                            if(sender<0){SendTo(evt.peer,"reject",I18n.P("The lobby is full (3 players).","Лобби заполнено (3 игрока)."));break;}
+                            SendTo(evt.peer,"welcome","",sender);Status=I18n.P("Every connected player must press Ready.","Все подключённые игроки должны нажать «Готов».");break;
+                        case "welcome" when !IsHost:LocalId=message.playerId;break;
+                        case "ready" when IsHost:if(sender>=0)Simulation.SetReady(sender,message.ready);break;
+                        case "loadout" when IsHost:if(sender>=0)Simulation.SetLoadout(sender,message.hero,message.relic,message.name);break;
                         case "input" when IsHost:
-                            if(State.Player(1)==null)break;var next=JsonUtility.FromJson<InputFrame>(message.payload);if(next==null)break;
-                            if(inputs.TryGetValue(1,out var old))
+                            if(sender<0||State.Player(sender)==null)break;var next=JsonUtility.FromJson<InputFrame>(message.payload);if(next==null)break;
+                            if(inputs.TryGetValue(sender,out var old))
                             {next.jump|=old.jump;next.dash|=old.dash;next.primary|=old.primary;next.secondary|=old.secondary;next.relic|=old.relic;next.interact|=old.interact;if(next.choice<0)next.choice=old.choice;}
-                            inputs[1]=next;break;
+                            inputs[sender]=next;break;
                         case "world" when !IsHost:
                             State=JsonUtility.FromJson<WorldState>(message.payload);
-                            if(State?.Player(1)!=null){Connecting=false;Status=State.phase==RunPhase.Lobby?"Both companions must press Ready.":"";}
+                            if(State!=null)WorldMap.SetStage(State.stage);
+                            if(State?.Player(LocalId)!=null){Connecting=false;Status=State.phase==RunPhase.Lobby?I18n.P("Every connected player must press Ready.","Все подключённые игроки должны нажать «Готов»."):"";}
                             lastSnapshot=Time.realtimeSinceStartup;break;
                         case "reject" when !IsHost:FailConnection(message.payload);break;
                     }
                 }
-                catch(Exception e)when(e is ArgumentException || e is NullReferenceException){FailConnection("Invalid game data. Use the same game version on both computers.");}
+                catch(Exception e)when(e is ArgumentException || e is NullReferenceException)
+                {if(IsHost){transport?.DropPeer(evt.peer);if(peerPlayers.TryGetValue(evt.peer,out int id)){State.players.RemoveAll(p=>p.id==id);inputs.Remove(id);peerPlayers.Remove(evt.peer);Simulation.ResetReadiness();Simulation.RefreshAuras();}}else FailConnection("Invalid game data. Use the same game version on both computers.");}
             }
-            if(State?.phase==RunPhase.Playing && Status=="Both companions must press Ready.")Status="";
+            if(State?.phase==RunPhase.Playing && State.players.Count>=2)Status="";
         }
         void FailConnection(string reason){ResetSession();Status=reason;Page=MenuPage.JoinLobby;}
         public void SavePreferences()

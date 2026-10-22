@@ -12,16 +12,20 @@ namespace Era
         readonly Dictionary<int,GameObject> bullets=new Dictionary<int,GameObject>(),drops=new Dictionary<int,GameObject>(),effects=new Dictionary<int,GameObject>(),loot=new Dictionary<int,GameObject>();
         readonly Dictionary<int,ChestVisual> chests=new Dictionary<int,ChestVisual>();
         readonly Dictionary<int,ShrineVisual> shrines=new Dictionary<int,ShrineVisual>();
+        readonly Dictionary<int,GameObject> auraRings=new Dictionary<int,GameObject>();
+        readonly Dictionary<int,GameObject> hazardRings=new Dictionary<int,GameObject>();
+        WorldEnvironment environment;GameObject portalVisual;int presentedStage=-1,presentedSerial=-1;
+        readonly MaterialPropertyBlock hitBlock=new MaterialPropertyBlock();
         readonly HashSet<int> seen=new HashSet<int>();
         Transform dynamicRoot,previewRoot;
         float shake,footstep;
         int lastCoins,lastLevel=1;
-        class Actor {public GameObject root,weapon;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph;public float hp=-1;public int jump,land,cast,weaponKind=-1,weaponSerial;public Hero kind;}
+        class Actor {public GameObject root,weapon;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph;public float hp=-1,hitFlash;public int jump,land,cast,weaponKind=-1,weaponSerial,hitSerial;public Hero kind;public Renderer[] renderers;public Color[] colors;}
         class ChestVisual {public GameObject root;public Transform lid;public float openness;public bool announced;}
         void Awake()
         {
             if(FindAnyObjectByType<WorldEnvironment>()==null)new GameObject("World / Stillwater Reach").AddComponent<WorldEnvironment>().Build();
-            WorldEnvironment.ApplyAtmosphere();var environment=FindAnyObjectByType<WorldEnvironment>();if(environment!=null)SurfaceDetail.Apply(environment.transform);
+            WorldEnvironment.ApplyAtmosphere();environment=FindAnyObjectByType<WorldEnvironment>();if(environment!=null)SurfaceDetail.Apply(environment.transform);
             var cam=new GameObject("Player camera");Camera=cam.AddComponent<Camera>();cam.tag="MainCamera";cam.AddComponent<AudioListener>();
             Camera.fieldOfView=60;Camera.nearClipPlane=0.13f;Camera.farClipPlane=360;
             Camera.backgroundColor=new Color(0.64f,0.77f,0.78f);Camera.clearFlags=CameraClearFlags.Skybox;Camera.allowHDR=true;
@@ -33,10 +37,23 @@ namespace Era
         void LateUpdate()
         {
             var app=GameApp.Instance;if(app==null)return;
+            int stage=app.State?.stage??1;
+            if(presentedStage!=stage||presentedSerial!=(app.State?.stageSerial??0))
+            {
+                ClearActors();WorldMap.SetStage(stage);
+                if(environment==null||environment.stage!=stage||environment.bakedVersion!=WorldEnvironment.CurrentVersion)
+                {
+                    if(environment!=null){environment.gameObject.SetActive(false);Destroy(environment.gameObject);}
+                    environment=new GameObject("World / "+CampaignData.Name(stage)).AddComponent<WorldEnvironment>();environment.Build();
+                }
+                presentedStage=stage;presentedSerial=app.State?.stageSerial??0;
+                if(app.LocalPlayer!=null)Camera.transform.position=app.LocalPlayer.position+new Vector3(0,5,-8);
+            }
             if(!app.InRun)
             {
+                Camera.fieldOfView=50;
                 if(Preview==null || Preview.Hero!=app.SelectedHero)
-                {if(Preview!=null)Destroy(Preview.gameObject);Preview=HeroMotion.Create(v,previewRoot,app.SelectedHero,"Selected wanderer");Preview.transform.position=new Vector3(1,0,-1);Preview.transform.localScale=Vector3.one*1.7f;}
+                {if(Preview!=null)Destroy(Preview.gameObject);Preview=HeroMotion.Create(v,previewRoot,app.SelectedHero,"Selected wanderer");Preview.transform.position=new Vector3(1,0,-1);Preview.transform.localScale=Vector3.one*2;}
                 Preview.gameObject.SetActive(true);Preview.Pose(Vector3.zero,true,0,0,false,false);
                 Preview.transform.rotation=Quaternion.Euler(0,150+Mathf.Sin(Time.unscaledTime*0.3f)*7,0);
                 bool character=app.Page==MenuPage.Characters || app.State!=null;
@@ -47,6 +64,7 @@ namespace Era
                 return;
             }
             if(Preview!=null)Preview.gameObject.SetActive(false);
+            Camera.fieldOfView=60;
             var state=app.State;float blend=1-Mathf.Exp(-Time.unscaledDeltaTime*20);
             seen.Clear();
             foreach(var p in state.players)
@@ -84,23 +102,19 @@ namespace Era
             {
                 seen.Add(e.id);
                 if(!actors.TryGetValue(e.id,out var actor))
-                {var creature=CreatureMotion.Create(v,dynamicRoot,e.kind);actor=new Actor{root=creature.gameObject,creature=creature};actors[e.id]=actor;actor.root.transform.position=e.position;var target=state.players.Find(p=>!p.downed&&!p.eliminated);if(target!=null){var facing=target.position-e.position;facing.y=0;if(facing.sqrMagnitude>.01f)actor.root.transform.rotation=Quaternion.LookRotation(facing);}}
+                {var creature=e.kind==EnemyKind.Warden?BossArt.Create(v,dynamicRoot,Mathf.Max(1,e.bossStage)):CreatureMotion.Create(v,dynamicRoot,e.kind);actor=new Actor{root=creature.gameObject,creature=creature};actor.renderers=actor.root.GetComponentsInChildren<Renderer>();actor.colors=new Color[actor.renderers.Length];for(int r=0;r<actor.renderers.Length;r++){var mat=actor.renderers[r].sharedMaterial;actor.colors[r]=mat!=null&&mat.HasProperty("_Color")?mat.color:Color.white;}actors[e.id]=actor;actor.root.transform.position=e.position;var target=state.players.Find(p=>!p.downed&&!p.eliminated);if(target!=null){var facing=target.position-e.position;facing.y=0;if(facing.sqrMagnitude>.01f)actor.root.transform.rotation=Quaternion.LookRotation(facing);}}
                 var direction=e.position-actor.root.transform.position;direction.y=0;
                 if(direction.sqrMagnitude>0.0004f)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.LookRotation(direction),blend);
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,e.position,blend);
-                if(actor.hp>=0&&e.hp<actor.hp){actor.creature.hit=1;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;
+                if(e.hitSerial!=actor.hitSerial){actor.creature.hit=1;actor.hitFlash=.18f;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
+                if(!app.WorldPaused)actor.hitFlash=Mathf.Max(0,actor.hitFlash-Time.unscaledDeltaTime);
+                for(int r=0;r<actor.renderers.Length;r++){hitBlock.Clear();hitBlock.SetColor("_Color",Color.Lerp(actor.colors[r],Color.white,Mathf.Clamp01(actor.hitFlash/.18f)*.85f));actor.renderers[r].SetPropertyBlock(hitBlock);}
                 if(!app.WorldPaused){if(actor.creature.skeletal!=null)actor.creature.skeletal.Enemy(direction.magnitude>.005f?e.speed:0,e.frozen>0,e.windup,e.attackTimer);else actor.creature.Pose(state.elapsed,e.frozen>0,e.windup);}
-                if(e.windup>0)
-                {
-                    if(actor.telegraph==null)actor.telegraph=v.Ring("Incoming attack",dynamicRoot,5,new Color(0.9f,0.39f,0.43f),0.16f).transform;
-                    actor.telegraph.gameObject.SetActive(true);actor.telegraph.position=e.attackPosition+Vector3.up*0.12f;
-                }
-                else if(actor.telegraph!=null)actor.telegraph.gameObject.SetActive(false);
             }
             var dead=new List<int>();foreach(var pair in actors)if(!seen.Contains(pair.Key))dead.Add(pair.Key);
             foreach(int id in dead)
             {var a=actors[id];if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.creature?.skeletal!=null)a.creature.skeletal.Die();else Destroy(a.root);actors.Remove(id);}
-            SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
+            SyncAuras(state);SyncPortal(state);SyncHazards(state);SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
             if(state.coins>lastCoins)SynthAudio.Instance?.Play(7);
             if(state.level>lastLevel)SynthAudio.Instance?.Play(9);
             lastCoins=state.coins;lastLevel=state.level;FollowCamera(app);
@@ -164,11 +178,59 @@ namespace Era
                 {
                     go=v.Group("Chest reward / "+drop.content,dynamicRoot).gameObject;
                     if(drop.kind==RewardKind.Weapon){var model=WeaponVisuals.Create(v,go.transform,(WeaponKind)drop.content);model.transform.localScale=Vector3.one*.65f;}
-                    else{v.Cone("Memory crystal",go.transform,Vector3.zero,.22f,.55f,GameData.Items[drop.content].color,6);v.Ellipsoid("Memory glow",go.transform,Vector3.up*.23f,Vector3.one*.18f,GameData.Mint,true);}
-                    v.Ring("Reward halo",go.transform,.50f,GameData.Amber,.025f);loot[drop.id]=go;
+                    else
+                    {
+                        var texture=IconLibrary.Get(GameData.ItemIcons[drop.content]);var picture=new GameObject("Item picture");picture.transform.SetParent(go.transform,false);
+                        var renderer=picture.AddComponent<SpriteRenderer>();renderer.sprite=Sprite.Create(texture,new Rect(0,0,texture.width,texture.height),Vector2.one*.5f,128);renderer.color=Color.white;
+                    }
+                    v.Ring("Reward halo",go.transform,.50f,GameData.Items[drop.content].color,.025f).transform.localPosition=Vector3.down*.38f;loot[drop.id]=go;
                 }
-                go.transform.position=drop.position;go.transform.rotation=Quaternion.Euler(0,drop.age*115,Mathf.Sin(drop.age*3)*8);go.transform.localScale=Vector3.one*Mathf.Lerp(.25f,1,Mathf.Clamp01(drop.age*3))*(drop.collecting?Mathf.Lerp(1,.2f,drop.collectTime/.35f):1);
+                go.transform.position=drop.position;go.transform.localScale=Vector3.one*(drop.collecting?Mathf.Lerp(1,.2f,drop.collectTime/.35f):1);
+                var pictureTransform=go.transform.Find("Item picture");if(pictureTransform!=null)pictureTransform.rotation=Camera.transform.rotation;
             }RemoveAbsent(loot);
+        }
+        void SyncAuras(WorldState state)
+        {
+            seen.Clear();foreach(var p in state.players)
+            {
+                if(p.hero!=Hero.Lumen||p.downed||p.eliminated)continue;
+                for(int a=0;a<p.auraLevels.Length;a++)if(p.auraLevels[a]>0)
+                {
+                    int key=p.id*16+a;seen.Add(key);
+                    if(!auraRings.TryGetValue(key,out var ring)){ring=v.Ring("Lumen / "+GameData.AuraName(a),dynamicRoot,1,GameData.AuraColors[a],.025f);auraRings[key]=ring;}
+                    ring.transform.position=new Vector3(p.position.x,WorldMap.Ground(p.position)+.12f+a*.015f,p.position.z);
+                    ring.transform.localScale=Vector3.one*(Simulation.AuraRadius(p)-a*.13f);
+                }
+            }RemoveAbsent(auraRings);
+        }
+        void SyncPortal(WorldState state)
+        {
+            if(!state.portal.active){if(portalVisual!=null)portalVisual.SetActive(false);return;}
+            if(portalVisual==null)
+            {
+                var root=v.Group("Passage to the next realm",dynamicRoot);portalVisual=root.gameObject;
+                var color=CampaignData.Color(Mathf.Min(7,state.stage+1));
+                var ring=v.Ring("Portal arch",root,1.8f,color,.095f);ring.transform.localPosition=Vector3.up*1.9f;ring.transform.localRotation=Quaternion.Euler(90,0,0);
+                v.Ring("Portal ground seal",root,2.3f,color,.035f).transform.localPosition=Vector3.up*.06f;
+                var surface=v.Shape("Rift surface",PrimitiveType.Quad,root,Vector3.up*1.9f,new Vector3(3.35f,3.35f,1),color);
+                var material=new Material(Shader.Find("Era/Rift Portal"));material.SetColor("_Color",color);surface.GetComponent<Renderer>().sharedMaterial=material;
+                for(int i=0;i<7;i++){float a=i*Mathf.PI*2/7;WorldVfx.Crystal(v,root,"Portal rune",new Vector3(Mathf.Cos(a)*1.9f,1.9f+Mathf.Sin(a)*1.9f,0),.16f,color);}
+            }
+            portalVisual.SetActive(true);portalVisual.transform.position=state.portal.position;
+        }
+        void SyncHazards(WorldState state)
+        {
+            seen.Clear();foreach(var h in state.hazards)
+            {
+                seen.Add(h.id);if(!hazardRings.TryGetValue(h.id,out var ring))
+                {
+                    ring=v.Ring("Boss attack / "+h.style,dynamicRoot,h.radius,CampaignData.Color(h.style),.07f);ring.transform.position=h.position+Vector3.up*.09f;
+                    var line=ring.GetComponent<LineRenderer>();for(int i=0;i<line.positionCount;i++){var p=line.GetPosition(i);p.y=WorldMap.Height(p.x+h.position.x,p.z+h.position.z)-h.position.y;line.SetPosition(i,p);}
+                    hazardRings[h.id]=ring;
+                }
+                var lr=ring.GetComponent<LineRenderer>();lr.widthMultiplier=h.triggered?.20f:.06f+(.5f+.5f*Mathf.Sin(state.elapsed*12))*.025f;
+                Color color=h.triggered?CampaignData.Color(h.style):Color.Lerp(new Color(.95f,.2f,.12f),CampaignData.Color(h.style),.35f);lr.startColor=lr.endColor=color;
+            }RemoveAbsent(hazardRings);
         }
         void SyncEffects(WorldState state)
         {
@@ -204,16 +266,8 @@ namespace Era
             {
                 if(!chests.TryGetValue(c.id,out var chest))
                 {
-                    var root=v.Group(c.tier>0?"Moon chest":"Traveler's chest",dynamicRoot,c.position);
-                    Color wood=c.tier>0?new Color(0.52f,0.43f,0.61f):new Color(0.54f,0.37f,0.27f),metal=c.tier>0?new Color(0.81f,0.80f,0.93f):new Color(0.91f,0.72f,0.42f);
-                    v.Shape("Wooden body",PrimitiveType.Cube,root,new Vector3(0,0.4f,0),new Vector3(1.2f,0.65f,0.86f),wood);
-                    for(int s=-1;s<=1;s+=2)v.Shape("Brass band",PrimitiveType.Cube,root,new Vector3(s*0.40f,0.4f,0),new Vector3(0.09f,0.70f,0.89f),metal);
-                    var lid=v.Group("Animated lid hinge",root,new Vector3(0,0.74f,-0.43f));
-                    v.Ellipsoid("Rounded lid",lid,new Vector3(0,0,0.43f),new Vector3(1.23f,0.44f,0.89f),wood);
-                    v.Ellipsoid("Latch",root,new Vector3(0,0.62f,0.45f),new Vector3(0.18f,0.24f,0.07f),metal,true);
-                    v.Ring("Chest glimmer",root,1.03f,c.tier>0?new Color(0.76f,0.69f,0.92f):GameData.Amber,0.025f).transform.localPosition=Vector3.up*0.04f;
+                    var root=ChestArt.Create(v,dynamicRoot,c,out var lid);
                     chest=new ChestVisual{root=root.gameObject,lid=lid,announced=c.opened};chests[c.id]=chest;
-                    SurfaceDetail.Apply(root);
                 }
                 chest.openness=Mathf.MoveTowards(chest.openness,c.opened?1:0,GameApp.Instance.WorldPaused?0:Time.unscaledDeltaTime*2.3f);
                 chest.lid.localRotation=Quaternion.Euler(-chest.openness*105,0,0);
@@ -225,7 +279,7 @@ namespace Era
         public void ClearActors()
         {
             if(dynamicRoot!=null)foreach(Transform child in dynamicRoot)Destroy(child.gameObject);
-            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();lastCoins=0;lastLevel=1;
+            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();auraRings.Clear();hazardRings.Clear();portalVisual=null;lastCoins=0;lastLevel=1;
         }
     }
 }

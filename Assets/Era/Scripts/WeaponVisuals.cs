@@ -6,7 +6,12 @@ namespace Era
         public static GameObject Create(VisualFactory v,Transform parent,WeaponKind kind)
         {
             var root=v.Group(kind.ToString(),parent);Color wood=new Color(.34f,.25f,.21f),metal=new Color(.79f,.84f,.80f),gold=new Color(.87f,.68f,.36f);
-            if(kind==WeaponKind.Bow)
+            if(kind==WeaponKind.Aura)
+            {
+                WorldVfx.Crystal(v,root,"Aura focus",new Vector3(0,.35f,0),.43f,GameData.HeroColor(Hero.Lumen));
+                v.Ring("Conduit orbit",root,.36f,gold,.035f).transform.localPosition=Vector3.up*.35f;
+            }
+            else if(kind==WeaponKind.Bow)
             {
                 var points=new Vector3[17];for(int i=0;i<points.Length;i++){float a=Mathf.Lerp(-Mathf.PI/2,Mathf.PI/2,i/16f);points[i]=new Vector3(Mathf.Cos(a)*.36f,Mathf.Sin(a)*.72f+.48f,0);if(i>0)v.Branch(root,points[i-1],points[i],.035f,wood);}
                 v.Branch(root,points[0],points[16],.008f,metal);v.Branch(root,new Vector3(.36f,.31f,0),new Vector3(.36f,.65f,0),.05f,gold);

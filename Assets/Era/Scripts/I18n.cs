@@ -14,6 +14,8 @@ namespace Era
         public static string[] Keys=>new List<string>(Ru.Keys).ToArray();
         static readonly Dictionary<string,string> Ru=new Dictionary<string,string>
         {
+            {"Aura Conduit","Проводник аур"},{"Empowers nearby allies and the bearer. Choose an aura every level.","Усиливает ближайших союзников и носителя. Каждый уровень — выбор ауры."},
+            {"10 base damage per second and buffs within 9.2 m. Choose or upgrade one aura per level.","10 базового урона в секунду и баффы в радиусе 9.2 м. Каждый уровень — новая аура или улучшение."},
             {"E R A","Э Р А"},{"S T I L L W A T E R   R E A C H","Т И Х И Й   П Р Е Д Е Л"},
             {"A little light.\nA very big adventure.","Немного света.\nБольшое приключение."},
             {"Wander a forgotten world. Gather a little courage. Face the rift together.","Исследуйте забытый мир. Найдите в себе смелость. Встретьте разлом вместе."},

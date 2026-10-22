@@ -31,12 +31,12 @@ namespace Era
             else if(stage==9&&t>14.3f){report.crouch=p.crouching&&p.velocity.magnitude<4;Shot("crouch-v04.png");stage++;}
             else if(stage==10&&t>16)
             {input.crouch=false;input.x=0;p.position=App.State.chests[0].position;App.CameraYaw=35;App.CameraPitch=23;App.Simulation.TryOpenChest(p);stage++;}
-            else if(stage==11&&t>16.5f){Shot("weapon-drop-v04.png");stage++;}
-            else if(stage==12&&t>18.5f)
+            else if(stage==11&&t>16.5f){Shot("floor-item-v07.png");if(App.State.loot.Count>0){p.position=App.State.loot[0].origin;App.LocalInput.interact=true;}stage++;}
+            else if(stage==12&&t>20f)
             {
-                report.descriptions=App.State.rewards.Exists(n=>n.kind==RewardKind.Weapon&&n.owner==p.id);Shot("weapon-description-v04.png");stage++;
+                report.descriptions=App.State.rewards.Exists(n=>n.owner==p.id&&(n.kind==RewardKind.Weapon?GameData.Weapons[n.content].description.Length>0:GameData.Items[n.content].description.Length>0));Shot("reward-description-v06.png");stage++;
             }
-            else if(stage==13&&t>20)
+            else if(stage==13&&t>21.2f)
             {
                 p.position=WorldMap.OnGround(0,-10);
                 for(int i=0;i<4;i++){var e=App.Simulation.SpawnEnemy((EnemyKind)i);e.position=p.position+new Vector3((i-1.5f)*3,0,8+i);e.position.y=WorldMap.Ground(e.position);e.hp=e.maxHp=10000;e.frozen=2;}
@@ -45,10 +45,10 @@ namespace Era
                 for(int i=0;i<6;i++)App.State.pickups.Add(new PickupState{id=App.State.nextId++,kind=PickupKind.Experience,position=WorldMap.OnGround(p.position.x-3+i,p.position.z+crystalDistance),value=2});
                 stage++;
             }
-            else if(stage==14&&t>21){report.blueCrystals=App.State.pickups.Exists(c=>c.kind==PickupKind.Experience);Shot("combat-v04-ru.png");stage++;}
-            else if(stage==15&&t>23){App.SetLanguage(GameLanguage.English);Shot("combat-v04-en.png");stage++;}
-            else if(stage==16&&t>24){App.Inventory=true;Shot("gear-v04.png");stage++;}
-            else if(stage==17&&t>25)
+            else if(stage==14&&t>22.2f){report.blueCrystals=App.State.pickups.Exists(c=>c.kind==PickupKind.Experience);Shot("combat-v06-ru.png");stage++;}
+            else if(stage==15&&t>24){App.SetLanguage(GameLanguage.English);Shot("combat-v06-en.png");stage++;}
+            else if(stage==16&&t>25){App.Inventory=true;Shot("gear-v06.png");stage++;}
+            else if(stage==17&&t>26)
             {report.ok=report.models&&report.channel&&report.randomBuff&&report.crouch&&report.extraJump&&report.descriptions&&report.blueCrystals;string json=JsonUtility.ToJson(report,true);File.WriteAllText(Path.Combine(folder,"smoke-art.json"),json);Debug.Log("ERA_ART "+json);Application.Quit(report.ok?0:2);stage++;}
             if(t>35&&stage<18){File.WriteAllText(Path.Combine(folder,"smoke-art.json"),JsonUtility.ToJson(report,true));Application.Quit(3);}
         }

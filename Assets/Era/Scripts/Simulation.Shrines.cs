@@ -47,9 +47,9 @@ namespace Era
                 case 7:player.pickupRange+=3;break;
             }
         }
-        void Reward(PlayerState owner,RewardKind kind,int content,int quantity=1)
+        void Reward(PlayerState owner,RewardKind kind,int content,int quantity=1,int rarity=0)
         {
-            State.rewards.Add(new RewardNotice{id=State.nextId++,owner=owner.id,kind=kind,content=content,quantity=quantity});
+            State.rewards.Add(new RewardNotice{id=State.nextId++,owner=owner.id,kind=kind,content=content,quantity=quantity,rarity=rarity});
             if(State.rewards.Count>24)State.rewards.RemoveAt(0);
         }
     }

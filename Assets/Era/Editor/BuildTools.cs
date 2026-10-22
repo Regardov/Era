@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.5.0";
+            PlayerSettings.bundleVersion = "0.9.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -46,7 +46,7 @@ namespace Era.Editor
             // Runtime-generated materials still need explicit shader references in the player build.
             var graphics = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")[0]);
             var included = graphics.FindProperty("m_AlwaysIncludedShaders");
-            foreach (string shaderName in new[] { "Standard", "Era/Low Poly", "Era/Foliage", "Hidden/Era/Capture" })
+            foreach (string shaderName in new[] { "Standard", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture" })
             {
                 var shader = Shader.Find(shaderName); bool found = false;
                 if (shader == null) throw new Exception("Missing shader: " + shaderName);
@@ -55,7 +55,7 @@ namespace Era.Editor
             }
             graphics.ApplyModifiedPropertiesWithoutUndo();
             IconBuilder.Prepare();SurfaceTextureBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);
@@ -63,6 +63,9 @@ namespace Era.Editor
             var world=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
             if(world==null || world.bakedVersion!=WorldEnvironment.CurrentVersion)BakeWorld();
             AssetDatabase.SaveAssets();
+            // Generated mesh libraries are binary; source scenes, prefabs and scripts stay reviewable text.
+            var compactLibraries=Array.FindAll(Directory.GetFiles("Assets/Era/Generated","*.asset"),p=>new FileInfo(p).Length>50_000_000);
+            if(compactLibraries.Length>0)AssetDatabase.ForceReserializeAssets(compactLibraries);
         }
         static void PrepareMusic()
         {
@@ -79,7 +82,7 @@ namespace Era.Editor
         [MenuItem("ERA/Create missing character prefabs")]
         public static void PrepareCharacterPrefabs()
         {
-            string[] names={"Characters/Ember","Characters/Echo","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"};
+            string[] names={"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"};
             bool needed=false;foreach(string name in names)if(!File.Exists("Assets/Era/Resources/"+name+".prefab"))needed=true;
             if(!needed)return;
             Directory.CreateDirectory("Assets/Era/Resources/Characters");Directory.CreateDirectory("Assets/Era/Resources/Creatures");Directory.CreateDirectory("Assets/Era/Generated");
@@ -91,12 +94,12 @@ namespace Era.Editor
                 for(int i=0;i<names.Length;i++)
                 {
                     string path="Assets/Era/Resources/"+names[i]+".prefab";if(File.Exists(path))continue;
-                    var root=i<2?HeroMotion.Create(visual,temp.transform,(Hero)i,i==0?"Ember":"Echo").gameObject:CreatureMotion.Create(visual,temp.transform,(EnemyKind)(i-2)).gameObject;
+                    var root=i<3?HeroMotion.Create(visual,temp.transform,(Hero)i,((Hero)i).ToString()).gameObject:CreatureMotion.Create(visual,temp.transform,(EnemyKind)(i-3)).gameObject;
                     foreach(var filter in root.GetComponentsInChildren<MeshFilter>())if(filter.sharedMesh!=null&&!AssetDatabase.Contains(filter.sharedMesh))AssetDatabase.AddObjectToAsset(filter.sharedMesh,library);
                     foreach(var renderer in root.GetComponentsInChildren<Renderer>())foreach(var mat in renderer.sharedMaterials)if(mat!=null&&!AssetDatabase.Contains(mat))AssetDatabase.AddObjectToAsset(mat,library);
                     PrefabUtility.SaveAsPrefabAsset(root,path);
                 }
-                AssetDatabase.SaveAssets();Debug.Log("ERA_PREFABS_READY 2 heroes / 4 creatures");
+                AssetDatabase.SaveAssets();Debug.Log("ERA_PREFABS_READY 3 heroes / 4 creatures");
             }
             finally{UnityEngine.Object.DestroyImmediate(temp);}
         }
@@ -115,10 +118,11 @@ namespace Era.Editor
                 foreach(var material in renderer.sharedMaterials)if(material!=null&&!AssetDatabase.Contains(material))AssetDatabase.AddObjectToAsset(material,library);
                 renderer.gameObject.isStatic=true;
             }
+            if(RenderSettings.skybox!=null&&!AssetDatabase.Contains(RenderSettings.skybox))AssetDatabase.AddObjectToAsset(RenderSettings.skybox,library);
             new GameObject("Game systems / Press Play").AddComponent<GameApp>();
             AssetDatabase.SaveAssets();EditorSceneManager.SaveScene(scene,ScenePath);
             if(SceneView.lastActiveSceneView!=null)SceneView.lastActiveSceneView.LookAt(new Vector3(0,1,0),Quaternion.Euler(32,35,0),30);
-            Debug.Log("ERA_WORLD_BAKED "+env.GetComponentsInChildren<Renderer>().Length+" renderers / 420 m flat map");
+            Debug.Log("ERA_WORLD_BAKED "+env.GetComponentsInChildren<Renderer>().Length+" chunked renderers / sculpted hills / reactive grass");
         }
         [MenuItem("ERA/Build Windows")]
         public static void BuildWindows()

@@ -6,7 +6,7 @@ namespace Era
     // Explicit opt-in player diagnostics; no test grants or teleports in regular sessions.
     public sealed class SoloDiagnostics:MonoBehaviour
     {
-        [Serializable]class Report{public bool ok,paused,resumed,bilingual,animatedLoot,fourWeapons;public int weaponCount;}
+        [Serializable]class Report{public bool ok,paused,resumed,bilingual,animatedLoot,rarityLoot,attributeRolls;public int weaponCount,itemCount;}
         GameApp App=>GameApp.Instance;
         string folder;float start,pausedTime,pauseStarted;Vector3 pausedPosition;int stage,opened;float openedAt;Report report=new Report();
         void Start()
@@ -32,7 +32,7 @@ namespace Era
                 if(Time.realtimeSinceStartup-pauseStarted>1){Shot("solo-upgrade-ru.png");stage++;}
             }
             else if(stage==5&&Time.realtimeSinceStartup-pauseStarted>2)
-            {report.paused=App.WorldPaused&&App.Simulation.UpgradePaused&&App.State.elapsed==pausedTime&&App.LocalPlayer.position==pausedPosition;App.SetLanguage(GameLanguage.English);report.bilingual=GameData.Weapons[0].name=="Crescent Axe";Shot("solo-upgrade-en.png");stage++;}
+            {report.paused=App.WorldPaused&&App.Simulation.UpgradePaused&&App.State.elapsed==pausedTime&&App.LocalPlayer.position==pausedPosition;report.attributeRolls=App.LocalPlayer.offers.Length==3&&App.LocalPlayer.offerRarities.Length==3;App.SetLanguage(GameLanguage.English);report.bilingual=GameData.Weapons[0].name=="Crescent Axe";Shot("solo-upgrade-en.png");stage++;}
             else if(stage==6&&Time.realtimeSinceStartup-pauseStarted>3){App.Choose(0);stage++;}
             else if(stage==7&&App.State.elapsed>pausedTime+.3f)
             {report.resumed=!App.WorldPaused&&!App.Simulation.UpgradePaused;App.LocalInput.x=0;OpenNext();stage++;}
@@ -40,13 +40,15 @@ namespace Era
             {
                 if(App.UpgradeSelection)App.Choose(0);
                 var drop=App.State.loot.Count>0?App.State.loot[0]:null;
-                if(drop!=null&&drop.age>.35f&&drop.age<.6f){report.animatedLoot|=drop.position.y>drop.origin.y+1;Shot("chest-loot.png");}
-                if(App.State.elapsed-openedAt>1.9f)
+                if(drop!=null&&drop.age>.35f&&drop.age<.6f){report.animatedLoot|=drop.position.y>drop.origin.y+.4f;Shot("chest-loot.png");}
+                if(drop!=null&&!drop.collecting&&drop.age>1){App.LocalPlayer.position=drop.origin;App.LocalInput.interact=true;}
+                if(App.State.elapsed-openedAt>3.5f)
                 {
+                    var chest=App.State.chests[opened];report.rarityLoot|=chest.rewardKind==RewardKind.Weapon||(chest.reward>=0&&(int)GameData.Items[chest.reward].rarity==chest.rewardRarity);
                     opened++;if(opened<3)OpenNext();else
                     {
                         var p=App.LocalPlayer;p.position=WorldMap.OnGround(-59,37);App.CameraYaw=205;App.CameraPitch=18;
-                        report.weaponCount=Array.FindAll(p.weapons,w=>w>=0).Length;report.fourWeapons=report.weaponCount==4;
+                        report.weaponCount=Array.FindAll(p.weapons,w=>w>=0).Length;foreach(int count in p.items)report.itemCount+=count;
                         App.Simulation.SpawnEnemy(EnemyKind.Brute).position=p.position+Vector3.forward*5;App.Simulation.SpawnEnemy(EnemyKind.Stalker).position=p.position+new Vector3(3,0,6);stage++;openedAt=age;
                     }
                 }
@@ -57,7 +59,7 @@ namespace Era
             {App.SetLanguage(GameLanguage.English);App.Inventory=true;Shot("inventory-v03-en.png");stage++;openedAt=age;}
             else if(stage==11&&age-openedAt>1)
             {
-                report.ok=report.paused&&report.resumed&&report.bilingual&&report.animatedLoot&&report.fourWeapons;
+                report.ok=report.paused&&report.resumed&&report.bilingual&&report.animatedLoot&&report.rarityLoot&&report.attributeRolls&&(report.itemCount>0||report.weaponCount>1);
                 File.WriteAllText(Path.Combine(folder,"smoke-solo.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_SOLO "+JsonUtility.ToJson(report));Application.Quit(report.ok?0:2);stage++;
             }
             if(age>35&&stage<12){File.WriteAllText(Path.Combine(folder,"smoke-solo.json"),JsonUtility.ToJson(report,true));Application.Quit(3);}

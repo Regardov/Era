@@ -13,7 +13,7 @@ namespace Era
             if(materials.TryGetValue(key,out var cached))return cached;
             var m=new Material(Shader.Find("Standard")){name="ERA "+key,color=color};
             m.SetFloat("_Glossiness",0.12f);
-            if(glow){m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",color*2.5f);}
+            if(glow){m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",color*.75f);}
             materials[key]=m;return m;
         }
         public Transform Group(string name,Transform parent,Vector3 position=default)

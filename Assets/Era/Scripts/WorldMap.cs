@@ -13,9 +13,22 @@ namespace Era
     // Shared terrain and collision definitions. No client-only decorative physics affects movement.
     public static class WorldMap
     {
-        public static readonly List<WorldProp> Props = CreateProps();
+        public static int Stage {get;private set;}=1;
+        static List<WorldProp> props;
+        public static List<WorldProp> Props=>props??(props=CreateProps());
         public static readonly Vector3[] Landmarks = { new Vector3(0,0,0), new Vector3(-95,0,70), new Vector3(105,0,80), new Vector3(60,0,-110) };
-        public static float Height(float x, float z) => 0;
+        public static void SetStage(int stage)
+        {stage=Mathf.Clamp(stage,1,CampaignData.StageCount);if(Stage==stage)return;Stage=stage;props=null;}
+        public static float Height(float x,float z)
+        {
+            float r=Mathf.Sqrt(x*x+z*z),blend=Mathf.SmoothStep(0,1,Mathf.InverseLerp(16,39,r));
+            foreach(var landmark in Landmarks)if(landmark.x!=0||landmark.z!=0)
+                blend*=Mathf.SmoothStep(0,1,Mathf.InverseLerp(7,17,Vector2.Distance(new Vector2(x,z),new Vector2(landmark.x,landmark.z))));
+            float broad=(Mathf.PerlinNoise(x*.012f+Stage*7.31f,z*.012f+91)-.45f)*(10+Stage*1.7f);
+            float ridge=Mathf.Sin(x*.022f+Stage*.8f)*Mathf.Cos(z*.019f-Stage*.37f)*(2.2f+Stage*.35f);
+            float detail=(Mathf.PerlinNoise(x*.046f+19,z*.046f+Stage*2)-.5f)*1.2f;
+            return (broad+ridge+detail)*blend;
+        }
         public static float Ground(Vector3 position) => Height(position.x, position.z);
         public static Vector3 OnGround(float x, float z) => new Vector3(x, Height(x,z), z);
         public static string Region(Vector3 p)
@@ -28,13 +41,13 @@ namespace Era
         }
         static List<WorldProp> CreateProps()
         {
-            var result = new List<WorldProp>(); var random = new System.Random(91247);
-            for (int i = 0; i < 340; i++)
+            var result = new List<WorldProp>(); var random = new System.Random(91247+Stage*513);
+            for (int i = 0; i < 230; i++)
             {
                 float a = (float)random.NextDouble() * Mathf.PI * 2;
                 float r = 24 + Mathf.Sqrt((float)random.NextDouble()) * 174;
                 var p = OnGround(Mathf.Sin(a)*r, Mathf.Cos(a)*r);
-                int kind = i < 235 ? 0 : 1; float size = kind == 0 ? 0.7f+(float)random.NextDouble()*0.8f : 0.7f+(float)random.NextDouble()*1.8f;
+                int kind = i < 155 ? 0 : 1; float size = kind == 0 ? 0.8f+(float)random.NextDouble()*0.8f : 0.7f+(float)random.NextDouble()*1.8f;
                 result.Add(new WorldProp { position = p, size = size, kind = kind, angle = (float)random.NextDouble()*360 });
             }
             return result;
@@ -62,9 +75,10 @@ namespace Era
             for(int i=0;i<27;i++) { float a=i*2.399963f; float r=35+Mathf.Sqrt(i/26f)*150; positions.Add(new Vector2(Mathf.Cos(a)*r,Mathf.Sin(a)*r)); }
             for(int i=0;i<positions.Count;i++)
             {
-                var v=positions[i]; var p=Resolve(OnGround(v.x,v.y),Vector3.zero,1);
+                var v=positions[i];if(i>2){float a=(state.stage-1)*.63f;v=new Vector2(v.x*Mathf.Cos(a)-v.y*Mathf.Sin(a),v.x*Mathf.Sin(a)+v.y*Mathf.Cos(a));} var p=Resolve(OnGround(v.x,v.y),Vector3.zero,1);
                 p.y=Ground(p); int tier=i>4 && i%4==0 ? 1 : 0;
-                state.chests.Add(new ChestState { id=state.nextId++,position=p,cost=tier==1?65:25+(i/6)*5,tier=tier });
+                int baseCost=Mathf.RoundToInt((tier==1?65:25+(i/6)*5)*(1+.13f*(state.stage-1)));
+                state.chests.Add(new ChestState { id=state.nextId++,position=p,baseCost=baseCost,cost=GameData.ChestPrice(baseCost,state.openedChests),tier=tier });
             }
         }
     }

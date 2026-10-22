@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -11,10 +12,11 @@ namespace Era
     public sealed class TransportEvent
     {
         public string kind, text;
-        public TransportEvent(string kind, string text = "") { this.kind = kind; this.text = text; }
+        public int peer;
+        public TransportEvent(string kind, string text = "", int peer = 0) { this.kind = kind; this.text = text; this.peer=peer; }
     }
 
-    // Two-player, host-authoritative LAN transport. Framed TCP is intentionally dependency-free.
+    // Three-player, host-authoritative LAN transport. Every event retains its connection ID.
     // All socket I/O runs off the Unity thread; snapshots use a single replaceable send slot.
     public sealed class CoopTransport : IDisposable
     {
@@ -23,18 +25,20 @@ namespace Era
         readonly object gate = new object();
         volatile bool stopped;
         TcpListener listener;
-        Connection peer;
-        public bool Connected { get { lock (gate) return peer != null && !peer.Closed; } }
+        readonly Dictionary<int,Connection> peers=new Dictionary<int,Connection>();
+        int nextPeer=1;
+        public int PeerCount { get { lock(gate){int count=0;foreach(var peer in peers.Values)if(!peer.Closed)count++;return count;} } }
+        public bool Connected => PeerCount>0;
         public bool TryDequeue(out TransportEvent evt) => events.TryDequeue(out evt);
-        void Emit(string kind, string text = "")
+        void Emit(string kind, string text = "", int peer = 0)
         {
             if (events.Count > 160) { Dispose(); return; }
-            if (!stopped) events.Enqueue(new TransportEvent(kind, text));
+            if (!stopped) events.Enqueue(new TransportEvent(kind, text, peer));
         }
         public void Host(int port)
         {
             listener = new TcpListener(IPAddress.Any, port);
-            try { listener.Start(2); }
+            try { listener.Start(GameData.MaxPlayers); }
             catch (SocketException) { listener.Stop(); listener = null; throw; }
             new Thread(() =>
             {
@@ -45,8 +49,8 @@ namespace Era
                         var client = listener.AcceptTcpClient();
                         lock (gate)
                         {
-                            if (stopped || peer != null && !peer.Closed) { client.Close(); continue; }
-                            Attach(client);
+                            if (stopped || PeerCount>=GameData.MaxPlayers-1) { client.Close(); continue; }
+                            Attach(client,nextPeer++);
                         }
                     }
                     catch (Exception e) when (e is SocketException || e is ObjectDisposedException)
@@ -66,29 +70,38 @@ namespace Era
                     lock (gate)
                     {
                         if (stopped) { client.Close(); return; }
-                        Attach(client);
+                        Attach(client,0);
                     }
                 }
                 catch (Exception)
                 { client.Close(); Emit("error", "Host unavailable. Check the IP, TCP port 7777 and your firewall."); }
             }) { IsBackground = true, Name = "ERA connect" }.Start();
         }
-        void Attach(TcpClient client)
+        void Attach(TcpClient client,int id)
         {
             client.NoDelay = true;
             client.ReceiveTimeout = 12000;
             client.SendTimeout = 4000;
-            peer = new Connection(client, Emit);
-            Emit("connected");
+            var stale=new List<int>();foreach(var pair in peers)if(pair.Value.Closed)stale.Add(pair.Key);foreach(int key in stale){peers[key].Dispose();peers.Remove(key);}
+            var peer = new Connection(client,(kind,text)=>Emit(kind,text,id));peers[id]=peer;
+            Emit("connected","",id);
             peer.Start();
         }
         public void Send(string json, bool snapshot = false)
         {
-            lock (gate) { if (peer != null && !peer.Closed) peer.Send(json, snapshot); }
+            lock (gate) { foreach(var peer in peers.Values)if(!peer.Closed)peer.Send(json, snapshot); }
         }
-        public void DropPeer()
+        public void SendTo(int id,string json,bool snapshot=false)
         {
-            lock (gate) { peer?.Dispose(); peer = null; }
+            lock(gate)if(peers.TryGetValue(id,out var peer)&&!peer.Closed)peer.Send(json,snapshot);
+        }
+        public void DropPeer(int id=-1)
+        {
+            lock (gate)
+            {
+                if(id>=0){if(peers.TryGetValue(id,out var peer)){peer.Dispose();peers.Remove(id);}return;}
+                foreach(var peer in peers.Values)peer.Dispose();peers.Clear();
+            }
         }
         public void Dispose()
         {
@@ -184,5 +197,6 @@ namespace Era
         public Hero hero;
         public Relic relic;
         public bool ready;
+        public int playerId = -1;
     }
 }

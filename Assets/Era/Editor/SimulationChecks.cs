@@ -29,7 +29,7 @@ namespace Era.Editor
         public static void Run()
         {
             assertions = 0;
-            Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();LevelPause();Economy();Cooperation();Endings();Serialization();Presentation();Localization();Network();
+            Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -82,15 +82,34 @@ namespace Era.Editor
             Check(sim.State.chests.Count==30,"large map contains thirty chests");int money=sim.State.coins;
             Check(sim.TryOpenChest(a)&&sim.State.coins==money-chest.cost&&chest.owner==0,"opening chest atomically spends shared gold");
             b.position=chest.position;int after=sim.State.coins;Check(!sim.TryOpenChest(b)&&sim.State.coins==after,"opened chest cannot be bought twice");
-            Check(chest.rewardKind==RewardKind.Weapon&&sim.State.loot.Count==1&&Array.IndexOf(a.weapons,chest.reward)<0,"chest reward starts as visible loot before equipping");
-            Step(sim,.4f);Check(sim.State.loot.Count==1&&sim.State.loot[0].position.y>chest.position.y+1,"reward rises out of chest");
-            Step(sim,1.3f);Check(sim.State.loot.Count==0&&Array.IndexOf(a.weapons,chest.reward)>=0&&Array.IndexOf(b.weapons,chest.reward)<0,"animated reward equips only on opener after flying to them");
+            Check(sim.State.loot.Count==1&&chest.reward>=0&&(chest.rewardKind==RewardKind.Weapon?chest.reward<GameData.Weapons.Length:chest.reward<GameData.Items.Length&&(int)GameData.Items[chest.reward].rarity==chest.rewardRarity),"chest rolls a valid rarity-matched reward");
+            Check(chest.rewardKind==RewardKind.Item&&sim.State.loot[0].position.y<chest.position.y+.8f,"chest item appears immediately near the floor");
+            a.position=chest.position+Vector3.right*20;Step(sim,4);Check(sim.State.loot.Count==1&&a.items[chest.reward]==0&&b.items[chest.reward]==0,"ground loot persists without automatic delivery");
+            b.position=sim.State.loot[0].origin;Check(sim.TryCollectLoot(b)&&!sim.TryCollectLoot(a),"ally may claim chest loot and claim is atomic");
+            Step(sim,.4f);Check(sim.State.loot.Count==0&&b.items[chest.reward]==1&&a.items[chest.reward]==0,"reward goes to the actual collector");
             var second=sim.State.chests[1];a.position=second.position;Check(!sim.TryOpenChest(a)&&!second.opened,"insufficient gold leaves chest closed");
             a.position=Vector3.zero;sim.State.pickups.Add(new PickupState{id=500,value=7,kind=PickupKind.Gold,position=Vector3.zero});Step(sim,.4f);
             Check(sim.State.coins==after+7&&sim.State.earnedCoins==7,"gold pickups credit team wallet");
             sim.State.pickups.Add(new PickupState{id=501,value=8,kind=PickupKind.Gold,position=Vector3.forward*30});
             sim.State.pickups.Add(new PickupState{id=502,value=3,kind=PickupKind.Experience,position=Vector3.forward*30});
-            int xp=sim.State.xp;sim.ApplyItem(a,4);Check(sim.State.xp==xp+3&&sim.State.pickups.Count==1&&sim.State.pickups[0].kind==PickupKind.Gold,"experience magnet does not convert gold into XP");
+            float range=a.pickupRange;sim.ApplyItem(a,16);Check(a.pickupRange>range&&sim.State.pickups.Count==2,"magnet increases pickup radius without consuming distant loot");
+        }
+        static void ChestPricesAndAuraProgress()
+        {
+            var sim=New(true);var a=sim.State.Player(0);var b=sim.State.Player(1);var first=sim.State.chests[0];var second=sim.State.chests[1];
+            Check(first.baseCost==25&&first.cost==25&&second.cost==25,"first chest uses its original price");
+            a.position=first.position;Check(sim.TryOpenChest(a)&&sim.State.coins==5&&second.cost==28&&first.cost==25,"successful purchase increases all remaining prices by ten percent rounded up, retaining the paid price");
+            b.position=second.position;Check(!sim.TryOpenChest(b)&&sim.State.openedChests==1&&second.cost==28,"failed purchase cannot increase the team price");
+            sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==972&&sim.State.openedChests==2&&sim.State.chests[2].cost==30,"ally pays the increased price and advances the same team counter");
+            Check(!sim.TryOpenChest(b)&&sim.State.openedChests==2,"repeated interaction with an opened chest cannot advance prices");
+            var boss=sim.SpawnEnemy(EnemyKind.Warden);sim.DamageEnemy(boss,a,99999999);a.position=sim.State.portal.position;
+            Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,2)),"portal transition preserves price progression for the new realm");
+            var lumen=sim.AddPlayer(2,"Lumen",Hero.Lumen);Check(GameData.AuraUpgradeCount(lumen,0)==0,"starting aura is rank one with zero upgrades");
+            sim.LearnAura(lumen,0);sim.LearnAura(lumen,0);Check(lumen.auraLevels[0]==3&&GameData.AuraUpgradeCount(lumen,0)==2,"two repeated choices produce rank three and two upgrades");
+            sim.LearnAura(lumen,3);Check(lumen.currentAura==3&&lumen.auraLevels[3]==1&&GameData.AuraUpgradeCount(lumen,3)==0,"new aura becomes current without counting acquisition as an upgrade");
+            var snapshot=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
+            Check(snapshot.Player(2).currentAura==3&&snapshot.Player(2).auraLevels[0]==3&&snapshot.chests[0].baseCost==sim.State.chests[0].baseCost&&snapshot.chests[0].cost==sim.State.chests[0].cost&&snapshot.openedChests==2,"network snapshot retains aura progress and shared chest prices");
+            WorldMap.SetStage(1);
         }
         static void Crouching()
         {
@@ -135,13 +154,35 @@ namespace Era.Editor
                 {var creature=CreatureMotion.Create(v,parent.transform,kind);Check(creature.limbs.Count>=4,"organic creature model has animated limbs: "+kind);}
             }
             finally{UnityEngine.Object.DestroyImmediate(parent);}
-            foreach(string character in new[]{"Characters/Ember","Characters/Echo","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"})
+            foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"})
             {
                 var model=Resources.Load<GameObject>(character);var skeletal=model.GetComponent<SkeletalActor>();
                 Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=6,"textured skeletal actor has real animation clips: "+character);
                 Check(model.GetComponentInChildren<SkinnedMeshRenderer>().sharedMaterial.mainTexture!=null,"painted atlas is assigned: "+character);
             }
-            foreach(string name in IconBuilder.Names){var icon=Resources.Load<Texture2D>("Icons/"+name);Check(icon!=null&&icon.width==128,"transparent interface icon included: "+name);}
+            for(int stage=1;stage<=7;stage++)
+            {
+                var boss=Resources.Load<GameObject>("Bosses/Stage"+stage);
+                Check(boss!=null&&boss.GetComponent<CreatureMotion>().kind==EnemyKind.Warden&&boss.GetComponent<SkeletalActor>()!=null,"distinct animated boss prefab for stage "+stage);
+            }
+            var lumenArt=Resources.Load<GameObject>("Characters/Lumen");var cloak=lumenArt.GetComponent<SkeletalActor>().Bone("Mage_Cape").GetComponent<Renderer>();
+            Check(cloak.sharedMaterial.shader.name=="Era/Actor Satin"&&cloak.sharedMaterial.GetFloat("_Lumen")==2,"Lumen's static cape uses the ivory palette as well as the skinned body");
+            Check(lumenArt.transform.Find("Lumen golden halo").localPosition.y>2,"Lumen halo sits above the head rather than inside the hair");
+            var environment=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
+            Check(environment.bakedVersion==WorldEnvironment.CurrentVersion&&environment.GetComponentsInChildren<Renderer>().Length<800,"terrain, trees and grass use bounded chunk renderer count");
+            Check(environment.GetComponentInChildren<LivingGrass>().patches.Length>70,"grass covers the complete realm in reusable patches");
+            foreach(string name in new[]{"StoneDetail","WoodDetail","MeadowDetail","LeafDetail","StoneNormal","WoodNormal","GrassClump"})
+                Check(Resources.Load<Texture2D>("Textures/"+name)?.width==512,"detailed seamless surface resource: "+name);
+            foreach(string name in IconBuilder.Names)
+            {
+                var icon=Resources.Load<Texture2D>("Icons/"+name);Check(icon!=null&&icon.width==128,"transparent interface icon included: "+name);
+                var pixels=new Texture2D(2,2);try
+                {
+                    pixels.LoadImage(File.ReadAllBytes("Assets/Era/Resources/Icons/"+name+".png"));var colors=pixels.GetPixels32();int visible=0;
+                    foreach(var pixel in colors)if(pixel.a>0)visible++;
+                    Check(colors[0].a==0&&visible>300&&visible<colors.Length*.65f,"icon has transparent padding and a non-empty complete silhouette: "+name);
+                }finally{UnityEngine.Object.DestroyImmediate(pixels);}
+            }
             var animated=UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Characters/Ember"));
             try
             {
@@ -157,7 +198,7 @@ namespace Era.Editor
             {
                 I18n.Language=GameLanguage.English;Check(GameData.Weapons[0].name=="Crescent Axe"&&GameData.Q(Hero.Ember)=="Sunburst","English weapon and ability names");
                 I18n.Language=GameLanguage.Russian;Check(GameData.Weapons[0].name=="Лунный топор"&&GameData.Q(Hero.Ember)=="Солнечный разлом","Russian weapon and ability names switch without restarting");
-                foreach(var item in GameData.Items)Check(!string.IsNullOrEmpty(item.name)&&item.description.Contains(" "),"localized memory content exists");
+                foreach(var item in GameData.Items)Check(!string.IsNullOrEmpty(item.name)&&item.description.Contains(" "),"localized chest item content exists");
                 foreach(var weapon in GameData.Weapons)Check(weapon.description!=null&&weapon.description.Contains(" "),"localized weapon description exists");
                 Check(I18n.T("Both companions must press Ready.")=="Оба игрока должны нажать «Готов».","lobby status translated locally");
             }
@@ -181,7 +222,7 @@ namespace Era.Editor
             sim.State.players.RemoveAt(1);time=sim.State.elapsed;Step(sim,.5f);Check(!sim.UpgradePaused&&sim.State.elapsed>time,"host stays unpaused after companion disconnects");
         }
         static PlayerState Arm(Simulation sim,WeaponKind kind)
-        {var p=sim.State.Player(0);p.weapons=new[]{(int)kind,-1,-1,-1};p.weaponLevels=new[]{1,0,0,0};p.weaponTimers=new float[4];return p;}
+        {var p=sim.State.Player(0);p.weapons=new[]{(int)kind,-1};p.weaponLevels=new[]{1,0};p.weaponTimers=new float[2];return p;}
         static EnemyState Target(Simulation sim,PlayerState p,Vector3 offset)
         {var e=sim.SpawnEnemy(EnemyKind.Brute);e.position=p.position+offset;e.frozen=100;e.hp=e.maxHp=500;return e;}
         static void Weapons()
@@ -195,14 +236,15 @@ namespace Era.Editor
             sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp<500&&c.hp<500&&sim.State.effects.FindAll(e=>e.kind==10).Count==3,"staff chains lightning between three distinct targets");
             sim=New();p=Arm(sim,WeaponKind.Bow);a=Target(sim,p,Vector3.forward*20);sim.Step(1f/30,new Dictionary<int,InputFrame>());
             Check(sim.State.projectiles.Count==1&&a.hp==500,"bow launches a travelling arrow at long range");Step(sim,.65f);Check(a.hp<500,"arrow hits its distant target along swept segment");
-            for(int i=0;i<4;i++)sim.GiveWeapon(p,(WeaponKind)i);Check(new HashSet<int>(p.weapons).Count==4&&p.weapons.Length==4,"all four weapon types occupy exactly four slots");
-            int slot=Array.IndexOf(p.weapons,(int)WeaponKind.Axe);sim.GiveWeapon(p,WeaponKind.Axe);Check(p.weaponLevels[slot]==2&&p.weapons.Length==4,"duplicate weapon upgrades existing slot");
+            Check(sim.GiveWeapon(p,WeaponKind.Axe)<0&&p.weapons[1]<0,"second weapon cannot be granted before level 25");
+            sim.State.level=25;sim.GiveWeapon(p,WeaponKind.Axe);Check(p.weapons.Length==2&&p.weapons[0]==(int)WeaponKind.Bow&&p.weapons[1]==(int)WeaponKind.Axe&&sim.GiveWeapon(p,WeaponKind.Spear)<0,"two slots preserve the character weapon and reject a third weapon");
+            int slot=Array.IndexOf(p.weapons,(int)WeaponKind.Axe);sim.GiveWeapon(p,WeaponKind.Axe);Check(p.weaponLevels[slot]==2&&p.weapons.Length==2,"duplicate weapon upgrades existing slot");
             int gold=sim.State.coins;sim.GiveWeapon(p,WeaponKind.Axe,20);Check(p.weaponLevels[slot]==5&&sim.State.coins==gold+17*8,"weapon level cap converts excess duplicates into gold");
         }
         static void Combat()
         {
             var sim = New(); var p = sim.State.Player(0);
-            p.weapons=new[]{-1,-1,-1,-1};
+            p.weapons=new[]{-1,-1};
             var e = sim.SpawnEnemy(EnemyKind.Brute); e.position = p.position + Vector3.forward * 3;
             sim.Step(1f / 30, new Dictionary<int, InputFrame> { [0] = new InputFrame { primary = true } });
             Check(e.hp < e.maxHp && p.qCooldown > 7.9f, "Q damage and cooldown");
@@ -231,20 +273,59 @@ namespace Era.Editor
             var sim = New(true); var a = sim.State.Player(0); var b = sim.State.Player(1);
             sim.GrantExperience(12);
             Check(sim.State.level == 2 && a.pendingLevels == 1 && b.pendingLevels == 1, "shared XP levels both players");
-            Check(a.offers.Length == 3 && new HashSet<int>(a.offers).Count == 3, "three unique upgrade offers");
+            Check(a.offers.Length == 3 && a.offerRarities.Length==3 && new HashSet<int>(a.offers).Count == 3, "three unique attribute offers carry rarity rolls");
             Check(!sim.ChooseItem(a, 6), "invalid upgrade rejected");
             Check(sim.ChooseItem(a, 0) && a.pendingLevels == 0 && b.pendingLevels == 1, "upgrades are individual");
-            sim.ApplyItem(a, 0); Check(a.maxHp >= 125, "health item");
-            float damage = a.damage; sim.ApplyItem(a, 1); Check(Mathf.Abs(a.damage - damage - 0.2f) < 0.001f, "damage item stacks");
-            for (int i = 0; i < 10; i++) sim.ApplyItem(a, 5);
-            Check(a.projectileCount == 5, "projectile cap");
-            sim.State.pickups.Add(new PickupState { value = 4 }); int xp = sim.State.xp;
-            sim.ApplyItem(a, 4); Check(sim.State.pickups.Count == 0 && sim.State.xp == xp + 4, "lantern grants all arena XP");
+            float hp=a.maxHp;sim.ApplyItem(a,2);Check(a.maxHp>hp,"stout heart increases maximum health");
+            float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.15f)<.001f,"sharp blade stacks damage");
+            for(int i=0;i<20;i++)sim.ApplyItem(a,9);Check(a.projectileCount==12,"projectile count has a safe cap");
+            hp=a.maxHp;sim.ApplyAttribute(a,4,3);Check(Mathf.Abs(a.maxHp-hp-40)<.001f,"legendary health attribute grants forty maximum health");
+            float crit=a.critChance;sim.ApplyAttribute(a,2,2);Check(Mathf.Abs(a.critChance-crit-.15f)<.001f,"epic critical chance grants fifteen percent");
+            int[] tiers=new int[4];foreach(var item in GameData.Items)tiers[(int)item.rarity]++;Check(GameData.Items.Length==31&&tiers[0]==10&&tiers[1]==7&&tiers[2]==7&&tiers[3]==7,"chest catalogue contains all thirty-one rarity-grouped items");
+            var low=New();var high=New();high.State.Player(0).luck=12;int lowHigh=0,highHigh=0,lowRare=0,highRare=0;for(int i=0;i<800;i++){int lr=low.RollRarity(low.State.Player(0),0),hr=high.RollRarity(high.State.Player(0),0);if(lr>=2)lowHigh++;if(hr>=2)highHigh++;if(lr==0)lowRare++;if(hr==0)highRare++;}
+            Check(highHigh>lowHigh&&highRare<lowRare,"luck shifts rolls from low tier toward epic and legendary rewards");
+            for(int stat=0;stat<GameData.Attributes.Length;stat++)
+            {
+                int count=a.attributes[stat],stack=a.accessories[stat*4+2];sim.ApplyAccessory(a,stat,2);
+                Check(a.attributes[stat]==count+1&&a.accessories[stat*4+2]==stack+1&&!string.IsNullOrEmpty(GameData.AccessoryName(stat)),"accessory improves stat and records rarity stack "+stat);
+            }
+            Check(GameData.Attributes.Length==21&&GameData.AccessoryIcons.Length==21,"accessory catalogue covers all stats including gold gain");
+        }
+        static void AurasAndMilestone()
+        {
+            var sim=new Simulation(53,true);var lumen=sim.AddPlayer(0,"Lumen",Hero.Lumen);var ally=sim.AddPlayer(1,"Ally",Hero.Ember);var third=sim.AddPlayer(2,"Third",Hero.Echo);
+            foreach(var player in sim.State.players)sim.SetReady(player.id,true);sim.Start();sim.State.spawnTimer=1000;
+            Check(lumen.weapons.Length==2&&lumen.weapons[0]==(int)WeaponKind.Aura&&lumen.auraLevels[0]==1,"Lumen starts with aura weapon and Fortune aura");
+            ally.position=lumen.position+Vector3.right;sim.RefreshAuras();Check(Mathf.Approximately(ally.auraBonuses[0],.15f),"Fortune aura gives nearby allies a fifteen percent rarity-weight bonus");
+            sim.LearnAura(lumen,3);sim.RefreshAuras();float hp=ally.maxHp;Check(Mathf.Abs(hp-115)<.01f,"Vitality aura increases maximum HP");
+            for(int i=0;i<50;i++)sim.RefreshAuras();Check(Mathf.Abs(ally.maxHp-hp)<.01f,"repeated aura refresh never compounds max health");
+            ally.position=lumen.position+Vector3.forward*40;sim.RefreshAuras();Check(ally.auraBonuses[0]==0&&Mathf.Abs(ally.maxHp-100)<.01f,"leaving aura range removes temporary buffs");
+            ally.position=lumen.position;sim.RefreshAuras();lumen.downed=true;sim.RefreshAuras();Check(ally.auraBonuses[0]==0&&Mathf.Abs(ally.maxHp-100)<.01f,"downed Lumen cannot buff allies");lumen.downed=false;
+            sim.LearnAura(lumen,1);sim.LearnAura(lumen,2);sim.LearnAura(lumen,4);Check(!sim.LearnAura(lumen,5)&&Array.FindAll(lumen.auraLevels,n=>n>0).Length==5,"five-aura limit blocks learning a sixth type");
+            int rank=lumen.auraLevels[0];Check(sim.LearnAura(lumen,0)&&lumen.auraLevels[0]==rank+1,"existing auras can always be improved");
+            sim.GrantExperience(12);Check(lumen.offerKind==RewardKind.Accessory,"Lumen receives an accessory on each level");sim.ChooseItem(lumen,0);
+            Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==5,"Lumen also chooses among owned auras once five are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
+            int total=0;for(int level=2;level<26;level++)total+=12+(level-1)*7;sim.GrantExperience(total);
+            bool milestone=false;int choices=0;while(ally.pendingLevels>0&&choices++<100)
+            {
+                if(ally.offerKind==RewardKind.Weapon){milestone=ally.completedLevel+1==25;Check(ally.offers.Length==3&&Array.IndexOf(ally.offers,ally.weapons[0])<0,"level 25 offers three distinct non-starter weapons");}
+                sim.ChooseItem(ally,0);
+            }
+            Check(milestone&&ally.weapons[1]>=0&&ally.completedLevel==26,"queued levels preserve the level-25 weapon milestone");
+            int accessoryCount=0;foreach(int count in ally.attributes)accessoryCount+=count;Check(accessoryCount==25,"weapon selection does not replace the level-25 accessory");
+            third.hero=Hero.Lumen;third.weapons=new[]{(int)WeaponKind.Aura,-1};third.weaponLevels=new[]{1,0};third.auraLevels[0]=1;third.position=lumen.position;
+            sim.RefreshAuras();float bonus=third.auraBonuses[0];Check(Mathf.Approximately(bonus,GameData.AuraPower(0,lumen.auraLevels[0])),"same aura from multiple sources uses strongest rank without stacking");
+            sim.State.players.Remove(lumen);sim.RefreshAuras();Check(Mathf.Approximately(third.auraBonuses[0],.15f),"disconnect removes only the departed aura source");
+            var target=sim.SpawnEnemy();target.hp=1;sim.DamageEnemy(target,ally,100);Check(sim.State.hits.Exists(h=>h.target==target.id&&h.damage>=100)&&!sim.State.enemies.Contains(target),"lethal hits retain damage numbers after enemy removal");
+            var fractions=New();var owner=fractions.State.Player(0);owner.xpGain=1.08f;owner.goldGain=1.08f;
+            for(int i=0;i<10;i++){var enemy=fractions.SpawnEnemy(EnemyKind.Wisp);fractions.DamageEnemy(enemy,owner,9999);}
+            int xp=0,gold=0;foreach(var pickup in fractions.State.pickups){if(pickup.kind==PickupKind.Experience)xp+=pickup.value;else gold+=pickup.value;}
+            Check(xp==21&&gold==43,"small XP and gold bonuses accumulate instead of disappearing to per-kill rounding");
         }
         static void Cooperation()
         {
             var sim = New(true); var a = sim.State.Player(0); var b = sim.State.Player(1);
-            Check(sim.AddPlayer(2, "Third", Hero.Ember) == null, "two-player limit");
+            Check(sim.AddPlayer(2, "Third", Hero.Lumen) != null&&sim.AddPlayer(3,"Fourth",Hero.Ember)==null, "three-player limit");
             a.hp = 20; b.hp = 30;
             sim.Step(1f / 30, new Dictionary<int, InputFrame> { [1] = new InputFrame { secondary = true } });
             Check(a.hp == 55 && b.hp == 65 && a.shield > 24, "Echo heals and shields both players");
@@ -256,22 +337,55 @@ namespace Era.Editor
             a.invulnerability = 0; sim.DamagePlayer(a, 1000); b.position = Vector3.forward * 20;
             Step(sim, 25.2f); Check(a.eliminated, "bleedout expires");
         }
+        static void Campaign()
+        {
+            var sim=New(true);var a=sim.State.Player(0);var b=sim.State.Player(1);var c=sim.AddPlayer(2,"Lumen",Hero.Lumen);
+            float previousHp=0;int serial=0;
+            for(int stage=1;stage<=7;stage++)
+            {
+                WorldMap.SetStage(stage);float low=999,high=-999;
+                for(int x=-150;x<=150;x+=30)for(int z=-150;z<=150;z+=30){float h=WorldMap.Height(x,z);low=Mathf.Min(low,h);high=Mathf.Max(high,h);}
+                Check(high-low>5&&Mathf.Abs(WorldMap.Height(0,0))<.001f,"stage has traversable relief and a flat arrival clearing: "+stage);
+                sim.State.spawnTimer=1000;var boss=sim.SpawnEnemy(EnemyKind.Warden);
+                Check(boss.bossStage==stage&&boss.maxHp>previousHp,"boss appearance ID and health increase on stage "+stage);previousHp=boss.maxHp;
+                boss.position=WorldMap.OnGround(0,10);boss.specialTimer=0;boss.frozen=0;sim.Step(1f/30,new Dictionary<int,InputFrame>());
+                Check(sim.State.hazards.Count>0&&sim.State.hazards.TrueForAll(h=>h.delay>0&&h.style==stage),"boss attacks have stage-specific telegraphed hazards: "+stage);
+                var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.stage==stage&&copy.hazards.Count==sim.State.hazards.Count,"stage and boss hazards survive snapshot: "+stage);
+                sim.DamageEnemy(boss,a,999999);
+                if(stage==7){Check(sim.State.phase==RunPhase.Victory&&!sim.State.portal.active,"only the seventh boss completes the campaign");break;}
+                Check(sim.State.phase==RunPhase.Playing&&sim.State.portal.active&&sim.State.enemies.Count==0,"boss defeat opens a safe portal instead of ending the run: "+stage);
+                var far=b.position;b.position=sim.State.portal.position+Vector3.right*20;Check(!sim.TryUsePortal(b)&&sim.State.stage==stage,"portal requires a nearby living player");
+                b.position=sim.State.portal.position;c.downed=true;c.hp=0;
+                int level=sim.State.level,weapon=a.weapons[0],accessories=a.attributes[0];sim.ApplyAccessory(a,0,0);
+                Check(sim.TryUsePortal(b)&&sim.State.stage==stage+1&&sim.State.stageSerial==++serial,"any ally can move the party through a portal: "+stage);
+                Check(sim.State.level==level&&a.weapons[0]==weapon&&a.attributes[0]==accessories+1&&!c.downed&&!c.eliminated&&c.hp>0,"party transition preserves builds and restores fallen allies");
+                Check(sim.State.players.TrueForAll(p=>Vector3.Distance(p.position,Vector3.zero)<4)&&sim.State.chests.Count==30&&sim.State.shrines.Count==12&&sim.State.stageElapsed==0&&!sim.State.bossSpawned,"new stage resets enemies, treasure, clock and party positions");
+                Check(!sim.TryUsePortal(b),"one interaction cannot skip two stages");
+            }
+            WorldMap.SetStage(1);
+            var damage=new Simulation(47,true);var lumen=damage.AddPlayer(0,"Lumen",Hero.Lumen);var ally=damage.AddPlayer(1,"Ally",Hero.Ember);ally.weapons=new[]{-1,-1};damage.SetReady(0,true);damage.SetReady(1,true);damage.Start();damage.State.spawnTimer=1000;lumen.critChance=0;
+            Check(Mathf.Abs(Simulation.AuraRadius(lumen)-12/1.3f)<.001f,"Lumen radius is exactly 1.3 times smaller");
+            var near=damage.SpawnEnemy(EnemyKind.Brute);near.position=lumen.position+Vector3.forward*5;near.hp=near.maxHp=1000;near.frozen=10;
+            var outside=damage.SpawnEnemy(EnemyKind.Brute);outside.position=lumen.position+Vector3.forward*11;outside.hp=outside.maxHp=1000;outside.frozen=10;
+            Step(damage,1.02f);Check(Mathf.Abs(near.hp-990)<.01f&&outside.hp==1000,"Lumen aura deals ten base damage per second only in its reduced radius");
+            damage.GrantExperience(12);damage.ChooseItem(lumen,0);Check(lumen.offerKind==RewardKind.Aura&&lumen.offers.Length==8&&Array.IndexOf(lumen.offers,0)>=0,"each Lumen level can upgrade the current aura or add a new type");
+        }
         static void Endings()
         {
             var sim = New(); sim.DamagePlayer(sim.State.Player(0), 999); Step(sim, 0.05f);
             Check(sim.State.phase == RunPhase.Defeat, "solo death ends run");
-            sim = New(); sim.State.elapsed = 299.99f; Step(sim, 0.05f);
+            sim = New(); sim.State.stageElapsed = GameData.BossTime-.01f; Step(sim, 0.05f);
             var boss = sim.State.enemies.Find(e => e.kind == EnemyKind.Warden);
-            Check(boss != null && sim.State.bossSpawned, "boss appears at five minutes");
+            Check(boss != null && sim.State.bossSpawned, "boss appears after the stage survival timer");
             sim.DamageEnemy(boss, sim.State.Player(0), 999999);
-            Check(sim.State.phase == RunPhase.Victory, "boss kill wins run");
+            Check(sim.State.phase == RunPhase.Playing&&sim.State.portal.active, "first boss kill opens the next-realm portal");
         }
         static void Serialization()
         {
-            var sim = New(true); sim.GrantExperience(12); sim.SpawnEnemy();sim.State.coins=100;sim.State.Player(0).position=sim.State.chests[0].position;sim.TryOpenChest(sim.State.Player(0));sim.GiveWeapon(sim.State.Player(0),WeaponKind.Spear);
+            var sim = New(true); sim.GrantExperience(12); sim.SpawnEnemy();sim.State.coins=100;sim.State.Player(0).position=sim.State.chests[0].position;sim.TryOpenChest(sim.State.Player(0));sim.State.level=25;sim.GiveWeapon(sim.State.Player(0),WeaponKind.Spear);
             var copy = JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
-            Check(copy.players.Count == 2 && copy.enemies.Count == 1 && copy.Player(1).offers.Length == 3 && copy.level == 2, "network snapshot roundtrip");
-            Check(copy.multiplayer&&copy.loot.Count==1&&Array.IndexOf(copy.Player(0).weapons,(int)WeaponKind.Spear)>=0&&copy.Player(0).weaponLevels.Length==4,"snapshot carries multiplayer mode, animated rewards and weapon slots");
+            Check(copy.players.Count == 2 && copy.enemies.Count == 1 && copy.Player(1).offers.Length == 3 && copy.level == 25, "network snapshot roundtrip");
+            Check(copy.multiplayer&&copy.loot.Count==1&&Array.IndexOf(copy.Player(0).weapons,(int)WeaponKind.Spear)>=0&&copy.Player(0).weaponLevels.Length==2&&copy.Player(0).accessories.Length==84&&copy.Player(0).auraLevels.Length==8,"snapshot carries accessory stacks, aura ranks, floor loot and two weapon slots");
         }
         static bool Wait(Func<bool> ready, int milliseconds = 2500)
         {
@@ -281,16 +395,21 @@ namespace Era.Editor
         }
         static void Network()
         {
-            using var host = new CoopTransport(); using var client = new CoopTransport();
-            host.Host(17777); client.Join("127.0.0.1", 17777);
-            Check(Wait(() => host.Connected && client.Connected), "loopback connection");
+            using var host = new CoopTransport(); using var client = new CoopTransport();using var second=new CoopTransport();
+            host.Host(17777); client.Join("127.0.0.1", 17777);second.Join("127.0.0.1",17777);
+            Check(Wait(() => host.PeerCount==2 && client.Connected&&second.Connected), "three-player loopback connections");
             string payload = new string('Ж', 50000); bool delivered = false;
             client.Send(payload);
             Check(Wait(() => { while (host.TryDequeue(out var e)) if (e.kind == "message") delivered |= e.text == payload; return delivered; }), "UTF8 frame survives TCP fragmentation");
             delivered = false; host.Send("snapshot", true);
             Check(Wait(() => { while (client.TryDequeue(out var e)) if (e.kind == "message") delivered |= e.text == "snapshot"; return delivered; }), "server snapshots reach client");
+            bool other=false;Check(Wait(()=>{while(second.TryDequeue(out var e))if(e.kind=="message")other|=e.text=="snapshot";return other;}),"broadcast reaches the second guest too");
+            int peer=-1;second.Send("identify");Check(Wait(()=>{while(host.TryDequeue(out var e))if(e.kind=="message"&&e.text=="identify")peer=e.peer;return peer>=0;}),"messages preserve the sending guest identity");
+            host.SendTo(peer,"private");other=false;Check(Wait(()=>{while(second.TryDequeue(out var e))if(e.kind=="message")other|=e.text=="private";return other;}),"addressed messages reach their guest");
+            bool leaked=false;while(client.TryDequeue(out var evt))if(evt.text=="private")leaked=true;Check(!leaked,"private guest messages do not leak to another player");
             client.Dispose();
-            Check(Wait(() => !host.Connected), "disconnect detected");
+            Check(Wait(() => host.PeerCount==1&&second.Connected), "disconnect leaves the other guest connected");
+            second.Dispose();Check(Wait(()=>!host.Connected),"last guest disconnect detected");
         }
     }
 }

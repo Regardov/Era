@@ -23,7 +23,7 @@ namespace Era
                 if(prefab!=null){var copy=Instantiate(prefab,parent,false);copy.name=name;return copy.GetComponent<HeroMotion>();}
             }
             var root=v.Group(name,parent);var m=root.gameObject.AddComponent<HeroMotion>();m.heroType=hero;
-            Color accent=GameData.HeroColor(hero),cloth=hero==Hero.Ember?new Color(0.65f,0.36f,0.28f):new Color(0.31f,0.48f,0.51f);
+            Color accent=GameData.HeroColor(hero),cloth=hero==Hero.Lumen?new Color(.77f,.73f,.88f):hero==Hero.Ember?new Color(0.65f,0.36f,0.28f):new Color(0.31f,0.48f,0.51f);
             Color cream=new Color(0.88f,0.83f,0.70f),dark=new Color(0.25f,0.31f,0.31f),skin=new Color(0.88f,0.70f,0.54f);
             m.rig=v.Group("Animation Rig",root);m.hips=v.Group("Hips",m.rig,new Vector3(0,1.01f,0));
             v.Ellipsoid("Tunic skirt",m.hips,new Vector3(0,0.04f,0),new Vector3(0.74f,0.56f,0.58f),cloth);
@@ -42,7 +42,13 @@ namespace Era
                 v.Ellipsoid("Eye",m.head,new Vector3(i*0.115f,0.015f,0.365f),new Vector3(0.055f,0.075f,0.025f),dark);
                 v.Ellipsoid("Cheek",m.head,new Vector3(i*0.17f,-0.10f,0.351f),new Vector3(0.08f,0.04f,0.025f),new Color(0.87f,0.54f,0.46f));
             }
-            if(hero==Hero.Echo)
+            if(hero==Hero.Lumen)
+            {
+                v.Ring("Lumen halo",m.head,.49f,new Color(1,.88f,.55f),.045f).transform.localPosition=Vector3.up*.52f;
+                v.Ellipsoid("Light sigil",m.spine,new Vector3(0,.35f,.32f),Vector3.one*.22f,accent,true);
+                for(int i=0;i<3;i++){float a=i*Mathf.PI*2/3;WorldVfx.Crystal(v,m.head,"Halo prism",new Vector3(Mathf.Cos(a)*.49f,.52f,Mathf.Sin(a)*.49f),.13f,GameData.AuraColors[i]);}
+            }
+            else if(hero==Hero.Echo)
             {
                 v.Shape("Hat brim",PrimitiveType.Cylinder,m.head,new Vector3(0,0.28f,0),new Vector3(1.05f,0.045f,0.98f),cloth);
                 var hat=v.Cone("Soft pointed hat",m.head,new Vector3(0,0.30f,0),0.38f,0.60f,cloth,16);hat.transform.localRotation=Quaternion.Euler(0,0,-11);
