@@ -2,7 +2,7 @@
 
 В **Assets** скачайте **Era-Windows.zip**, извлеките весь архив и запустите **Era.exe**. Unity устанавливать не нужно. Оставьте рядом Era_Data, UnityPlayer.dll и остальные файлы. [Инструкция для скачивания](https://github.com/Regardov/Era/blob/main/Docs/DOWNLOAD-RU.md).
 
-Репозиторий закрытый: для скачивания приглашённый пользователь должен принять приглашение и войти в свой GitHub.
+Игра доступна всем, регистрация в GitHub и приглашение не нужны. **[Скачать Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.10.0/Era-Windows.zip)**.
 
 ## Новое
 
