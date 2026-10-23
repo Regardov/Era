@@ -22,7 +22,7 @@ namespace Era
         {
             if(State.phase!=RunPhase.Playing||!State.portal.active||p.downed||p.eliminated||Vector3.Distance(p.position,State.portal.position)>3.5f||State.stage>=CampaignData.StageCount)return false;
             State.stage++;State.stageSerial++;WorldMap.SetStage(State.stage);State.stageElapsed=0;State.wave=1;State.nextWave=60;State.waveQuota=State.waveSpawned=0;State.waveActive=false;State.spawnCursor=0;
-            State.portal.active=false;State.bossSpawned=false;State.spawnTimer=0;
+            State.portal.active=false;State.bossSpawned=false;State.spawnTimer=0;State.chestsOpenedInStage=0;
             State.enemies.Clear();State.projectiles.Clear();State.pickups.Clear();State.effects.Clear();State.hits.Clear();State.hazards.Clear();State.chests.Clear();State.loot.Clear();State.shrines.Clear();State.itemFields.Clear();
             WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
             foreach(var player in State.players)

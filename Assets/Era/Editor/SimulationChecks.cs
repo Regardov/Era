@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            assertions+=RoguelikeChecks.Run();
+            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -98,13 +98,13 @@ namespace Era.Editor
         static void ChestPricesAndAuraProgress()
         {
             var sim=New(true);var a=sim.State.Player(0);var b=sim.State.Player(1);var first=sim.State.chests[0];var second=sim.State.chests[1];
-            Check(first.baseCost==25&&first.cost==25&&second.cost==25,"first chest uses its original price");
-            a.position=first.position;Check(sim.TryOpenChest(a)&&sim.State.coins==5&&second.cost==28&&first.cost==25,"successful purchase increases all remaining prices by ten percent rounded up, retaining the paid price");
-            b.position=second.position;Check(!sim.TryOpenChest(b)&&sim.State.openedChests==1&&second.cost==28,"failed purchase cannot increase the team price");
-            sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==972&&sim.State.openedChests==2&&sim.State.chests[2].cost==30,"ally pays the increased price and advances the same team counter");
+            Check(first.baseCost==12&&first.cost==12&&second.cost==14,"first chest uses its original price");
+            a.position=first.position;Check(sim.TryOpenChest(a)&&sim.State.coins==18&&second.cost==24&&first.cost==12,"successful purchase multiplies remaining prices by five thirds rounded up, retaining the paid price");
+            b.position=second.position;Check(!sim.TryOpenChest(b)&&sim.State.openedChests==1&&second.cost==24,"failed purchase cannot increase the team price");
+            sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==976&&sim.State.openedChests==2&&sim.State.chests[2].cost==45,"ally pays the increased price and advances the same team counter");
             Check(!sim.TryOpenChest(b)&&sim.State.openedChests==2,"repeated interaction with an opened chest cannot advance prices");
             var boss=sim.SpawnEnemy(EnemyKind.Warden);sim.DamageEnemy(boss,a,99999999);a.position=sim.State.portal.position;
-            Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,2)),"portal transition preserves price progression for the new realm");
+            Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chestsOpenedInStage==0&&sim.State.chests.TrueForAll(c=>c.cost==c.baseCost),"portal transition preserves price progression for the new realm");
             var lumen=sim.AddPlayer(2,"Lumen",Hero.Lumen);Check(GameData.AuraUpgradeCount(lumen,0)==0,"starting aura is rank one with zero upgrades");
             sim.LearnAura(lumen,0);sim.LearnAura(lumen,0);Check(lumen.auraLevels[0]==3&&GameData.AuraUpgradeCount(lumen,0)==2,"two repeated choices produce rank three and two upgrades");
             sim.LearnAura(lumen,3);Check(lumen.currentAura==3&&lumen.auraLevels[3]==1&&GameData.AuraUpgradeCount(lumen,3)==0,"new aura becomes current without counting acquisition as an upgrade");
@@ -316,12 +316,12 @@ namespace Era.Editor
         static void Weapons()
         {
             var sim=New();var p=Arm(sim,WeaponKind.Axe);var a=Target(sim,p,Vector3.forward*2);var b=Target(sim,p,new Vector3(2,0,2));var c=Target(sim,p,Vector3.back*4);
-            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp<500&&c.hp==500,"axe cleaves a forward arc and leaves targets behind untouched");
+            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp==500&&c.hp==500,"one axe swing hits only its primary target");
             float hp=a.hp;Step(sim,.3f);Check(a.hp==hp,"weapon respects its own cooldown");
             sim=New();p=Arm(sim,WeaponKind.Spear);a=Target(sim,p,Vector3.forward*2);b=Target(sim,p,Vector3.forward*6);c=Target(sim,p,new Vector3(3,0,4));
-            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp<500&&c.hp==500,"spear pierces multiple enemies on a line");
+            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp==500&&c.hp==500,"one spear thrust cannot pierce another enemy");
             sim=New();p=Arm(sim,WeaponKind.LightningStaff);a=Target(sim,p,Vector3.forward*5);b=Target(sim,p,new Vector3(3,0,5));c=Target(sim,p,new Vector3(6,0,5));
-            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp<500&&c.hp<500&&sim.State.effects.FindAll(e=>e.kind==10).Count==3,"staff chains lightning between three distinct targets");
+            sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp==500&&c.hp==500&&sim.State.effects.FindAll(e=>e.kind==10).Count==1,"staff hits one target without its ricochet item");
             sim=New();p=Arm(sim,WeaponKind.Bow);a=Target(sim,p,Vector3.forward*20);sim.Step(1f/30,new Dictionary<int,InputFrame>());
             Check(sim.State.projectiles.Count==1&&a.hp==500,"bow launches a travelling arrow at long range");Step(sim,.65f);Check(a.hp<500,"arrow hits its distant target along swept segment");
             Check(sim.GiveWeapon(p,WeaponKind.Axe)<0&&p.weapons[1]<0,"second weapon cannot be granted before level 25");

@@ -69,10 +69,10 @@ namespace Era.Editor
             var s=New();var p=s.State.Player(0);var e=Target(s);Give(s,ItemId.FlameBlade);s.DamageEnemy(e,p,10);float hp=e.hp;
             Check(e.ailments.Exists(a=>a.kind==Ailment.Burn)&&Mathf.Approximately(hp,9990),"fire applies burn without a hidden flat damage buff");Step(s,.6f);Check(e.hp<hp,"burn deals periodic damage");
             s=New();p=s.State.Player(0);e=Target(s);Give(s,ItemId.FlameBlade,ItemId.IceCore,ItemId.SteamValve);s.DamageEnemy(e,p,10);
-            Check(e.hp<=9930&&!e.ailments.Exists(a=>a.kind==Ailment.Burn||a.kind==Ailment.Chill),"fire plus frost consumes statuses for steam explosion");
+            Check(e.hp<=9955&&!e.ailments.Exists(a=>a.kind==Ailment.Burn||a.kind==Ailment.Chill),"fire plus frost consumes statuses for steam explosion");
             s=New();p=s.State.Player(0);e=Target(s);Give(s,ItemId.VenomNeedle,ItemId.SerratedCoin);p.critChance=1;s.DamageEnemy(e,p,10);
             Check(e.ailments.Exists(a=>a.kind==Ailment.Poison)&&e.ailments.Exists(a=>a.kind==Ailment.Bleed),"poison and critical bleeding coexist");
-            s=New();p=s.State.Player(0);e=Target(s);Give(s,ItemId.TimeMaster);s.DamageEnemy(e,p,100,true,true);Check(e.hp==9900&&s.State.itemFields.Count==1,"time echo is a delayed entity");Step(s,1.1f);Check(Mathf.Abs(e.hp-9865)<.01f&&s.State.itemFields.Count==0,"echo repeats 35 percent once without recursion");
+            s=New();p=s.State.Player(0);e=Target(s);Give(s,ItemId.TimeMaster);s.DamageEnemy(e,p,100,true,true);Check(e.hp==9900&&s.State.itemFields.Count==1,"time echo is a delayed entity");Step(s,1.1f);Check(Mathf.Abs(e.hp-9880)<.01f&&s.State.itemFields.Count==0,"echo repeats 20 percent once without recursion");
             s=New();p=s.State.Player(0);e=Target(s);Give(s,ItemId.IceCore,ItemId.GlacialPrison);e.frozen=0;for(int n=0;n<3;n++)s.DamageEnemy(e,p,1);Check(e.frozen>=2,"three chilled hits produce an actual freeze");
         }
         static void Builds()
@@ -87,20 +87,22 @@ namespace Era.Editor
             s=New();p=s.State.Player(0);Give(s,ItemId.InfinitePower,ItemId.WorldSeed);for(int n=0;n<25;n++){e=Target(s,20);s.DamageEnemy(e,p,20000);}
             Check(p.damage>1&&p.maxHp==102&&p.areaSize>1&&s.State.itemFields.Exists(f=>f.item==(int)ItemId.WorldSeed),"legendary kill milestones grow damage, health and a real root field");
             s=New();p=s.State.Player(0);Give(s,ItemId.ImmortalContract);s.DamagePlayer(p,200);Check(!p.downed&&p.maxHp==80&&p.hp==80&&p.damage>1.39f,"immortal contract trades max health for revival and permanent growth");
-            s=New();p=s.State.Player(0);Give(s,ItemId.EventHorizon);s.State.projectiles.Add(new ProjectileState{id=s.State.nextId++,owner=-1,hostile=true,position=p.position+Vector3.up+Vector3.forward*3,direction=Vector3.back,damage=20,speed=10});Step(s,.1f);Check(s.State.projectiles.Count==0&&p.itemValues[(int)ItemId.EventHorizon]==20&&p.hp==100,"event horizon absorbs hostile projectiles into stored power");
+            s=New();p=s.State.Player(0);Give(s,ItemId.EventHorizon);e=Target(s);p.shield=100;s.DamagePlayer(p,30);
+            Check(p.hp==100&&Mathf.Approximately(p.itemValues[(int)ItemId.EventHorizon],15),"event horizon stores half the received damage, including shield absorption");
+            Step(s,.1f);Check(Mathf.Approximately(e.hp,9977.5f)&&p.itemValues[(int)ItemId.EventHorizon]==0,"event horizon releases 150 percent stored damage and empties its reservoir");
         }
         static void EnemyRoles()
         {
             foreach(var kind in new[]{EnemyKind.SkeletonArcher,EnemyKind.AcidSlime,EnemyKind.CrystalGolem,EnemyKind.OgreShaman})
             {
-                var s=New();var e=Target(s,12,kind);e.frozen=0;e.attackTimer=0;e.specialTimer=100;Step(s,.033f);Check(e.meleeWindup>0,"ranged attack has a visible windup "+kind);Step(s,.8f);Check(s.State.projectiles.Exists(b=>b.hostile),"ranged role launches damaging projectiles "+kind);
+                var s=New();var e=Target(s,1,kind);e.frozen=0;e.attackTimer=0;e.specialTimer=100;Step(s,.033f);Check(e.meleeWindup>0,"converted melee role has a visible windup "+kind);Step(s,1.05f);Check(!s.State.projectiles.Exists(b=>b.hostile)&&s.State.Player(0).hp<100,"former ranged role deals melee damage without projectiles "+kind);
             }
             var sim=New();var p=sim.State.Player(0);var necro=Target(sim,12,EnemyKind.Necromancer);necro.frozen=0;necro.specialTimer=0;Step(sim,1.3f);Check(sim.State.enemies.FindAll(e=>e.kind==EnemyKind.Skeleton&&e.summonGeneration==1).Count==3,"necromancer completes summon animation before creating minions");
             sim=New();p=sim.State.Player(0);var slime=Target(sim,10,EnemyKind.Slime);sim.DamageEnemy(slime,p,20000);Check(sim.State.enemies.Count==2&&sim.State.enemies.TrueForAll(e=>e.summonGeneration==1),"slime divides into two bounded children");var child=sim.State.enemies[0];sim.DamageEnemy(child,p,20000);Check(sim.State.enemies.Count==1,"slime children do not divide recursively");
             sim=New();p=sim.State.Player(0);var stone=Target(sim,10,EnemyKind.StoneGolem);sim.DamageEnemy(stone,p,100,false);Check(Mathf.Approximately(stone.hp,9928),"stone tank has actual incoming damage reduction");
             var bat=sim.SpawnEnemy(EnemyKind.Bat);Check(bat.position.y-WorldMap.Ground(bat.position)>1.5f,"flying enemies have elevated combat positions");
             sim=New();p=sim.State.Player(0);bat=sim.SpawnEnemy(EnemyKind.Bat);bat.position=p.position+Vector3.forward;bat.position.y=WorldMap.Ground(bat.position)+1.8f;bat.spawnGrace=0;bat.attackTimer=0;Step(sim,1);Check(p.hp<100,"flying bat dives to a height that can damage a grounded player");
-            sim=New();p=sim.State.Player(0);sim.State.projectiles.Add(new ProjectileState{id=sim.State.nextId++,owner=-1,hostile=true,position=p.position+Vector3.up*.95f,direction=Vector3.forward,speed=1,damage=17});Step(sim,.033f);Check(p.hp==83,"hostile swept projectile hitbox damages player");
+            sim=New();p=sim.State.Player(0);sim.State.projectiles.Add(new ProjectileState{id=sim.State.nextId++,owner=-1,hostile=true,position=p.position+Vector3.up*.95f,direction=Vector3.forward,speed=1,damage=17});Step(sim,.033f);Check(p.hp==100&&sim.State.projectiles.Count==0,"obsolete hostile projectiles are discarded");
         }
         static void Snapshots()
         {

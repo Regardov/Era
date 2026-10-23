@@ -8,6 +8,7 @@ namespace Era
     {
         public Transform[] bones;
         public Vector3[] originalLocalPositions;
+        public Vector3[] shapedLocalPositions;
         public bool extendForearms;
         Vector3[] targets;
         public static Vector3 Shape(Vector3 point,bool head=false,bool halo=false)
@@ -36,6 +37,18 @@ namespace Era
         void LateUpdate()
         {
             if(bones==null||GameApp.Instance?.WorldPaused==true)return;
+            ApplyPose();
+        }
+        public void ApplyPose()
+        {
+            if(shapedLocalPositions!=null&&shapedLocalPositions.Length==bones.Length)
+            {
+                // Retarget local bind lengths. Global height remapping scaled crouching heads
+                // differently from the torso and opened a gap at the neck.
+                for(int i=0;i<bones.Length;i++)
+                {var delta=bones[i].localPosition-originalLocalPositions[i];bones[i].localPosition=shapedLocalPositions[i]+(bones[i].name=="hips"?delta:Vector3.zero);}
+                return;
+            }
             targets??=new Vector3[bones.Length];
             for(int i=0;i<bones.Length;i++)targets[i]=BonePosition(transform,bones[i],extendForearms);
             for(int i=0;i<bones.Length;i++)bones[i].position=transform.TransformPoint(targets[i]);

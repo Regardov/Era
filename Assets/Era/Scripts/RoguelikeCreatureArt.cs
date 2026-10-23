@@ -50,7 +50,7 @@ namespace Era
                 if(revenant){v.Facet("Shoulder plate",arm,new Vector3(0,-.02f,0),new Vector3(.21f,.14f,.22f),Iron);v.Facet("Knee plate",leg,new Vector3(0,-.35f,.10f),new Vector3(.12f,.12f,.06f),Iron);}
             }
             if(revenant){v.Facet("Armored breastplate",m.body,new Vector3(0,1.28f,.1f),new Vector3(.34f,.33f,.19f),Iron);v.Shape("Tattered tabard",PrimitiveType.Cube,m.body,new Vector3(0,.85f,.23f),new Vector3(.28f,.58f,.035f),Leather);WeaponVisuals.Create(v,m.limbs[2],WeaponKind.Sword).transform.localPosition=new Vector3(.1f,-.7f,.1f);}
-            if(archer){var bow=WeaponVisuals.Create(v,m.limbs[0],WeaponKind.Bow);bow.transform.localPosition=new Vector3(-.08f,-.56f,.17f);bow.transform.localScale=Vector3.one*.7f;v.Facet("Leather quiver",m.body,new Vector3(.2f,1.21f,-.25f),new Vector3(.11f,.4f,.12f),Leather);}
+            if(archer){var sword=WeaponVisuals.Create(v,m.limbs[0],WeaponKind.Sword);sword.transform.localPosition=new Vector3(-.08f,-.56f,.17f);sword.transform.localScale=Vector3.one*.7f;v.Facet("Round buckler",m.body,new Vector3(.38f,1.25f,.2f),new Vector3(.23f,.28f,.06f),Iron);}
             if(mage)
             {
                 v.Cone("Layered necromancer robe",m.body,new Vector3(0,.12f,0),.53f,1.3f,new Color(.17f,.10f,.24f),16);

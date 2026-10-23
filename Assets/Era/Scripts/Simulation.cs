@@ -232,8 +232,8 @@ namespace Era
             if(nearest==null)return false;
             if(State.coins<nearest.cost)
             { State.noticeKind=1;State.noticeContent=nearest.cost;State.noticeTime=2;return false; }
-            State.coins-=nearest.cost;nearest.opened=true;nearest.owner=p.id;State.openedChests++;
-            foreach(var chest in State.chests)if(!chest.opened&&!chest.free)chest.cost=GameData.ChestPrice(chest.baseCost,State.openedChests);
+            State.coins-=nearest.cost;nearest.opened=true;nearest.owner=p.id;State.openedChests++;State.chestsOpenedInStage++;
+            foreach(var chest in State.chests)if(!chest.opened&&!chest.free)chest.cost=GameData.ChestPrice(chest.baseCost,State.chestsOpenedInStage);
             RollChestReward(nearest,p);
             Effect(7,nearest.position+Vector3.up*0.7f,3);return true;
         }
@@ -283,7 +283,7 @@ namespace Era
             if(e.kind==EnemyKind.StoneGolem||e.kind==EnemyKind.CrystalGolem)damage*=.72f;
             float dealt=Mathf.Min(e.hp,damage);e.hp -= damage;e.hitSerial++;
             AddHit(e.id,e.position+Vector3.up*1.4f,damage,critical,false);
-            if(owner!=null&&proc){Heal(owner,dealt*owner.lifeSteal,true);OnItemHit(owner,e,dealt,critical,weaponHit);}
+            if(owner!=null&&proc){if(weaponHit&&random.NextDouble()<Mathf.Clamp01(owner.lifeSteal))Heal(owner,GameData.LifestealHealth(owner.lifeSteal),true);OnItemHit(owner,e,dealt,critical,weaponHit);}
             if (e.hp > 0||!State.enemies.Contains(e)) return;
             State.enemies.Remove(e);
             State.kills++;
@@ -305,10 +305,10 @@ namespace Era
         public void DamagePlayer(PlayerState p, float damage,Vector3? source=null)
         {
             if (p.downed || p.eliminated || p.invulnerability > 0) return;
-            if(random.NextDouble()<Mathf.Clamp(p.dodge,0,.85f)){if(Has(p,ItemId.DuelistClock)){p.dashCooldown=0;p.qCooldown=Mathf.Max(0,p.qCooldown-2*Stack(p,ItemId.DuelistClock));p.eCooldown=Mathf.Max(0,p.eCooldown-2*Stack(p,ItemId.DuelistClock));}return;}
+            if(random.NextDouble()<GameData.EvasionChance(p.dodge)){AddHit(p.id,p.position+Vector3.up*2.3f,0,false,true,true);if(Has(p,ItemId.DuelistClock)){p.dashCooldown=0;p.qCooldown=Mathf.Max(0,p.qCooldown-2*Stack(p,ItemId.DuelistClock));p.eCooldown=Mathf.Max(0,p.eCooldown-2*Stack(p,ItemId.DuelistClock));}return;}
             damage*=1-Mathf.Clamp(p.armor,0,.75f);
             damage*=1-Mathf.Clamp(p.auraBonuses[5],0,.65f);
-            damage*=1+.25f*Stack(p,ItemId.CrownOfGreed);
+            damage*=1+.2f*Stack(p,ItemId.CrownOfGreed);
             AddHit(p.id,p.position+Vector3.up*1.8f,damage,false,true);
             float absorb = Mathf.Min(p.shield, damage); p.shield -= absorb; damage -= absorb;
             if(Has(p,ItemId.TemporalDebt)&&damage>0)
@@ -405,7 +405,7 @@ namespace Era
                 case 0:p.damage+=v;break;case 1:p.attackSpeed+=v;break;case 2:p.critChance+=v;break;case 3:p.critDamage+=v;break;
                 case 4:p.maxHp+=v;Heal(p,v/Mathf.Max(.01f,p.healingPower));break;case 5:p.healingPower+=v;break;case 6:p.hpRegen+=v;break;
                 case 7:p.shield+=v;break;case 8:p.armor+=v;break;case 9:p.lifeSteal+=v;break;case 10:p.moveSpeed+=v;break;
-                case 11:p.dodge+=v;break;case 12:p.cooldownRate+=v;break;case 13:p.weaponRange+=v;break;case 14:p.areaSize+=v;break;
+                case 11:p.dodge=GameData.CombineEvasion(p.dodge,v);break;case 12:p.cooldownRate+=v;break;case 13:p.weaponRange+=v;break;case 14:p.areaSize+=v;break;
                 case 15:p.projectileCount=Mathf.Min(48,p.projectileCount+Mathf.RoundToInt(v));break;case 16:p.projectileSpeed+=v;break;
                 case 17:p.pickupRange+=v;break;case 18:p.luck+=v;break;case 19:p.xpGain+=v;break;case 20:p.goldGain+=v;break;
             }Effect(3,p.position,2);

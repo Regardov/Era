@@ -1,10 +1,14 @@
-# ERA: Seven Realms — v0.12
+# ERA: Seven Realms — v0.13
 
-В v0.12 добавлены **130 предметов, пять редкостей и 12 новых видов врагов**. Предметы создают статусные синергии, призывают помощников, меняют лечение и способ атаки, растут за убийства, движение, сундуки и победы над боссами. Необычные дают только характеристики; мифические меняют правила боя; легендарные раскрываются за забег. **[Полный каталог и эффекты](Docs/ITEMS-v0.12.md)** · **[Изменения, формулы и примеры билдов](Docs/RELEASE-v0.12.0.md)**.
+В v0.13 враги атакуют в ближнем бою, стрелы поражают ровно одну цель, а отдельное **Семя рикошета** добавляет переходы между врагами. Предметы перебалансированы. **Каталог всех 130 предметов доступен из главного меню и Tab**. На мир приходится **240 сундуков**; каждая покупка умножает цены оставшихся на **5/3**, с округлением вверх и сбросом роста при переходе в новый мир. Вампиризм — шанс лечения за удар, уклонение растёт от оставшейся вероятности и ограничено 95%. Щит и успешные уклонения показаны явно, подсказки характеристик рисуются поверх карточек. Обновлены волосы, шея и поза приседа всех героев.
 
-**Tab → Каталог → наведение курсора** показывает описание, стаки и синергии каждого предмета. Два дабл-шота дают три снаряда даже по единственной цели. Посох выпускает залп одновременно; меч и копьё выполняют очередь с интервалом `0.75 / 1.5^(N - 2)` секунд при `N ≥ 2`. В формуле удачи используется логарифм с присланного изображения. Новые скелеты, лучники, ревенанты, некроманты, големы, слаймы, огры, шаманы и летающие враги имеют отдельные модели, замахи и наносящие урон атаки.
+**[Изменения v0.13](Docs/RELEASE-v0.13.0.md)** · **[Актуальный каталог](Docs/ITEMS-v0.13.md)** · **[Проверки](Docs/VALIDATION-v0.13.md)**.
 
-![Каталог предметов и подсказка](Docs/Images/roguelike-tooltip-v012.png)
+В v0.12 добавлены **130 предметов, пять редкостей и 12 новых видов врагов**. Предметы создают статусные синергии, призывают помощников, меняют лечение и способ атаки, растут за убийства, движение, сундуки и победы над боссами. Необычные дают только характеристики; мифические меняют правила боя; легендарные раскрываются за забег. **[Актуальные эффекты](Docs/ITEMS-v0.13.md)**; [история v0.12](Docs/RELEASE-v0.12.0.md).
+
+**Tab → Каталог → наведение курсора** показывает описание, стаки и синергии каждого предмета. Два дабл-шота дают три снаряда даже по единственной цели. Посох выпускает залп одновременно; меч и копьё выполняют очередь с интервалом `0.75 / 1.5^(N - 2)` секунд при `N ≥ 2`. В формуле удачи используется логарифм с присланного изображения. Новые скелеты, костяные дуэлянты, ревенанты, некроманты, големы, слаймы, огры, шаманы и летающие враги имеют отдельные модели, замахи и наносящие урон атаки.
+
+![Каталог всех предметов в главном меню](Docs/Images/balance-menu-catalogue-v013.png)
 
 В v0.11 каждый этап начинается с таймера **10:00**. Мобы появляются постоянно в **12–19 м** от живых игроков; после каждой прошедшей минуты приходит дополнительная орда и увеличивается частота спавна. Модели снова гранёные: следопыт в зелёном капюшоне, монах в земляных тонах, бородатый хранитель аур, волк и шут созданы по присланным референсам. Камни и деревья получили такой же матовый гранёный стиль. Переносы текста рассчитываются в общих координатах интерфейса и сохраняются при смене разрешения.
 
@@ -14,7 +18,7 @@
 
 Игра доступна всем: регистрация в GitHub и приглашение не нужны. **[Пошаговая инструкция для скачивания и кооператива](Docs/DOWNLOAD-RU.md)**. Кнопка **Code → Download ZIP** скачивает исходники, а готовая игра находится в **Releases**.
 
-В v0.10 каждое открытие сундука добавляет **10% его базовой цены** к ценам оставшихся сундуков команды. Пример для обычного сундука: **25 → 28 → 30 → 33** золота; округление вверх. Счётчик общий для команды и сохраняется между мирами. Новые модели имеют планки, скобы, ручки, обивку и открывающуюся крышку. У Люмена в HUD, Tab и выборе аур показаны **ранг** и **число улучшений**; получение новой ауры не считается улучшением.
+Рост цены v0.10 заменён в v0.13 формулой выше. Модели сундуков имеют планки, скобы, ручки, обивку и открывающуюся крышку. У Люмена в HUD, Tab и выборе аур показаны **ранг** и **число улучшений**; получение новой ауры не считается улучшением.
 
 ![Гранёный хранитель аур и описание оружия/пассивки](Docs/Images/hero-lumen-v011.png)
 
@@ -36,7 +40,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.12 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.13 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
@@ -69,7 +73,7 @@ There are exactly **two weapon slots**: the hero's starting weapon and a second 
 
 Explore seven large rolling realms. Height, obstacles, chest/shrine positions and spawn ground all use the same deterministic stage-specific terrain function on host and guests. The arrival clearing is flat; hills and ridges surround it. Trees have tapered branching trunks, roots and layered crowns; rocks use fractured 512px albedo/normal maps and moss on top. Grass covers the realm in chunked meshes and bends away from the feet of all three players, then rises when they move or jump away. Distant grass is culled at 85 m. Press Tab for the map, treasure, enemies and party.
 
-There are **60 chests**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
+There are **240 chests per realm**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
 
 Press **F** near a chest. Ordinary chests cost **25–45 gold**; **Moon chests cost 65** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **130 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
 
@@ -138,6 +142,7 @@ The original **Stillwater at Dawn** score is composed in code: 16 bars, 88 BPM, 
 
 ```powershell
 .\Tools\Build.ps1
+.\Tools\Test-Balance.ps1
 .\Tools\Test-Roguelike.ps1
 .\Tools\Test-Update.ps1
 .\Tools\Test-Chests.ps1
@@ -157,7 +162,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.12](Docs/VALIDATION-v0.12.md).
+`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.13](Docs/VALIDATION-v0.13.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 

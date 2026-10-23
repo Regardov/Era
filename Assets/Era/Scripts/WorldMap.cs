@@ -78,8 +78,8 @@ namespace Era
             {
                 var v=positions[i];if(i>2){float a=(state.stage-1)*.63f;v=new Vector2(v.x*Mathf.Cos(a)-v.y*Mathf.Sin(a),v.x*Mathf.Sin(a)+v.y*Mathf.Cos(a));} var p=Resolve(OnGround(v.x,v.y),Vector3.zero,1);
                 p.y=Ground(p); int tier=i>4 && i%4==0 ? 1 : 0;
-                int baseCost=Mathf.RoundToInt((tier==1?65:25+(i/6)*5)*(1+.13f*(state.stage-1)));
-                state.chests.Add(new ChestState { id=state.nextId++,position=p,baseCost=baseCost,cost=GameData.ChestPrice(baseCost,state.openedChests),tier=tier });
+                int baseCost=Mathf.RoundToInt((tier==1?35:12+(i%5)*2)*(1+.10f*(state.stage-1)));
+                state.chests.Add(new ChestState { id=state.nextId++,position=p,baseCost=baseCost,cost=GameData.ChestPrice(baseCost,state.chestsOpenedInStage),tier=tier });
             }
         }
     }

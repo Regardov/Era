@@ -38,7 +38,7 @@ namespace Era
                 }
                 int level=Mathf.Max(1,p.weaponLevels[slot]);
                 if(type==(int)WeaponKind.Bow&&State.projectiles.Count+VolleyCount(p)>GameData.MaxProjectiles){p.weaponTimers[slot]=.05f;continue;}
-                float speed=p.attackSpeed*(1+p.auraBonuses[2])*(1+.05f*p.itemCounters[I(ItemId.WarDrum)]*Stack(p,ItemId.WarDrum))*(p.boost>0?2:1);
+                float speed=p.attackSpeed*(1+p.auraBonuses[2])*(1+Mathf.Min(.6f,.03f*p.itemCounters[I(ItemId.WarDrum)]*Power(p,ItemId.WarDrum)))*(p.boost>0?2:1);
                 p.weaponTimers[slot]=definition.cooldown/Mathf.Max(.1f,(1+(level-1)*.06f)*speed);
                 float damage=definition.damage*DamageMultiplier(p)*(1+(level-1)*.22f)*OnItemVolley(p,slot,targets[0]);
                 int count=VolleyCount(p);var shot=new WeaponBurstState{slot=slot,weapon=(WeaponKind)type,total=count,remaining=count,range=range,damage=damage,interval=ItemCatalog.BurstInterval(count)};
@@ -71,15 +71,15 @@ namespace Era
                 float flight=Vector3.Distance(origin,EnemyAim(target))/(34*p.projectileSpeed);
                 var lead=(p.position-target.position).normalized*target.speed*flight*.4f;
                 State.projectiles.Add(new ProjectileState{id=State.nextId++,owner=p.id,target=target.id,position=origin,direction=(EnemyAim(target)+lead-origin).normalized,damage=shot.damage,weapon=WeaponKind.Bow,life=2.5f,
-                    pierce=Stack(p,ItemId.HeavyArrow),bounces=Stack(p,ItemId.RicochetSeed)});
+                    pierce=0,bounces=Mathf.Min(4,Stack(p,ItemId.RicochetSeed))});
             }
             else if(shot.weapon==WeaponKind.LightningStaff)
             {
                 var chain=new HashSet<int>();Vector3 previous=origin;EnemyState next=target;
-                int count=3+(Mathf.Max(1,p.weaponLevels[shot.slot])-1)/3;
+                int count=1+Mathf.Min(4,Stack(p,ItemId.RicochetSeed));
                 for(int bounce=0;bounce<count&&next!=null;bounce++)
                 {
-                    chain.Add(next.id);Vector3 end=EnemyAim(next);WeaponEffect(10,previous,end,1,WeaponKind.LightningStaff);DamageEnemy(next,p,shot.damage*Mathf.Pow(.85f,bounce),true,true);previous=end;
+                    chain.Add(next.id);Vector3 end=EnemyAim(next);WeaponEffect(10,previous,end,1,WeaponKind.LightningStaff);DamageEnemy(next,p,shot.damage*Mathf.Pow(.65f,bounce),true,true);previous=end;
                     next=null;float nearest=7;
                     foreach(var candidate in State.enemies)if(!chain.Contains(candidate.id)){float d=Vector3.Distance(previous,EnemyAim(candidate));if(d<nearest){nearest=d;next=candidate;}}
                 }
@@ -87,13 +87,13 @@ namespace Era
             else if(shot.weapon==WeaponKind.Spear)
             {
                 var end=origin+aim*shot.range;
-                foreach(var e in targets)if(SegmentDistance(origin,end,EnemyAim(e))<.65f+EnemyRadius(e))DamageEnemy(e,p,shot.damage,true,true);
+                DamageEnemy(target,p,shot.damage,true,true);
                 WeaponEffect(11,origin,end,shot.range,WeaponKind.Spear);
             }
             else
             {
                 var forward=Vector3.ProjectOnPlane(aim,Vector3.up).normalized;
-                foreach(var e in targets){var dir=e.position-p.position;dir.y=0;if(Vector3.Dot(dir.normalized,forward)>-.15f&&Mathf.Abs(EnemyAim(e).y-origin.y)<2)DamageEnemy(e,p,shot.damage,true,true);}
+                DamageEnemy(target,p,shot.damage,true,true);
                 WeaponEffect(9,p.position+Vector3.up*.8f,p.position+forward*shot.range+Vector3.up*.8f,shot.range,shot.weapon);
             }
         }
@@ -102,51 +102,52 @@ namespace Era
             foreach(var b in new List<ProjectileState>(State.projectiles))
             {
                 if(!State.projectiles.Contains(b))continue;
-                b.life-=dt;var owner=State.Player(b.owner);
-                if(b.hostile)
+                var owner=State.Player(b.owner);b.life-=dt;
+                if(b.hostile||owner==null||b.life<=0){State.projectiles.Remove(b);continue;}
+                if(b.returning)
                 {
-                    bool absorbed=false;
-                    foreach(var p in State.players)if(!p.downed&&!p.eliminated&&Has(p,ItemId.EventHorizon)&&Vector3.Distance(b.position,p.position+Vector3.up)<3+2*Stack(p,ItemId.EventHorizon))
-                    {p.itemValues[I(ItemId.EventHorizon)]+=b.damage;absorbed=true;Effect(4,b.position,.5f);break;}
-                    if(absorbed){State.projectiles.Remove(b);continue;}
-                }
-                else if(owner!=null)
-                {
-                    if(Has(owner,ItemId.MobiusQuiver)&&b.life<1.9f&&!b.returning){b.returning=true;b.hitTargets.Clear();b.life=Mathf.Min(b.life,1.8f);}
-                    if(b.returning)
+                    var catchPoint=owner.position+Vector3.up;
+                    var returned=Vector3.MoveTowards(b.position,catchPoint,b.speed*owner.projectileSpeed*dt);
+                    b.direction=(catchPoint-b.position).normalized;b.position=returned;
+                    if(Vector3.Distance(returned,catchPoint)<.65f)
                     {
-                        b.direction=(owner.position+Vector3.up-b.position).normalized;
-                        if(Vector3.Distance(b.position,owner.position+Vector3.up)<1){Heal(owner,Stack(owner,ItemId.MobiusQuiver));State.projectiles.Remove(b);continue;}
+                        int i=I(ItemId.MobiusQuiver);owner.itemCounters[i]++;
+                        if(owner.itemCounters[i]>=3){owner.itemCounters[i]-=3;for(int slot=0;slot<owner.weaponTimers.Length;slot++)owner.weaponTimers[slot]=Mathf.Max(0,owner.weaponTimers[slot]-.15f*Stack(owner,ItemId.MobiusQuiver));}
+                        State.projectiles.Remove(b);
                     }
-                    else
-                    {
-                        var target=State.enemies.Find(e=>e.id==b.target&&e.hp>0);
-                        if(target==null){var reserved=new HashSet<int>();foreach(var other in State.projectiles)if(other!=b&&other.owner==b.owner&&!other.hostile)reserved.Add(other.target);target=State.enemies.Find(e=>!reserved.Contains(e.id)&&Vector3.Distance(e.position,b.position)<25)??FindItemTarget(b.position,25);b.target=target?.id??-1;}
-                        if(target!=null)b.direction=Vector3.RotateTowards(b.direction,(EnemyAim(target)-b.position).normalized,dt*6,0).normalized;
-                    }
+                    continue;
                 }
-                var end=b.position+b.direction*b.speed*(b.hostile?1:owner?.projectileSpeed??1)*dt;
-                bool hit=false;
-                if(b.hostile)
+                var target=State.enemies.Find(e=>e.id==b.target&&e.hp>0&&!b.hitTargets.Contains(e.id));
+                if(target==null)
                 {
-                    foreach(var p in State.players)if(!p.downed&&!p.eliminated&&SegmentDistance(b.position,end,p.position+Vector3.up*.95f)<.65f)
-                    {DamagePlayer(p,b.damage,b.position);hit=true;break;}
+                    var reserved=new HashSet<int>();foreach(var other in State.projectiles)if(other!=b&&other.owner==b.owner&&!other.returning)reserved.Add(other.target);
+                    target=State.enemies.Find(e=>!reserved.Contains(e.id)&&!b.hitTargets.Contains(e.id)&&Vector3.Distance(e.position,b.position)<25)??State.enemies.Find(e=>!b.hitTargets.Contains(e.id)&&Vector3.Distance(e.position,b.position)<25);
+                    b.target=target?.id??-1;
                 }
-                else
+                if(target!=null)b.direction=Vector3.RotateTowards(b.direction,(EnemyAim(target)-b.position).normalized,dt*8,0).normalized;
+                var end=b.position+b.direction*b.speed*owner.projectileSpeed*dt;
+                EnemyState impact=null;float first=float.MaxValue;
+                foreach(var e in State.enemies)
                 {
-                    foreach(var e in new List<EnemyState>(State.enemies))
-                    {
-                        if(b.hitTargets.Contains(e.id)||SegmentDistance(b.position,end,EnemyAim(e))>EnemyRadius(e))continue;
-                        b.hitTargets.Add(e.id);DamageEnemy(e,owner,b.damage,true,true);
-                        if(b.bounces>0)
-                        {var next=State.enemies.Find(a=>!b.hitTargets.Contains(a.id)&&Vector3.Distance(e.position,a.position)<14);if(next!=null){b.bounces--;b.target=next.id;b.direction=(EnemyAim(next)-end).normalized;b.damage*=.7f;break;}}
-                        if(b.pierce>0){b.pierce--;continue;}
-                        if(!b.returning&&owner!=null&&Has(owner,ItemId.MobiusQuiver)){b.life=Mathf.Min(b.life,1.89f);break;}
-                        hit=true;break;
-                    }
-                    if(!hit)foreach(var node in State.resourceNodes)if(!node.broken&&SegmentDistance(b.position,end,node.position+Vector3.up*.45f)<.8f){DamageResource(node,b.damage,owner);hit=true;break;}
+                    if(b.hitTargets.Contains(e.id)||SegmentDistance(b.position,end,EnemyAim(e))>EnemyRadius(e))continue;
+                    float along=Vector3.Dot(EnemyAim(e)-b.position,b.direction);
+                    if(along<first){first=along;impact=e;}
                 }
-                b.position=end;if(hit||b.life<=0)State.projectiles.Remove(b);
+                if(impact!=null)
+                {
+                    b.hitTargets.Add(impact.id);b.position=EnemyAim(impact);DamageEnemy(impact,owner,b.damage,true,true);
+                    var next=b.bounces>0?FindItemTarget(b.position,10,impact.id):null;
+                    if(next!=null&&b.hitTargets.Contains(next.id))next=State.enemies.Find(e=>!b.hitTargets.Contains(e.id)&&Vector3.Distance(e.position,b.position)<10);
+                    if(next!=null){b.bounces--;b.target=next.id;b.direction=(EnemyAim(next)-b.position).normalized;b.damage*=.65f;}
+                    else if(Has(owner,ItemId.MobiusQuiver)){b.returning=true;b.life=2;}
+                    else State.projectiles.Remove(b);
+                    continue;
+                }
+                bool hitResource=false;
+                foreach(var node in State.resourceNodes)if(!node.broken&&SegmentDistance(b.position,end,node.position+Vector3.up*.45f)<.8f){DamageResource(node,b.damage,owner);hitResource=true;break;}
+                b.position=end;
+                if(hitResource)State.projectiles.Remove(b);
+                else if(Has(owner,ItemId.MobiusQuiver)&&b.life<.7f){b.returning=true;b.life=2;}
             }
         }
     }

@@ -7,11 +7,11 @@ namespace Era.Editor
 {
     public static class RoguelikeArtBuilder
     {
-        const string Marker="Assets/Era/Generated/RoguelikeActors-v12c.txt";
+        const string Marker="Assets/Era/Generated/RoguelikeActors-v13.txt";
         public static void Prepare()
         {
             if(File.Exists(Marker))return;
-            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,"Assets/Era/Generated/RoguelikeActors-v12c.asset");
+            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,"Assets/Era/Generated/RoguelikeActors-v13.asset");
             var parent=new GameObject("Creature authoring");var v=new VisualFactory();
             try
             {

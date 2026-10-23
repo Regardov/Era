@@ -16,8 +16,8 @@ namespace Era
             start=Time.realtimeSinceStartup;I18n.Language=GameLanguage.Russian;App.SelectedHero=Hero.Lumen;App.PlayerName="Люмен";App.Solo();
             var p=App.LocalPlayer;p.position=WorldMap.OnGround(-.5f,2.2f);p.invulnerability=999;
             App.State.spawnTimer=1000;App.State.coins=1000;App.State.chests.Clear();
-            App.State.chests.Add(new ChestState{id=App.State.nextId++,baseCost=25,cost=25,position=WorldMap.OnGround(0,4)});
-            App.State.chests.Add(new ChestState{id=App.State.nextId++,baseCost=65,cost=65,tier=1,position=WorldMap.OnGround(2.5f,4)});
+            App.State.chests.Add(new ChestState{id=App.State.nextId++,baseCost=12,cost=12,position=WorldMap.OnGround(0,4)});
+            App.State.chests.Add(new ChestState{id=App.State.nextId++,baseCost=35,cost=35,tier=1,position=WorldMap.OnGround(2.5f,4)});
             App.Simulation.LearnAura(p,1);App.Simulation.LearnAura(p,1);App.Simulation.LearnAura(p,2);App.Simulation.LearnAura(p,3);App.Simulation.LearnAura(p,4);App.Simulation.LearnAura(p,0);App.Simulation.LearnAura(p,0);
             report.auras=p.currentAura==0&&p.auraLevels[0]==3&&GameData.AuraUpgradeCount(p,0)==2&&GameData.AuraUpgradeCount(p,2)==0;
         }
@@ -30,8 +30,8 @@ namespace Era
             else if(phase==1&&age>3)
             {
                 report.firstPrice=App.State.chests[0].cost;
-                report.prices=App.Simulation.TryOpenChest(App.LocalPlayer)&&App.State.coins==975&&App.State.openedChests==1;
-                report.nextMoonPrice=App.State.chests[1].cost;report.prices&=report.nextMoonPrice==72;
+                report.prices=App.Simulation.TryOpenChest(App.LocalPlayer)&&App.State.coins==988&&App.State.openedChests==1;
+                report.nextMoonPrice=App.State.chests[1].cost;report.prices&=report.nextMoonPrice==59;
                 App.LocalPlayer.position=WorldMap.OnGround(2.5f,2.2f);phase++;
             }
             else if(phase==2&&age>4.5f)
@@ -41,7 +41,7 @@ namespace Era
                 report.models=coffer!=null&&moon!=null&&coffer.GetComponentsInChildren<MeshFilter>().Length==6&&moon.GetComponentsInChildren<MeshFilter>().Length==6;
                 report.opened=coffer!=null&&Quaternion.Angle(coffer.transform.Find("Animated lid hinge").localRotation,Quaternion.Euler(-105,0,0))<1;
                 if(coffer!=null)foreach(var renderer in coffer.GetComponentsInChildren<MeshRenderer>())report.models&=renderer.sharedMaterial!=null&&renderer.sharedMaterial.shader.isSupported;
-                var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(App.State));report.snapshot=copy.openedChests==1&&copy.chests[1].cost==72&&copy.Player(0).auraLevels[0]==3&&copy.Player(0).currentAura==0;
+                var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(App.State));report.snapshot=copy.openedChests==1&&copy.chests[1].cost==59&&copy.Player(0).auraLevels[0]==3&&copy.Player(0).currentAura==0;
                 phase++;
             }
             else if(phase==3&&age>6){App.Simulation.GrantExperience(12);App.Simulation.ChooseItem(App.LocalPlayer,0);report.choices=App.LocalPlayer.offerKind==RewardKind.Aura&&App.LocalPlayer.offers.Length==5;phase++;}

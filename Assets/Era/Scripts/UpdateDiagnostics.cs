@@ -71,7 +71,7 @@ namespace Era
         }
         void Finish()
         {
-            report.ok=phase>=20&&report.waves&&report.statue&&report.elites&&report.freeChest&&report.resources&&report.slide&&report.music&&report.humans&&report.art&&report.walls&&report.chests==60&&report.nodes==72;
+            report.ok=phase>=20&&report.waves&&report.statue&&report.elites&&report.freeChest&&report.resources&&report.slide&&report.music&&report.humans&&report.art&&report.walls&&report.chests==GameData.ChestCount&&report.nodes==72;
             File.WriteAllText(Path.Combine(folder,"smoke-update.json"),JsonUtility.ToJson(report,true));Application.Quit(report.ok?0:2);enabled=false;
         }
     }

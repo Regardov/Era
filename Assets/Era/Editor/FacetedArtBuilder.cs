@@ -12,7 +12,7 @@ namespace Era.Editor
     // existing CC0 skeleton and clips: no smoothing, subdivision or rounded character surfaces.
     public static class FacetedArtBuilder
     {
-        const string Marker="Assets/Era/Generated/FacetedActors-v12.txt";
+        const string Marker="Assets/Era/Generated/FacetedActors-v13.txt";
         static readonly Color Skin=new Color(.71f,.55f,.43f),Ivory=new Color(.83f,.80f,.64f),Leather=new Color(.24f,.13f,.085f),Gold=new Color(.72f,.48f,.17f),Dark=new Color(.075f,.09f,.10f);
         sealed class Draft
         {
@@ -50,6 +50,11 @@ namespace Era.Editor
                 Vector3 Point(int r,int s){float a=s*Mathf.PI*2/sides,y=-Mathf.PI*.5f+r*Mathf.PI/rings;return p+Vector3.Scale(new Vector3(Mathf.Cos(a)*Mathf.Cos(y),Mathf.Sin(y),Mathf.Sin(a)*Mathf.Cos(y)),radius);}
                 for(int r=0;r<rings;r++)for(int s=0;s<sides;s++)Quad(Point(r,s),Point(r+1,s),Point(r+1,s+1),Point(r,s+1),color,bone);
             }
+            public void Neck(Vector3 start,Vector3 end,float radius,Color color,int chest,int head)
+            {
+                int first=vertices.Count;Tube(start,end,radius,radius*.9f,color,chest,14);
+                var axis=end-start;for(int i=first;i<vertices.Count;i++){float t=Mathf.Clamp01(Vector3.Dot(vertices[i]-start,axis)/axis.sqrMagnitude);weights[i]=new BoneWeight{boneIndex0=chest,weight0=1-t,boneIndex1=head,weight1=t};}
+            }
             public Mesh Mesh(string name,Matrix4x4[] bindposes)
             {
                 var mesh=new Mesh{name=name};mesh.SetVertices(vertices);mesh.SetColors(colors);mesh.SetTriangles(triangles,0);mesh.boneWeights=weights.ToArray();mesh.bindposes=bindposes;mesh.RecalculateNormals();mesh.RecalculateBounds();return mesh;
@@ -67,7 +72,7 @@ namespace Era.Editor
         public static void Prepare()
         {
             if(File.Exists(Marker))return;
-            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,"Assets/Era/Generated/FacetedActors-v12.asset");
+            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,"Assets/Era/Generated/FacetedActors-v13.asset");
             var material=new Material(Shader.Find("Era/Faceted Realm")){name="Earth, linen and leather / faceted palette"};AssetDatabase.AddObjectToAsset(material,library);
             foreach(string name in new[]{"Ember","Echo","Lumen","Stalker","Wisp"})
             {
@@ -88,7 +93,7 @@ namespace Era.Editor
                     var go=new GameObject("Faceted silhouette / "+name);go.transform.SetParent(root.transform,false);
                     var mesh=actor.mesh.Mesh(name+" / original flat shaded costume",bones.Select(b=>b.worldToLocalMatrix*root.transform.localToWorldMatrix).ToArray());AssetDatabase.AddObjectToAsset(mesh,library);
                     var skinRenderer=go.AddComponent<SkinnedMeshRenderer>();skinRenderer.sharedMesh=mesh;skinRenderer.bones=bones;skinRenderer.rootBone=bones[0];skinRenderer.sharedMaterial=material;skinRenderer.localBounds=new Bounds(Vector3.up*1.4f,new Vector3(4,5,4));
-                    var retarget=root.AddComponent<HumanRigShape>();retarget.bones=bones;retarget.originalLocalPositions=original;retarget.extendForearms=true;
+                    var retarget=root.AddComponent<HumanRigShape>();retarget.bones=bones;retarget.originalLocalPositions=original;retarget.shapedLocalPositions=bones.Select(b=>b.localPosition).ToArray();retarget.extendForearms=true;
                     var skeleton=root.GetComponent<SkeletalActor>();
                     if(hero)root.GetComponent<HeroMotion>().BindImported((Hero)Enum.Parse(typeof(Hero),name),skeleton);
                     else
@@ -107,6 +112,9 @@ namespace Era.Editor
             var head=a.P("head")-Vector3.up*.08f;var chest=a.P("chest");
             if(name=="Ember"||name=="Echo"||name=="Lumen")
             {
+                Hair(a,name,head);
+                a.Ball(head+new Vector3(0,.075f,.025f),new Vector3(.14f,.10f,.14f),Skin,"head");
+                a.Box(head+new Vector3(0,.095f,.161f),new Vector3(.059f,.012f,.009f),Skin*.62f,"head");
                 for(int side=-1;side<=1;side+=2)
                 {
                     a.Ball(head+new Vector3(side*.18f,.19f,0),new Vector3(.035f,.065f,.045f),Skin,"head");
@@ -125,13 +133,36 @@ namespace Era.Editor
                 if(name=="Echo")for(int n=0;n<5;n++)a.Box(chest+new Vector3(.08f,-.08f-n*.055f,.21f),new Vector3(.065f,.018f,.018f),Ivory,"spine");
             }
         }
+        static void Hair(Actor a,string name,Vector3 head)
+        {
+            Color hair=name=="Lumen"?new Color(.73f,.72f,.64f):name=="Ember"?new Color(.25f,.16f,.09f):new Color(.20f,.115f,.065f);
+            int bone=a.Bone("head");const int sides=18,rings=5;
+            Vector3 Point(int ring,int side)
+            {
+                float angle=side*Mathf.PI*2/sides,t=ring/(float)rings;
+                float edge=.12f+.19f*Mathf.Max(0,Mathf.Sin(angle));
+                float r=Mathf.Cos(t*Mathf.PI*.5f),y=Mathf.Lerp(edge,.465f,Mathf.Sin(t*Mathf.PI*.5f));
+                return head+new Vector3(Mathf.Cos(angle)*.193f*r,y,Mathf.Sin(angle)*.183f*r);
+            }
+            if(name!="Ember")for(int ring=0;ring<rings;ring++)for(int side=0;side<sides;side++)a.mesh.Quad(Point(ring,side),Point(ring+1,side),Point(ring+1,side+1),Point(ring,side+1),hair*(side%4==0?1.12f:1),bone);
+            for(int n=0;n<(name=="Lumen"?24:14);n++)
+            {
+                float angle=n*Mathf.PI*2/(name=="Lumen"?24:14),front=Mathf.Max(0,Mathf.Sin(angle));
+                var start=head+new Vector3(Mathf.Cos(angle)*.15f,.37f,Mathf.Sin(angle)*.14f);
+                float endY=name=="Lumen"?.03f+front*.27f:.16f+front*.14f;
+                var end=head+new Vector3(Mathf.Cos(angle)*.192f,endY+(n%3)*.01f,Mathf.Sin(angle)*.18f);
+                if(name=="Ember"&&front<.4f)continue;
+                a.Tube(start,Vector3.Lerp(start,end,.6f)+Vector3.up*.015f,.034f,.032f,hair*(n%3==0?1.1f:.94f),"head",7);
+                a.Tube(Vector3.Lerp(start,end,.6f),end,.032f,.006f,hair*(n%3==0?1.1f:.94f),"head",7);
+            }
+        }
         static void Body(Actor a,string name)
         {
             bool wolf=name=="Stalker",jester=name=="Wisp";
             Color cloth=wolf?new Color(.18f,.20f,.25f):jester?new Color(.055f,.23f,.25f):name=="Ember"?new Color(.19f,.31f,.20f):name=="Echo"?new Color(.42f,.27f,.16f):Ivory;
             Vector3 hip=a.P("hips"),chest=a.P("chest"),head=a.P("head")-Vector3.up*.08f;
             a.Tube(hip+Vector3.up*.03f,chest+Vector3.up*.22f,wolf?.27f:.24f,wolf?.39f:.31f,cloth,"spine",10,.68f);
-            a.Tube(chest+Vector3.up*.16f,head+Vector3.up*.12f,.09f,.085f,wolf?cloth:Skin,"head");
+            a.mesh.Neck(chest+Vector3.up*.13f,head+Vector3.up*.15f,wolf?.1f:.085f,wolf?cloth:Skin,a.Bone("chest"),a.Bone("head"));
             a.Ball(head+Vector3.up*.20f,new Vector3(.18f,.235f,.17f),wolf?cloth:jester?Ivory:Skin,"head");
             for(int side=-1;side<=1;side+=2)
             {
@@ -203,8 +234,6 @@ namespace Era.Editor
                 a.Box(chest+new Vector3(0,-.23f,.29f),new Vector3(.25f,.78f,.035f),Leather,"spine");
                 a.mesh.FrontTri(head+new Vector3(-.16f,.14f,.18f),head+new Vector3(.16f,.14f,.18f),head+new Vector3(0,-.21f,.24f),Ivory,a.Bone("head"));
                 a.mesh.FrontTri(head+new Vector3(-.15f,.14f,.18f),head+new Vector3(0,-.21f,.24f),head+new Vector3(-.14f,-.06f,.14f),Ivory*.77f,a.Bone("head"));
-                a.Tube(head+Vector3.up*.36f,head+Vector3.up*.54f,.20f,.16f,Leather,"head",4,.75f);
-                a.mesh.FrontTri(head+new Vector3(-.19f,.52f,.13f),head+new Vector3(.19f,.52f,.13f),head+new Vector3(0,.70f,.11f),Leather,a.Bone("head"));
                 foreach(var mark in new[]{head+new Vector3(0,.51f,.164f),chest+new Vector3(0,-.21f,.32f)}){a.Box(mark,new Vector3(.035f,.15f,.018f),Gold,mark.y>head.y?"head":"spine");a.Box(mark+Vector3.up*.025f,new Vector3(.12f,.03f,.02f),Gold,mark.y>head.y?"head":"spine");}
                 var hand=a.P("hand.l");a.Box(hand+new Vector3(0,0,.075f),new Vector3(.21f,.27f,.09f),Leather,"hand.l");a.Box(hand+new Vector3(0,0,.13f),new Vector3(.16f,.22f,.018f),Gold,"hand.l");
             }

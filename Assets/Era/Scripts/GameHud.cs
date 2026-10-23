@@ -12,6 +12,7 @@ namespace Era
         bool initialized,capturing;string capturePath;float scale;
         int hoveredItem=-1,itemPage,cataloguePage;bool catalogue,ownedOnly;
         int captureItem=-1;
+        int captureAttribute=-1;string pendingTooltip;Vector2 tooltipPoint;
         GameApp App=>GameApp.Instance;
         void Init()
         {
@@ -31,10 +32,11 @@ namespace Era
         }
         public void RequestCapture(string path){capturePath=path;}
         public void CaptureItemCatalogue(string path,int page,int item=-1){catalogue=true;ownedOnly=false;cataloguePage=page;captureItem=item;App.Inventory=true;capturePath=path;}
+        public void CaptureAttribute(string path,int attribute){catalogue=false;captureAttribute=attribute;App.Inventory=true;capturePath=path;}
         void LateUpdate()
         {
             if(capturePath==null || App?.View?.Camera==null)return;if(!initialized)Init();capture??=new FrameCapture(font);capturing=true;scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
-            try{capture.Save(capturePath,App.View.Camera,Draw);}finally{capturing=false;capturePath=null;captureItem=-1;}
+            try{capture.Save(capturePath,App.View.Camera,Draw);}finally{capturing=false;capturePath=null;captureItem=captureAttribute=-1;}
         }
         void OnGUI()
         {
@@ -42,10 +44,11 @@ namespace Era
             var matrix=GUI.matrix;GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2),Quaternion.identity,Vector3.one*scale);
             Draw();GUI.matrix=matrix;
         }
-        void Draw(){hoveredItem=-1;DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();if(capturing&&captureItem>=0)hoveredItem=captureItem;if(hoveredItem>=0)ItemTooltip(hoveredItem);}
+        void Draw(){hoveredItem=-1;pendingTooltip=null;DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();if(capturing&&captureAttribute>=0)Tooltip(GameData.Attributes[captureAttribute].name+"\n"+StatHelp(captureAttribute),980,340);if(pendingTooltip!=null)DrawTooltip();if(capturing&&captureItem>=0)hoveredItem=captureItem;if(hoveredItem>=0)ItemTooltip(hoveredItem);}
         void DrawPage()
         {
             if(App.InRun){if(App.Inventory&&!App.Paused&&App.State.phase==RunPhase.Playing){Inventory();return;}HUD();if(App.State.phase==RunPhase.Victory || App.State.phase==RunPhase.Defeat)Results();else if(App.Paused)Settings(true);else if(App.LocalPlayer?.pendingLevels>0&&!App.LocalPlayer.downed&&!App.LocalPlayer.eliminated)Upgrades();return;}
+            if(App.Page==MenuPage.Catalogue){MenuCatalogue();return;}
             if(App.Page==MenuPage.Characters){Characters();return;}
             if(App.State!=null || App.Connecting){Lobby();return;}
             if(App.Page==MenuPage.Connection)Connection();else if(App.Page==MenuPage.HostLobby)HostLobby();else if(App.Page==MenuPage.JoinLobby)JoinLobby();else if(App.Page==MenuPage.Settings)Settings(false);else Home();
@@ -104,12 +107,13 @@ namespace Era
             Text(I18n.P("Slay the horde. Forge your build.\nClaim the blessings of the old gods.","Сражайся с ордой. Собери свой билд.\nПолучи благословения древних богов."),94,400,460,72,21,Muted);
             if(Button("Play solo",92,510,494,62,true))App.BeginSelection(SessionMode.Solo);
             if(Button(I18n.P("Play co-op · 2–3 players","Кооператив · 2–3 игрока"),92,590,494,62))App.Page=MenuPage.Connection;
-            if(Button("Settings",92,670,238,54))App.Page=MenuPage.Settings;
-            if(Button("Quit",348,670,238,54))Application.Quit();
-            Text(I18n.P("A 3D survivor for 1–3 wanderers","3D-выживание для 1–3 игроков"),94,774,490,40,17,Muted);
+            if(Button(I18n.P("Item catalogue · 130","Каталог предметов · 130"),92,670,494,48)){App.Page=MenuPage.Catalogue;ownedOnly=false;cataloguePage=0;}
+            if(Button("Settings",92,736,238,48))App.Page=MenuPage.Settings;
+            if(Button("Quit",348,736,238,48))Application.Quit();
+            Text(I18n.P("A 3D survivor for 1–3 wanderers","3D-выживание для 1–3 игроков"),94,808,490,26,14,Muted);
             Box(1060,704,476,117,Panel,22);Text("A WORLD WORTH GETTING LOST IN",1085,724,426,25,14,Sage,true);
             Text("Explore the groves. Find treasure.\nClose the rift before it takes you.",1085,763,426,52,19,Muted);
-            Text(I18n.P("v0.10   /   Seven Realms","v0.10   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
+            Text(I18n.P("v0.13   /   Seven Realms","v0.13   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
             if(App.Status.Length>0)Text(App.Status,674,56,840,55,19,Ink);
         }
         void Characters()
@@ -198,10 +202,11 @@ namespace Era
         void HUD()
         {
             var s=App.State;var p=App.LocalPlayer;if(p==null)return;
-            Box(24,24,294,86,Panel,16);Text(GameData.HeroName(p.hero),40,32,140,21,12,Sage,true);
-            Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0")+(p.shield>0?" +"+Mathf.CeilToInt(p.shield):""),174,32,126,21,14,Ink,true,TextAnchor.UpperRight);
+            Box(24,24,294,p.shield>0?112:86,Panel,16);Text(GameData.HeroName(p.hero),40,32,140,21,12,Sage,true);
+            Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),174,32,126,21,14,Ink,true,TextAnchor.UpperRight);
             Bar(40,63,260,13,p.hp/p.maxHp,Red);
-            Text(I18n.P("2 weapon slots · second at Lv.25","2 слота оружия · второй на ур.25"),40,85,260,21,11,Muted);
+            if(p.shield>0){Icon("shield",40,81,20);Text(I18n.P("SHIELD ","ЩИТ ")+Mathf.CeilToInt(p.shield),67,82,233,19,13,Blue,true);Bar(40,104,260,5,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);}
+            Text(I18n.P("2 weapon slots · second at Lv.25","2 слота оружия · второй на ур.25"),40,p.shield>0?115:85,260,21,11,Muted);
             Box(672,18,256,70,Panel,14);Text(I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,682,23,236,32,25,Ink,true,TextAnchor.UpperCenter);
             Text(s.xp+" / "+s.xpRequired+" XP",684,57,232,20,11,Muted,false,TextAnchor.UpperCenter);Bar(690,79,220,4,s.xp/(float)s.xpRequired,Blue);
             Text(Clock(Mathf.Ceil(CampaignData.Remaining(s.stageElapsed))),724,146,152,28,21,CampaignData.Remaining(s.stageElapsed)<60?Red:Ink,true,TextAnchor.UpperCenter);
@@ -212,7 +217,7 @@ namespace Era
             if(App.Online)
             {
                 int row=0;foreach(var partner in s.players)if(partner.id!=p.id)
-                {float y=123+row++*49;Text(partner.name+(partner.downed?I18n.P(" · DOWN"," · НУЖНА ПОМОЩЬ"):""),40,y,270,23,13,partner.downed?Red:Ink,true);Bar(40,y+27,180,5,partner.hp/partner.maxHp,Red);}
+                {float y=147+row++*41;Text(partner.name+(partner.downed?I18n.P(" · DOWN"," · НУЖНА ПОМОЩЬ"):""),40,y,270,23,13,partner.downed?Red:Ink,true);Bar(40,y+27,180,5,partner.hp/partner.maxHp,Red);if(partner.shield>0)Text("+"+Mathf.CeilToInt(partner.shield),228,y+17,72,20,11,Blue,true);}
             }
             int blessingIndex=0;for(int i=0;i<p.blessings.Length;i++)if(p.blessings[i]>0){float x=30+blessingIndex++*37;Box(x,232,32,35,Panel);Icon(GameData.BlessingIcons[i],x+3,234,26);if(p.blessings[i]>1)Text(p.blessings[i].ToString(),x+20,253,10,14,9,Ink,true);if(!capturing&&new Rect(x,232,32,35).Contains(Event.current.mousePosition))Tooltip(GameData.BlessingName(i)+" · "+GameData.BlessingDescription(i),205,277);}
             foreach(var other in s.players)
@@ -228,7 +233,7 @@ namespace Era
                 if(d<14)WorldLabel(chest.position+Vector3.up*1.55f,chest.free?I18n.P("FREE CHEST","БЕСПЛАТНЫЙ СУНДУК"):I18n.T(chest.tier>0?"Moon chest":"Chest")+" · "+chest.cost,Panel);
             }
             if(nearest!=null&&!p.downed&&!p.eliminated)
-            {Box(600,692,400,65,Panel,12);Text(nearest.free?I18n.P("[ F ]  Open free chest","[ F ]  Открыть бесплатно"):"[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Team chest prices: +","Цены сундуков команды: +")+(s.openedChests*10)+I18n.P("% · next opening +10%","% · следующее открытие +10%"),610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
+            {Box(600,692,400,65,Panel,12);Text(nearest.free?I18n.P("[ F ]  Open free chest","[ F ]  Открыть бесплатно"):"[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Next price ×5/3 · opened in realm: ","Следующая цена ×5/3 · открыто в мире: ")+s.chestsOpenedInStage,610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
             foreach(var shrine in s.shrines)
             {
                 float d=Vector3.Distance(p.position,shrine.position);if(d>18)continue;
@@ -357,8 +362,8 @@ namespace Era
             {
                 var point=Project(hit.position);if(point.z<=0||point.x<30||point.x>1570||point.y<50||point.y>790)continue;
                 float age=1-hit.life/.9f,x=point.x+((hit.id%5)-2)*12,y=point.y-age*62;
-                string value=Mathf.Max(1,Mathf.RoundToInt(hit.damage)).ToString()+(hit.critical?"!":"");
-                Color c=hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=Mathf.Clamp01(hit.life*4);
+                string value=hit.evaded?I18n.P("Evade!","Уклонился!"):Mathf.Max(1,Mathf.RoundToInt(hit.damage)).ToString()+(hit.critical?"!":"");
+                Color c=hit.evaded?GameData.Mint:hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=Mathf.Clamp01(hit.life*4);
                 int size=hit.critical?28:21;Text(value,x-61,y+2,124,39,size,new Color(.03f,.04f,.06f,c.a),true,TextAnchor.UpperCenter);Text(value,x-62,y,124,39,size,c,true,TextAnchor.UpperCenter);
             }
         }
@@ -369,7 +374,8 @@ namespace Era
             Text(key,x-1,y+54,51,18,key=="SHIFT"?9:11,Ink,true,TextAnchor.UpperCenter);
             if(!capturing&&new Rect(x,y,49,49).Contains(Event.current.mousePosition))Tooltip(title,x+25,y-42);
         }
-        void Tooltip(string title,float x,float y){float h=title.Length>55?76:32;Box(x-155,y,310,h,Panel,10);Text(title,x-145,y+5,290,h-9,14,Ink,true,TextAnchor.UpperCenter);}
+        void Tooltip(string title,float x,float y){pendingTooltip=title;tooltipPoint=new Vector2(x,y);}
+        void DrawTooltip(){float h=pendingTooltip.Length>100?152:pendingTooltip.Length>55?100:54,x=Mathf.Clamp(tooltipPoint.x-190,20,1190),y=Mathf.Clamp(tooltipPoint.y,20,880-h);Box(x,y,390,h,Panel);Flat(x+2,y+2,3,h-4,Sage);Text(pendingTooltip,x+15,y+10,360,h-20,15,Ink,true);}
         void Minimap(WorldState s,float x,float y,float size)
         {
             float centerX=x+size*.5f,centerY=y+size*.5f,radius=size*.5f,k=(radius-15)/GameData.ArenaRadius;
@@ -434,17 +440,27 @@ namespace Era
         void ItemCatalogue(PlayerState p)
         {
             Text(I18n.P("Hover an item for effects, stacking and synergies","Наведите курсор: эффект, повторы и синергии"),490,107,1038,27,16,Muted);
-            if(Button(ownedOnly?I18n.P("Owned only","Только собранные"):I18n.P("All items","Все предметы"),490,143,230,34)){ownedOnly=!ownedOnly;cataloguePage=0;}
-            var items=new List<int>();foreach(int rarity in ItemCatalog.RarityOrder)for(int n=0;n<GameData.Items.Length;n++)if((int)GameData.Items[n].rarity==rarity&&(!ownedOnly||p.items[n]>0))items.Add(n);
+            if(Button(ownedOnly?I18n.P("Owned only","Только собранные"):I18n.P("All items","Все предметы"),490,143,230,34,false,p!=null)){ownedOnly=!ownedOnly;cataloguePage=0;}
+            var items=new List<int>();foreach(int rarity in ItemCatalog.RarityOrder)for(int n=0;n<GameData.Items.Length;n++)if((int)GameData.Items[n].rarity==rarity&&(!ownedOnly||p==null||p.items[n]>0))items.Add(n);
             const int size=30;int pages=Mathf.Max(1,(items.Count+size-1)/size);cataloguePage=Mathf.Clamp(cataloguePage,0,pages-1);
             for(int n=cataloguePage*size;n<items.Count&&n<(cataloguePage+1)*size;n++)
             {
                 int item=items[n],cell=n-cataloguePage*size;float x=490+cell%5*207,y=195+cell/5*98;var d=GameData.Items[item];
-                Box(x,y,195,88,Soft);Flat(x+2,y+2,3,84,d.color);ItemIcon(item,x+10,y+11,39);Text(d.name,x+57,y+10,128,49,14,d.color,true);Text("×"+p.items[item],x+57,y+63,124,18,12,Muted);ItemHover(item,new Rect(x,y,195,88));
+                Box(x,y,195,88,Soft);Flat(x+2,y+2,3,84,d.color);ItemIcon(item,x+10,y+11,39);Text(d.name,x+57,y+10,128,49,14,d.color,true);Text(p==null?GameData.RarityName((int)d.rarity):"×"+p.items[item],x+57,y+63,124,18,10,Muted);ItemHover(item,new Rect(x,y,195,88));
             }
             if(Button("‹",490,806,65,34))cataloguePage=Mathf.Max(0,cataloguePage-1);
             Text((cataloguePage+1)+" / "+pages+" · "+items.Count+I18n.P(" items"," предметов"),580,812,835,24,14,Muted,false,TextAnchor.UpperCenter);
             if(Button("›",1460,806,65,34))cataloguePage=Mathf.Min(pages-1,cataloguePage+1);
+        }
+        void MenuCatalogue()
+        {
+            Flat(0,0,1600,900,new Color(.04f,.07f,.09f,.95f));Box(34,38,1532,824,Panel);
+            Text(I18n.P("ITEM CATALOGUE","КАТАЛОГ ПРЕДМЕТОВ"),70,64,1000,36,28,Ink,true);
+            Text(I18n.P("All 130 run items","Все 130 предметов забега"),70,154,350,66,25,Sage,true);
+            Text(I18n.P("Hover any card to read its effect, stacking and build interactions.","Наведите курсор на карточку: эффект, повторные подборы и взаимодействия для билдов."),70,252,350,110,20,Muted);
+            for(int n=0;n<5;n++){int r=ItemCatalog.RarityOrder[n];Flat(70,410+n*48,5,30,GameData.RarityColors[r]);Text(GameData.RarityName(r),91,414+n*48,320,27,18,GameData.RarityColors[r],true);}
+            if(Button(I18n.P("Back to menu","Назад в меню"),70,788,350,52))App.Page=MenuPage.Home;
+            ItemCatalogue(null);
         }
         void Inventory()
         {
@@ -452,7 +468,7 @@ namespace Era
             Text(I18n.P("MAP, ITEMS & ATTRIBUTES","КАРТА, ПРЕДМЕТЫ И АТРИБУТЫ"),70,62,1460,40,26,Ink,true);
             Text(GameData.HeroName(p.hero)+" · "+p.name+" · "+I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,70,99,430,25,14,Sage,true);
             Minimap(s,70,140,360);Text(WorldMap.Region(p.position),70,510,360,23,13,Sage,true,TextAnchor.UpperCenter);
-            Text(I18n.P("HEALTH","ЗДОРОВЬЕ"),70,545,130,20,11,Muted,true);Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),300,542,130,24,16,Ink,true,TextAnchor.UpperRight);Bar(70,570,360,9,p.hp/p.maxHp,Red);
+            Text(I18n.P("HEALTH","ЗДОРОВЬЕ")+(p.shield>0?I18n.P(" · SHIELD "," · ЩИТ ")+Mathf.CeilToInt(p.shield):""),70,545,228,20,11,p.shield>0?Blue:Muted,true);Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),300,542,130,24,16,Ink,true,TextAnchor.UpperRight);Bar(70,570,360,9,p.hp/p.maxHp,Red);if(p.shield>0)Bar(70,582,360,4,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);
             var odds=ItemCatalog.RarityProbabilities(p.luck,0,1+p.auraBonuses[0]);
             Text(I18n.P("DROP CHANCES · LUCK ","ШАНСЫ ДРОПА · УДАЧА ")+p.luck.ToString("0.#"),70,594,360,20,11,Muted,true);
             for(int rank=0;rank<5;rank++){int r=ItemCatalog.RarityOrder[rank];Text((odds[r]*100).ToString("0.0")+"%",70+rank*72,618,70,23,13,GameData.RarityColors[r],true,TextAnchor.UpperCenter);Flat(74+rank*72,646,64,3,GameData.RarityColors[r]);}
@@ -482,7 +498,7 @@ namespace Era
         {
             Box(x,y,w,h,Soft);AttributeIcon(attribute,x+8,y+8,48);Text(GameData.Attributes[attribute].name,x+64,y+12,w-72,36,12,Ink,true);
             Text(AttributeStat(p,attribute),x+64,y+52,w-72,26,17,Sage,true);Text(GameData.AccessoryName(attribute)+" ×"+p.attributes[attribute],x+9,y+88,w-18,28,11,Muted);
-            if(!capturing&&new Rect(x,y,w,h).Contains(Event.current.mousePosition))Tooltip(GameData.AccessoryName(attribute)+" · "+GameData.Attributes[attribute].name,x+w/2,Mathf.Min(798,y+h));
+            if(!capturing&&new Rect(x,y,w,h).Contains(Event.current.mousePosition))Tooltip(GameData.Attributes[attribute].name+"\n"+StatHelp(attribute),x+w/2,y+h);
         }
         string AttributeStat(PlayerState p,int a)
         {
@@ -490,11 +506,14 @@ namespace Era
             {
                 case 0:return "×"+(p.damage*(1+p.auraBonuses[1])).ToString("0.00");case 1:return "×"+(p.attackSpeed*(1+p.auraBonuses[2])).ToString("0.00");case 2:return Mathf.RoundToInt(p.critChance*100)+"%";case 3:return Mathf.RoundToInt(p.critDamage*100)+"%";
                 case 4:return p.maxHp.ToString("0");case 5:return "×"+p.healingPower.ToString("0.00");case 6:return p.hpRegen.ToString("0.##")+"/s";case 7:return p.shield.ToString("0");
-                case 8:return Mathf.RoundToInt(p.armor*100)+"%";case 9:return Mathf.RoundToInt(p.lifeSteal*100)+"%";case 10:return "×"+(p.moveSpeed*(1+p.auraBonuses[4])).ToString("0.00");case 11:return Mathf.RoundToInt(p.dodge*100)+"%";
+                case 8:return Mathf.RoundToInt(Mathf.Min(.75f,p.armor)*100)+"%";case 9:return Mathf.RoundToInt(p.lifeSteal*100)+"% · "+GameData.LifestealHealth(p.lifeSteal)+I18n.P(" HP"," ХП");case 10:return "×"+(p.moveSpeed*(1+p.auraBonuses[4])).ToString("0.00");case 11:return (GameData.EvasionChance(p.dodge)*100).ToString("0.#")+"%";
                 case 12:return "+"+Mathf.RoundToInt((p.cooldownRate*(1+p.auraBonuses[6])-1)*100)+"%";case 13:return p.weaponRange.ToString("0.#")+" m";case 14:return "×"+p.areaSize.ToString("0.00");case 15:return p.projectileCount.ToString();
                 case 16:return "×"+p.projectileSpeed.ToString("0.00");case 17:return p.pickupRange.ToString("0.#")+" m";case 18:return p.luck.ToString("0.#");case 19:return "×"+(p.xpGain*(1+p.auraBonuses[7])).ToString("0.00");default:return "×"+p.goldGain.ToString("0.00");
             }
         }
+        static string StatHelp(int a)=>I18n.P(new[]{
+            "Multiplies direct weapon and ability damage.","Speeds up automatic weapon volleys; queued shots retain their own interval.","Chance for a direct hit to deal critical damage.","Damage multiplier of a critical hit.","Maximum health. Reaching zero downs the character.","Multiplies healing received, including a successful lifesteal proc.","Health restored each second.","Current shield absorbs incoming damage before health and decays slowly.","Reduces incoming damage, up to 75%.","Chance to heal on a direct weapon hit. Up to 100%: 1 base HP. Above 100%: 2 HP, then +1 per further 50 percentage points. Status damage cannot trigger it.","Multiplies running speed.","Chance to evade an attack. Gain x adds (1-current chance) × x. Maximum 95%; complete immunity is impossible.","Abilities recover faster. This is recharge speed, not a direct percentage reduction of duration.","Extra weapon targeting distance in metres.","Multiplies the radius of area effects.","Projectiles or strikes in each volley. Each base shot hits one enemy; ricochet requires its item.","Multiplies arrow travel speed.","Distance at which gold and experience are attracted.","Improves rarity odds using the logarithmic luck formula.","Multiplies experience earned from enemies.","Multiplies gold earned from enemies."}[a],new[]{
+            "Множитель прямого урона оружия и способностей.","Ускоряет автоатаки оружия. Удары внутри очереди сохраняют собственный интервал.","Вероятность критического удара при прямом попадании.","Множитель урона критического удара.","Максимальное здоровье. При нуле персонаж падает.","Усиливает получаемое лечение, включая успешное срабатывание вампиризма.","Здоровье, восстанавливаемое каждую секунду.","Текущий щит поглощает урон раньше здоровья и медленно убывает.","Снижает входящий урон, максимум на 75%.","Шанс лечения за прямое попадание оружием. До 100% — 1 базовый ХП. Выше 100% — 2 ХП, затем +1 за следующие 50 процентных пунктов. Урон статусов не запускает лечение.","Множитель скорости бега.","Шанс избежать атаки. Прибавка x даёт (1−текущий шанс) × x. Предел 95%; полной неуязвимости нет.","Ускоряет восстановление способностей. Это темп восстановления, а не прямое уменьшение времени на указанный процент.","Дополнительная дальность выбора целей оружием в метрах.","Множитель радиуса эффектов по площади.","Снаряды или удары за атаку. Базовый снаряд поражает одну цель; рикошет требует предмета.","Множитель скорости полёта стрел.","Дальность притягивания золота и опыта.","Повышает шансы редкостей по логарифмической формуле удачи.","Множитель опыта, получаемого за врагов.","Множитель золота, получаемого за врагов."}[a]);
         void StatLine(string name,string value,float x,float y)
         {Text(name,x,y,310,26,16,Muted);Text(value,x+315,y,140,26,18,Ink,true,TextAnchor.UpperRight);Flat(x,y+35,455,1,new Color(.55f,.66f,.62f,.16f));}
         void Settings(bool paused)

@@ -60,10 +60,10 @@ namespace Era
             ApplyAttribute(p,stat,rarity);Reward(p,RewardKind.Accessory,stat,1,rarity);
         }
 
-        void AddHit(int target,Vector3 position,float damage,bool critical,bool player)
+        void AddHit(int target,Vector3 position,float damage,bool critical,bool player,bool evaded=false)
         {
             if(State.hits.Count>=160)State.hits.RemoveAt(0);
-            State.hits.Add(new HitState{id=State.nextId++,target=target,position=position,damage=damage,critical=critical,player=player});
+            State.hits.Add(new HitState{id=State.nextId++,target=target,position=position,damage=damage,critical=critical,player=player,evaded=evaded});
         }
     }
 }

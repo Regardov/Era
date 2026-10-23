@@ -9,7 +9,7 @@ namespace Era
     public enum RunPhase { Lobby, Playing, Victory, Defeat }
     public enum EnemyKind { Wisp, Brute, Stalker, Warden, Skeleton, SkeletonArcher, Revenant, Necromancer, StoneGolem, CrystalGolem, Slime, AcidSlime, Ogre, OgreShaman, Bat, Gargoyle }
     public enum PickupKind { Experience, Gold }
-    public enum MenuPage { Home, Characters, Connection, HostLobby, JoinLobby, Settings }
+    public enum MenuPage { Home, Characters, Connection, HostLobby, JoinLobby, Settings, Catalogue }
     public enum SessionMode { Solo, Host, Join }
     public enum WeaponKind { Axe, LightningStaff, Bow, Spear, Aura, Sword }
     public enum RewardKind { Item, Weapon, Blessing, Accessory, Aura }
@@ -159,7 +159,7 @@ namespace Era
         public int id, target;
         public Vector3 position;
         public float damage, life = .9f;
-        public bool critical, player;
+        public bool critical, player, evaded;
     }
 
     [Serializable] public sealed class PortalState
@@ -226,7 +226,7 @@ namespace Era
         public Vector3 bossStatuePosition;
         public int waveQuota,waveSpawned;
         public bool waveActive;
-        public int coins = 30, earnedCoins, openedChests;
+        public int coins = 30, earnedCoins, openedChests, chestsOpenedInStage;
         public float readyCountdown = -1, noticeTime;
         public string notice = "";
         public int noticeKind, noticeOwner, noticeContent, noticeQuantity;
@@ -290,10 +290,10 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 11;
+        public const int Protocol = 12;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
-        public const int ChestCount=60,ResourceNodeCount=72;
+        public const int ChestCount=240,ResourceNodeCount=72;
         public static WeaponKind StarterWeapon(Hero hero)=>hero==Hero.Lumen?WeaponKind.Aura:hero==Hero.Ember?WeaponKind.Bow:WeaponKind.LightningStaff;
         public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Aura keeper: one aura decision at each level. Add a new buff or improve an owned aura; up to five types.","Хранитель аур: на каждом уровне новая аура или улучшение изученной. До пяти типов; бонусы получают союзники в радиусе."):hero==Hero.Ember?I18n.P("Hunter's training: arrows travel 15% faster, making distant targets easier to hit.","Охотничья подготовка: снаряды летят на 15% быстрее — легче попадать по дальним целям."):I18n.P("Hardiness: 115 starting health, 15 more than the base hero. Base outgoing damage is 90%.","Закалка: 115 начальных ХП, на 15 больше базового героя. Базовый исходящий урон — 90%.");
         public const float BossTime = 150;
@@ -312,12 +312,12 @@ namespace Era
         public static string BlessingDescription(int kind)=>I18n.P(new[]{"+1 extra jump in the air. Stacks up to 3.","+15% movement speed for this run.","+20% automatic attack speed for this run.","+25% weapon and ability damage for this run.","+30 maximum health and restore 50 health.","Gain 50 shield. Absorbs incoming damage.","Abilities recharge 15% faster for this run.","+3 m pickup radius for this run."}[kind],new[]{"+1 прыжок в воздухе. Можно получить до 3.","+15% к скорости бега до конца забега.","+20% к скорости автоматических атак до конца забега.","+25% к урону оружия и способностей до конца забега.","+30 к максимальному здоровью и лечение на 50.","50 щита, поглощающего входящий урон.","Способности заряжаются на 15% быстрее до конца забега.","+3 м к радиусу подбора до конца забега."}[kind]);
         public static readonly WeaponDefinition[] Weapons =
         {
-            new WeaponDefinition("Crescent Axe","A sweeping cleave through nearby enemies.","axe",35,1.15f,4.8f,Amber),
-            new WeaponDefinition("Lightning Staff","Lightning chains between up to four nearby enemies.","lightning",24,1.05f,17,new Color(.69f,.66f,.90f)),
+            new WeaponDefinition("Crescent Axe","Each heavy swing hits one enemy. Extra strikes follow in sequence.","axe",35,1.15f,4.8f,Amber),
+            new WeaponDefinition("Lightning Staff","Each beam hits one enemy. Extra beams fire simultaneously; Ricochet Seed adds chain hits.","lightning",24,1.05f,17,new Color(.69f,.66f,.90f)),
             new WeaponDefinition("Wildwood Bow","Fast arrows seek distant targets. Extra bolts add arrows.","bow",26,.76f,25,Mint),
-            new WeaponDefinition("Dawn Spear","A piercing thrust hits every enemy along its path.","spear",38,1.0f,7.5f,new Color(.85f,.75f,.50f)),
+            new WeaponDefinition("Dawn Spear","Each thrust hits one enemy. Extra thrusts follow in a short sequence.","spear",38,1.0f,7.5f,new Color(.85f,.75f,.50f)),
             new WeaponDefinition("Aura Conduit","10 base damage per second and buffs within 9.2 m. Choose or upgrade one aura per level.","aura",10,1,12/1.3f,new Color(.87f,.76f,1)),
-            new WeaponDefinition("Dawn Sword","Sweeping sword cuts. Extra projectiles repeat the slash with a delay.","blade",30,.85f,4.5f,new Color(.9f,.84f,.66f))
+            new WeaponDefinition("Dawn Sword","Each slash hits one enemy. Extra projectiles repeat the slash with a delay.","blade",30,.85f,4.5f,new Color(.9f,.84f,.66f))
         };
         public static readonly ItemDefinition[] Items = ItemCatalog.Build();
         public static readonly AttributeDefinition[] Attributes=
@@ -355,8 +355,12 @@ namespace Era
         public static readonly float[] AuraBase={.15f,.12f,.12f,.15f,.10f,.10f,.12f,.15f};
         public static int AuraUpgradeCount(PlayerState player,int aura)=>Mathf.Max(0,player.auraLevels[aura]-1);
         public static string AuraProgress(PlayerState player,int aura)=>I18n.P("Rank ","Ранг ")+player.auraLevels[aura]+I18n.P(" · Upgrades: "," · Улучшений: ")+AuraUpgradeCount(player,aura);
-        // Each successful team purchase adds ten percent of the original price. Integer rounding is deterministic on every peer.
-        public static int ChestPrice(int baseCost,int openedCount)=>(int)System.Math.Min(int.MaxValue,((long)Mathf.Max(1,baseCost)*(10L+Mathf.Max(0,openedCount))+9)/10);
+        // S[n] = ceil(S[n-1] * 5/3). Round each step identically and saturate safely.
+        public static int ChestPrice(int baseCost,int openedCount)
+        {long price=Mathf.Max(1,baseCost);for(int n=0;n<Mathf.Max(0,openedCount)&&price<int.MaxValue;n++)price=System.Math.Min(int.MaxValue,(price*5+2)/3);return (int)price;}
+        public static float EvasionChance(float value)=>Mathf.Clamp(value,0,.95f);
+        public static float CombineEvasion(float current,float gain)=>Mathf.Min(.95f,EvasionChance(current)+(1-EvasionChance(current))*Mathf.Clamp01(gain));
+        public static int LifestealHealth(float chance)=>1+Mathf.CeilToInt(Mathf.Max(0,chance-1)/.5f);
         public static string AuraName(int aura)=>I18n.P(new[]{"Fortune aura","Might aura","Haste aura","Vitality aura","Wind aura","Protection aura","Quickening aura","Wisdom aura"}[aura],new[]{"Аура удачи","Аура мощи","Аура быстроты","Аура жизни","Аура ветра","Аура защиты","Аура ускорения","Аура мудрости"}[aura]);
         public static float AuraPower(int aura,int rank)=>AuraBase[aura]*(1+.2f*(Mathf.Max(1,rank)-1));
         public static string AuraDescription(int aura,int rank)=>I18n.P(new[]{"Better epic / legendary drop odds","Damage","Attack speed","Maximum health","Movement speed","Incoming damage reduced","Ability recharge speed","Experience gained"}[aura],new[]{"Шанс эпических / легендарных предметов","Урон","Скорость атаки","Максимальное ХП","Скорость бега","Снижение входящего урона","Скорость перезарядки","Получаемый опыт"}[aura])+" +"+Mathf.RoundToInt(AuraPower(aura,rank)*100)+"%";
