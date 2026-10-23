@@ -7,7 +7,7 @@ namespace Era
     public sealed class RuntimeDiagnostics : MonoBehaviour
     {
         string[] args;string folder;float start;bool smoke,client,readyPressed,readySeen,jumpIssued,jumpSeen,castIssued,castsSeen,xpGranted,reported,lobbyShot,gameShot,jumpShot;
-        bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted;float pendingAt=-1;int exit;
+        bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted;float pendingAt=-1;int exit,chosenOffer=-1;
         GameApp App=>GameApp.Instance;
         [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,secondWeapons,difficulty;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
         void Start()
@@ -95,7 +95,16 @@ namespace Era
                 {
                     if(pendingAt<0)pendingAt=s.elapsed;
                     if(s.elapsed-pendingAt>.5f&&!upgradeShot){Shot(client?"coop-upgrade-ru.png":"coop-upgrade-en.png");upgradeShot=true;}
-                    if(s.elapsed-pendingAt>1){levelKeepsMoving=true;input.choice=me.offerKind==RewardKind.Aura?Mathf.Max(0,Array.IndexOf(me.offers,me.completedLevel%8)):0;}
+                    int offerKey=me.completedLevel*32+me.upgradeStage*8+(int)me.offerKind;
+                    if(s.elapsed-pendingAt>1&&offerKey!=chosenOffer)
+                    {
+                        levelKeepsMoving=true;
+                        // Send one decision, then wait for its replicated acknowledgement.
+                        // Repeating the old accessory index each frame also selects aura zero
+                        // before the client can observe the next screen.
+                        input.choice=me.offerKind==RewardKind.Aura?Mathf.Max(0,Array.FindIndex(me.offers,a=>me.auraLevels[a]==0)):0;
+                        chosenOffer=offerKey;
+                    }
                 }
                 if(s.elapsed>21&&!gameShot){Shot(third?"coop-lumen.png":client?"coop-client.png":"coop-host.png");gameShot=true;}
             }
@@ -108,6 +117,7 @@ namespace Era
                     noLevelPause=levelKeepsMoving,crouch=crouchSeen,blessing=channelSeen&&s?.shrines[0].spent==true&&s.Player(0).blessings[s.shrines[0].buff]>0,players=s?.players.Count??0,level=s?.level??0,kills=s?.kills??0,items=items,chests=s?.openedChests??0,gold=s?.earnedCoins??0,weapons=me==null?0:Array.FindAll(me.weapons,w=>w>=0).Length,hostWeapons=s?.Player(0)==null?0:Array.FindAll(s.Player(0).weapons,w=>w>=0).Length};
                 report.reward=s!=null&&s.players.Exists(p=>Array.Exists(p.items,count=>count>0));
                 report.auras=s!=null&&s.players.Exists(p=>p.hero==Hero.Lumen&&Array.FindAll(p.auraLevels,n=>n>0).Length==5);
+                if(!report.auras&&s!=null)File.WriteAllText(Path.Combine(folder,third?"smoke-aura-client2.json":client?"smoke-aura-client.json":"smoke-aura-host.json"),JsonUtility.ToJson(s));
                 report.secondWeapons=s!=null&&s.players.TrueForAll(p=>p.weapons.Length==2&&p.weapons[1]>=0);
                 report.difficulty=s!=null&&Mathf.Approximately(s.enemyPartyScale,4);
                 report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.secondWeapons&&report.difficulty&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;

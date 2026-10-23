@@ -1,4 +1,10 @@
-# ERA: Seven Realms — v0.15
+# ERA: Seven Realms — v0.16
+
+Новое в v0.16: **семь моделей, созданных в Blender по референсам**. Искра — эльф-следопыт, Эхо — монах, Люмен — прелат; преследователь — оборотень, огонёк — шут. Седой странник и маг в синем капюшоне добавлены в библиотеку префабов. У моделей редактируемые детали костюмов, материалы, арматуры и веса. Игровые анимации сохранены.
+
+**[Исходник Blender, FBX и инструкция](ArtSource/Characters/README.md)** · **[Изменения v0.16](Docs/RELEASE-v0.16.0.md)** · **[Проверки v0.16](Docs/VALIDATION-v0.16.md)**.
+
+![Семь персонажей Blender](ArtSource/Characters/Previews/ERA-seven-characters.png)
 
 Новое в v0.15: **120 иконок из предоставленных изображений**, ручьи, пригорки, кусты, крупные деревья и трава из изогнутых травинок. Панель уровня вдвое тоньше, полоса босса выше. Каждый дополнительный игрок даёт **×2 спавн / ОЗ / урон** (трое — ×4). После босса орда продолжает идти ещё вдвое чаще, а ОЗ и урон врагов растут на **10% каждые 10 секунд** до перехода в следующий мир.
 
@@ -20,7 +26,7 @@
 
 Рост цены v0.10 заменён в v0.13 формулой выше. Модели сундуков имеют планки, скобы, ручки, обивку и открывающуюся крышку. У Люмена в HUD, Tab и выборе аур показаны **ранг** и **число улучшений**; получение новой ауры не считается улучшением.
 
-![Гранёный хранитель аур и описание оружия/пассивки](Docs/Images/hero-lumen-v011.png)
+![Люмен из Blender в меню игры и описание оружия/пассивки](Docs/Images/hero-lumen-v016.png)
 
 Unity **2023.1.22f1**, Windows. A third-person survivor for **1–3 players** with **seven realms**, seven different bosses, party portals, sculpted terrain, detailed bark/stone materials, reactive grass and the aura support hero **Lumen**. Russian / English interface, original music and sound effects.
 
@@ -40,7 +46,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.15 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.16 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
@@ -163,7 +169,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.15](Docs/VALIDATION-v0.15.md).
+`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.16](Docs/VALIDATION-v0.16.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 

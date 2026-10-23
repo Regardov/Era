@@ -10,6 +10,9 @@ namespace Era
         public Vector3[] originalLocalPositions;
         public Vector3[] shapedLocalPositions;
         public bool extendForearms;
+        public bool plantFeet;
+        public float footHeight=.14f;
+        Transform leftFoot,rightFoot,pelvis;
         Vector3[] targets;
         public static Vector3 Shape(Vector3 point,bool head=false,bool halo=false)
         {
@@ -38,6 +41,21 @@ namespace Era
         {
             if(bones==null||GameApp.Instance?.WorldPaused==true)return;
             ApplyPose();
+            var actor=GetComponent<SkeletalActor>();
+            if(plantFeet&&actor?.GroundedPose==true)PlantFeet(actor.CrouchBlend);
+        }
+        public void PlantFeet(float crouch=0)
+        {
+            if(!plantFeet||bones==null)return;
+            if(leftFoot==null)foreach(var bone in bones)
+            {if(bone.name=="foot.l")leftFoot=bone;else if(bone.name=="foot.r")rightFoot=bone;else if(bone.name=="hips")pelvis=bone;}
+            if(leftFoot==null||rightFoot==null||pelvis==null)return;
+            // The thigh/knee crouch overlay adds 65 degrees of net ankle pitch.
+            // Counter it at the feet so the soles retain the sampled walking pose.
+            leftFoot.localRotation*=Quaternion.Euler(-65*crouch,0,0);
+            rightFoot.localRotation*=Quaternion.Euler(-65*crouch,0,0);
+            float lowest=Mathf.Min(transform.InverseTransformPoint(leftFoot.position).y,transform.InverseTransformPoint(rightFoot.position).y);
+            pelvis.position+=transform.TransformVector(Vector3.up*Mathf.Clamp(footHeight-lowest,-.45f,.65f));
         }
         public void ApplyPose()
         {

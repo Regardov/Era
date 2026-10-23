@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();
+            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -240,7 +240,7 @@ namespace Era.Editor
             }
             var lumenArt=Resources.Load<GameObject>("Characters/Lumen");
             Check(lumenArt.GetComponentsInChildren<SkinnedMeshRenderer>().Length==1&&lumenArt.GetComponent<HumanRigShape>()!=null,"aura keeper costume is a single animated faceted mesh");
-            Check(lumenArt.GetComponentInChildren<SkinnedMeshRenderer>().name=="Faceted silhouette / Lumen","bearded aura keeper uses the authored reference costume");
+            Check(lumenArt.GetComponentInChildren<SkinnedMeshRenderer>().name=="Blender character / Lumen","bearded aura keeper uses the Blender reference costume");
             TextLayouts();
             var environment=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
             Check(environment.bakedVersion==WorldEnvironment.CurrentVersion&&environment.GetComponentsInChildren<Renderer>().Length<800,"terrain, trees and grass use bounded chunk renderer count");

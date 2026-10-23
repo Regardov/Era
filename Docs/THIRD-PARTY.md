@@ -22,3 +22,7 @@ FacetedArtBuilder replaces the smoothed hero surfaces with original triangle mes
 # v0.15 additions
 
 The four item sheets in Resources/UI/item-sheet-1.png through item-sheet-4.png were supplied by the project owner and are preserved byte-for-byte. IconLibrary maps 120 illustrations by item name; nine other catalogue items keep the existing project icons. Stream meshes, shared river beds, geometric grass blades, shrubs, hills and water shading are authored in project code.
+
+# v0.16 additions
+
+The seven meshes in `ArtSource/Characters/ERA_Character_Workshop.blend` are newly authored Blender geometry, created by the project's `build_characters.py` from the character references supplied by the owner. Reference images are not redistributed. Costume parts, per-face palettes, skin weights and proportion targets are authored in this project. The models reuse the existing CC0 KayKit bone hierarchy; the Unity prefabs retain the KayKit animation clips listed above. The exported FBX files contain armatures and weights, without animation clips. Earlier KayKit source meshes and licenses remain available for provenance and for creatures not replaced in this release.

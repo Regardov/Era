@@ -1,9 +1,10 @@
 Shader "Era/Faceted Realm"
 {
-    Properties { _Color("Tint",Color)=(1,1,1,1) }
+    Properties { _Color("Tint",Color)=(1,1,1,1) _Cull("Face culling",Float)=2 }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
+        Cull [_Cull]
         CGPROGRAM
         #pragma surface surf Standard vertex:vert fullforwardshadows
         #pragma target 3.0

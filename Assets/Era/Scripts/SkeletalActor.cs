@@ -12,6 +12,8 @@ namespace Era
         float slide,aimTwist,draw;
         float enemyWindup;
         public float JumpBlend=>airBlend;
+        public float CrouchBlend=>crouch;
+        public bool GroundedPose=>!airborne&&(heroPose||locomotion=="Idle");
         public Transform Bone(string name){foreach(var t in GetComponentsInChildren<Transform>(true))if(t.name==name)return t;return null;}
         public void Bind(){hips=Bone("hips");spine=Bone("spine");leftThigh=Bone("upperleg.l");rightThigh=Bone("upperleg.r");leftKnee=Bone("lowerleg.l");rightKnee=Bone("lowerleg.r");rightHand=Bone("handslot.r");}
         void Awake(){if(animationPlayer==null)animationPlayer=GetComponent<Animation>();rigBone=Bone("Rig");if(rigBone!=null)rigScale=rigBone.localScale;leftArm=Bone("upperarm.l");rightArm=Bone("upperarm.r");Stand();animationPlayer.Play(Clip("Idle"));animationPlayer.Sample();}
