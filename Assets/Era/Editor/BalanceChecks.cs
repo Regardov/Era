@@ -70,7 +70,7 @@ namespace Era.Editor
             Check(Mathf.Approximately(p.critDamage-crit,.075f)&&GameData.Attributes[3].Value(1).Replace(',','.')=="+7.5%","uncommon accessory has the exact fractional nerf in gameplay and text");
             crit=p.critDamage;s.ApplyAccessory(p,3,(int)ItemRarity.Rare);Check(Mathf.Approximately(p.critDamage-crit,.3f),"rare accessory bonuses stay unchanged");
             Check(GameData.Items.Length==129&&Enum.GetNames(typeof(ItemId)).Length==129&&!Array.Exists(Enum.GetNames(typeof(ItemId)),n=>n=="VampireFang"),"fang is removed from the game ID list");
-            Check(Mathf.Approximately(IconLibrary.ItemPixels((int)ItemId.TrueSight).x,761)&&IconLibrary.ItemSprite((int)ItemId.CopperSpring)!=null,"removing an ID keeps atlas and generated pictures correct");
+            Check(Mathf.Approximately(IconLibrary.ItemPixels((int)ItemId.TrueSight).x,387)&&IconLibrary.HasSuppliedItemArt((int)ItemId.CopperSpring),"new artwork maps existing stable IDs by item name");
             for(int stage=1;stage<=7;stage++)
             {
                 s=New();s.State.stage=stage;WorldMap.SetStage(stage);var normal=s.SpawnEnemy(EnemyKind.Skeleton);var guardian=s.SpawnEnemy(EnemyKind.Warden);float scale=Mathf.Pow(1.5f,stage-1);

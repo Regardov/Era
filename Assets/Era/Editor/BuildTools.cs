@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.14.0";
+            PlayerSettings.bundleVersion = "0.15.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -54,6 +54,9 @@ namespace Era.Editor
                 if (!found) { included.InsertArrayElementAtIndex(included.arraySize); included.GetArrayElementAtIndex(included.arraySize - 1).objectReferenceValue = shader; }
             }
             graphics.ApplyModifiedPropertiesWithoutUndo();
+            var waterShader=Shader.Find("Era/Stream Water");bool waterIncluded=false;
+            for(int i=0;i<included.arraySize;i++)if(included.GetArrayElementAtIndex(i).objectReferenceValue==waterShader)waterIncluded=true;
+            if(!waterIncluded){included.InsertArrayElementAtIndex(included.arraySize);included.GetArrayElementAtIndex(included.arraySize-1).objectReferenceValue=waterShader;graphics.ApplyModifiedPropertiesWithoutUndo();}
             IconBuilder.Prepare();PrepareItemArtwork();SurfaceTextureBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
             PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();RoguelikeArtBuilder.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
@@ -69,8 +72,13 @@ namespace Era.Editor
         }
         static void PrepareItemArtwork()
         {
-            const string path="Assets/Era/Resources/UI/item-atlas.png";var importer=(TextureImporter)AssetImporter.GetAtPath(path);
-            importer.textureType=TextureImporterType.GUI;importer.npotScale=TextureImporterNPOTScale.None;importer.maxTextureSize=2048;importer.mipmapEnabled=false;importer.filterMode=FilterMode.Bilinear;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
+            for(int sheet=1;sheet<=4;sheet++)
+            {
+                string path="Assets/Era/Resources/UI/item-sheet-"+sheet+".png";
+                AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
+                var importer=(TextureImporter)AssetImporter.GetAtPath(path);
+                importer.textureType=TextureImporterType.GUI;importer.npotScale=TextureImporterNPOTScale.None;importer.maxTextureSize=2048;importer.mipmapEnabled=false;importer.filterMode=FilterMode.Bilinear;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
+            }
         }
         static void PrepareMusic()
         {

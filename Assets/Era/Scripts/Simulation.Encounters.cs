@@ -23,28 +23,33 @@ namespace Era
         }
         void TickWaves(float dt)
         {
-            if(State.portal.active)return;
+            bool aftermath=State.postBossActive;
             int minute=Mathf.Min(10,Mathf.FloorToInt(State.stageElapsed/60));
-            if(minute>State.wave-1)
+            if(!aftermath&&minute>State.wave-1)
             {
                 State.wave=minute+1;State.waveSpawned=0;
-                State.waveQuota=10+minute*3+State.players.Count*3;
+                State.waveQuota=(10+minute*3)*Mathf.RoundToInt(PartyMultiplier);
                 State.spawnTimer=0;
                 State.notice=I18n.P("A new horde arrives. Enemy spawns accelerate!","Приближается новая орда. Враги появляются чаще!");State.noticeKind=0;State.noticeTime=4;
             }
-            State.waveActive=State.waveQuota>0;
-            State.nextWave=minute>=10?0:60-State.stageElapsed%60;
+            State.waveActive=aftermath||State.waveQuota>0;
+            State.nextWave=aftermath||minute>=10?0:60-State.stageElapsed%60;
             // Recycle distant ordinary enemies so travelling players still meet a nearby horde.
             State.enemies.RemoveAll(e=>e.kind!=EnemyKind.Warden&&e.eliteShrine<0&&!State.players.Exists(p=>!p.downed&&!p.eliminated&&Vector2.Distance(new Vector2(e.position.x,e.position.z),new Vector2(p.position.x,p.position.z))<48));
-            State.spawnTimer-=dt;if(State.spawnTimer>0)return;
-            State.spawnTimer=Mathf.Max(.32f,1.1f-minute*.075f)*(State.bossSpawned?1.5f:1);
-            int batch=1+State.players.Count+(State.waveActive?3+minute/3:0);
-            for(int i=0;i<batch&&State.enemies.Count<GameData.MaxEnemies;i++)
+            State.spawnTimer-=dt;
+            while(State.spawnTimer<=0&&State.enemies.Count<GameData.MaxEnemies)
             {
-                var e=SpawnEnemy();e.wave=State.wave;State.waveSpawned++;
-                if(State.waveQuota>0)State.waveQuota--;
+                // Carry the fractional remainder, including several due batches in a slow tick.
+                State.spawnTimer+=SpawnInterval;
+                int batch=2+(State.waveQuota>0?3+minute/3:0);
+                for(int i=0;i<batch&&State.enemies.Count<GameData.MaxEnemies;i++)
+                {
+                    var e=SpawnEnemy();e.wave=State.wave;State.waveSpawned++;
+                    if(State.waveQuota>0)State.waveQuota--;
+                }
             }
-            State.waveActive=State.waveQuota>0;
+            if(State.spawnTimer<=0)State.spawnTimer=SpawnInterval;
+            State.waveActive=aftermath||State.waveQuota>0;
         }
         public bool TrySummonBoss(PlayerState p)
         {

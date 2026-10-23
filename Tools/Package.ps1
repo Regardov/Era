@@ -3,13 +3,13 @@ $projectPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $buildPath = Join-Path $projectPath 'Builds\Windows'
 if (-not (Test-Path -LiteralPath (Join-Path $buildPath 'Era.exe'))) { throw 'Build with Tools\Build.ps1 first' }
 # Only remove outdated documents from this generated build folder.
-foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md')) {
+foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md')) {
     $eraOldPath = Join-Path $buildPath $eraOldDocument
     if (Test-Path -LiteralPath $eraOldPath) { Remove-Item -LiteralPath $eraOldPath }
 }
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
-foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md')) {
+foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md')) {
     $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
@@ -17,6 +17,9 @@ $eraImageFolder = Join-Path $buildPath 'Images'
 New-Item -ItemType Directory -Force -Path $eraImageFolder | Out-Null
 Get-ChildItem -LiteralPath $eraImageFolder -File -Filter '*.png' | Where-Object { $_.Name -match 'v01[23]\.png$' } | ForEach-Object { Remove-Item -LiteralPath $_.FullName }
 foreach ($eraImage in @('balance-menu-catalogue-v014.png','balance-item-tooltip-v014.png','balance-models-standing-v014.png','balance-models-crouching-v014.png','balance-stat-tooltip-v014.png','balance-shield-evade-v014.png','balance-boss-health-v014.png')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
+}
+foreach ($eraImage in @('living-meadow-v015.png','raised-boss-hud-v015.png','boss-aftermath-v015.png','new-icons-1-v015.png','new-icons-2-v015.png','new-icons-3-v015.png','new-icons-4-v015.png')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
 }
 if (Test-Path -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md')) {

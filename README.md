@@ -1,12 +1,14 @@
-# ERA: Seven Realms — v0.14
+# ERA: Seven Realms — v0.15
+
+Новое в v0.15: **120 иконок из предоставленных изображений**, ручьи, пригорки, кусты, крупные деревья и трава из изогнутых травинок. Панель уровня вдвое тоньше, полоса босса выше. Каждый дополнительный игрок даёт **×2 спавн / ОЗ / урон** (трое — ×4). После босса орда продолжает идти ещё вдвое чаще, а ОЗ и урон врагов растут на **10% каждые 10 секунд** до перехода в следующий мир.
 
 У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **129 предметов**. Максимальные ОЗ мобов и боссов растут **×1,5 за каждый новый мир**. Цены 240 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
 
 Золото сразу поступает в общий кошелёк; опыт подбирается кристаллами. Прицел убран. Полоса босса показывает текущие и максимальные ОЗ; босс имеет иммунитет к статусам и контролю, сохраняя уязвимость к прямому урону.
 
-**[Изменения v0.14](Docs/RELEASE-v0.14.0.md)** · **[Каталог предметов](Docs/ITEMS-v0.14.md)** · **[Проверки](Docs/VALIDATION-v0.14.md)**.
+**[Изменения v0.15](Docs/RELEASE-v0.15.0.md)** · **[Каталог предметов](Docs/ITEMS-v0.14.md)** · **[Проверки](Docs/VALIDATION-v0.15.md)**.
 
-![ОЗ босса и иммунитет, HUD без прицела](Docs/Images/balance-boss-health-v014.png)
+![Ручей, трава и поднятая полоса босса](Docs/Images/raised-boss-hud-v015.png)
 
 Предметы поддерживают статусные синергии, призыв помощников и рост за действия в забеге. Два дабл-шота дают три выстрела; посох выпускает весь залп одновременно, меч и копьё — очередью с интервалом `0.75 / 1.5^(N - 2)` при `N ≥ 2`. Обычный снаряд поражает одну цель; «Семя рикошета» добавляет переходы в новые цели с 65% предыдущего урона. Вампиризм — шанс базового лечения за удар; выше 100% повышается количество ХП. Уклонение накапливается от оставшейся вероятности и ограничено 95%. Щит и уклонения отображаются явно, подсказки характеристик — поверх карточек.
 
@@ -38,13 +40,13 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.14 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.15 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
 5. Selecting **Not ready yet** cancels the countdown. Character changes are available while unready; a player disconnecting also cancels the countdown.
 
-The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 11 is incompatible with older builds.
+The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 14 is incompatible with older builds.
 
 ## Controls
 
@@ -89,9 +91,9 @@ Every realm starts with a ten-minute countdown. Ordinary enemies continuously ar
 | Stormpass Citadel | Storm Paladin | Sequential lightning strikes |
 | Heart of the Rift | Rift Sovereign | Radial ruptures and summoned stalkers |
 
-After bosses 1–6 die, the remaining enemies disappear and a **portal opens at the boss's position**. Any living player within 3.5 m can press **F** to move the **whole party** into the next realm. Gear, accessories, aura ranks, XP, gold and queued level choices are preserved. Everyone arrives together, healed and revived, with brief protection. Treasure, shrines, enemies and the stage timer reset. **Only the seventh boss completes the run.**
+After bosses 1–6 die, a **portal opens at the boss's position**. Existing enemies remain, spawning doubles, and current/max enemy HP and damage compound by 1.1 every 10 seconds until the party enters the portal. Any living player within 3.5 m can press **F** to move the **whole party** into the next realm. Gear, accessories, aura ranks, XP, gold and queued level choices are preserved. Everyone arrives together, healed and revived, with brief protection. Treasure, shrines, enemies and the stage timer reset. **Only the seventh boss completes the run.**
 
-If a companion falls, approach within 3.5 m and hold F for 2.5 seconds. They have 25 seconds before bleeding out. Reviving restores half health and gives three seconds of protection. Everyone downed means defeat. A disconnected guest leaves the remaining party able to continue; losing the host returns guests to the menu. Enemy health and spawn counts scale with party size.
+If a companion falls, approach within 3.5 m and hold F for 2.5 seconds. They have 25 seconds before bleeding out. Reviving restores half health and gives three seconds of protection. Everyone downed means defeat. A disconnected guest leaves the remaining party able to continue; losing the host returns guests to the menu. Each additional connected player doubles enemy HP, damage and spawn frequency: solo ×1, two players ×2, three players ×4. Downed players still count; disconnects rescale living enemies.
 
 ## Weapons, heroes, chest items and relics
 
@@ -142,6 +144,7 @@ The original **Stillwater at Dawn** score is composed in code: 16 bars, 88 BPM, 
 .\Tools\Build.ps1
 .\Tools\Test-Balance.ps1
 .\Tools\Test-Roguelike.ps1
+.\Tools\Test-Meadow.ps1
 .\Tools\Test-Update.ps1
 .\Tools\Test-Chests.ps1
 .\Tools\Test-Campaign.ps1
@@ -160,7 +163,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.14](Docs/VALIDATION-v0.14.md).
+`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.15](Docs/VALIDATION-v0.15.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 

@@ -5,24 +5,58 @@ namespace Era
     public static class IconLibrary
     {
         static readonly Dictionary<string,Texture2D> Cache=new Dictionary<string,Texture2D>();
-        public static Texture2D ItemAtlas=>Resources.Load<Texture2D>("UI/item-atlas");
-        static readonly float[][] ItemX={new float[]{208,339,470,601,732,863,994,1125,1256,1387},new float[]{251,412,588,761,935,1108,1282},new float[]{250,421,598,771,945,1124,1302},new float[]{249,422,602,780,958,1137,1315}};
+        // Exact supplied sheets. Inventory IDs remain independent of the artwork order.
+        static readonly ItemId[][] Sheets={
+            new[]{ItemId.SharpBlade,ItemId.SwiftBoots,ItemId.StoutHeart,ItemId.SteelShield,ItemId.Hourglass,
+                ItemId.GoldenCoin,ItemId.BeginnersLuck,ItemId.HeartyMeal,ItemId.SmallPotion,ItemId.SpikedGloves,
+                ItemId.WingedBoots,ItemId.TrueSight,ItemId.Magnet,ItemId.CopperSpring,ItemId.Spyglass,
+                ItemId.ChalkCircle,ItemId.WindFletching,ItemId.ScholarSeal,ItemId.FeatherAnklet,ItemId.IronBrooch,
+                ItemId.HealersRibbon,ItemId.DewBead,ItemId.NomadPin,ItemId.DuelistKnot,ItemId.CartographerSeal,
+                ItemId.LeadPendulum,ItemId.WardensBadge,ItemId.ApprenticeCord,ItemId.BloodGlass,ItemId.CometDust},
+            new[]{ItemId.MerchantScale,ItemId.SilverThread,ItemId.SteadyHand,ItemId.DoubleShot,ItemId.BookOfKnowledge,
+                ItemId.FireSphere,ItemId.GlassCannon,ItemId.LeadBoots,ItemId.BloodEngine,ItemId.SniperOath,
+                ItemId.BrawlerOath,ItemId.ThornMail,ItemId.FrostBell,ItemId.VenomNeedle,ItemId.SerratedCoin,
+                ItemId.ThunderRod,ItemId.DashFlint,ItemId.LandingStone,ItemId.RetaliationSeal,ItemId.SoulJar,
+                ItemId.PowderKeg,ItemId.HuntersDebt,ItemId.SilentVow,ItemId.LoadedDice,ItemId.HeavyArrow,
+                ItemId.RicochetSeed,ItemId.FlameBlade,ItemId.IceCore,ItemId.StormAmulet,ItemId.Necronomicon},
+            new[]{ItemId.Chronosphere,ItemId.ChaosPortal,ItemId.CrownOfGreed,ItemId.DragonBreath,ItemId.SteamValve,
+                ItemId.StormConductor,ItemId.SepticWound,ItemId.ShatterLens,ItemId.AshGarden,ItemId.BloodCompass,
+                ItemId.ExecutionLedger,ItemId.EchoChamber,ItemId.Alternator,ItemId.KineticSpool,ItemId.GlacialPrison,
+                ItemId.Capacitor,ItemId.WarDrum,ItemId.HuntingPack,ItemId.MirrorShard,ItemId.OrbitalSaw,
+                ItemId.Thunderstep,ItemId.SacrificialBrazier,ItemId.MiserFuse,ItemId.VoidAnchor,ItemId.PhoenixAsh,
+                ItemId.PlagueDoctor,ItemId.RedThread,ItemId.SpellLoom,ItemId.FrostfireCovenant,ItemId.DuelistClock},
+            new[]{ItemId.Overgrowth,ItemId.SoulTithe,ItemId.BrokenMetronome,ItemId.StarMap,ItemId.AngelWings,
+                ItemId.BlackHole,ItemId.TimeMaster,ItemId.PacifistEngine,ItemId.GravePact,ItemId.TemporalDebt,
+                ItemId.MobiusQuiver,ItemId.ParasiteCrown,ItemId.InversionHeart,ItemId.EventHorizon,ItemId.GlassWorld,
+                ItemId.WalkingCathedral,ItemId.BloodMoon,ItemId.StormCircuit,ItemId.SplitSoul,ItemId.WinterSleep,
+                ItemId.LivingArsenal,ItemId.VoidShepherd,ItemId.AlchemyEngine,ItemId.FateLoom,ItemId.HiveMind,
+                ItemId.InfinitePower,ItemId.Rebirth,ItemId.RealityCube,ItemId.WorldSeed,ItemId.LastPilgrim}
+        };
+        // Square icon bounds exclude the card text and rarity strip.
+        static readonly int[][] X={new[]{56,387,712,1024,1348},new[]{55,398,728,1048,1364},new[]{48,377,706,1026,1348},new[]{54,391,713,1030,1350}};
+        static readonly int[][] Y={new[]{36,176,320,464,609,754},new[]{37,180,320,461,603,747},new[]{42,184,327,470,620,770},new[]{38,181,324,467,610,752}};
+        static readonly int[] Sizes={92,95,97,97};
+        static bool Cell(int item,out int sheet,out int cell)
+        {
+            for(sheet=0;sheet<Sheets.Length;sheet++)for(cell=0;cell<Sheets[sheet].Length;cell++)if((int)Sheets[sheet][cell]==item)return true;
+            sheet=-1;cell=-1;return false;
+        }
+        public static Texture2D ItemAtlas=>Resources.Load<Texture2D>("UI/item-sheet-1");
+        public static bool HasSuppliedItemArt(int item)=>Cell(item,out _,out _);
+        public static Texture2D ItemTexture(int item)=>Cell(item,out int sheet,out _)?Resources.Load<Texture2D>("UI/item-sheet-"+(sheet+1)):Get(GameData.Items[item].icon);
         public static Rect ItemPixels(int item)
         {
-            // The removed fang retains its atlas cell; later pictures keep their original UVs.
-            if(item>=12)item++;
-            int row=item<10?0:item<17?1:item<24?2:3,col=item-(row==0?0:row==1?10:row==2?17:24);
-            float y=row==0?20:row==1?252:row==2?516:761,w=row==0?113:row==1?134:row==2?148:159,h=row==0?98:row==1?102:row==2?109:110;
-            return new Rect(ItemX[row][col],1024-y-h,w,h);
+            if(!Cell(item,out int sheet,out int cell)){var texture=ItemTexture(item);return new Rect(0,0,texture.width,texture.height);}
+            return new Rect(X[sheet][cell%5],941-Y[sheet][cell/5]-Sizes[sheet],Sizes[sheet],Sizes[sheet]);
         }
-        public static Rect ItemUV(int item){var rect=ItemPixels(item);return new Rect(rect.x/1536,rect.y/1024,rect.width/1536,rect.height/1024);}
+        public static Rect ItemUV(int item){var rect=ItemPixels(item);var texture=ItemTexture(item);return new Rect(rect.x/texture.width,rect.y/texture.height,rect.width/texture.width,rect.height/texture.height);}
         static readonly Sprite[] ItemSprites=new Sprite[ItemCatalog.Count];
         public static Sprite ItemSprite(int item)
         {
             if(ItemSprites[item]!=null)return ItemSprites[item];
-            var texture=item<30?ItemAtlas:Get(GameData.Items[item].icon);if(texture==null)return null;
-            var rect=item<30?ItemPixels(item):new Rect(0,0,texture.width,texture.height);
-            return ItemSprites[item]=Sprite.Create(texture,rect,Vector2.one*.5f,item<30?140:texture.width/1.2f,0,SpriteMeshType.FullRect);
+            var texture=ItemTexture(item);if(texture==null)return null;
+            var rect=ItemPixels(item);
+            return ItemSprites[item]=Sprite.Create(texture,rect,Vector2.one*.5f,rect.width/1.2f,0,SpriteMeshType.FullRect);
         }
         public static Texture2D Get(string name){if(!Cache.TryGetValue(name,out var texture)){texture=Resources.Load<Texture2D>("Icons/"+name);Cache[name]=texture;}return texture;}
     }

@@ -9,7 +9,7 @@ namespace Era
         string[] args;string folder;float start;bool smoke,client,readyPressed,readySeen,jumpIssued,jumpSeen,castIssued,castsSeen,xpGranted,reported,lobbyShot,gameShot,jumpShot;
         bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted;float pendingAt=-1;int exit;
         GameApp App=>GameApp.Instance;
-        [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,secondWeapons;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
+        [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,secondWeapons,difficulty;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
         void Start()
         {
             args=Environment.GetCommandLineArgs();start=Time.realtimeSinceStartup;folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","Artifacts"));
@@ -109,7 +109,8 @@ namespace Era
                 report.reward=s!=null&&s.players.Exists(p=>Array.Exists(p.items,count=>count>0));
                 report.auras=s!=null&&s.players.Exists(p=>p.hero==Hero.Lumen&&Array.FindAll(p.auraLevels,n=>n>0).Length==5);
                 report.secondWeapons=s!=null&&s.players.TrueForAll(p=>p.weapons.Length==2&&p.weapons[1]>=0);
-                report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.secondWeapons&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;
+                report.difficulty=s!=null&&Mathf.Approximately(s.enemyPartyScale,4);
+                report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.secondWeapons&&report.difficulty&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;
                 string json=JsonUtility.ToJson(report);File.WriteAllText(Path.Combine(folder,third?"smoke-client2.json":client?"smoke-client.json":"smoke-host.json"),json);Debug.Log("ERA_SMOKE "+json);exit=report.ok?0:2;reported=true;
             }
             if(age>(client?42:45))Application.Quit(exit);

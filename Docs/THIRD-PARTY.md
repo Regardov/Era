@@ -18,3 +18,7 @@ Storm of the Seven is an original programmatically composed battle score (128 BP
 # v0.11 additions
 
 FacetedArtBuilder replaces the smoothed hero surfaces with original triangle meshes and per-face colors. The ranger, monk, bearded aura keeper, wolf and jester were authored from the visual references supplied by the project owner; reference images are not redistributed. Existing CC0 KayKit skeletons and animation clips are reused. The original pre-smoothing templates remain in Art/KayKit/HumanTemplates. FacetedRealm.shader and the simplified terrain/rock/canopy shading are original project code. HumanArtBuilder is retained as historical source and is no longer part of project preparation.
+
+# v0.15 additions
+
+The four item sheets in Resources/UI/item-sheet-1.png through item-sheet-4.png were supplied by the project owner and are preserved byte-for-byte. IconLibrary maps 120 illustrations by item name; nine other catalogue items keep the existing project icons. Stream meshes, shared river beds, geometric grass blades, shrubs, hills and water shading are authored in project code.

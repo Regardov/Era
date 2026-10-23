@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Era
 {
-    // Protocol 13 uses this compact ID list; IconLibrary preserves the original atlas cells.
+    // Stable compact IDs; supplied artwork is mapped independently of enum order.
     public enum ItemId
     {
         SharpBlade, SwiftBoots, StoutHeart, SteelShield, Hourglass, GoldenCoin, BeginnersLuck, HeartyMeal,

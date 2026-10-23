@@ -21,14 +21,33 @@ namespace Era
         {stage=Mathf.Clamp(stage,1,CampaignData.StageCount);if(Stage==stage)return;Stage=stage;props=null;}
         public static float Height(float x,float z)
         {
+            float height=NaturalHeight(x,z);
+            for(int river=0;river<2;river++)
+            {
+                float width=RiverWidth(z,river),distance=Mathf.Abs(x-RiverCenter(z,river));
+                if(distance>=width+3)continue;
+                float water=RiverWaterHeight(z,river);
+                if(distance<width)height=water-.65f*(1-distance*distance/(width*width));
+                else height=Mathf.Lerp(water,height,Mathf.SmoothStep(0,1,(distance-width)/3));
+            }
+            return height;
+        }
+        static float NaturalHeight(float x,float z)
+        {
             float r=Mathf.Sqrt(x*x+z*z),blend=Mathf.SmoothStep(0,1,Mathf.InverseLerp(16,39,r));
             foreach(var landmark in Landmarks)if(landmark.x!=0||landmark.z!=0)
                 blend*=Mathf.SmoothStep(0,1,Mathf.InverseLerp(7,17,Vector2.Distance(new Vector2(x,z),new Vector2(landmark.x,landmark.z))));
             float broad=(Mathf.PerlinNoise(x*.012f+Stage*7.31f,z*.012f+91)-.45f)*(10+Stage*1.7f);
             float ridge=Mathf.Sin(x*.022f+Stage*.8f)*Mathf.Cos(z*.019f-Stage*.37f)*(2.2f+Stage*.35f);
             float detail=(Mathf.PerlinNoise(x*.046f+19,z*.046f+Stage*2)-.5f)*1.2f;
-            return (broad+ridge+detail)*blend;
+            float knolls=Mathf.Sin(x*.052f+Stage)*Mathf.Sin(z*.041f)*1.5f;
+            return (broad+ridge+detail+knolls)*blend;
         }
+        public static float RiverCenter(float z,int river)=>river==0?48+Mathf.Sin(z*.019f+Stage*.3f)*16+Mathf.Sin(z*.043f)*4:-96+Mathf.Sin(z*.016f-Stage*.5f)*21;
+        public static float RiverWidth(float z,int river)=>(river==0?3.2f:2.1f)+Mathf.Sin(z*.027f+Stage)*.35f;
+        public static float RiverWaterHeight(float z,int river)=>NaturalHeight(RiverCenter(z,river),z)-.12f;
+        public static bool InWater(float x,float z,float margin=0)
+        {for(int river=0;river<2;river++)if(Mathf.Abs(x-RiverCenter(z,river))<RiverWidth(z,river)+margin)return true;return false;}
         public static float Ground(Vector3 position) => Height(position.x, position.z);
         public static Vector3 OnGround(float x, float z) => new Vector3(x, Height(x,z), z);
         public static string Region(Vector3 p)
@@ -42,12 +61,15 @@ namespace Era
         static List<WorldProp> CreateProps()
         {
             var result = new List<WorldProp>(); var random = new System.Random(91247+Stage*513);
-            for (int i = 0; i < 350; i++)
+            for (int i = 0; i < 560; i++)
             {
                 float a = (float)random.NextDouble() * Mathf.PI * 2;
                 float r = 24 + Mathf.Sqrt((float)random.NextDouble()) * (GameData.ArenaRadius-40);
                 var p = OnGround(Mathf.Sin(a)*r, Mathf.Cos(a)*r);
-                int kind = i < 240 ? 0 : 1; float size = kind == 0 ? 0.8f+(float)random.NextDouble()*0.8f : 0.7f+(float)random.NextDouble()*1.8f;
+                if(InWater(p.x,p.z,1.3f))continue;
+                int kind = i < 240 ? 0 : i<350?1:2;
+                float size = kind == 0 ? .85f+(float)random.NextDouble()*1.05f : kind==1?.7f+(float)random.NextDouble()*1.8f:.65f+(float)random.NextDouble()*.8f;
+                if(kind==0&&i%9==0)size*=1.65f;
                 result.Add(new WorldProp { position = p, size = size, kind = kind, angle = (float)random.NextDouble()*360 });
             }
             return result;
@@ -60,6 +82,7 @@ namespace Era
             for (int pass=0; pass<2; pass++)
             foreach (var prop in Props)
             {
+                if(prop.kind==2)continue; // Low shrubs bend visually and do not trap movement.
                 float extent = (prop.kind == 0 ? 0.48f : 0.85f)*prop.size + radius;
                 float dx=next.x-prop.position.x, dz=next.z-prop.position.z;
                 float sq=dx*dx+dz*dz;

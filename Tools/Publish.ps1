@@ -1,7 +1,7 @@
 param(
-    [string]$Tag = 'v0.14.0',
+    [string]$Tag = 'v0.15.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.14.0.md'
+    [string]$NotesFile = 'Docs/RELEASE-v0.15.0.md'
 )
 $ErrorActionPreference = 'Stop'
 $eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path

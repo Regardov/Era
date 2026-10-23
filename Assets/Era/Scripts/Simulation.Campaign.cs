@@ -9,13 +9,15 @@ namespace Era
         {
             foreach(var p in State.players)if(Has(p,ItemId.SevenfoldOath)){int n=Stack(p,ItemId.SevenfoldOath);p.projectileCount=Mathf.Min(48,p.projectileCount+n);p.damage+=.15f*n;p.itemCounters[I(ItemId.SevenfoldOath)]++;}
             State.bossSpawned=true;
-            State.enemies.Clear();State.projectiles.Clear();State.hazards.Clear();State.itemFields.Clear();foreach(var p in State.players)p.bursts.Clear();
+            State.hazards.Clear();
             State.coins+=60+State.stage*20;State.earnedCoins+=60+State.stage*20;
             GrantExperience(60+State.stage*45);
             if(State.stage>=CampaignData.StageCount){State.phase=RunPhase.Victory;return;}
+            State.postBossActive=true;State.postBossElapsed=0;State.postBossGrowthSteps=0;
+            State.spawnTimer=0;State.waveActive=true;State.nextWave=0;
             var position=WorldMap.Resolve(boss.position,Vector3.zero,2);position.y=WorldMap.Ground(position);
             State.portal.position=position;State.portal.active=true;
-            State.notice=I18n.P("Boss defeated. A portal to the next realm has opened.","Босс повержен. Открылся портал в следующий мир.");State.noticeKind=0;State.noticeTime=8;
+            State.notice=I18n.P("Portal open. Horde x2; enemies gain 10% HP and damage every 10 s!","Портал открыт. Спавн ×2; ОЗ и урон врагов +10% каждые 10 с!");State.noticeKind=0;State.noticeTime=8;
         }
 
         public bool TryUsePortal(PlayerState p)
@@ -23,6 +25,7 @@ namespace Era
             if(State.phase!=RunPhase.Playing||!State.portal.active||p.downed||p.eliminated||Vector3.Distance(p.position,State.portal.position)>3.5f||State.stage>=CampaignData.StageCount)return false;
             State.stage++;State.stageSerial++;WorldMap.SetStage(State.stage);State.stageElapsed=0;State.wave=1;State.nextWave=60;State.waveQuota=State.waveSpawned=0;State.waveActive=false;State.spawnCursor=0;
             State.portal.active=false;State.bossSpawned=false;State.spawnTimer=0;State.chestsOpenedInStage=0;
+            State.postBossActive=false;State.postBossElapsed=0;State.postBossGrowthSteps=0;
             State.enemies.Clear();State.projectiles.Clear();State.pickups.Clear();State.effects.Clear();State.hits.Clear();State.hazards.Clear();State.chests.Clear();State.loot.Clear();State.shrines.Clear();State.itemFields.Clear();
             WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
             foreach(var player in State.players)
@@ -40,7 +43,7 @@ namespace Era
         void BossAttack(EnemyState boss,PlayerState target)
         {
             int stage=Mathf.Max(1,boss.bossStage);boss.attackCycle++;
-            float damage=26*(1+(stage-1)*.20f),delay=Mathf.Max(.8f,1.5f-stage*.07f);
+            float damage=26*(1+(stage-1)*.20f)*State.enemyPartyScale,delay=Mathf.Max(.8f,1.5f-stage*.07f);
             boss.windup=delay;boss.attackPosition=target.position;boss.specialTimer=Mathf.Max(2.6f,5.5f-stage*.35f);
             var towards=(target.position-boss.position);towards.y=0;if(towards.sqrMagnitude<.01f)towards=Vector3.forward;towards.Normalize();
             switch(stage)

@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();
+            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -169,8 +169,15 @@ namespace Era.Editor
             Check(p.hitSlide>.2f&&p.knockback.z<0,"enemy hit starts a short backward slide");Step(sim,.4f);float slide=Vector2.Distance(new Vector2(origin.x,origin.z),new Vector2(p.position.x,p.position.z));
             Check(slide>.2f&&slide<.6f&&p.hitSlide==0&&p.grounded,"slide remains below sixty centimeters and finishes on the floor");
             var edge=WorldMap.Resolve(Vector3.zero,Vector3.right*1000,.4f);Check(new Vector2(edge.x,edge.z).magnitude<GameData.ArenaRadius-6,"collision keeps players inside the visible perimeter wall");
-            var atlas=IconLibrary.ItemAtlas;Check(atlas!=null&&atlas.width==1536&&atlas.height==1024,"supplied item artwork atlas is used at its original size");
-            for(int i=0;i<30;i++){var r=IconLibrary.ItemPixels(i);Check(r.x>=0&&r.y>=0&&r.xMax<=atlas.width&&r.yMax<=atlas.height,"item sprite lies inside the supplied artwork: "+i);}
+            var atlas=IconLibrary.ItemAtlas;Check(atlas!=null&&atlas.width==1672&&atlas.height==941,"new supplied artwork retains its original size");
+            int supplied=0;var cells=new HashSet<string>();
+            for(int i=0;i<ItemCatalog.Count;i++)
+            {
+                var texture=IconLibrary.ItemTexture(i);var r=IconLibrary.ItemPixels(i);
+                Check(texture!=null&&r.x>=0&&r.y>=0&&r.xMax<=texture.width&&r.yMax<=texture.height&&IconLibrary.ItemSprite(i)!=null,"item artwork lies inside its texture: "+i);
+                if(IconLibrary.HasSuppliedItemArt(i)){supplied++;Check(cells.Add(texture.name+" / "+r),"each supplied item has its own cell: "+i);}
+            }
+            Check(supplied==120,"all 120 supplied pictures are mapped to distinct existing items");
             foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);Check(model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses the smooth adult proportion rig: "+hero);}
             Check(Resources.Load<AudioClip>("Audio/Storm-of-the-Seven")?.length>25,"separate battle score is included");
             WorldMap.SetStage(1);
@@ -238,6 +245,9 @@ namespace Era.Editor
             var environment=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
             Check(environment.bakedVersion==WorldEnvironment.CurrentVersion&&environment.GetComponentsInChildren<Renderer>().Length<800,"terrain, trees and grass use bounded chunk renderer count");
             Check(environment.GetComponentInChildren<LivingGrass>().patches.Length>70,"grass covers the complete realm in reusable patches");
+            Check(Array.Find(environment.GetComponentsInChildren<Transform>(),t=>t.name=="04 / Flowing streams")?.childCount==32,"two flowing streams are chunked across the realm");
+            Check(WorldMap.Props.Exists(p=>p.kind==2)&&WorldMap.Props.Exists(p=>p.kind==0&&p.size>2.4f),"world includes shrubs and old oversized trees");
+            for(int river=0;river<2;river++)Check(WorldMap.Height(WorldMap.RiverCenter(50,river),50)<WorldMap.RiverWaterHeight(50,river)-.5f,"stream has a shared traversable bed: "+river);
             foreach(string name in new[]{"StoneDetail","WoodDetail","MeadowDetail","LeafDetail","StoneNormal","WoodNormal","GrassClump"})
                 Check(Resources.Load<Texture2D>("Textures/"+name)?.width==512,"detailed seamless surface resource: "+name);
             foreach(string name in IconBuilder.Names)
@@ -441,7 +451,7 @@ namespace Era.Editor
                 var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.stage==stage&&copy.hazards.Count==sim.State.hazards.Count,"stage and boss hazards survive snapshot: "+stage);
                 sim.DamageEnemy(boss,a,999999);
                 if(stage==7){Check(sim.State.phase==RunPhase.Victory&&!sim.State.portal.active,"only the seventh boss completes the campaign");break;}
-                Check(sim.State.phase==RunPhase.Playing&&sim.State.portal.active&&sim.State.enemies.Count==0,"boss defeat opens a safe portal instead of ending the run: "+stage);
+                Check(sim.State.phase==RunPhase.Playing&&sim.State.portal.active&&sim.State.postBossActive,"boss defeat opens a portal with an ongoing horde: "+stage);
                 var far=b.position;b.position=sim.State.portal.position+Vector3.right*20;Check(!sim.TryUsePortal(b)&&sim.State.stage==stage,"portal requires a nearby living player");
                 b.position=sim.State.portal.position;c.downed=true;c.hp=0;
                 int level=sim.State.level,weapon=a.weapons[0],accessories=a.attributes[0];sim.ApplyAccessory(a,0,0);

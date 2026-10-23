@@ -69,12 +69,13 @@ namespace Era
             var props=new GameObject("02 / Bark, foliage and weathered rocks").transform;props.SetParent(root,false);
             var grass=new GameObject("03 / Meadow carpet").transform;grass.SetParent(root,false);
             Color grassColor=CampaignData.GrassColors[stage-1],leafColor=CampaignData.LeafColors[stage-1];
-            var terrainMat=new Material(Shader.Find("Era/Realm Terrain")){name="Terrain / "+stage};terrainMat.SetTexture("_MainTex",Resources.Load<Texture2D>("Textures/MeadowDetail"));terrainMat.SetTexture("_StoneTex",Resources.Load<Texture2D>("Textures/StoneDetail"));terrainMat.SetColor("_Color",grassColor.linear*1.2f);
+            var terrainMat=new Material(Shader.Find("Era/Realm Terrain")){name="Terrain / "+stage};terrainMat.SetTexture("_MainTex",Resources.Load<Texture2D>("Textures/MeadowDetail"));terrainMat.SetTexture("_StoneTex",Resources.Load<Texture2D>("Textures/StoneDetail"));terrainMat.SetColor("_Color",grassColor.linear*1.45f);
             var barkMat=Surface("Bark",1,Resources.Load<Texture2D>("Textures/WoodDetail"),Resources.Load<Texture2D>("Textures/WoodNormal"));
             var rockMat=Surface("Stone",0,Resources.Load<Texture2D>("Textures/StoneDetail"),Resources.Load<Texture2D>("Textures/StoneNormal"));rockMat.SetColor("_MossColor",grassColor);
             var leafMat=new Material(Shader.Find("Era/Realm Leaves")){name="Canopy / "+stage};leafMat.mainTexture=Resources.Load<Texture2D>("Textures/LeafDetail");
-            var grassMat=new Material(Shader.Find("Era/Meadow Grass")){name="Living grass / "+stage};grassMat.mainTexture=Resources.Load<Texture2D>("Textures/GrassClump");
-            const int side=20;const float width=40;int chunks=Mathf.CeilToInt((GameData.ArenaRadius+12)*2/width);float extent=chunks*width*.5f;
+            var grassMat=new Material(Shader.Find("Era/Meadow Grass")){name="Living grass blades / "+stage};
+            BuildStreams(root,stage);
+            const int side=40;const float width=40;int chunks=Mathf.CeilToInt((GameData.ArenaRadius+12)*2/width);float extent=chunks*width*.5f;
             for(int cx=0;cx<chunks;cx++)for(int cz=0;cz<chunks;cz++)
             {
                 float nearX=Mathf.Max(0,Mathf.Abs(-extent+(cx+.5f)*width)-width*.5f),nearZ=Mathf.Max(0,Mathf.Abs(-extent+(cz+.5f)*width)-width*.5f);
@@ -88,15 +89,23 @@ namespace Era
             var cells=new Dictionary<Vector2Int,Cell>();
             foreach(var prop in WorldMap.Props)
             {
-                var key=new Vector2Int(Mathf.FloorToInt(prop.position.x/40),Mathf.FloorToInt(prop.position.z/40));if(!cells.TryGetValue(key,out var cell)){cell=new Cell();cells[key]=cell;}
+                var key=new Vector2Int(Mathf.FloorToInt(prop.position.x/60),Mathf.FloorToInt(prop.position.z/60));if(!cells.TryGetValue(key,out var cell)){cell=new Cell();cells[key]=cell;}
                 int seed=Mathf.RoundToInt(prop.angle*13+prop.position.x*7);var random=new System.Random(seed);
                 if(prop.kind==0)Tree(cell,prop,random,stage,leafColor);
+                else if(prop.kind==2)Bush(cell,prop,leafColor,seed);
                 else
                 {
                     Color stone=Color.Lerp(new Color(.43f,.45f,.43f),CampaignData.Color(stage),.10f);
                     cell.rocks.Boulder(prop.position+Vector3.up*.55f*prop.size,new Vector3(1.05f,.88f,.91f)*prop.size,stone,seed);
                     cell.rocks.Boulder(prop.position+new Vector3(.82f,.22f,-.35f)*prop.size,new Vector3(.55f,.4f,.53f)*prop.size,stone*.9f,seed+19);
                 }
+            }
+            for(int river=0;river<2;river++)for(int z=-275;z<275;z+=9)
+            {
+                float bank=(z%2==0?-1:1)*(WorldMap.RiverWidth(z,river)+.75f),x=WorldMap.RiverCenter(z,river)+bank;
+                var point=WorldMap.OnGround(x,z);var key=new Vector2Int(Mathf.FloorToInt(x/60),Mathf.FloorToInt(z/60));
+                if(!cells.TryGetValue(key,out var cell)){cell=new Cell();cells[key]=cell;}
+                cell.rocks.Boulder(point+Vector3.up*.14f,new Vector3(.48f,.26f,.37f),new Color(.39f,.44f,.37f),z+river*913);
             }
             foreach(var pair in cells)
             {var c=pair.Value;string suffix=pair.Key.ToString();c.bark.Save("Textured trunks "+suffix,props,barkMat);c.leaves.Save("Living canopies "+suffix,props,leafMat);c.rocks.Save("Moss and fractured stone "+suffix,props,rockMat);}
@@ -108,11 +117,20 @@ namespace Era
                 {
                     float wx=origin.x+x+(float)rng.NextDouble(),wz=origin.z+z+(float)rng.NextDouble();
                     if(wx*wx+wz*wz>GameData.ArenaRadius*GameData.ArenaRadius)continue;
+                    if(WorldMap.InWater(wx,wz,.25f))continue;
                     bool path=Mathf.Abs(wz-Mathf.Sin(wx*.026f)*8)<1.4f;
                     if(path&&rng.NextDouble()<.94)continue;
-                    var point=WorldMap.OnGround(wx,wz)-origin;float height=.36f+(float)rng.NextDouble()*.24f;
-                    Color tint=Color.Lerp(grassColor*.77f,grassColor*1.32f,(float)rng.NextDouble());float angle=(float)rng.NextDouble()*Mathf.PI*2;
-                    for(int card=0;card<2;card++)blades.Tuft(point,height,.31f,angle+card*1.6f,tint);
+                    var point=WorldMap.OnGround(wx,wz)-origin;
+                    float meadow=Mathf.PerlinNoise(wx*.065f+stage*11,wz*.065f+9);
+                    float height=.24f+(float)rng.NextDouble()*.22f+meadow*.15f;
+                    bool reeds=WorldMap.InWater(wx,wz,1.7f);if(reeds)height*=2;
+                    Color tint=Color.Lerp(grassColor*.82f,grassColor*1.10f,meadow+(float)rng.NextDouble()*.15f);
+                    float angle=(float)rng.NextDouble()*Mathf.PI*2;
+                    for(int blade=0;blade<3;blade++)
+                    {
+                        float a=angle+blade*2.39996f;var offset=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*.13f;
+                        blades.Blade(point+offset,height*(.7f+(float)rng.NextDouble()*.5f),.03f+(float)rng.NextDouble()*.03f,a,tint,.12f+(float)rng.NextDouble()*.15f);
+                    }
                 }
                 var patch=blades.Save("Reactive meadow / "+cx+" / "+cz,grass,grassMat,origin,false);if(patch!=null)patches.Add(patch.GetComponent<Renderer>());
             }
@@ -120,6 +138,38 @@ namespace Era
         }
         static Material Surface(string name,int kind,Texture2D texture,Texture2D normal)
         {var mat=new Material(Shader.Find("Era/Realm Surface")){name=name,mainTexture=texture};mat.SetFloat("_Kind",kind);mat.SetTexture("_BumpMap",normal);return mat;}
+        static void Bush(Cell cell,WorldProp prop,Color leaf,int seed)
+        {
+            float s=prop.size;
+            for(int branch=0;branch<5;branch++)
+            {
+                float a=branch*2.39996f+prop.angle;var tip=prop.position+new Vector3(Mathf.Cos(a)*.48f,.5f+branch*.08f,Mathf.Sin(a)*.48f)*s;
+                cell.bark.Tube(prop.position,tip,.035f*s,.012f*s,new Color(.37f,.29f,.18f),5);
+                cell.leaves.Boulder(tip,new Vector3(.58f,.42f,.53f)*s,leaf*(1.1f+branch*.025f),seed+branch,true);
+            }
+        }
+        static void BuildStreams(Transform root,int stage)
+        {
+            var streams=new GameObject("04 / Flowing streams").transform;streams.SetParent(root,false);
+            var material=new Material(Shader.Find("Era/Stream Water")){name="Clear flowing water / "+stage};
+            material.SetColor("_Color",stage>=5?new Color(.18f,.34f,.48f):new Color(.15f,.46f,.46f));
+            for(int river=0;river<2;river++)for(int chunk=-8;chunk<8;chunk++)
+            {
+                var draft=new Draft();
+                for(int z=0;z<=40;z++)for(int x=0;x<=8;x++)
+                {
+                    float wz=chunk*40+z,wx=WorldMap.RiverCenter(wz,river)+(x/4f-1)*WorldMap.RiverWidth(wz,river);
+                    draft.Add(new Vector3(wx,WorldMap.RiverWaterHeight(wz,river)+.025f,wz),new Vector2(x/8f,wz*.14f),Color.white);
+                }
+                for(int z=0;z<40;z++)for(int x=0;x<8;x++)
+                {
+                    int a=z*9+x;Vector3 center=draft.v[a];
+                    if(new Vector2(center.x,center.z).magnitude>GameData.ArenaRadius-6)continue;
+                    draft.Tri(a,a+9,a+1);draft.Tri(a+1,a+9,a+10);
+                }
+                draft.Save("Stream "+river+" / "+chunk,streams,material,default,false);
+            }
+        }
         static void Tree(Cell cell,WorldProp prop,System.Random random,int stage,Color leaf)
         {
             Vector3 p=prop.position;float scale=prop.size,height=(4.5f+(float)random.NextDouble()*2)*scale;float lean=((float)random.NextDouble()-.5f)*.6f;

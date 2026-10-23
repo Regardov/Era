@@ -1,20 +1,20 @@
 Shader "Era/Meadow Grass"
 {
-    Properties {_Color("Tint",Color)=(1,1,1,1) _MainTex("Painted blade clump",2D)="white"{} _Cutoff("Blade cutout",Range(0,1))=.38}
+    Properties {_Color("Tint",Color)=(1,1,1,1)}
     SubShader {
-        Tags {"Queue"="AlphaTest" "RenderType"="TransparentCutout"} Cull Off
+        Tags {"RenderType"="Opaque"} Cull Off
         CGPROGRAM
-        #pragma surface surf Standard vertex:vert addshadow fullforwardshadows alphatest:_Cutoff
+        #pragma surface surf Standard vertex:vert addshadow fullforwardshadows
         #pragma target 3.0
-        fixed4 _Color;sampler2D _MainTex;float4 _GrassBend0,_GrassBend1,_GrassBend2;
-        struct Input {float4 color:COLOR;float2 uv_MainTex;float3 worldPos;};
+        fixed4 _Color;float4 _GrassBend0,_GrassBend1,_GrassBend2;
+        struct Input {float4 color:COLOR;float2 bladeUV;float3 worldPos;};
         float2 bend(float3 p,float4 player){
             float2 delta=p.xz-player.xz;float distance=length(delta);
             float height=1-smoothstep(.6,2.0,abs(p.y-player.y));
             return delta/max(.08,distance)*pow(saturate(1-distance/1.8),1.4)*height*player.w*.85;
         }
         void vert(inout appdata_full v,out Input o){
-            UNITY_INITIALIZE_OUTPUT(Input,o);o.color=v.color;
+            UNITY_INITIALIZE_OUTPUT(Input,o);o.color=v.color;o.bladeUV=v.texcoord.xy;
             float3 w=mul(unity_ObjectToWorld,v.vertex).xyz;
             float sway=(sin(w.x*.75+w.z*.4+_Time.y*1.5)+sin(w.z*1.4+_Time.y*2.1)*.4)*.11;
             float2 interaction=bend(w,_GrassBend0)+bend(w,_GrassBend1)+bend(w,_GrassBend2);
@@ -24,12 +24,11 @@ Shader "Era/Meadow Grass"
         }
         void surf(Input i,inout SurfaceOutputStandard o){
             clip(88-distance(i.worldPos,_WorldSpaceCameraPos));
-            float4 blade=tex2D(_MainTex,i.uv_MainTex);clip(blade.a-.38);
-            float3 root=i.color.rgb*.53,tip=i.color.rgb*1.19;
-            o.Albedo=lerp(root,tip,saturate(i.uv_MainTex.y)) * _Color.rgb*blade.rgb;
-            o.Emission=o.Albedo*.08;o.Metallic=0;o.Smoothness=0;o.Occlusion=lerp(.75,1,i.uv_MainTex.y);o.Alpha=blade.a;
+            float3 root=i.color.rgb*.72,tip=i.color.rgb*1.15;
+            o.Albedo=lerp(root,tip,saturate(i.bladeUV.y)) * _Color.rgb;
+            o.Emission=o.Albedo*.16;o.Metallic=0;o.Smoothness=.08;o.Occlusion=lerp(.85,1,i.bladeUV.y);o.Alpha=1;
         }
         ENDCG
     }
-    Fallback "Transparent/Cutout/VertexLit"
+    Fallback "Diffuse"
 }

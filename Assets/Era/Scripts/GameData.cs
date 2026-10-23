@@ -223,6 +223,9 @@ namespace Era
         public int stage = 1, stageSerial;
         public PortalState portal = new PortalState();
         public bool bossSpawned;
+        public bool postBossActive;
+        public float postBossElapsed, enemyPartyScale = 1;
+        public int postBossGrowthSteps;
         public Vector3 bossStatuePosition;
         public int waveQuota,waveSpawned;
         public bool waveActive;
@@ -290,7 +293,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 13;
+        public const int Protocol = 14;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=240,ResourceNodeCount=72;

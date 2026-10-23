@@ -5,9 +5,9 @@ namespace Era
 {
     public sealed class WorldEnvironment : MonoBehaviour
     {
-        public const int CurrentVersion=11;
+        public const int CurrentVersion=17;
         public int bakedVersion,stage=1;
-        public string mapName="Seven Realms / sculpted terrain / reactive grass";
+        public string mapName="Seven Realms / streams, rolling hills, old trees and living meadow";
         bool runtimeGenerated;
         static Material skyMaterial;
         public void Build()

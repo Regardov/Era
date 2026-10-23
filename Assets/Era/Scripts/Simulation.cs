@@ -68,6 +68,7 @@ namespace Era
             foreach(var player in State.players)
                 if(inputs.TryGetValue(player.id,out var choice)&&choice.choice>=0)ChooseItem(player,choice.choice);
             if(UpgradePaused)return;
+            TickDifficulty(dt);
             RefreshAuras();
             State.elapsed += dt;
             if(!State.portal.active)State.stageElapsed=Mathf.Min(CampaignData.StageDuration,State.stageElapsed+dt);
@@ -239,6 +240,7 @@ namespace Era
         }
         public EnemyState SpawnEnemy(EnemyKind? forced = null)
         {
+            RefreshPartyDifficulty();
             var kind = forced ?? RollEnemyKind();
             var alive = State.players.FindAll(p => !p.downed && !p.eliminated);
             Vector3 origin = alive.Count > 0 ? alive[State.spawnCursor++ % alive.Count].position : Vector3.zero;
@@ -255,11 +257,12 @@ namespace Era
             }
             float scaling = (1 + (State.wave - 1) * 0.14f)*CampaignData.EnemyScale(State.stage);
             float hp = EnemyCatalog.Health(kind) * scaling;
-            hp *= 1+.5f*(State.players.Count-1);
-            if(kind==EnemyKind.Warden)hp=1700*CampaignData.BossHpScale(State.stage)*(1+.5f*(State.players.Count-1));
+            float difficulty=State.enemyPartyScale*Mathf.Pow(1.1f,State.postBossGrowthSteps);
+            hp *= difficulty;
+            if(kind==EnemyKind.Warden)hp=1700*CampaignData.BossHpScale(State.stage)*difficulty;
             var e = new EnemyState { id = State.nextId++, kind = kind, position = pos, hp = hp, maxHp = hp,
                 speed = kind == EnemyKind.Warden ? 1.9f : EnemyCatalog.Speed(kind),
-                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute || kind==EnemyKind.Ogre || kind==EnemyKind.StoneGolem ? 22 : 10)*(1+.18f*(State.stage-1)), spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
+                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute || kind==EnemyKind.Ogre || kind==EnemyKind.StoneGolem ? 22 : 10)*(1+.18f*(State.stage-1))*difficulty, spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
             if(IsFlying(kind))e.position.y+=1.8f;
             State.enemies.Add(e);
             return e;

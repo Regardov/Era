@@ -81,7 +81,7 @@ namespace Era
         {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
         void ItemIcon(int item,float x,float y,float size)
         {
-            var texture=IconLibrary.ItemAtlas;if(texture==null||item>=30){Icon(GameData.ItemIcons[item],x,y,size);return;}
+            var texture=IconLibrary.ItemTexture(item);if(texture==null)return;
             var uv=IconLibrary.ItemUV(item);float height=size*uv.height*texture.height/(uv.width*texture.width);var rect=new Rect(x,y+(size-height)/2,size,height);
             if(capturing)capture.Rect(rect,Color.white,texture,uv);else{var previous=GUI.color;GUI.color=Color.white;GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
         }
@@ -207,12 +207,12 @@ namespace Era
             Bar(40,63,260,13,p.hp/p.maxHp,Red);
             if(p.shield>0){Icon("shield",40,81,20);Text(I18n.P("SHIELD ","ЩИТ ")+Mathf.CeilToInt(p.shield),67,82,233,19,13,Blue,true);Bar(40,104,260,5,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);}
             Text(I18n.P("2 weapon slots · second at Lv.25","2 слота оружия · второй на ур.25"),40,p.shield>0?115:85,260,21,11,Muted);
-            Box(672,18,256,70,Panel,14);Text(I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,682,23,236,32,25,Ink,true,TextAnchor.UpperCenter);
-            Text(s.xp+" / "+s.xpRequired+" XP",684,57,232,20,11,Muted,false,TextAnchor.UpperCenter);Bar(690,79,220,4,s.xp/(float)s.xpRequired,Blue);
+            Box(672,18,256,35,Panel,7);Text(I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,681,20,125,25,17,Ink,true,TextAnchor.MiddleLeft);
+            Text(s.xp+" / "+s.xpRequired+" XP",806,23,111,20,10,Muted,false,TextAnchor.MiddleRight);Bar(681,48,237,2,s.xp/(float)s.xpRequired,Blue);
             Text(Clock(Mathf.Ceil(CampaignData.Remaining(s.stageElapsed))),724,146,152,28,21,CampaignData.Remaining(s.stageElapsed)<60?Red:Ink,true,TextAnchor.UpperCenter);
             Box(1394,24,182,48,Panel,14);Icon("gold",1405,35,24);Text(s.coins.ToString(),1432,34,52,28,18,Ink,true);Icon("skull",1491,35,24);Text(s.kills.ToString(),1520,34,48,28,18,Ink,true);
             Box(1000,24,370,48,Panel);
-            Text(s.portal.active||s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.waveActive?I18n.P("HORDE ","ОРДА ")+(s.wave-1)+" · "+I18n.P("INCOMING ","ПРИБЫВАЕТ ")+s.waveQuota:s.nextWave>0?I18n.P("NEXT HORDE IN ","СЛЕДУЮЩАЯ ОРДА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"):I18n.P("TEN MINUTES SURVIVED","ДЕСЯТЬ МИНУТ ПРОЙДЕНЫ"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
+            Text(s.postBossActive?I18n.P("HORDE ×2 · HP / DMG ×","ОРДА ×2 · ОЗ / УРОН ×")+Mathf.Pow(1.1f,s.postBossGrowthSteps).ToString("0.00"):s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.waveActive?I18n.P("HORDE ","ОРДА ")+(s.wave-1)+" · "+I18n.P("INCOMING ","ПРИБЫВАЕТ ")+s.waveQuota:s.nextWave>0?I18n.P("NEXT HORDE IN ","СЛЕДУЮЩАЯ ОРДА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"):I18n.P("TEN MINUTES SURVIVED","ДЕСЯТЬ МИНУТ ПРОЙДЕНЫ"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
             Box(1178,86,398,57,Panel);Text(I18n.P("REALM ","ЭТАП ")+s.stage+" / 7",1193,94,367,18,11,CampaignData.Color(s.stage),true);Text(CampaignData.Name(s.stage),1193,116,367,24,17,Ink,true);
             if(App.Online)
             {
@@ -250,14 +250,14 @@ namespace Era
                 if(!drop.collecting&&Vector3.Distance(p.position,drop.position)<2.5f)Text("[ F ] "+GameData.Items[drop.content].name,pos.x-150,pos.y+28,300,40,15,GameData.Items[drop.content].color,true,TextAnchor.UpperCenter);
             }
             foreach(var e in s.enemies)if(e.kind==EnemyKind.Warden)
-            {Text(CampaignData.BossName(e.bossStage).ToUpperInvariant(),555,240,490,24,13,Ink,true,TextAnchor.UpperCenter);Bar(555,267,490,24,e.hp/e.maxHp,Red);Text(Mathf.CeilToInt(e.hp)+" / "+Mathf.CeilToInt(e.maxHp)+I18n.P(" HP"," ОЗ"),555,270,490,21,14,Ink,true,TextAnchor.UpperCenter);Text(I18n.P("IMMUNE TO STATUS EFFECTS","ИММУНИТЕТ К ЭФФЕКТАМ"),555,297,490,20,11,Sage,true,TextAnchor.UpperCenter);}
+            {Text(CampaignData.BossName(e.bossStage).ToUpperInvariant(),555,66,490,22,13,Ink,true,TextAnchor.UpperCenter);Bar(555,90,490,20,e.hp/e.maxHp,Red);Text(Mathf.CeilToInt(e.hp)+" / "+Mathf.CeilToInt(e.maxHp)+I18n.P(" HP"," ОЗ"),555,91,490,19,13,Ink,true,TextAnchor.UpperCenter);Text(I18n.P("IMMUNE TO STATUS EFFECTS","ИММУНИТЕТ К ЭФФЕКТАМ"),555,115,490,17,10,Sage,true,TextAnchor.UpperCenter);}
             if(s.portal.active)
             {
                 WorldLabel(s.portal.position+Vector3.up*4.2f,I18n.P("NEXT REALM","СЛЕДУЮЩИЙ МИР"),Panel);
                 if(!p.downed&&!p.eliminated&&Vector3.Distance(p.position,s.portal.position)<3.5f)
                 {Box(460,610,680,74,Panel);Text(I18n.P("[ F ]  Enter portal · moves the whole party","[ F ]  Войти в портал · переход всей команды"),477,622,646,26,19,Sage,true,TextAnchor.UpperCenter);Text(CampaignData.Name(s.stage+1),477,655,646,21,14,Muted,false,TextAnchor.UpperCenter);}
             }
-            for(int i=0;i<GameData.WeaponSlots;i++)WeaponSlot(p,i,747+i*57,94);
+            for(int i=0;i<GameData.WeaponSlots;i++)WeaponSlot(p,i,346+i*57,24);
             EncounterHud(s,p);AuraHud(p);DamageNumbers(s);
             Ability("Q",GameData.QIcon(p.hero),GameData.Q(p.hero),p.qCooldown,p.hero==Hero.Echo?10:8,690);
             Ability("E",GameData.EIcon(p.hero),GameData.E(p.hero),p.eCooldown,p.hero==Hero.Echo?16:18,747);
