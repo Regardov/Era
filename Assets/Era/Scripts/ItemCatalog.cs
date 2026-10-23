@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Era
 {
-    // IDs are stable across inventory, host snapshots and the reference artwork's first 31 cells.
+    // Protocol 13 uses this compact ID list; IconLibrary preserves the original atlas cells.
     public enum ItemId
     {
         SharpBlade, SwiftBoots, StoutHeart, SteelShield, Hourglass, GoldenCoin, BeginnersLuck, HeartyMeal,
-        SmallPotion, DoubleShot, SpikedGloves, WingedBoots, VampireFang, TrueSight, BookOfKnowledge,
+        SmallPotion, DoubleShot, SpikedGloves, WingedBoots, TrueSight, BookOfKnowledge,
         FireSphere, Magnet, FlameBlade, IceCore, StormAmulet, Necronomicon, Chronosphere, ChaosPortal,
         CrownOfGreed, DragonBreath, AngelWings, InfinitePower, BlackHole, Rebirth, TimeMaster, RealityCube,
         CopperSpring, Spyglass, ChalkCircle, WindFletching, ScholarSeal, FeatherAnklet, IronBrooch,
@@ -30,29 +30,28 @@ namespace Era
 
     public static class ItemCatalog
     {
-        public const int Count=130;
+        public const int Count=129;
         const ItemRarity U=ItemRarity.Uncommon,R=ItemRarity.Rare,E=ItemRarity.Epic,M=ItemRarity.Mythic,L=ItemRarity.Legendary;
         static ItemDefinition D(string en,string ru,string english,string russian,ItemRarity rarity,string icon,string synergy="",string stacks="")
             =>new ItemDefinition(en,ru,english,russian,rarity,icon,synergy,stacks);
         public static ItemDefinition[] Build()=>new[]
         {
-            D("Sharp Blade","Острый клинок","+15% damage.","+15% урона.",U,"blade"),
+            D("Sharp Blade","Острый клинок","+7.5% damage.","+7,5% урона.",U,"blade"),
             D("Swift Boots","Быстрые ботинки","+10% movement speed.","+10% скорости бега.",U,"boots"),
-            D("Stout Heart","Крепкое сердце","+20% base maximum health.","+20% текущего максимума ХП без бонуса ауры.",U,"heart"),
+            D("Stout Heart","Крепкое сердце","+10% base maximum health.","+10% текущего максимума ХП без бонуса ауры.",U,"heart"),
             D("Steel Shield","Стальной щит","Gain 35 shield.","Получить 35 щита.",U,"shield"),
-            D("Hourglass","Песочные часы","+11% ability recharge speed.","+11% скорости восстановления способностей.",U,"hourglass"),
-            D("Golden Coin","Золотая монета","+20% gold gain.","+20% получаемого золота.",U,"gold"),
-            D("Beginner's Luck","Удача новичка","+15 percentage points of luck.","+15 процентных пунктов удачи.",U,"clover"),
+            D("Hourglass","Песочные часы","+5.5% ability recharge speed.","+5,5% скорости восстановления способностей.",U,"hourglass"),
+            D("Golden Coin","Золотая монета","+10% gold gain.","+10% получаемого золота.",U,"gold"),
+            D("Beginner's Luck","Удача новичка","+7.5 percentage points of luck.","+7,5 процентного пункта удачи.",U,"clover"),
             D("Hearty Meal","Сытный обед","Regenerate 1 HP each second.","Регенерация +1 ХП/с.",U,"meal"),
-            D("Small Potion","Малое зелье","+18% healing power.","+18% силы лечения.",U,"potion"),
+            D("Small Potion","Малое зелье","+9% healing power.","+9% силы лечения.",U,"potion"),
             D("Double Shot","Дабл-шот","+1 projectile per volley. Two copies give three projectiles.","+1 снаряд к каждой атаке оружия. Два подбора дают 3 снаряда: посох сразу, меч и копьё очередью.",R,"stars","Меткие залпы и эффекты при попадании.","Каждая копия добавляет ровно 1 снаряд; общий предел 48."),
-            D("Spiked Gloves","Шипованные перчатки","+12% critical chance.","+12% шанса критического удара.",U,"gloves"),
+            D("Spiked Gloves","Шипованные перчатки","+6% critical chance.","+6% шанса критического удара.",U,"gloves"),
             D("Winged Boots","Крылатые ботинки","+8% speed and +5% evasion.","+8% скорости бега и +5% уклонения.",U,"wingboots"),
-            D("Vampire Fang","Вампирский клык","+6% chance to restore 1 HP per weapon hit.","+6% шанса восстановить 1 ХП при попадании оружием.",U,"fang"),
-            D("True Sight","Точный прицел","+30% critical damage.","+30% критического урона.",U,"target"),
+            D("True Sight","Точный прицел","+15% critical damage.","+15% критического урона.",U,"target"),
             D("Book of Knowledge","Книга знаний","Upgrade a random equipped weapon. At max level gain 30 XP.","Улучшает случайное оружие на уровень. Если всё улучшено — 30 опыта.",R,"book"),
             D("Fire Sphere","Огненная сфера","Every 4 s, burn enemies within 4 m for 8 damage/s for 3 s.","Каждые 4 с поджигает врагов в 4 м: 8 урона/с на 3 с.",R,"fireorb","Паровой клапан, Пепельный сад.","+8 урона/с за копию."),
-            D("Magnet","Магнит","+50% pickup radius.","+50% радиуса подбора.",U,"magnet"),
+            D("Magnet","Магнит","+25% pickup radius.","+25% радиуса подбора.",U,"magnet"),
             D("Flame Blade","Клинок пламени","Hits burn for 6 damage/s for 3 s. Up to 5 burn stacks.","Попадания поджигают на 3 с: 6 урона/с, до 5 слоёв горения.",E,"flameblade","Лёд создаёт пар; пепел растит огненные поля.","+6 урона/с за копию."),
             D("Ice Core","Ледяное ядро","Hits chill for 2 s, slowing movement by 35%.","Попадания охлаждают на 2 с и замедляют на 35%.",E,"icecore","Ледяная тюрьма, Зимний сон, Паровой клапан.","+1 с длительности за копию."),
             D("Storm Amulet","Грозовой амулет","Every fourth hit shocks a second enemy for 24 damage.","Каждое 4-е попадание бьёт второго врага молнией на 24 урона и оставляет заряд.",E,"stormamulet","Проводник грозы, Грозовой контур.","+24 урона за копию."),
@@ -67,11 +66,11 @@ namespace Era
             D("Rebirth","Перерождение","One automatic revival. Consuming it permanently adds 25% damage.","Один автоматический подъём с 55% ХП. Потраченный заряд навсегда даёт +25% урона.",L,"rebirth","Бессмертный договор.","Каждая копия даёт отдельный заряд."),
             D("Time Master","Повелитель времени","Weapon hits echo after 1 s for 20% damage, without triggering more echoes.","Попадания оружия повторяются через 1 с на 20% урона; эхо не запускает новое эхо.",M,"timemaster","Раскол души, Временной долг.","+10% урона эха за повтор, до 100%."),
             D("Reality Cube","Куб реальности","Every 12 s alternates an assault phase with a healing sanctuary phase.","Каждые 12 с меняет закон мира: штурм даёт двойной залп; убежище блокирует автоатаки, лечит 3% ХП/с и заряжает взрыв из лечения.",L,"cube","Сердце инверсии, Ходячий собор.","+1 залп в штурме; +3% лечения/с за копию."),
-            D("Copper Spring","Медная пружина","+15% attack speed.","+15% скорости автоатак.",U,"coil"),
+            D("Copper Spring","Медная пружина","+7.5% attack speed.","+7,5% скорости автоатак.",U,"coil"),
             D("Spyglass","Подзорная труба","+3 m weapon range.","+3 м дальности оружия.",U,"lens"),
-            D("Chalk Circle","Меловой круг","+18% effect area.","+18% радиуса эффектов.",U,"ring"),
-            D("Wind Fletching","Оперение ветра","+25% projectile speed.","+25% скорости снарядов.",U,"arrow"),
-            D("Scholar Seal","Печать учёного","+18% experience gain.","+18% получаемого опыта.",U,"book"),
+            D("Chalk Circle","Меловой круг","+9% effect area.","+9% радиуса эффектов.",U,"ring"),
+            D("Wind Fletching","Оперение ветра","+12.5% projectile speed.","+12,5% скорости снарядов.",U,"arrow"),
+            D("Scholar Seal","Печать учёного","+9% experience gain.","+9% получаемого опыта.",U,"book"),
             D("Feather Anklet","Браслет пера","+8% evasion.","+8% уклонения.",U,"wingboots"),
             D("Iron Brooch","Железная брошь","+8% armor.","+8% брони.",U,"armor"),
             D("Healer's Ribbon","Лента лекаря","+10% healing and +0.4 HP/s.","+10% силы лечения и +0,4 ХП/с.",U,"potion"),
@@ -79,17 +78,17 @@ namespace Era
             D("Nomad Pin","Знак кочевника","+6% speed and +1 m pickup range.","+6% скорости бега и +1 м подбора.",U,"boots"),
             D("Duelist Knot","Узел дуэлянта","+5% critical chance and +6% attack speed.","+5% шанса крита и +6% скорости атаки.",U,"gloves"),
             D("Cartographer Seal","Печать картографа","+8 luck and +1.5 m range.","+8 удачи и +1,5 м дальности оружия.",U,"compass"),
-            D("Lead Pendulum","Свинцовый маятник","+8% damage and +12% projectile speed.","+8% урона и +12% скорости снарядов.",U,"arrow"),
+            D("Lead Pendulum","Свинцовый маятник","+8% damage and +6% projectile speed.","+8% урона и +6% скорости снарядов.",U,"arrow"),
             D("Warden's Badge","Знак дозорного","+10 max HP and 20 shield.","+10 максимальных ХП и 20 щита.",U,"shield"),
             D("Apprentice Cord","Шнур ученика","+6% recharge and +8% healing.","+6% скорости восстановления способностей и +8% лечения.",U,"hourglass"),
-            D("Blood Glass","Кровавое стекло","+2% lifesteal and +12% critical damage.","+2% вампиризма и +12% критического урона.",U,"fang"),
+            D("Blood Glass","Кровавое стекло","+2% lifesteal and +6% critical damage.","+2% вампиризма и +6% критического урона.",U,"fang"),
             D("Comet Dust","Кометная пыль","+10% XP and +1.2 m pickup range.","+10% опыта и +1,2 м подбора.",U,"stars"),
-            D("Merchant Scale","Весы торговца","+12% gold and +7 luck.","+12% золота и +7 удачи.",U,"gold"),
+            D("Merchant Scale","Весы торговца","+6% gold and +7 luck.","+6% золота и +7 удачи.",U,"gold"),
             D("Silver Thread","Серебряная нить","+4% armor and +4% evasion.","+4% брони и +4% уклонения.",U,"armor"),
             D("Steady Hand","Твёрдая рука","+2 m range and +3% critical chance.","+2 м дальности оружия и +3% шанса крита.",U,"target"),
             D("Glass Cannon","Стеклянная пушка","+35% damage, lose 25% maximum HP.","+35% урона, но максимум ХП уменьшается на 25%.",R,"blade"),
             D("Lead Boots","Свинцовые сапоги","+14% armor, -12% movement speed.","+14% брони, но -12% скорости бега.",R,"armor"),
-            D("Blood Engine","Кровяной двигатель","+30% attack speed; weapon volleys cost 1 HP, nonlethal.","+30% скорости атаки; каждый залп оружия стоит 1 ХП, не убивает.",R,"heart","Клык и лечение компенсируют цену."),
+            D("Blood Engine","Кровяной двигатель","+30% attack speed; weapon volleys cost 1 HP, nonlethal.","+30% скорости атаки; каждый залп оружия стоит 1 ХП, не убивает.",R,"heart","Вампиризм и лечение компенсируют цену."),
             D("Sniper Oath","Клятва снайпера","+45% damage beyond 12 m; -25% within 5 m.","+45% урона дальше 12 м; -25% ближе 5 м.",R,"target","Подзорная труба, дальнобойные залпы.","Бонус урона повторов: ×(1 + 0,6 × ln числа копий)."),
             D("Brawler Oath","Клятва драчуна","+40% damage within 4 m; -35% beyond 10 m.","+40% урона в 4 м; -35% дальше 10 м.",R,"axe","Броня и атаки по площади.","Бонус урона повторов: ×(1 + 0,6 × ln числа копий)."),
             D("Thorn Mail","Шипастый панцирь","Taking a hit reflects 80% of its damage within 4 m. 2 s cooldown.","Полученный удар отражает 80% его урона по врагам в 4 м. КД 2 с.",R,"armor","Усиление защиты и ответные атаки."),
@@ -113,7 +112,7 @@ namespace Era
             D("Shatter Lens","Линза раскола","Critical hits on frozen enemies shatter for 45 area damage. 3 s cooldown.","Крит по замороженной цели раскалывает лёд: 45 урона в 4 м. КД 3 с.",E,"icecore","Хроносфера, Ледяная тюрьма.","Сила повторов: ×(1 + 0,6 × ln числа копий)."),
             D("Ash Garden","Пепельный сад","Burning deaths leave 5 s fire patches dealing 12 damage/s.","Горящие враги после смерти оставляют огненный сад на 5 с: 12 урона/с в 3 м.",E,"flameblade","Сбор врагов воронкой."),
             D("Blood Compass","Кровавый компас","Hits on bleeding targets heal 3 HP. 0.5 s cooldown.","Попадания по кровоточащим целям лечат 3 ХП. КД 0,5 с.",E,"compass","Зазубренная монета, Кровавая луна."),
-            D("Execution Ledger","Реестр казней","Every fifth hit marks its target; marked enemies below 18% HP are executed. Bosses take 60 damage instead.","Каждый 5-й удар ставит метку. Помеченная цель ниже 18% ХП казнится; боссы вместо казни получают 60 урона.",E,"book","Много снарядов быстро заполняют реестр."),
+            D("Execution Ledger","Реестр казней","Every fifth hit marks its target; marked enemies below 18% HP are executed. Bosses are immune to the mark.","Каждый 5-й удар ставит метку. Помеченная цель ниже 18% ХП казнится; боссы иммунны к метке.",E,"book","Много снарядов быстро заполняют реестр."),
             D("Echo Chamber","Эхо-камера","Three consecutive hits on the same target detonate for 45 damage within 3 m.","Три последовательных попадания по одной цели вызывают взрыв на 45 урона в 3 м.",E,"resonance","Эхо Повелителя времени не сбивает серию.","Сила повторов: ×(1 + 0,6 × ln числа копий)."),
             D("Alternator","Переключатель","Alternating weapon slots builds charges; at 4 charges discharge 90 damage nearby.","Чередование двух слотов оружия копит заряды; 4 заряда выпускают 90 урона в 7 м.",E,"coil","Второе оружие, Живой арсенал."),
             D("Kinetic Spool","Кинетическая катушка","Every 20 m travelled stores a charge: next weapon volley deals +80% damage.","Каждые 20 м пути копит заряд: следующий залп оружия получает +80% урона.",E,"boots","Дальний странник, Двигатель пацифиста."),

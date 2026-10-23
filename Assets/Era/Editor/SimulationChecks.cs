@@ -93,7 +93,7 @@ namespace Era.Editor
             Check(sim.State.coins==after+7&&sim.State.earnedCoins==7,"gold pickups credit team wallet");
             sim.State.pickups.Add(new PickupState{id=501,value=8,kind=PickupKind.Gold,position=Vector3.forward*30});
             sim.State.pickups.Add(new PickupState{id=502,value=3,kind=PickupKind.Experience,position=Vector3.forward*30});
-            float range=a.pickupRange;sim.ApplyItem(a,16);Check(a.pickupRange>range&&sim.State.pickups.Count==2,"magnet increases pickup radius without consuming distant loot");
+            float range=a.pickupRange;sim.ApplyItem(a,(int)ItemId.Magnet);Check(a.pickupRange>range&&sim.State.pickups.Count==2,"magnet increases pickup radius without consuming distant loot");
         }
         static void ChestPricesAndAuraProgress()
         {
@@ -104,7 +104,7 @@ namespace Era.Editor
             sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==976&&sim.State.openedChests==2&&sim.State.chests[2].cost==45,"ally pays the increased price and advances the same team counter");
             Check(!sim.TryOpenChest(b)&&sim.State.openedChests==2,"repeated interaction with an opened chest cannot advance prices");
             var boss=sim.SpawnEnemy(EnemyKind.Warden);sim.DamageEnemy(boss,a,99999999);a.position=sim.State.portal.position;
-            Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chestsOpenedInStage==0&&sim.State.chests.TrueForAll(c=>c.cost==c.baseCost),"portal transition preserves price progression for the new realm");
+            Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chestsOpenedInStage==0&&sim.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,sim.State.openedChests)),"portal transition preserves price progression for the new realm");
             var lumen=sim.AddPlayer(2,"Lumen",Hero.Lumen);Check(GameData.AuraUpgradeCount(lumen,0)==0,"starting aura is rank one with zero upgrades");
             sim.LearnAura(lumen,0);sim.LearnAura(lumen,0);Check(lumen.auraLevels[0]==3&&GameData.AuraUpgradeCount(lumen,0)==2,"two repeated choices produce rank three and two upgrades");
             sim.LearnAura(lumen,3);Check(lumen.currentAura==3&&lumen.auraLevels[3]==1&&GameData.AuraUpgradeCount(lumen,3)==0,"new aura becomes current without counting acquisition as an upgrade");
@@ -161,7 +161,7 @@ namespace Era.Editor
             Check(sim.TryOpenChest(ally)&&sim.State.coins==gold&&free.opened&&sim.State.loot.Count>0,"any ally can open the free chest without paying");
             sim=new Simulation(12);p=sim.AddPlayer(0,"Test",Hero.Ember);p.weapons=new[]{-1,-1};sim.Start();sim.State.spawnTimer=1000;
             Check(sim.State.resourceNodes.Count==72&&sim.State.resourceNodes.FindAll(n=>n.kind==PickupKind.Gold).Count==36,"map contains seventy-two evenly split GPU resource nodes");
-            var node=sim.State.resourceNodes[0];p.position=node.position;Check(sim.TryBreakResource(p)&&node.broken&&sim.State.pickups.Count==4&&sim.State.pickups.TrueForAll(d=>d.kind==PickupKind.Gold),"gold GPU drops four gold bundles");
+            var node=sim.State.resourceNodes[0];p.position=node.position;gold=sim.State.coins;Check(sim.TryBreakResource(p)&&node.broken&&sim.State.pickups.Count==0&&sim.State.coins==gold+33,"gold GPU immediately credits the shared wallet");
             int count=sim.State.pickups.Count;Check(!sim.TryBreakResource(p)&&sim.State.pickups.Count==count,"broken graphics cards cannot be farmed twice");
             var blue=sim.State.resourceNodes[1];sim.DamageResource(blue,100,p);Check(blue.broken&&sim.State.pickups.FindAll(d=>d.kind==PickupKind.Experience).Count==4,"blue GPU drops experience");
             var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.resourceNodes[0].broken&&copy.eliteShrines.Count==4&&copy.bossStatuePosition==sim.State.bossStatuePosition,"snapshot retains resource nodes and encounter objects");
@@ -170,7 +170,7 @@ namespace Era.Editor
             Check(slide>.2f&&slide<.6f&&p.hitSlide==0&&p.grounded,"slide remains below sixty centimeters and finishes on the floor");
             var edge=WorldMap.Resolve(Vector3.zero,Vector3.right*1000,.4f);Check(new Vector2(edge.x,edge.z).magnitude<GameData.ArenaRadius-6,"collision keeps players inside the visible perimeter wall");
             var atlas=IconLibrary.ItemAtlas;Check(atlas!=null&&atlas.width==1536&&atlas.height==1024,"supplied item artwork atlas is used at its original size");
-            for(int i=0;i<31;i++){var r=IconLibrary.ItemPixels(i);Check(r.x>=0&&r.y>=0&&r.xMax<=atlas.width&&r.yMax<=atlas.height,"item sprite lies inside the supplied artwork: "+i);}
+            for(int i=0;i<30;i++){var r=IconLibrary.ItemPixels(i);Check(r.x>=0&&r.y>=0&&r.xMax<=atlas.width&&r.yMax<=atlas.height,"item sprite lies inside the supplied artwork: "+i);}
             foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);Check(model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses the smooth adult proportion rig: "+hero);}
             Check(Resources.Load<AudioClip>("Audio/Storm-of-the-Seven")?.length>25,"separate battle score is included");
             WorldMap.SetStage(1);
@@ -365,11 +365,11 @@ namespace Era.Editor
             Check(!sim.ChooseItem(a, 6), "invalid upgrade rejected");
             Check(sim.ChooseItem(a, 0) && a.pendingLevels == 0 && b.pendingLevels == 1, "upgrades are individual");
             float hp=a.maxHp;sim.ApplyItem(a,2);Check(a.maxHp>hp,"stout heart increases maximum health");
-            float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.15f)<.001f,"sharp blade stacks damage");
+            float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.075f)<.001f,"sharp blade stacks damage");
             for(int i=0;i<60;i++)sim.ApplyItem(a,9);Check(a.projectileCount==48,"projectile count has a safe cap");
             hp=a.maxHp;sim.ApplyAttribute(a,4,3);Check(Mathf.Abs(a.maxHp-hp-40)<.001f,"legendary health attribute grants forty maximum health");
             float crit=a.critChance;sim.ApplyAttribute(a,2,2);Check(Mathf.Abs(a.critChance-crit-.15f)<.001f,"epic critical chance grants fifteen percent");
-            int[] tiers=new int[5];foreach(var item in GameData.Items)tiers[(int)item.rarity]++;Check(GameData.Items.Length==130&&Array.TrueForAll(tiers,n=>n>0),"chest catalogue contains 130 items in five rarity tiers");
+            int[] tiers=new int[5];foreach(var item in GameData.Items)tiers[(int)item.rarity]++;Check(GameData.Items.Length==ItemCatalog.Count&&Array.TrueForAll(tiers,n=>n>0),"chest catalogue contains 129 items in five rarity tiers");
             var low=New();var high=New();high.State.Player(0).luck=100;int lowHigh=0,highHigh=0,lowRare=0,highRare=0;for(int i=0;i<800;i++){int lr=low.RollRarity(low.State.Player(0),0),hr=high.RollRarity(high.State.Player(0),0);if(lr>=2)lowHigh++;if(hr>=2)highHigh++;if(lr==1)lowRare++;if(hr==1)highRare++;}
             Check(highHigh>lowHigh&&highRare<lowRare,"luck shifts rolls from low tier toward epic and legendary rewards");
             for(int stat=0;stat<GameData.Attributes.Length;stat++)
@@ -407,7 +407,7 @@ namespace Era.Editor
             var target=sim.SpawnEnemy();target.hp=1;sim.DamageEnemy(target,ally,100);Check(sim.State.hits.Exists(h=>h.target==target.id&&h.damage>=100)&&!sim.State.enemies.Contains(target),"lethal hits retain damage numbers after enemy removal");
             var fractions=New();var owner=fractions.State.Player(0);owner.xpGain=1.08f;owner.goldGain=1.08f;
             for(int i=0;i<10;i++){var enemy=fractions.SpawnEnemy(EnemyKind.Wisp);fractions.DamageEnemy(enemy,owner,9999);}
-            int xp=0,gold=0;foreach(var pickup in fractions.State.pickups){if(pickup.kind==PickupKind.Experience)xp+=pickup.value;else gold+=pickup.value;}
+            int xp=0,gold=fractions.State.earnedCoins;foreach(var pickup in fractions.State.pickups){if(pickup.kind==PickupKind.Experience)xp+=pickup.value;else gold+=pickup.value;}
             Check(xp==64&&gold==43,"small XP and gold bonuses accumulate instead of disappearing to per-kill rounding");
         }
         static void Cooperation()

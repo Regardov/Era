@@ -92,7 +92,8 @@ namespace Era
         {
             if(node.broken||damage<=0)return;node.hp-=damage;node.hitSerial++;if(node.hp>0)return;node.broken=true;
             int value=node.kind==PickupKind.Gold?28+State.stage*5:18+State.stage*4;
-            for(int i=0;i<4;i++)
+            if(node.kind==PickupKind.Gold)GrantGold(value,owner);
+            else for(int i=0;i<4;i++)
             {float a=i*Mathf.PI*.5f;State.pickups.Add(new PickupState{id=State.nextId++,kind=node.kind,value=value/4+(i<value%4?1:0),position=node.position+new Vector3(Mathf.Cos(a),.3f,Mathf.Sin(a))});}
             Effect(7,node.position+Vector3.up*.3f,1.8f);
         }

@@ -204,7 +204,7 @@ namespace Era
             foreach(var e in new List<EnemyState>(State.enemies))
             {
                 if (Vector3.Distance(p.position, e.position) > radius*p.areaSize) continue;
-                e.frozen = Mathf.Max(e.frozen, frozen);
+                FreezeEnemy(e,frozen);
                 DamageEnemy(e, p, damage);
             }
         }
@@ -233,7 +233,7 @@ namespace Era
             if(State.coins<nearest.cost)
             { State.noticeKind=1;State.noticeContent=nearest.cost;State.noticeTime=2;return false; }
             State.coins-=nearest.cost;nearest.opened=true;nearest.owner=p.id;State.openedChests++;State.chestsOpenedInStage++;
-            foreach(var chest in State.chests)if(!chest.opened&&!chest.free)chest.cost=GameData.ChestPrice(chest.baseCost,State.chestsOpenedInStage);
+            foreach(var chest in State.chests)if(!chest.opened&&!chest.free)chest.cost=GameData.ChestPrice(chest.baseCost,State.openedChests);
             RollChestReward(nearest,p);
             Effect(7,nearest.position+Vector3.up*0.7f,3);return true;
         }
@@ -273,6 +273,7 @@ namespace Era
         public void DamageEnemy(EnemyState e, PlayerState owner, float damage, bool proc = true, bool weaponHit=false)
         {
             if(e==null||e.hp<=0||damage<=0||!State.enemies.Contains(e))return;
+            if(EnemyCatalog.EffectImmune(e.kind)){e.frozen=0;e.ailments.Clear();}
             bool critical=false;
             if(owner!=null&&proc)
             {
@@ -298,9 +299,7 @@ namespace Era
             else { var merge=State.pickups.Find(d=>d.kind==PickupKind.Experience);if(merge!=null)merge.value+=pickup.value;else GrantExperience(pickup.value); }
             float gold=(e.kind==EnemyKind.Brute?12:4)*(owner?.goldGain??1)+(owner?.goldRemainder??0);
             int earnedGold=Mathf.Max(1,Mathf.FloorToInt(gold));if(owner!=null)owner.goldRemainder=gold-earnedGold;
-            var coin=new PickupState { id=State.nextId++,position=e.position+Vector3.right*0.55f,value=earnedGold,kind=PickupKind.Gold };
-            if(State.pickups.Count<260)State.pickups.Add(coin);
-            else { State.coins+=coin.value;State.earnedCoins+=coin.value; }
+            GrantGold(earnedGold,owner);
         }
         public void DamagePlayer(PlayerState p, float damage,Vector3? source=null)
         {
@@ -326,6 +325,8 @@ namespace Era
             for (int i = State.pickups.Count - 1; i >= 0; i--)
             {
                 var pickup = State.pickups[i];
+                if(pickup.kind==PickupKind.Gold)
+                {State.pickups.RemoveAt(i);GrantGold(pickup.value);continue;}
                 pickup.age+=dt;
                 if(pickup.age<.25f)continue;
                 foreach (var p in State.players)
@@ -333,7 +334,7 @@ namespace Era
                     if (p.downed || p.eliminated) continue;
                     float d = Vector3.Distance(p.position, pickup.position);
                     if (d < 1.15f)
-                    { State.pickups.RemoveAt(i);OnItemPickup(p,pickup); if(pickup.kind==PickupKind.Gold){State.coins+=pickup.value;State.earnedCoins+=pickup.value;}else GrantExperience(pickup.value); break; }
+                    { State.pickups.RemoveAt(i);OnItemPickup(p,pickup);GrantExperience(pickup.value);break; }
                     if (d < p.pickupRange) pickup.position = Vector3.MoveTowards(pickup.position, p.position, dt * 16);
                 }
             }

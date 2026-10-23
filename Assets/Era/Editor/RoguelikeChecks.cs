@@ -21,7 +21,7 @@ namespace Era.Editor
         }
         static void Catalogue()
         {
-            Check(GameData.Items.Length==ItemCatalog.Count&&Enum.GetValues(typeof(ItemId)).Length==ItemCatalog.Count,"stable 130 item IDs");
+            Check(GameData.Items.Length==ItemCatalog.Count&&Enum.GetValues(typeof(ItemId)).Length==ItemCatalog.Count,"129 item IDs after removing Vampire Fang");
             var language=I18n.Language;
             foreach(GameLanguage lang in Enum.GetValues(typeof(GameLanguage)))
             {
@@ -109,7 +109,7 @@ namespace Era.Editor
             var sim=New();var p=sim.State.Player(0);Give(sim,ItemId.DoubleShot,ItemId.TimeMaster,ItemId.FlameBlade);var e=Target(sim);sim.DamageEnemy(e,p,20,true,true);
             p.bursts.Add(new WeaponBurstState{weapon=WeaponKind.Sword,remaining=2,interval=.5f,usedTargets=new List<int>{e.id}});
             var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
-            Check(copy.Player(0).items.Length==130&&copy.Player(0).itemTimers.Length==130&&copy.itemFields.Count==1&&copy.enemies[0].ailments.Count==1&&copy.Player(0).bursts[0].usedTargets[0]==e.id,"co-op snapshots retain items, status ownership, delayed procs and queued shots");
+            Check(copy.Player(0).items.Length==ItemCatalog.Count&&copy.Player(0).itemTimers.Length==ItemCatalog.Count&&copy.itemFields.Count==1&&copy.enemies[0].ailments.Count==1&&copy.Player(0).bursts[0].usedTargets[0]==e.id,"co-op snapshots retain items, status ownership, delayed procs and queued shots");
             Check(System.Text.Encoding.UTF8.GetByteCount(JsonUtility.ToJson(sim.State))<512*1024,"normal roguelike snapshot fits transport frame");
             for(int id=1;id<3;id++)sim.AddPlayer(id,"Party",Hero.Echo);
             sim.State.enemies.Clear();for(int n=0;n<GameData.MaxEnemies;n++)

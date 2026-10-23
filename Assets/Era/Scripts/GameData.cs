@@ -267,11 +267,11 @@ namespace Era
         public readonly float[] values;
         public readonly bool percent;
         public AttributeDefinition(string en,string ru,bool percent,params float[] values)
-        {englishName=en;russianName=ru;this.percent=percent;this.values=values;if(values.Length>=2){float low=values[0];values[0]=values[1];values[1]=low;}}
+        {englishName=en;russianName=ru;this.percent=percent;this.values=values;if(values.Length>=2){float low=values[0];values[0]=values[1];values[1]=low;if(percent&&values[1]>.10001f)values[1]*=.5f;}}
         public string Value(int rarity)
         {
             float value=values[Mathf.Clamp(rarity,0,values.Length-1)];
-            return percent?"+"+Mathf.RoundToInt(value*100)+"%":"+"+value.ToString(value%1==0?"0":"0.##");
+            return percent?"+"+(value*100).ToString("0.##")+"%":"+"+value.ToString(value%1==0?"0":"0.##");
         }
     }
 
@@ -290,7 +290,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 12;
+        public const int Protocol = 13;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=240,ResourceNodeCount=72;

@@ -1,7 +1,7 @@
 param(
-    [string]$Tag = 'v0.13.0',
+    [string]$Tag = 'v0.14.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.13.0.md'
+    [string]$NotesFile = 'Docs/RELEASE-v0.14.0.md'
 )
 $ErrorActionPreference = 'Stop'
 $eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -42,6 +42,7 @@ try {
     }
     # Publish only after both complete uploads. Repository visibility is never changed.
     $eraPublished = Invoke-RestMethod -Method Patch -Uri "$eraApi/releases/$($eraRelease.id)" -Headers $eraHeaders -ContentType 'application/json' -Body '{"draft":false,"make_latest":"true"}'
+    $eraUploaded = $eraPublished.assets | Select-Object id,name,size,digest,browser_download_url
     New-Item -ItemType Directory -Path 'Artifacts' -Force | Out-Null
     @{tag=$Tag;commit=$eraCommit;url=$eraPublished.html_url;private=$eraRepo.private;draft=$eraPublished.draft;assets=$eraUploaded} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "Artifacts/release-$Tag.json" -Encoding utf8
     Write-Output "Published $($eraPublished.html_url); private=$($eraRepo.private)"

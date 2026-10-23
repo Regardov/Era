@@ -12,7 +12,7 @@ namespace Era.Editor
         static void Step(Simulation s,float time){for(int n=0;n<Mathf.CeilToInt(time*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
         {
-            count=0;Economy();Healing();Evasion();Projectiles();Models();return count;
+            count=0;Economy();Healing();Evasion();Projectiles();Models();CurrentRules();return count;
         }
         static void Economy()
         {
@@ -22,7 +22,7 @@ namespace Era.Editor
             var p=s.State.Player(0);s.State.coins=10000;p.position=s.State.chests[0].position;s.TryOpenChest(p);
             Check(s.State.chestsOpenedInStage==1&&s.State.openedChests==1&&s.State.chests[1].cost==24,"opening updates the shared realm progression");
             var boss=s.SpawnEnemy(EnemyKind.Warden);s.DamageEnemy(boss,p,99999999);p.position=s.State.portal.position;s.TryUsePortal(p);
-            Check(s.State.chestsOpenedInStage==0&&s.State.openedChests==1&&s.State.chests.TrueForAll(c=>c.cost==c.baseCost),"travel resets prices while preserving total chest statistics");
+            Check(s.State.chestsOpenedInStage==0&&s.State.openedChests==1&&s.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,s.State.openedChests)),"travel keeps cumulative prices and total chest statistics");
         }
         static void Healing()
         {
@@ -51,6 +51,53 @@ namespace Era.Editor
             Check(a.hp<1000000&&b.hp<1000000&&1000000-b.hp<1000000-a.hp,"ricochet item grants one weaker hit on a different enemy");
             foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))
             {s=New();p=s.State.Player(0);p.invulnerability=100;var enemy=s.SpawnEnemy(kind);enemy.position=p.position+Vector3.forward;enemy.spawnGrace=0;enemy.specialTimer=100;Step(s,2);Check(!s.State.projectiles.Exists(pr=>pr.hostile),"no enemy projectile producer: "+kind);}
+        }
+        static void CurrentRules()
+        {
+            var cases=new (ItemId item,Func<PlayerState,float> stat,float delta)[]{
+                (ItemId.SharpBlade,p=>p.damage,.075f),(ItemId.StoutHeart,p=>p.maxHp,10),
+                (ItemId.Hourglass,p=>p.cooldownRate,.055f),(ItemId.GoldenCoin,p=>p.goldGain,.1f),
+                (ItemId.BeginnersLuck,p=>p.luck,7.5f),(ItemId.SmallPotion,p=>p.healingPower,.09f),
+                (ItemId.SpikedGloves,p=>p.critChance,.06f),(ItemId.TrueSight,p=>p.critDamage,.15f),
+                (ItemId.Magnet,p=>p.pickupRange,.75f),(ItemId.CopperSpring,p=>p.attackSpeed,.075f),
+                (ItemId.ChalkCircle,p=>p.areaSize,.09f),(ItemId.WindFletching,p=>p.projectileSpeed,.125f),
+                (ItemId.ScholarSeal,p=>p.xpGain,.09f),(ItemId.LeadPendulum,p=>p.projectileSpeed,.06f),
+                (ItemId.BloodGlass,p=>p.critDamage,.06f),(ItemId.MerchantScale,p=>p.goldGain,.06f)};
+            foreach(var test in cases){var check=New();var player=check.State.Player(0);float before=test.stat(player);check.ApplyItem(player,(int)test.item);Check(Mathf.Abs(test.stat(player)-before-test.delta)<.0001f,"halved percentage buff: "+test.item);}
+            var s=New();var p=s.State.Player(0);s.ApplyItem(p,(int)ItemId.SwiftBoots);s.ApplyItem(p,(int)ItemId.SteelShield);
+            Check(Mathf.Approximately(p.moveSpeed,1.1f)&&p.shield==35,"ten percent and flat bonuses stay unchanged");
+            float crit=p.critDamage;s.ApplyAccessory(p,3,(int)ItemRarity.Uncommon);
+            Check(Mathf.Approximately(p.critDamage-crit,.075f)&&GameData.Attributes[3].Value(1).Replace(',','.')=="+7.5%","uncommon accessory has the exact fractional nerf in gameplay and text");
+            crit=p.critDamage;s.ApplyAccessory(p,3,(int)ItemRarity.Rare);Check(Mathf.Approximately(p.critDamage-crit,.3f),"rare accessory bonuses stay unchanged");
+            Check(GameData.Items.Length==129&&Enum.GetNames(typeof(ItemId)).Length==129&&!Array.Exists(Enum.GetNames(typeof(ItemId)),n=>n=="VampireFang"),"fang is removed from the game ID list");
+            Check(Mathf.Approximately(IconLibrary.ItemPixels((int)ItemId.TrueSight).x,761)&&IconLibrary.ItemSprite((int)ItemId.CopperSpring)!=null,"removing an ID keeps atlas and generated pictures correct");
+            for(int stage=1;stage<=7;stage++)
+            {
+                s=New();s.State.stage=stage;WorldMap.SetStage(stage);var normal=s.SpawnEnemy(EnemyKind.Skeleton);var guardian=s.SpawnEnemy(EnemyKind.Warden);float scale=Mathf.Pow(1.5f,stage-1);
+                Check(Mathf.Abs(normal.maxHp-EnemyCatalog.Health(EnemyKind.Skeleton)*scale)<.01f&&Mathf.Abs(guardian.maxHp-1700*scale)<.02f,"normal and boss HP compound by 1.5 in realm "+stage);
+            }
+            s=New();p=s.State.Player(0);p.goldGain=1.5f;var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=p.position+Vector3.forward*250;s.DamageEnemy(e,p,999999);
+            Check(s.State.coins==36&&s.State.earnedCoins==6&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"distant kills credit gold immediately with the owner's multiplier");
+            var node=new ResourceNodeState{kind=PickupKind.Gold,hp=100,position=p.position+Vector3.forward*250};s.DamageResource(node,100,p);s.DamageResource(node,100,p);
+            Check(s.State.coins==69&&s.State.earnedCoins==39&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"gold GPU credits once without floor bundles");
+            s.State.pickups.Add(new PickupState{kind=PickupKind.Gold,value=7,position=p.position+Vector3.forward*290});Step(s,.04f);
+            Check(s.State.coins==76&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"legacy gold converts regardless of distance and age");
+            s.ApplyItem(p,(int)ItemId.MiserFuse);s.ApplyItem(p,(int)ItemId.AlchemyEngine);s.GrantGold(10,p);
+            Check(s.State.itemFields.Exists(f=>f.item==(int)ItemId.MiserFuse)&&p.itemCounters[(int)ItemId.AlchemyEngine]>0,"automatic gold retains mine and alchemy synergies");
+            s=New();p=s.State.Player(0);p.relic=Relic.Hourglass;p.critChance=1;
+            var boss=s.SpawnEnemy(EnemyKind.Warden);boss.position=WorldMap.OnGround(p.position.x,p.position.z+5);boss.spawnGrace=0;boss.speed=0;boss.attackTimer=boss.specialTimer=100;
+            var other=s.SpawnEnemy(EnemyKind.Skeleton);other.position=p.position+Vector3.right*3;other.spawnGrace=0;other.speed=0;
+            foreach(var item in new[]{ItemId.FlameBlade,ItemId.IceCore,ItemId.VenomNeedle,ItemId.SerratedCoin,ItemId.Chronosphere,ItemId.GlacialPrison,ItemId.WinterSleep,ItemId.FateLoom,ItemId.ExecutionLedger})s.ApplyItem(p,(int)item);
+            s.Step(1f/30,new Dictionary<int,InputFrame>{{0,new InputFrame{relic=true}}});
+            Check(boss.frozen==0&&other.frozen>3.9f,"hourglass and chronosphere only freeze normal enemies");
+            float hp=boss.hp;for(int n=0;n<12;n++)s.DamageEnemy(boss,p,1,true,true);
+            Check(boss.hp<hp&&boss.frozen==0&&boss.ailments.Count==0,"weapon damage works while boss statuses are rejected");
+            boss.frozen=999;boss.ailments.Add(new AfflictionState{kind=Ailment.Poison,power=99999,time=100});hp=boss.hp;s.DamageEnemy(boss,p,1,false);
+            Check(boss.frozen==0&&boss.ailments.Count==0&&Mathf.Approximately(boss.hp,hp-1),"stale status data cannot bypass boss immunity");
+            var origin=boss.position;s.State.itemFields.Add(new ItemFieldState{id=s.State.nextId++,owner=p.id,item=(int)ItemId.ChaosPortal,position=boss.position+Vector3.right*3,radius=10,time=3});Step(s,.2f);
+            Check(Vector3.Distance(boss.position,origin)<.001f,"vortices cannot pull a boss");
+            boss.position=p.position+Vector3.forward;boss.position.y=WorldMap.Ground(boss.position);boss.attackTimer=0;Step(s,1);
+            Check(boss.attackSerial>0&&boss.frozen==0,"boss keeps attacking under control-item pressure");WorldMap.SetStage(1);
         }
         static void Models()
         {

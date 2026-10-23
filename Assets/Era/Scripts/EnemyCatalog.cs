@@ -4,6 +4,7 @@ namespace Era
 {
     public static class EnemyCatalog
     {
+        public static bool EffectImmune(EnemyKind kind)=>kind==EnemyKind.Warden;
         public static bool Flying(EnemyKind kind)=>kind==EnemyKind.Bat||kind==EnemyKind.Gargoyle;
         public static bool Ranged(EnemyKind kind)=>false;
         public static bool Summoner(EnemyKind kind)=>kind==EnemyKind.Necromancer||kind==EnemyKind.OgreShaman;

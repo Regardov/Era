@@ -81,7 +81,7 @@ namespace Era
         {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
         void ItemIcon(int item,float x,float y,float size)
         {
-            var texture=IconLibrary.ItemAtlas;if(texture==null||item>=31){Icon(GameData.ItemIcons[item],x,y,size);return;}
+            var texture=IconLibrary.ItemAtlas;if(texture==null||item>=30){Icon(GameData.ItemIcons[item],x,y,size);return;}
             var uv=IconLibrary.ItemUV(item);float height=size*uv.height*texture.height/(uv.width*texture.width);var rect=new Rect(x,y+(size-height)/2,size,height);
             if(capturing)capture.Rect(rect,Color.white,texture,uv);else{var previous=GUI.color;GUI.color=Color.white;GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
         }
@@ -107,13 +107,13 @@ namespace Era
             Text(I18n.P("Slay the horde. Forge your build.\nClaim the blessings of the old gods.","Сражайся с ордой. Собери свой билд.\nПолучи благословения древних богов."),94,400,460,72,21,Muted);
             if(Button("Play solo",92,510,494,62,true))App.BeginSelection(SessionMode.Solo);
             if(Button(I18n.P("Play co-op · 2–3 players","Кооператив · 2–3 игрока"),92,590,494,62))App.Page=MenuPage.Connection;
-            if(Button(I18n.P("Item catalogue · 130","Каталог предметов · 130"),92,670,494,48)){App.Page=MenuPage.Catalogue;ownedOnly=false;cataloguePage=0;}
+            if(Button(I18n.P("Item catalogue · 129","Каталог предметов · 129"),92,670,494,48)){App.Page=MenuPage.Catalogue;ownedOnly=false;cataloguePage=0;}
             if(Button("Settings",92,736,238,48))App.Page=MenuPage.Settings;
             if(Button("Quit",348,736,238,48))Application.Quit();
             Text(I18n.P("A 3D survivor for 1–3 wanderers","3D-выживание для 1–3 игроков"),94,808,490,26,14,Muted);
             Box(1060,704,476,117,Panel,22);Text("A WORLD WORTH GETTING LOST IN",1085,724,426,25,14,Sage,true);
             Text("Explore the groves. Find treasure.\nClose the rift before it takes you.",1085,763,426,52,19,Muted);
-            Text(I18n.P("v0.13   /   Seven Realms","v0.13   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
+            Text(I18n.P("v0.14   /   Seven Realms","v0.14   /   Семь миров"),1200,854,330,26,13,Muted,false,TextAnchor.UpperRight);
             if(App.Status.Length>0)Text(App.Status,674,56,840,55,19,Ink);
         }
         void Characters()
@@ -233,7 +233,7 @@ namespace Era
                 if(d<14)WorldLabel(chest.position+Vector3.up*1.55f,chest.free?I18n.P("FREE CHEST","БЕСПЛАТНЫЙ СУНДУК"):I18n.T(chest.tier>0?"Moon chest":"Chest")+" · "+chest.cost,Panel);
             }
             if(nearest!=null&&!p.downed&&!p.eliminated)
-            {Box(600,692,400,65,Panel,12);Text(nearest.free?I18n.P("[ F ]  Open free chest","[ F ]  Открыть бесплатно"):"[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Next price ×5/3 · opened in realm: ","Следующая цена ×5/3 · открыто в мире: ")+s.chestsOpenedInStage,610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
+            {Box(600,692,400,65,Panel,12);Text(nearest.free?I18n.P("[ F ]  Open free chest","[ F ]  Открыть бесплатно"):"[ F ]  "+I18n.P("Open","Открыть")+" · "+nearest.cost+I18n.P(" gold"," золота"),610,699,380,27,17,s.coins>=nearest.cost?Sage:Muted,true,TextAnchor.MiddleCenter);Text(I18n.P("Next price ×5/3 · opened in run: ","Следующая цена ×5/3 · открыто за забег: ")+s.openedChests,610,733,380,19,11,Muted,false,TextAnchor.UpperCenter);}
             foreach(var shrine in s.shrines)
             {
                 float d=Vector3.Distance(p.position,shrine.position);if(d>18)continue;
@@ -250,7 +250,7 @@ namespace Era
                 if(!drop.collecting&&Vector3.Distance(p.position,drop.position)<2.5f)Text("[ F ] "+GameData.Items[drop.content].name,pos.x-150,pos.y+28,300,40,15,GameData.Items[drop.content].color,true,TextAnchor.UpperCenter);
             }
             foreach(var e in s.enemies)if(e.kind==EnemyKind.Warden)
-            {Text(CampaignData.BossName(e.bossStage).ToUpperInvariant(),555,240,490,24,13,Ink,true,TextAnchor.UpperCenter);Bar(555,267,490,7,e.hp/e.maxHp,Red);}
+            {Text(CampaignData.BossName(e.bossStage).ToUpperInvariant(),555,240,490,24,13,Ink,true,TextAnchor.UpperCenter);Bar(555,267,490,24,e.hp/e.maxHp,Red);Text(Mathf.CeilToInt(e.hp)+" / "+Mathf.CeilToInt(e.maxHp)+I18n.P(" HP"," ОЗ"),555,270,490,21,14,Ink,true,TextAnchor.UpperCenter);Text(I18n.P("IMMUNE TO STATUS EFFECTS","ИММУНИТЕТ К ЭФФЕКТАМ"),555,297,490,20,11,Sage,true,TextAnchor.UpperCenter);}
             if(s.portal.active)
             {
                 WorldLabel(s.portal.position+Vector3.up*4.2f,I18n.P("NEXT REALM","СЛЕДУЮЩИЙ МИР"),Panel);
@@ -269,7 +269,6 @@ namespace Era
             if(s.noticeTime>0&&s.noticeKind==1&&!App.UpgradeSelection)
             {Box(500,167,600,42,Panel,12);Text(Notice(s),512,176,576,29,17,Sage,true,TextAnchor.MiddleCenter);}
             if(App.Status.Length>0)Text(App.Status,450,751,700,40,15,Ink,false,TextAnchor.UpperCenter);
-            Flat(793,449,5,1,Ink);Flat(802,449,5,1,Ink);Flat(799,443,1,5,Ink);Flat(799,452,1,5,Ink);
         }
         void RewardToast()
         {
@@ -456,7 +455,7 @@ namespace Era
         {
             Flat(0,0,1600,900,new Color(.04f,.07f,.09f,.95f));Box(34,38,1532,824,Panel);
             Text(I18n.P("ITEM CATALOGUE","КАТАЛОГ ПРЕДМЕТОВ"),70,64,1000,36,28,Ink,true);
-            Text(I18n.P("All 130 run items","Все 130 предметов забега"),70,154,350,66,25,Sage,true);
+            Text(I18n.P("All 129 run items","Все 129 предметов забега"),70,154,350,66,25,Sage,true);
             Text(I18n.P("Hover any card to read its effect, stacking and build interactions.","Наведите курсор на карточку: эффект, повторные подборы и взаимодействия для билдов."),70,252,350,110,20,Muted);
             for(int n=0;n<5;n++){int r=ItemCatalog.RarityOrder[n];Flat(70,410+n*48,5,30,GameData.RarityColors[r]);Text(GameData.RarityName(r),91,414+n*48,320,27,18,GameData.RarityColors[r],true);}
             if(Button(I18n.P("Back to menu","Назад в меню"),70,788,350,52))App.Page=MenuPage.Home;
@@ -478,7 +477,7 @@ namespace Era
             int shown=0;for(int at=itemPage*10;at<owned.Count&&shown<10;at++){int item=owned[at],col=shown%5,row=shown/5;float x=70+col*72,y=692+row*65;Flat(x-2,y-2,58,58,GameData.Items[item].color);Flat(x,y,54,54,Soft);ItemIcon(item,x,y,54);Text("×"+p.items[item],x+33,y+39,23,15,11,Ink,true,TextAnchor.UpperRight);ItemHover(item,new Rect(x-2,y-2,58,58));shown++;}
             if(shown==0)Text(I18n.P("Open a chest to find your first item.","Откройте сундук, чтобы найти первый предмет."),70,710,360,42,13,Muted);
             if(owned.Count>10){if(Button("‹",70,820,45,27))itemPage=Mathf.Max(0,itemPage-1);Text((itemPage+1)+" / "+((owned.Count+9)/10),130,824,230,21,12,Muted,false,TextAnchor.UpperCenter);if(Button("›",385,820,45,27))itemPage=Mathf.Min((owned.Count-1)/10,itemPage+1);}
-            if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · 130","Каталог · 130 предметов"),1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
+            if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · 129","Каталог · 129 предметов"),1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
             if(catalogue){ItemCatalogue(p);return;}
             Text(I18n.P("ATTRIBUTES","АТРИБУТЫ"),490,99,1040,25,15,Sage,true);
             for(int attribute=0;attribute<GameData.Attributes.Length;attribute++)AttributeTile(p,attribute,490+(attribute%5)*207,140+(attribute/5)*132,194,121);

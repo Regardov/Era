@@ -24,7 +24,7 @@ namespace Era
             else if(Has("--capture-host-menu"))App.Page=MenuPage.HostLobby;
             else if(Has("--capture-join-menu"))App.Page=MenuPage.JoinLobby;
             else if(Has("--capture-inventory"))
-            {App.Solo();var p=App.LocalPlayer;App.Simulation.ApplyAttribute(p,2,2);App.Simulation.ApplyAttribute(p,4,3);App.Simulation.ApplyAttribute(p,18,2);App.Simulation.ApplyItem(p,6);App.Simulation.ApplyItem(p,17);App.Simulation.ApplyItem(p,24);App.Inventory=true;}
+            {App.Solo();var p=App.LocalPlayer;App.Simulation.ApplyAttribute(p,2,2);App.Simulation.ApplyAttribute(p,4,3);App.Simulation.ApplyAttribute(p,18,2);App.Simulation.ApplyItem(p,(int)ItemId.BeginnersLuck);App.Simulation.ApplyItem(p,(int)ItemId.IceCore);App.Simulation.ApplyItem(p,(int)ItemId.AngelWings);App.Inventory=true;}
             else if(Has("--capture-upgrade")){App.Solo();App.Simulation.GrantExperience(12);}
             else if(Has("--capture-roulette"))
             {App.Solo();App.State.coins=200;var p=App.LocalPlayer;App.Simulation.ApplyAttribute(p,18,3);p.position=App.State.chests[0].position;App.Simulation.TryOpenChest(p);}

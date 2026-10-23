@@ -1,16 +1,14 @@
-# ERA: Seven Realms — v0.13
+# ERA: Seven Realms — v0.14
 
-В v0.13 враги атакуют в ближнем бою, стрелы поражают ровно одну цель, а отдельное **Семя рикошета** добавляет переходы между врагами. Предметы перебалансированы. **Каталог всех 130 предметов доступен из главного меню и Tab**. На мир приходится **240 сундуков**; каждая покупка умножает цены оставшихся на **5/3**, с округлением вверх и сбросом роста при переходе в новый мир. Вампиризм — шанс лечения за удар, уклонение растёт от оставшейся вероятности и ограничено 95%. Щит и успешные уклонения показаны явно, подсказки характеристик рисуются поверх карточек. Обновлены волосы, шея и поза приседа всех героев.
+У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **129 предметов**. Максимальные ОЗ мобов и боссов растут **×1,5 за каждый новый мир**. Цены 240 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
 
-**[Изменения v0.13](Docs/RELEASE-v0.13.0.md)** · **[Актуальный каталог](Docs/ITEMS-v0.13.md)** · **[Проверки](Docs/VALIDATION-v0.13.md)**.
+Золото сразу поступает в общий кошелёк; опыт подбирается кристаллами. Прицел убран. Полоса босса показывает текущие и максимальные ОЗ; босс имеет иммунитет к статусам и контролю, сохраняя уязвимость к прямому урону.
 
-В v0.12 добавлены **130 предметов, пять редкостей и 12 новых видов врагов**. Предметы создают статусные синергии, призывают помощников, меняют лечение и способ атаки, растут за убийства, движение, сундуки и победы над боссами. Необычные дают только характеристики; мифические меняют правила боя; легендарные раскрываются за забег. **[Актуальные эффекты](Docs/ITEMS-v0.13.md)**; [история v0.12](Docs/RELEASE-v0.12.0.md).
+**[Изменения v0.14](Docs/RELEASE-v0.14.0.md)** · **[Каталог предметов](Docs/ITEMS-v0.14.md)** · **[Проверки](Docs/VALIDATION-v0.14.md)**.
 
-**Tab → Каталог → наведение курсора** показывает описание, стаки и синергии каждого предмета. Два дабл-шота дают три снаряда даже по единственной цели. Посох выпускает залп одновременно; меч и копьё выполняют очередь с интервалом `0.75 / 1.5^(N - 2)` секунд при `N ≥ 2`. В формуле удачи используется логарифм с присланного изображения. Новые скелеты, костяные дуэлянты, ревенанты, некроманты, големы, слаймы, огры, шаманы и летающие враги имеют отдельные модели, замахи и наносящие урон атаки.
+![ОЗ босса и иммунитет, HUD без прицела](Docs/Images/balance-boss-health-v014.png)
 
-![Каталог всех предметов в главном меню](Docs/Images/balance-menu-catalogue-v013.png)
-
-В v0.11 каждый этап начинается с таймера **10:00**. Мобы появляются постоянно в **12–19 м** от живых игроков; после каждой прошедшей минуты приходит дополнительная орда и увеличивается частота спавна. Модели снова гранёные: следопыт в зелёном капюшоне, монах в земляных тонах, бородатый хранитель аур, волк и шут созданы по присланным референсам. Камни и деревья получили такой же матовый гранёный стиль. Переносы текста рассчитываются в общих координатах интерфейса и сохраняются при смене разрешения.
+Предметы поддерживают статусные синергии, призыв помощников и рост за действия в забеге. Два дабл-шота дают три выстрела; посох выпускает весь залп одновременно, меч и копьё — очередью с интервалом `0.75 / 1.5^(N - 2)` при `N ≥ 2`. Обычный снаряд поражает одну цель; «Семя рикошета» добавляет переходы в новые цели с 65% предыдущего урона. Вампиризм — шанс базового лечения за удар; выше 100% повышается количество ХП. Уклонение накапливается от оставшейся вероятности и ограничено 95%. Щит и уклонения отображаются явно, подсказки характеристик — поверх карточек.
 
 ## Скачать готовую игру для Windows
 
@@ -40,7 +38,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.13 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.14 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
@@ -75,7 +73,7 @@ Explore seven large rolling realms. Height, obstacles, chest/shrine positions an
 
 There are **240 chests per realm**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
 
-Press **F** near a chest. Ordinary chests cost **25–45 gold**; **Moon chests cost 65** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **130 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
+Press **F** near a chest. In the first realm ordinary chests start at **12–20 gold**; **Moon chests start at 35** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **129 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
 
 Every level offers three **accessories** from a pool covering **21 stats**: damage, attack speed, critical chance/damage, max HP, healing, regeneration, shield, armor, lifesteal, movement, evasion, recharge speed, range, area, projectile count/speed, pickup range, luck, XP and gold gain. Examples: **Precision Ring**, **Life Amulet**, **Merchant's Purse**. Rarity sets the bonus: legendary Life Amulet gives +40 max HP; epic Precision Ring gives +15% crit chance. Accessories stack for the run. The level-25 weapon choice is additional to that level's accessory and remains queued correctly after multi-level XP gains.
 
@@ -120,7 +118,7 @@ Lumen's **Q** deals 45 damage in 8 m and heals allies for 20 (8 s cooldown). **E
 
 **R relics**: Storm Compass (90 base damage in 9 m / 24 s), Hourglass (4 s freeze in 12 m and refresh dash / 30 s), Home Shard (heal 50 and gather all XP / 25 s).
 
-**130 stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. The first 31 item pictures preserve the supplied atlas; new items use centered transparent **128×128 icons**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at 48; two Double Shots mean three projectiles.
+**129 stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. The 30 remaining original item pictures preserve their supplied atlas cells; new items use centered transparent **128×128 icons**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at 48; two Double Shots mean three projectiles.
 
 ## Blessing shrines and crouch
 
@@ -162,7 +160,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.13](Docs/VALIDATION-v0.13.md).
+`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.14](Docs/VALIDATION-v0.14.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 

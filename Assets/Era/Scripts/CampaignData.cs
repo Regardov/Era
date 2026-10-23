@@ -19,7 +19,7 @@ namespace Era
         public static string Name(int stage)=>I18n.P(NamesEn[Index(stage)],NamesRu[Index(stage)]);
         public static string BossName(int stage)=>I18n.P(BossesEn[Index(stage)],BossesRu[Index(stage)]);
         public static Color Color(int stage)=>Colors[Index(stage)];
-        public static float EnemyScale(int stage)=>1+.34f*(stage-1);
-        public static float BossHpScale(int stage)=>1+.82f*(stage-1);
+        public static float EnemyScale(int stage)=>Mathf.Pow(1.5f,Mathf.Max(0,stage-1));
+        public static float BossHpScale(int stage)=>EnemyScale(stage);
     }
 }

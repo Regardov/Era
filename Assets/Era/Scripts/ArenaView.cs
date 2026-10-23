@@ -112,7 +112,7 @@ namespace Era
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,e.position,blend);
                 if(e.kind>=EnemyKind.Skeleton||e.kind==EnemyKind.Brute)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,e.facing,0),blend);
                 if(e.kind==EnemyKind.Slime&&e.summonGeneration>0)actor.root.transform.localScale=Vector3.one*.6f;
-                if(e.hitSerial!=actor.hitSerial){actor.creature.hit=1;actor.hitFlash=.18f;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
+                if(e.hitSerial!=actor.hitSerial){if(!EnemyCatalog.EffectImmune(e.kind)){actor.creature.hit=1;actor.creature.skeletal?.Hit();}actor.hitFlash=.18f;SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
                 if(!app.WorldPaused)actor.hitFlash=Mathf.Max(0,actor.hitFlash-Time.unscaledDeltaTime);
                 for(int r=0;r<actor.renderers.Length;r++){hitBlock.Clear();hitBlock.SetColor("_Color",Color.Lerp(actor.colors[r],Color.white,Mathf.Clamp01(actor.hitFlash/.18f)*.85f));actor.renderers[r].SetPropertyBlock(hitBlock);}
                 if(actor.telegraph==null&&e.spawnGrace>0){actor.telegraph=v.Ring("Enemy arrival warning",dynamicRoot,.75f,new Color(.91f,.32f,.15f),.045f).transform;actor.telegraph.position=e.position+Vector3.up*.06f;}

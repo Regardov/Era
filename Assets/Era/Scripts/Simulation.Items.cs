@@ -31,10 +31,12 @@ namespace Era
             foreach(var e in State.enemies){if(e.id==except||e.hp<=0)continue;float d=(e.position-origin).sqrMagnitude;if(d>range*range)continue;if(farthest?d>=best:d<best){found=e;best=d;}}return found;
         }
         int Layers(EnemyState e,Ailment kind,int owner=-1)
-        {int total=0;foreach(var a in e.ailments)if(a.kind==kind&&a.time>0&&(owner<0||a.owner==owner))total+=a.stacks;return total;}
+        {if(EnemyCatalog.EffectImmune(e.kind))return 0;int total=0;foreach(var a in e.ailments)if(a.kind==kind&&a.time>0&&(owner<0||a.owner==owner))total+=a.stacks;return total;}
+        void FreezeEnemy(EnemyState e,float duration)
+        {if(!EnemyCatalog.EffectImmune(e.kind))e.frozen=Mathf.Max(e.frozen,duration);}
         void Afflict(EnemyState e,PlayerState p,Ailment kind,float time,float power=0,int maxStacks=1)
         {
-            if(e==null||p==null||e.hp<=0)return;
+            if(e==null||p==null||e.hp<=0||EnemyCatalog.EffectImmune(e.kind))return;
             var a=e.ailments.Find(s=>s.kind==kind&&s.owner==p.id);
             if(a==null){a=new AfflictionState{kind=kind,owner=p.id};e.ailments.Add(a);}else a.stacks=Mathf.Min(maxStacks,a.stacks+1);
             a.time=Mathf.Max(a.time,time);a.power=Mathf.Max(a.power,power);
@@ -57,6 +59,7 @@ namespace Era
         {
             foreach(var e in new List<EnemyState>(State.enemies))
             {
+                if(EnemyCatalog.EffectImmune(e.kind)){e.frozen=0;e.ailments.Clear();continue;}
                 foreach(var a in new List<AfflictionState>(e.ailments))
                 {
                     a.time-=dt;a.tick-=dt;
@@ -89,7 +92,7 @@ namespace Era
                 }
                 else if(item==ItemId.BlackHole||item==ItemId.ChaosPortal||item==ItemId.VoidShepherd)
                 {
-                    foreach(var e in new List<EnemyState>(State.enemies))if((e.position-f.position).sqrMagnitude<f.radius*f.radius)
+                    foreach(var e in new List<EnemyState>(State.enemies))if(!EnemyCatalog.EffectImmune(e.kind)&&(e.position-f.position).sqrMagnitude<f.radius*f.radius)
                     {var pull=f.position-e.position;pull.y=0;e.position=WorldMap.Resolve(e.position,pull.normalized*Mathf.Min(pull.magnitude,4*dt),EnemyRadius(e)*.55f);e.position.y=WorldMap.Ground(e.position)+(IsFlying(e.kind)?1.8f:0);}
                     if(f.time<=0&&item!=ItemId.ChaosPortal)Burst(p,f.position,f.radius,f.power);
                 }
@@ -142,7 +145,7 @@ namespace Era
             if(Ready(p,ItemId.FireSphere,4)){foreach(var e in State.enemies)if(Vector3.Distance(p.position,e.position)<4*p.areaSize)Afflict(e,p,Ailment.Burn,3,8*Stack(p,ItemId.FireSphere)*DamageMultiplier(p),5);Effect(4,p.position,4*p.areaSize);}
             if(Ready(p,ItemId.FrostBell,8))Burst(p,p.position,7,0,Ailment.Chill,3+Stack(p,ItemId.FrostBell));
             if(Ready(p,ItemId.ThunderRod,6)){var e=FindItemTarget(p.position,20,-1,true);if(e!=null){Afflict(e,p,Ailment.Shock,6);DamageEnemy(e,p,45*Stack(p,ItemId.ThunderRod)*DamageMultiplier(p),false);WeaponEffect(10,p.position+Vector3.up,e.position+Vector3.up,1,WeaponKind.LightningStaff);}}
-            if(Ready(p,ItemId.Chronosphere,15)){foreach(var e in State.enemies)if(Vector3.Distance(e.position,p.position)<9*p.areaSize)e.frozen=2+Stack(p,ItemId.Chronosphere);Effect(1,p.position,9*p.areaSize);}
+            if(Ready(p,ItemId.Chronosphere,15)){foreach(var e in State.enemies)if(Vector3.Distance(e.position,p.position)<9*p.areaSize)FreezeEnemy(e,2+Stack(p,ItemId.Chronosphere));Effect(1,p.position,9*p.areaSize);}
             float vortexBonus=p.itemValues[I(ItemId.SingularityTestament)];
             if(Ready(p,ItemId.ChaosPortal,6)){var e=FindItemTarget(p.position,20);if(e!=null)Field(p,ItemId.ChaosPortal,e.position,3,4+Stack(p,ItemId.ChaosPortal)+vortexBonus,0);}
             if(Ready(p,ItemId.BlackHole,10)){var e=FindItemTarget(p.position,20);if(e!=null)Field(p,ItemId.BlackHole,e.position,3,7+vortexBonus,100*Stack(p,ItemId.BlackHole)*DamageMultiplier(p));}
@@ -158,7 +161,7 @@ namespace Era
             Travel(p,ItemId.LastPilgrim,distance,100,()=>{p.itemCounters[I(ItemId.LastPilgrim)]++;p.damage+=.03f*Stack(p,ItemId.LastPilgrim);if(p.itemCounters[I(ItemId.LastPilgrim)]%5==0)Burst(p,p.position,12,200*Stack(p,ItemId.LastPilgrim)*DamageMultiplier(p));});
             if(Has(p,ItemId.WarDrum)&&p.itemTimers[I(ItemId.WarDrum)]<=0)p.itemCounters[I(ItemId.WarDrum)]=0;
             if(p.stillTime>=2&&Ready(p,ItemId.VoidAnchor,3))
-            {foreach(var e in State.enemies)if(Vector3.Distance(e.position,p.position)<6)e.position=Vector3.MoveTowards(e.position,p.position,2);Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p));}
+            {foreach(var e in State.enemies)if(!EnemyCatalog.EffectImmune(e.kind)&&Vector3.Distance(e.position,p.position)<6)e.position=Vector3.MoveTowards(e.position,p.position,2);Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p));}
             if(p.stillTime>=2&&Ready(p,ItemId.WalkingCathedral,1))
             {foreach(var ally in State.players)if(Vector3.Distance(ally.position,p.position)<7*p.areaSize)Heal(ally,4*Stack(p,ItemId.WalkingCathedral));Burst(p,p.position,7,18*Stack(p,ItemId.WalkingCathedral)*DamageMultiplier(p));}
             if(Has(p,ItemId.ArchitectReign)&&p.stillTime>=8&&Ready(p,ItemId.ArchitectReign,8)&&State.itemFields.FindAll(f=>f.owner==p.id&&f.item==I(ItemId.ArchitectReign)).Count<5)
@@ -274,7 +277,7 @@ namespace Era
             if(Has(p,ItemId.FrostfireCovenant))
             {int count=++p.itemCounters[I(ItemId.FrostfireCovenant)];Afflict(e,p,count%2==1?Ailment.Burn:Ailment.Chill,3,8*Stack(p,ItemId.FrostfireCovenant),5);if(count%6==0)Burst(p,e.position,3,35*Power(p,ItemId.FrostfireCovenant)*DamageMultiplier(p));}
             if(Has(p,ItemId.GlacialPrison)&&Layers(e,Ailment.Chill)>0)
-            {var mark=e.ailments.Find(a=>a.kind==Ailment.Chill&&a.owner==p.id);if(mark!=null&&++mark.hits>=3){mark.hits=0;e.frozen=Mathf.Max(e.frozen,1+Stack(p,ItemId.GlacialPrison));}}
+            {var mark=e.ailments.Find(a=>a.kind==Ailment.Chill&&a.owner==p.id);if(mark!=null&&++mark.hits>=3){mark.hits=0;FreezeEnemy(e,1+Stack(p,ItemId.GlacialPrison));}}
             if(Has(p,ItemId.WinterSleep)&&e.frozen>0)
             {var sleep=e.ailments.Find(a=>a.kind==Ailment.Doom&&a.owner==p.id);if(sleep==null){Afflict(e,p,Ailment.Doom,60);sleep=e.ailments.Find(a=>a.kind==Ailment.Doom&&a.owner==p.id);}sleep.power+=damage*.5f*Stack(p,ItemId.WinterSleep);}
             if(Has(p,ItemId.SteamValve)&&Layers(e,Ailment.Chill)>0&&Layers(e,Ailment.Burn)>0&&!e.ailments.Exists(a=>a.kind==Ailment.Mark&&a.owner==-10))
@@ -340,6 +343,13 @@ namespace Era
             }
             if(Has(p,ItemId.Overgrowth)&&++p.itemCounters[I(ItemId.Overgrowth)]%8==0)Field(p,ItemId.Overgrowth,p.position,5,4,10*Stack(p,ItemId.Overgrowth)*DamageMultiplier(p));
         }
+        public void GrantGold(int value,PlayerState recipient=null)
+        {
+            if(value<=0)return;
+            State.coins+=value;State.earnedCoins+=value;
+            if(recipient==null||recipient.downed||recipient.eliminated)recipient=State.players.Find(p=>!p.downed&&!p.eliminated);
+            if(recipient!=null)OnItemPickup(recipient,new PickupState{kind=PickupKind.Gold,value=value,position=recipient.position});
+        }
         void OnItemHurt(PlayerState p,float damage)
         {
             p.safeTime=0;
@@ -362,32 +372,31 @@ namespace Era
             p.items[item]++;var id=(ItemId)item;
             switch(id)
             {
-                case ItemId.SharpBlade:p.damage+=.15f;break;
+                case ItemId.SharpBlade:p.damage+=.075f;break;
                 case ItemId.SwiftBoots:p.moveSpeed+=.10f;break;
-                case ItemId.StoutHeart:float hp=(p.maxHp-p.auraMaxHp)*.2f;p.maxHp+=hp;Heal(p,hp);break;
+                case ItemId.StoutHeart:float hp=(p.maxHp-p.auraMaxHp)*.1f;p.maxHp+=hp;Heal(p,hp);break;
                 case ItemId.SteelShield:p.shield+=35;break;
-                case ItemId.Hourglass:p.cooldownRate+=.11f;break;
-                case ItemId.GoldenCoin:p.goldGain+=.2f;break;
-                case ItemId.BeginnersLuck:p.luck+=15;break;
+                case ItemId.Hourglass:p.cooldownRate+=.055f;break;
+                case ItemId.GoldenCoin:p.goldGain+=.1f;break;
+                case ItemId.BeginnersLuck:p.luck+=7.5f;break;
                 case ItemId.HeartyMeal:p.hpRegen+=1;break;
-                case ItemId.SmallPotion:p.healingPower+=.18f;break;
+                case ItemId.SmallPotion:p.healingPower+=.09f;break;
                 case ItemId.DoubleShot:p.projectileCount=Mathf.Min(48,p.projectileCount+1);break;
-                case ItemId.SpikedGloves:p.critChance+=.12f;break;
+                case ItemId.SpikedGloves:p.critChance+=.06f;break;
                 case ItemId.WingedBoots:p.moveSpeed+=.08f;p.dodge=GameData.CombineEvasion(p.dodge,.05f);break;
-                case ItemId.VampireFang:p.lifeSteal+=.06f;break;
-                case ItemId.TrueSight:p.critDamage+=.3f;break;
+                case ItemId.TrueSight:p.critDamage+=.15f;break;
                 case ItemId.BookOfKnowledge:
                     var slots=new List<int>();for(int n=0;n<p.weapons.Length;n++)if(p.weapons[n]>=0&&p.weaponLevels[n]<GameData.MaxWeaponLevel)slots.Add(n);
                     if(slots.Count>0)GiveWeapon(p,(WeaponKind)p.weapons[slots[random.Next(slots.Count)]]);else GrantExperience(30);break;
-                case ItemId.Magnet:p.pickupRange*=1.5f;break;
+                case ItemId.Magnet:p.pickupRange*=1.25f;break;
                 case ItemId.CrownOfGreed:p.goldGain+=.25f;p.xpGain+=.25f;break;
                 case ItemId.AngelWings:p.extraJumps+=p.items[item]==1?2:1;break;
                 case ItemId.Rebirth:p.reviveCharges++;break;
-                case ItemId.CopperSpring:p.attackSpeed+=.15f;break;
+                case ItemId.CopperSpring:p.attackSpeed+=.075f;break;
                 case ItemId.Spyglass:p.weaponRange+=3;break;
-                case ItemId.ChalkCircle:p.areaSize+=.18f;break;
-                case ItemId.WindFletching:p.projectileSpeed+=.25f;break;
-                case ItemId.ScholarSeal:p.xpGain+=.18f;break;
+                case ItemId.ChalkCircle:p.areaSize+=.09f;break;
+                case ItemId.WindFletching:p.projectileSpeed+=.125f;break;
+                case ItemId.ScholarSeal:p.xpGain+=.09f;break;
                 case ItemId.FeatherAnklet:p.dodge=GameData.CombineEvasion(p.dodge,.08f);break;
                 case ItemId.IronBrooch:p.armor+=.08f;break;
                 case ItemId.HealersRibbon:p.healingPower+=.1f;p.hpRegen+=.4f;break;
@@ -395,12 +404,12 @@ namespace Era
                 case ItemId.NomadPin:p.moveSpeed+=.06f;p.pickupRange+=1;break;
                 case ItemId.DuelistKnot:p.critChance+=.05f;p.attackSpeed+=.06f;break;
                 case ItemId.CartographerSeal:p.luck+=8;p.weaponRange+=1.5f;break;
-                case ItemId.LeadPendulum:p.damage+=.08f;p.projectileSpeed+=.12f;break;
+                case ItemId.LeadPendulum:p.damage+=.08f;p.projectileSpeed+=.06f;break;
                 case ItemId.WardensBadge:p.maxHp+=10;p.shield+=20;Heal(p,10);break;
                 case ItemId.ApprenticeCord:p.cooldownRate+=.06f;p.healingPower+=.08f;break;
-                case ItemId.BloodGlass:p.lifeSteal+=.02f;p.critDamage+=.12f;break;
+                case ItemId.BloodGlass:p.lifeSteal+=.02f;p.critDamage+=.06f;break;
                 case ItemId.CometDust:p.xpGain+=.1f;p.pickupRange+=1.2f;break;
-                case ItemId.MerchantScale:p.goldGain+=.12f;p.luck+=7;break;
+                case ItemId.MerchantScale:p.goldGain+=.06f;p.luck+=7;break;
                 case ItemId.SilverThread:p.armor+=.04f;p.dodge=GameData.CombineEvasion(p.dodge,.04f);break;
                 case ItemId.SteadyHand:p.weaponRange+=2;p.critChance+=.03f;break;
                 case ItemId.GlassCannon:p.damage+=.35f;p.maxHp=Mathf.Max(1,p.maxHp*.75f);p.hp=Mathf.Min(p.hp,p.maxHp);break;
