@@ -1,14 +1,15 @@
 param(
-    [string]$Tag = 'v0.10.0',
+    [string]$Tag = 'v0.12.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.10.0.md'
+    [string]$NotesFile = 'Docs/RELEASE-v0.12.0.md'
 )
 $ErrorActionPreference = 'Stop'
 $eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Push-Location $eraProject
 try {
     if ($Repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$' -or $Tag -notmatch '^v\d+\.\d+\.\d+$') { throw 'Invalid repository or version tag.' }
-    if (git status --porcelain) { throw 'Commit all project changes before publishing.' }
+    # Website has its own Git repository and is published separately from the game.
+    if (git status --porcelain -- . ':!Website') { throw 'Commit all game project changes before publishing.' }
     $eraCommit = git rev-parse "$Tag^{commit}"
     if ($LASTEXITCODE -ne 0) { throw 'Create and push the release tag first.' }
     $eraRemoteTag = git ls-remote "https://github.com/$Repository.git" "refs/tags/$Tag"

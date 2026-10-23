@@ -25,81 +25,8 @@ namespace Era
             if(quantity>given)State.coins+=(quantity-given)*8;
             return slot;
         }
-        void TickWeapons(PlayerState p,float dt)
-        {
-            for(int slot=0;slot<GameData.WeaponSlots;slot++)
-            {
-                int type=p.weapons[slot];if(type<0||type==(int)WeaponKind.Aura)continue;
-                p.weaponTimers[slot]-=dt;if(p.weaponTimers[slot]>0)continue;
-                var definition=GameData.Weapons[type];float range=definition.range+(p.weaponRange-15);
-                var targets=new List<EnemyState>(State.enemies);
-                targets.RemoveAll(e=>Vector3.Distance(p.position,e.position)>range);
-                if(targets.Count==0)
-                {
-                    ResourceNodeState node=null;float nearest=Mathf.Min(10,range);foreach(var candidate in State.resourceNodes)if(!candidate.broken){float distance=Vector3.Distance(p.position,candidate.position);if(distance<nearest){nearest=distance;node=candidate;}}
-                    if(node!=null)
-                    {
-                        float resourceDamage=definition.damage*DamageMultiplier(p);p.weaponTimers[slot]=definition.cooldown/p.attackSpeed;p.weaponCastSerial++;p.lastWeapon=type;p.weaponPoseTime=.32f;
-                        Vector3 resourceOrigin=p.position+Vector3.up*1.35f,resourceDirection=(node.position+Vector3.up*.45f-resourceOrigin).normalized;p.weaponAimYaw=Mathf.Atan2(resourceDirection.x,resourceDirection.z)*Mathf.Rad2Deg;
-                        if(type==(int)WeaponKind.Bow)State.projectiles.Add(new ProjectileState{id=State.nextId++,owner=p.id,target=node.id,position=resourceOrigin,direction=resourceDirection,damage=resourceDamage,weapon=WeaponKind.Bow});
-                        else{DamageResource(node,resourceDamage,p);WeaponEffect(type==(int)WeaponKind.LightningStaff?10:11,resourceOrigin,node.position+Vector3.up*.45f,nearest,(WeaponKind)type);}
-                    }
-                    else p.weaponTimers[slot]=.12f;
-                    continue;
-                }
-                targets.Sort((a,b)=>(a.position-p.position).sqrMagnitude.CompareTo((b.position-p.position).sqrMagnitude));
-                int level=Mathf.Max(1,p.weaponLevels[slot]);
-                float damage=definition.damage*DamageMultiplier(p)*(1+(level-1)*.22f);
-                p.weaponTimers[slot]=definition.cooldown/((1+(level-1)*.06f)*p.attackSpeed*(1+p.auraBonuses[2])*(p.realityBoost>0?2:1)*(p.boost>0?2:1));
-                p.weaponCastSerial++;p.lastWeapon=type;p.weaponPoseTime=.32f;
-                Vector3 origin=p.position+Vector3.up*1.35f;
-                Vector3 aim=(targets[0].position+Vector3.up*.7f-origin).normalized;
-                p.weaponAimYaw=Mathf.Atan2(aim.x,aim.z)*Mathf.Rad2Deg;
-                switch((WeaponKind)type)
-                {
-                    case WeaponKind.Axe:
-                        Vector3 forward=targets[0].position-p.position;forward.y=0;forward.Normalize();
-                        foreach(var enemy in targets)
-                        {
-                            var direction=enemy.position-p.position;direction.y=0;
-                            if(Vector3.Dot(direction.normalized,forward)<-.15f)continue;
-                            DamageEnemy(enemy,p,damage);
-                        }
-                        WeaponEffect(9,p.position+Vector3.up*.8f,p.position+forward*range+Vector3.up*.8f,range,WeaponKind.Axe);
-                        break;
-                    case WeaponKind.LightningStaff:
-                        Vector3 previous=origin;var chain=new List<int>();
-                        int count=Mathf.Min(4,2+p.projectileCount+level/3);
-                        for(int bounce=0;bounce<count;bounce++)
-                        {
-                            EnemyState next=null;float distance=bounce==0?range:7;
-                            foreach(var enemy in State.enemies)
-                            {if(chain.Contains(enemy.id))continue;float d=Vector3.Distance(previous,enemy.position+Vector3.up*.8f);if(d<distance){distance=d;next=enemy;}}
-                            if(next==null)break;
-                            chain.Add(next.id);var end=next.position+Vector3.up*.8f;
-                            WeaponEffect(10,previous,end,1,WeaponKind.LightningStaff);DamageEnemy(next,p,damage*Mathf.Pow(.85f,bounce));previous=end;
-                        }
-                        break;
-                    case WeaponKind.Bow:
-                        int arrows=Mathf.Min(p.projectileCount,targets.Count);
-                        for(int i=0;i<arrows;i++)
-                        {
-                            var enemy=targets[i];float flight=Vector3.Distance(origin,enemy.position)/(34*p.projectileSpeed);
-                            var lead=(p.position-enemy.position).normalized*enemy.speed*flight*.7f;
-                            var direction=(enemy.position+Vector3.up*.75f+lead-origin).normalized;
-                            State.projectiles.Add(new ProjectileState{id=State.nextId++,owner=p.id,target=enemy.id,position=origin,direction=direction,damage=damage,weapon=WeaponKind.Bow,life=1.5f});
-                        }
-                        break;
-                    case WeaponKind.Spear:
-                        var endPoint=origin+Vector3.ProjectOnPlane(aim,Vector3.up).normalized*range;
-                        foreach(var enemy in targets)
-                            if(SegmentDistance(origin,endPoint,enemy.position+Vector3.up*.75f)<1.05f)DamageEnemy(enemy,p,damage);
-                        WeaponEffect(11,origin,endPoint,range,WeaponKind.Spear);break;
-                }
-            }
-        }
         void WeaponEffect(int kind,Vector3 origin,Vector3 end,float radius,WeaponKind weapon)
-        {State.effects.Add(new EffectState{id=State.nextId++,kind=kind,position=origin,end=end,radius=radius,weapon=weapon,life=.4f});}
+        {if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState{id=State.nextId++,kind=kind,position=origin,end=end,radius=radius,weapon=weapon,life=.4f});}
         void RollChestReward(ChestState chest,PlayerState owner)
         {
             chest.rewardKind=RewardKind.Item;

@@ -13,7 +13,7 @@ namespace Era
 
         void TickAuraDamage(PlayerState p,float dt)
         {
-            if(p.hero!=Hero.Lumen||AuraRadius(p)<=0)return;
+            if(p.hero!=Hero.Lumen||AuraRadius(p)<=0||WeaponsSuppressed(p))return;
             p.auraDamageTimer+=dt;
             // Four pulses per second keep damage independent of FPS and enemy count.
             while(p.auraDamageTimer>=.25f)

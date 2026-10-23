@@ -15,13 +15,14 @@ namespace Era
         readonly Dictionary<int,ShrineVisual> shrines=new Dictionary<int,ShrineVisual>();
         readonly Dictionary<int,GameObject> auraRings=new Dictionary<int,GameObject>();
         readonly Dictionary<int,GameObject> hazardRings=new Dictionary<int,GameObject>();
+        readonly Dictionary<int,GameObject> itemFields=new Dictionary<int,GameObject>();
         WorldEnvironment environment;GameObject portalVisual;int presentedStage=-1,presentedSerial=-1;
         readonly MaterialPropertyBlock hitBlock=new MaterialPropertyBlock();
         readonly HashSet<int> seen=new HashSet<int>();
         Transform dynamicRoot,previewRoot;
         float shake,footstep;
         int lastCoins,lastLevel=1;
-        class Actor {public GameObject root,weapon;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph;public float hp=-1,hitFlash;public int jump,land,cast,weaponKind=-1,weaponSerial,hitSerial;public Hero kind;public Renderer[] renderers;public Color[] colors;}
+        class Actor {public GameObject root,weapon;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph,attackTelegraph;public float hp=-1,hitFlash;public int jump,land,cast,weaponKind=-1,weaponSerial,hitSerial;public Hero kind;public Renderer[] renderers;public Color[] colors;}
         class ChestVisual {public GameObject root;public Transform lid;public float openness;public bool announced;}
         void Awake()
         {
@@ -109,17 +110,26 @@ namespace Era
                 if(e.eliteShrine>=0&&actor.root.transform.Find("Elite guardian halo")==null){actor.root.transform.localScale*=1.2f;v.Ring("Elite guardian halo",actor.root.transform,.9f,new Color(1,.25f,.12f),.065f).transform.localPosition=Vector3.up*.06f;}
                 if(direction.sqrMagnitude>0.0004f)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.LookRotation(direction),blend);
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,e.position,blend);
+                if(e.kind>=EnemyKind.Skeleton||e.kind==EnemyKind.Brute)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,e.facing,0),blend);
+                if(e.kind==EnemyKind.Slime&&e.summonGeneration>0)actor.root.transform.localScale=Vector3.one*.6f;
                 if(e.hitSerial!=actor.hitSerial){actor.creature.hit=1;actor.hitFlash=.18f;actor.creature.skeletal?.Hit();SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
                 if(!app.WorldPaused)actor.hitFlash=Mathf.Max(0,actor.hitFlash-Time.unscaledDeltaTime);
                 for(int r=0;r<actor.renderers.Length;r++){hitBlock.Clear();hitBlock.SetColor("_Color",Color.Lerp(actor.colors[r],Color.white,Mathf.Clamp01(actor.hitFlash/.18f)*.85f));actor.renderers[r].SetPropertyBlock(hitBlock);}
                 if(actor.telegraph==null&&e.spawnGrace>0){actor.telegraph=v.Ring("Enemy arrival warning",dynamicRoot,.75f,new Color(.91f,.32f,.15f),.045f).transform;actor.telegraph.position=e.position+Vector3.up*.06f;}
                 if(actor.telegraph!=null&&e.spawnGrace<=0){Destroy(actor.telegraph.gameObject);actor.telegraph=null;}
-                if(!app.WorldPaused){if(actor.creature.skeletal!=null)actor.creature.skeletal.Enemy(direction.magnitude>.005f?e.speed:0,e.frozen>0||e.spawnGrace>0,Mathf.Max(e.windup,e.meleeWindup),e.attackTimer);else actor.creature.Pose(state.elapsed,e.frozen>0||e.spawnGrace>0,Mathf.Max(e.windup,e.meleeWindup));}
+                if(e.meleeWindup>0)
+                {
+                    if(actor.attackTelegraph==null)actor.attackTelegraph=v.Ring("Attack hitbox warning",dynamicRoot,1,new Color(1,.19f,.08f),.07f).transform;
+                    Vector3 center=e.attackStyle==3||e.attackStyle==1?e.attackPosition:e.position+e.attackDirection*EnemyCatalog.Reach(e.kind)*.5f;center.y=WorldMap.Ground(center)+.08f;
+                    actor.attackTelegraph.position=center;actor.attackTelegraph.localScale=Vector3.one*(e.attackStyle==3?3:e.attackStyle==1?.8f:e.attackStyle==2?2.5f:EnemyCatalog.Reach(e.kind)*.65f);
+                }
+                else if(actor.attackTelegraph!=null){Destroy(actor.attackTelegraph.gameObject);actor.attackTelegraph=null;}
+                if(!app.WorldPaused){if(actor.creature.skeletal!=null)actor.creature.skeletal.Enemy(direction.magnitude>.005f?e.speed:0,e.frozen>0||e.spawnGrace>0,Mathf.Max(e.windup,e.meleeWindup),e.attackTimer);else actor.creature.CombatPose(e,state.elapsed);}
             }
             var dead=new List<int>();foreach(var pair in actors)if(!seen.Contains(pair.Key))dead.Add(pair.Key);
             foreach(int id in dead)
-            {var a=actors[id];if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.creature?.skeletal!=null)a.creature.skeletal.Die();else Destroy(a.root);actors.Remove(id);}
-            SyncAuras(state);SyncPortal(state);SyncHazards(state);SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
+            {var a=actors[id];if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.attackTelegraph!=null)Destroy(a.attackTelegraph.gameObject);if(a.creature?.skeletal!=null)a.creature.skeletal.Die();else Destroy(a.root);actors.Remove(id);}
+            SyncAuras(state);SyncPortal(state);SyncHazards(state);SyncItemFields(state);SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
             encounters??=new EncounterView(v,dynamicRoot);encounters.Present(state);
             if(state.coins>lastCoins)SynthAudio.Instance?.Play(7);
             if(state.level>lastLevel)SynthAudio.Instance?.Play(9);
@@ -153,12 +163,28 @@ namespace Era
             float side=delta.sqrMagnitude-along*along;if(side>=radius*radius)return distance;
             return Mathf.Min(distance,Mathf.Max(2.4f,along-Mathf.Sqrt(radius*radius-side)-0.35f));
         }
+        void SyncItemFields(WorldState state)
+        {
+            seen.Clear();foreach(var f in state.itemFields)
+            {
+                seen.Add(f.id);var item=(ItemId)f.item;bool spirit=item==ItemId.HuntingPack||item==ItemId.GravePact||item==ItemId.HiveMind;
+                if(!itemFields.TryGetValue(f.id,out var go))
+                {
+                    if(spirit)go=v.Facet("Summoned soul",dynamicRoot,Vector3.zero,new Vector3(.25f,.38f,.25f),item==ItemId.HiveMind?new Color(.6f,.8f,.15f):GameData.Mint,10,6);
+                    else if(item==ItemId.ArchitectReign){go=v.Group("Soul turret",dynamicRoot).gameObject;v.Facet("Turret pedestal",go.transform,Vector3.up*.5f,new Vector3(.4f,.55f,.4f),new Color(.37f,.4f,.38f));v.Facet("Turret crystal",go.transform,Vector3.up*1.2f,new Vector3(.2f,.35f,.2f),GameData.Mint);}
+                    else go=v.Ring("Item field / "+item,dynamicRoot,Mathf.Max(.4f,f.radius),GameData.Items[f.item].color,.045f);
+                    itemFields[f.id]=go;
+                }
+                go.transform.position=f.position+Vector3.up*(spirit?.6f:.10f);
+                if(spirit)go.transform.rotation=Quaternion.Euler(0,state.elapsed*90,Mathf.Sin(state.elapsed*5+f.id)*12);
+            }RemoveAbsent(itemFields);
+        }
         void SyncProjectiles(WorldState state,float blend)
         {
             seen.Clear();foreach(var b in state.projectiles)
             {
                 seen.Add(b.id);if(!bullets.TryGetValue(b.id,out var go))
-                {go=WeaponVisuals.Arrow(v,dynamicRoot);go.transform.position=b.position;bullets[b.id]=go;}
+                {go=b.hostile?v.Facet("Hostile projectile",dynamicRoot,Vector3.zero,new Vector3(.18f,.18f,.35f),new Color(1,.22f,.08f),10,6):WeaponVisuals.Arrow(v,dynamicRoot);go.transform.position=b.position;bullets[b.id]=go;}
                 go.transform.position=Vector3.Lerp(go.transform.position,b.position,blend);if(b.direction.sqrMagnitude>0)go.transform.rotation=Quaternion.LookRotation(b.direction);
             }RemoveAbsent(bullets);
         }
@@ -285,7 +311,7 @@ namespace Era
         public void ClearActors()
         {
             if(dynamicRoot!=null)foreach(Transform child in dynamicRoot)Destroy(child.gameObject);
-            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();auraRings.Clear();hazardRings.Clear();portalVisual=null;encounters=null;lastCoins=0;lastLevel=1;
+            actors.Clear();bullets.Clear();drops.Clear();loot.Clear();effects.Clear();chests.Clear();shrines.Clear();auraRings.Clear();hazardRings.Clear();itemFields.Clear();portalVisual=null;encounters=null;lastCoins=0;lastLevel=1;
         }
     }
 }

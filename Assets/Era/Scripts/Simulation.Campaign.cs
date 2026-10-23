@@ -7,8 +7,9 @@ namespace Era
     {
         void DefeatBoss(EnemyState boss)
         {
+            foreach(var p in State.players)if(Has(p,ItemId.SevenfoldOath)){int n=Stack(p,ItemId.SevenfoldOath);p.projectileCount=Mathf.Min(48,p.projectileCount+n);p.damage+=.15f*n;p.itemCounters[I(ItemId.SevenfoldOath)]++;}
             State.bossSpawned=true;
-            State.enemies.Clear();State.projectiles.Clear();State.hazards.Clear();
+            State.enemies.Clear();State.projectiles.Clear();State.hazards.Clear();State.itemFields.Clear();foreach(var p in State.players)p.bursts.Clear();
             State.coins+=60+State.stage*20;State.earnedCoins+=60+State.stage*20;
             GrantExperience(60+State.stage*45);
             if(State.stage>=CampaignData.StageCount){State.phase=RunPhase.Victory;return;}
@@ -22,7 +23,7 @@ namespace Era
             if(State.phase!=RunPhase.Playing||!State.portal.active||p.downed||p.eliminated||Vector3.Distance(p.position,State.portal.position)>3.5f||State.stage>=CampaignData.StageCount)return false;
             State.stage++;State.stageSerial++;WorldMap.SetStage(State.stage);State.stageElapsed=0;State.wave=1;State.nextWave=60;State.waveQuota=State.waveSpawned=0;State.waveActive=false;State.spawnCursor=0;
             State.portal.active=false;State.bossSpawned=false;State.spawnTimer=0;
-            State.enemies.Clear();State.projectiles.Clear();State.pickups.Clear();State.effects.Clear();State.hits.Clear();State.hazards.Clear();State.chests.Clear();State.loot.Clear();State.shrines.Clear();
+            State.enemies.Clear();State.projectiles.Clear();State.pickups.Clear();State.effects.Clear();State.hits.Clear();State.hazards.Clear();State.chests.Clear();State.loot.Clear();State.shrines.Clear();State.itemFields.Clear();
             WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
             foreach(var player in State.players)
             {
@@ -30,6 +31,8 @@ namespace Era
                 player.downed=player.eliminated=false;player.grounded=true;player.crouching=false;player.bleedout=25;player.reviveProgress=0;player.chargingShrine=-1;
                 player.hp=player.maxHp;player.invulnerability=3;player.auraDamageTimer=0;
                 player.knockback=Vector3.zero;player.hitSlide=0;
+                player.bursts.Clear();player.stillTime=0;player.itemCounters[I(ItemId.PhoenixAsh)]=0;
+                if(Has(player,ItemId.SevenfoldOath))Field(player,ItemId.EndlessRefrain,player.position,2,25,150*Stack(player,ItemId.SevenfoldOath)*player.itemCounters[I(ItemId.SevenfoldOath)]);
             }
             RefreshAuras();return true;
         }

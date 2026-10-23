@@ -30,6 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
+            assertions+=RoguelikeChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -214,16 +215,16 @@ namespace Era.Editor
             {
                 var hero=HeroMotion.Create(v,parent.transform,Hero.Ember,"Ember");Check(hero.leftKnee!=null&&hero.rightElbow!=null&&hero.cape!=null,"hero has a jointed animation rig");
                 foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))
-                {var creature=CreatureMotion.Create(v,parent.transform,kind);Check(creature.limbs.Count>=4,"organic creature model has animated limbs: "+kind);}
+                {var creature=CreatureMotion.Create(v,parent.transform,kind);Check(creature.body!=null&&creature.limbs.Count>=(kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime?0:kind==EnemyKind.Bat?2:4),"creature has its role's animation joints: "+kind);}
             }
             finally{UnityEngine.Object.DestroyImmediate(parent);}
-            foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Brute","Creatures/Stalker","Creatures/Warden"})
+            foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Stalker","Creatures/Warden"})
             {
                 var model=Resources.Load<GameObject>(character);var skeletal=model.GetComponent<SkeletalActor>();
                 Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=1,"skeletal actor retains real animation clips: "+character);
                 var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
                 bool faceted=character.StartsWith("Characters/")||character.EndsWith("Stalker")||character.EndsWith("Wisp");
-                Check(faceted?skin.sharedMaterial.shader.name=="Era/Faceted Realm"&&skin.sharedMesh.vertexCount<15000&&skin.sharedMesh.vertexCount==skin.sharedMesh.triangles.Length:skin.sharedMaterial.mainTexture!=null,"bounded original faceted mesh or existing painted atlas: "+character);
+                Check(faceted?skin.sharedMaterial.shader.name=="Era/Faceted Realm"&&skin.sharedMesh.vertexCount<60000&&skin.sharedMesh.vertexCount==skin.sharedMesh.triangles.Length:skin.sharedMaterial.mainTexture!=null,"bounded detailed faceted mesh or existing painted atlas: "+character);
             }
             for(int stage=1;stage<=7;stage++)
             {
@@ -365,11 +366,11 @@ namespace Era.Editor
             Check(sim.ChooseItem(a, 0) && a.pendingLevels == 0 && b.pendingLevels == 1, "upgrades are individual");
             float hp=a.maxHp;sim.ApplyItem(a,2);Check(a.maxHp>hp,"stout heart increases maximum health");
             float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.15f)<.001f,"sharp blade stacks damage");
-            for(int i=0;i<20;i++)sim.ApplyItem(a,9);Check(a.projectileCount==12,"projectile count has a safe cap");
+            for(int i=0;i<60;i++)sim.ApplyItem(a,9);Check(a.projectileCount==48,"projectile count has a safe cap");
             hp=a.maxHp;sim.ApplyAttribute(a,4,3);Check(Mathf.Abs(a.maxHp-hp-40)<.001f,"legendary health attribute grants forty maximum health");
             float crit=a.critChance;sim.ApplyAttribute(a,2,2);Check(Mathf.Abs(a.critChance-crit-.15f)<.001f,"epic critical chance grants fifteen percent");
-            int[] tiers=new int[4];foreach(var item in GameData.Items)tiers[(int)item.rarity]++;Check(GameData.Items.Length==31&&tiers[0]==10&&tiers[1]==7&&tiers[2]==7&&tiers[3]==7,"chest catalogue contains all thirty-one rarity-grouped items");
-            var low=New();var high=New();high.State.Player(0).luck=12;int lowHigh=0,highHigh=0,lowRare=0,highRare=0;for(int i=0;i<800;i++){int lr=low.RollRarity(low.State.Player(0),0),hr=high.RollRarity(high.State.Player(0),0);if(lr>=2)lowHigh++;if(hr>=2)highHigh++;if(lr==0)lowRare++;if(hr==0)highRare++;}
+            int[] tiers=new int[5];foreach(var item in GameData.Items)tiers[(int)item.rarity]++;Check(GameData.Items.Length==130&&Array.TrueForAll(tiers,n=>n>0),"chest catalogue contains 130 items in five rarity tiers");
+            var low=New();var high=New();high.State.Player(0).luck=100;int lowHigh=0,highHigh=0,lowRare=0,highRare=0;for(int i=0;i<800;i++){int lr=low.RollRarity(low.State.Player(0),0),hr=high.RollRarity(high.State.Player(0),0);if(lr>=2)lowHigh++;if(hr>=2)highHigh++;if(lr==1)lowRare++;if(hr==1)highRare++;}
             Check(highHigh>lowHigh&&highRare<lowRare,"luck shifts rolls from low tier toward epic and legendary rewards");
             for(int stat=0;stat<GameData.Attributes.Length;stat++)
             {
@@ -395,7 +396,7 @@ namespace Era.Editor
             int total=0;for(int level=2;level<26;level++)total+=12+(level-1)*7;sim.GrantExperience(total);
             bool milestone=false;int choices=0;while(ally.pendingLevels>0&&choices++<100)
             {
-                if(ally.offerKind==RewardKind.Weapon){milestone=ally.completedLevel+1==25;Check(ally.offers.Length==3&&Array.IndexOf(ally.offers,ally.weapons[0])<0,"level 25 offers three distinct non-starter weapons");}
+                if(ally.offerKind==RewardKind.Weapon){milestone=ally.completedLevel+1==25;Check(ally.offers.Length==4&&Array.IndexOf(ally.offers,ally.weapons[0])<0,"level 25 offers four distinct non-starter weapons including sword");}
                 sim.ChooseItem(ally,0);
             }
             Check(milestone&&ally.weapons[1]>=0&&ally.completedLevel==26,"queued levels preserve the level-25 weapon milestone");

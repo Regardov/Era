@@ -41,7 +41,7 @@ namespace Era
                 case 1:player.moveSpeed+=.15f;break;
                 case 2:player.attackSpeed+=.2f;break;
                 case 3:player.damage+=.25f;break;
-                case 4:player.maxHp+=30;player.hp=Mathf.Min(player.maxHp,player.hp+50);break;
+                case 4:player.maxHp+=30;Heal(player,50/Mathf.Max(.01f,player.healingPower));break;
                 case 5:player.shield=Mathf.Min(150,player.shield+50);break;
                 case 6:player.cooldownRate+=.15f;break;
                 case 7:player.pickupRange+=3;break;

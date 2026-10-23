@@ -14,8 +14,14 @@ namespace Era
             return new Rect(ItemX[row][col],1024-y-h,w,h);
         }
         public static Rect ItemUV(int item){var rect=ItemPixels(item);return new Rect(rect.x/1536,rect.y/1024,rect.width/1536,rect.height/1024);}
-        static readonly Sprite[] ItemSprites=new Sprite[31];
-        public static Sprite ItemSprite(int item)=>ItemSprites[item]!=null?ItemSprites[item]:(ItemSprites[item]=Sprite.Create(ItemAtlas,ItemPixels(item),Vector2.one*.5f,140,0,SpriteMeshType.FullRect));
+        static readonly Sprite[] ItemSprites=new Sprite[ItemCatalog.Count];
+        public static Sprite ItemSprite(int item)
+        {
+            if(ItemSprites[item]!=null)return ItemSprites[item];
+            var texture=item<31?ItemAtlas:Get(GameData.Items[item].icon);if(texture==null)return null;
+            var rect=item<31?ItemPixels(item):new Rect(0,0,texture.width,texture.height);
+            return ItemSprites[item]=Sprite.Create(texture,rect,Vector2.one*.5f,item<31?140:texture.width/1.2f,0,SpriteMeshType.FullRect);
+        }
         public static Texture2D Get(string name){if(!Cache.TryGetValue(name,out var texture)){texture=Resources.Load<Texture2D>("Icons/"+name);Cache[name]=texture;}return texture;}
     }
 }

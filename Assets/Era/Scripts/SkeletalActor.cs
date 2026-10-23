@@ -10,6 +10,7 @@ namespace Era
         Transform rigBone,leftArm,rightArm;Vector3 rigScale=Vector3.one;
         bool heroPose,airborne;float airBlend,verticalPose,runPose,takeoffTime;
         float slide,aimTwist,draw;
+        float enemyWindup;
         public float JumpBlend=>airBlend;
         public Transform Bone(string name){foreach(var t in GetComponentsInChildren<Transform>(true))if(t.name==name)return t;return null;}
         public void Bind(){hips=Bone("hips");spine=Bone("spine");leftThigh=Bone("upperleg.l");rightThigh=Bone("upperleg.r");leftKnee=Bone("lowerleg.l");rightKnee=Bone("lowerleg.r");rightHand=Bone("handslot.r");}
@@ -46,7 +47,7 @@ namespace Era
             heroPose=false;
             wantsCrouch=false;animationPlayer.enabled=!frozen;if(frozen)return;
             Base(windup>0?"Spellcasting":speed>.05f?"Walking_A":"Idle",speed>.05f?Mathf.Clamp(speed/2,.6f,1.7f):1);
-            if(attackTimer>previousAttack+.3f)Action("Unarmed_Melee_Attack_Punch_A",.45f);previousAttack=attackTimer;
+            if(enemyWindup>0&&windup<=0)Action("Unarmed_Melee_Attack_Punch_A",.5f);enemyWindup=windup;previousAttack=attackTimer;
         }
         public void Hit(){if(GameApp.Instance?.WorldPaused!=true)Action("Hit_A",.17f);}
         public void Die(){animationPlayer.enabled=true;animationPlayer.Stop();animationPlayer.Play(Clip("Death_A"));enabled=false;gameObject.AddComponent<CorpseFade>();}
@@ -82,6 +83,12 @@ namespace Era
                 if(leftArm!=null)leftArm.localRotation*=Quaternion.Euler(-airBlend*17-impact*9,0,-airBlend*13);
                 if(rightArm!=null)rightArm.localRotation*=Quaternion.Euler(-airBlend*12-impact*9,0,airBlend*13);
                 if(rigBone!=null)rigBone.localScale=Vector3.Scale(rigScale,new Vector3(1+impact*.035f-airBlend*.012f,1-impact*.05f+airBlend*.035f,1+impact*.035f));
+            }
+            else if(enemyWindup>0&&spine!=null)
+            {
+                float charge=Mathf.Clamp01(enemyWindup/.5f);spine.localRotation*=Quaternion.Euler(-22*charge,0,-8*charge);
+                if(rightArm!=null)rightArm.localRotation*=Quaternion.Euler(-85*charge,0,15*charge);
+                if(leftArm!=null)leftArm.localRotation*=Quaternion.Euler(-55*charge,0,-15*charge);
             }
         }
     }

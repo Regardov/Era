@@ -77,7 +77,7 @@ namespace Era
                 inputs.TryGetValue(p.id, out var input);
                 TickPlayer(p, input ?? new InputFrame(), dt);
             }
-            TickShrines(dt,inputs);TickEnemies(dt);TickHazards(dt);
+            TickShrines(dt,inputs);TickAfflictions(dt);TickEnemies(dt);TickHazards(dt);TickItemFields(dt);
             TickProjectiles(dt);
             TickLoot(dt);
             CollectPickups(dt);
@@ -91,8 +91,7 @@ namespace Era
             p.slowed=Mathf.Max(0,p.slowed-dt);
             p.auraSurge=Mathf.Max(0,p.auraSurge-dt);
             p.realityBoost=Mathf.Max(0,p.realityBoost-dt);
-            if(p.items[30]>0){p.realityTimer-=dt;if(p.realityTimer<=0){p.realityTimer=30;p.realityBoost=10;Effect(3,p.position,5);}}
-            float reality=p.realityBoost>0?2:1;
+            float reality=1;
             float recharge=p.cooldownRate*(1+p.auraBonuses[6])*reality;
             p.qCooldown = Mathf.Max(0, p.qCooldown - dt * recharge);
             p.eCooldown = Mathf.Max(0, p.eCooldown - dt * recharge);
@@ -103,7 +102,7 @@ namespace Era
             p.castTime=Mathf.Max(0,p.castTime-dt);
             p.weaponPoseTime=Mathf.Max(0,p.weaponPoseTime-dt);
             p.shield = Mathf.Max(0, p.shield - dt * 0.55f);
-            if(p.hpRegen>0&&!p.downed)p.hp=Mathf.Min(p.maxHp,p.hp+p.hpRegen*p.healingPower*dt);
+            if(p.hpRegen>0&&!p.downed)Heal(p,p.hpRegen*dt);
             if (p.eliminated) return;
             if (p.downed)
             {
@@ -136,6 +135,7 @@ namespace Era
                 p.dashDirection = move.sqrMagnitude > 0.01f ? move : Quaternion.Euler(0, p.yaw, 0) * Vector3.forward;
                 p.dashTime = 0.19f; p.dashCooldown = 3; p.invulnerability = 0.28f;
                 Effect(2, p.position + Vector3.up * 0.2f, 2);
+                OnItemDash(p,p.position);
             }
             if (p.dashTime > 0) { p.position=WorldMap.Resolve(p.position,p.dashDirection*24*dt,0.4f); p.dashTime -= dt; }
             else p.position=WorldMap.Resolve(p.position,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt,0.4f);
@@ -161,16 +161,7 @@ namespace Era
             if (input.relic && p.relicCooldown <= 0) CastRelic(p);
             TickWeapons(p,dt);
             TickAuraDamage(p,dt);
-            if (p.items[15] > 0 && (p.fireTimer -= dt) <= 0)
-            {
-                p.fireTimer = .9f;
-                AreaDamage(p, 3.5f, 18 * p.items[15] * DamageMultiplier(p), 0);
-                Effect(4, p.position, 3.5f);
-            }
-            if(p.items[21]>0&&(p.chronoTimer-=dt)<=0){p.chronoTimer=15;AreaDamage(p,9,0,3);Effect(1,p.position,9);}
-            if(p.items[22]>0&&(p.portalTimer-=dt)<=0){p.portalTimer=6;foreach(var e in State.enemies)if(Vector3.Distance(e.position,p.position)<13)e.position=Vector3.MoveTowards(e.position,p.position,4);Effect(1,p.position,12);}
-            if(p.items[24]>0&&(p.dragonTimer-=dt)<=0){p.dragonTimer=5;AreaDamage(p,8,70*p.items[24]*DamageMultiplier(p),0);Effect(0,p.position,8);}
-            if(p.items[27]>0&&(p.blackHoleTimer-=dt)<=0){p.blackHoleTimer=4;foreach(var e in new List<EnemyState>(State.enemies))if(Vector3.Distance(e.position,p.position)<11){e.position=Vector3.MoveTowards(e.position,p.position,3);DamageEnemy(e,p,24*p.items[27]);}Effect(4,p.position,10);}
+            TickItems(p,dt);
         }
         IDictionary<int, InputFrame> inputsForRevive;
         public void Step(float dt, IDictionary<int, InputFrame> inputs)
@@ -180,11 +171,12 @@ namespace Era
 
         void CastQ(PlayerState p)
         {
+            OnItemCast(p,0);
             CastPose(p,0);
             if(p.hero==Hero.Lumen)
             {
                 p.qCooldown=8;AreaDamage(p,8,45*DamageMultiplier(p),0);
-                foreach(var ally in State.players)if(!ally.downed&&!ally.eliminated&&Vector3.Distance(p.position,ally.position)<=8*p.areaSize)ally.hp=Mathf.Min(ally.maxHp,ally.hp+20*p.healingPower);
+                foreach(var ally in State.players)if(!ally.downed&&!ally.eliminated&&Vector3.Distance(p.position,ally.position)<=8*p.areaSize)Heal(ally,20*p.healingPower/Mathf.Max(.01f,ally.healingPower));
                 Effect(3,p.position,8*p.areaSize);return;
             }
             bool ember = p.hero == Hero.Ember;
@@ -194,6 +186,7 @@ namespace Era
         }
         void CastE(PlayerState p)
         {
+            OnItemCast(p,1);
             CastPose(p,1);
             if(p.hero==Hero.Lumen){p.auraSurge=6;p.eCooldown=18;RefreshAuras();Effect(3,p.position,AuraRadius(p));return;}
             if (p.hero == Hero.Ember) { p.boost = 6; p.eCooldown = 18; Effect(0, p.position, 2.5f); }
@@ -202,7 +195,7 @@ namespace Era
                 p.eCooldown = 16;
                 foreach (var other in State.players)
                     if (!other.downed && !other.eliminated && Vector3.Distance(p.position, other.position) <= 12)
-                    { other.hp = Mathf.Min(other.maxHp, other.hp + 35*p.healingPower); other.shield = Mathf.Min(200, other.shield + 25*p.healingPower); }
+                    { Heal(other,35*p.healingPower/Mathf.Max(.01f,other.healingPower)); other.shield = Mathf.Min(800, other.shield + 25*p.healingPower); }
                 Effect(3, p.position, 12);
             }
         }
@@ -217,6 +210,7 @@ namespace Era
         }
         void CastRelic(PlayerState p)
         {
+            OnItemCast(p,2);
             CastPose(p,2);
             p.relicCooldown = GameData.RelicDuration(p.relic);
             if (p.relic == Relic.StormCompass) { AreaDamage(p, 9, 90 * DamageMultiplier(p), 0); Effect(0, p.position, 9); }
@@ -224,7 +218,7 @@ namespace Era
             { AreaDamage(p, 12, 0, 4); p.dashCooldown = 0; Effect(1, p.position, 12); }
             else
             {
-                p.hp = Mathf.Min(p.maxHp, p.hp + 50*p.healingPower);
+                Heal(p,50);
                 GatherExperience(); Effect(3, p.position, 5);
             }
         }
@@ -245,8 +239,7 @@ namespace Era
         }
         public EnemyState SpawnEnemy(EnemyKind? forced = null)
         {
-            var kind = forced ?? (State.wave >= 3 && random.NextDouble() < 0.22 ? EnemyKind.Brute :
-                State.wave >= 2 && random.NextDouble() < 0.35 ? EnemyKind.Stalker : EnemyKind.Wisp);
+            var kind = forced ?? RollEnemyKind();
             var alive = State.players.FindAll(p => !p.downed && !p.eliminated);
             Vector3 origin = alive.Count > 0 ? alive[State.spawnCursor++ % alive.Count].position : Vector3.zero;
             Vector3 pos=origin;float best=-1;
@@ -261,89 +254,15 @@ namespace Era
                 if(nearest>=CampaignData.SpawnMinDistance)break;
             }
             float scaling = (1 + (State.wave - 1) * 0.14f)*CampaignData.EnemyScale(State.stage);
-            float hp = (kind == EnemyKind.Warden ? 2200 : kind == EnemyKind.Brute ? 110 : kind == EnemyKind.Stalker ? 32 : 44) * scaling;
+            float hp = EnemyCatalog.Health(kind) * scaling;
             hp *= 1+.5f*(State.players.Count-1);
             if(kind==EnemyKind.Warden)hp=1700*CampaignData.BossHpScale(State.stage)*(1+.5f*(State.players.Count-1));
             var e = new EnemyState { id = State.nextId++, kind = kind, position = pos, hp = hp, maxHp = hp,
-                speed = kind == EnemyKind.Warden ? 1.9f : kind == EnemyKind.Brute ? 1.55f : kind == EnemyKind.Stalker ? 4.1f : 2.65f,
-                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute ? 20 : 10)*(1+.18f*(State.stage-1)), spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
+                speed = kind == EnemyKind.Warden ? 1.9f : EnemyCatalog.Speed(kind),
+                damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute || kind==EnemyKind.Ogre || kind==EnemyKind.StoneGolem ? 22 : 10)*(1+.18f*(State.stage-1)), spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
+            if(IsFlying(kind))e.position.y+=1.8f;
             State.enemies.Add(e);
             return e;
-        }
-        void TickEnemies(float dt)
-        {
-            foreach (var e in new List<EnemyState>(State.enemies))
-            {
-                if(!State.enemies.Contains(e))continue;
-                if(e.spawnGrace>0){e.spawnGrace=Mathf.Max(0,e.spawnGrace-dt);continue;}
-                e.attackTimer -= dt;
-                if (e.frozen > 0) { e.frozen -= dt; continue; }
-                PlayerState nearest = null; float distance = float.MaxValue;
-                foreach (var p in State.players)
-                {
-                    if (p.downed || p.eliminated) continue;
-                    var offset=p.position-e.position;offset.y=0;float d=offset.sqrMagnitude;
-                    if (d < distance) { distance = d; nearest = p; }
-                }
-                if (nearest == null) continue;
-                if (e.kind == EnemyKind.Warden)
-                {
-                    if (e.windup > 0)e.windup-=dt;
-                    else if ((e.specialTimer -= dt) <= 0)
-                    { BossAttack(e,nearest); }
-                }
-                float reach = e.kind == EnemyKind.Warden ? 2.3f : 1.05f;
-                if(e.meleeWindup>0)
-                {
-                    e.meleeWindup=Mathf.Max(0,e.meleeWindup-dt);
-                    if(e.meleeWindup<=0)
-                    {
-                        var aim=nearest.position-e.attackPosition;aim.y=0;
-                        if(aim.sqrMagnitude<(reach+.45f)*(reach+.45f)&&nearest.position.y-WorldMap.Ground(nearest.position)<1.25f)DamagePlayer(nearest,e.damage,e.position);
-                    }
-                    continue;
-                }
-                if (distance > reach * reach && e.windup <= 0)
-                {
-                    Vector3 dir = nearest.position - e.position; dir.y = 0;
-                    var next=WorldMap.Resolve(e.position,dir.normalized*e.speed*dt,e.kind==EnemyKind.Brute?0.7f:0.4f);
-                    if((next-e.position).sqrMagnitude<dt*dt*0.15f)
-                        next=WorldMap.Resolve(e.position,Quaternion.Euler(0,e.id%2==0?80:-80,0)*dir.normalized*e.speed*dt,0.4f);
-                    e.position=next;
-                    // Cheap local separation prevents the entire horde collapsing into one point.
-                    Vector3 separation=Vector3.zero;
-                    foreach(var other in State.enemies)
-                    {
-                        if(other==e)continue;var delta=e.position-other.position;delta.y=0;float d=delta.sqrMagnitude;
-                        if(d<1.1f&&d>.001f)separation+=delta.normalized*(1-Mathf.Sqrt(d)/1.05f);
-                    }
-                    e.position=WorldMap.Resolve(e.position,Vector3.ClampMagnitude(separation,1)*dt*2,.4f);
-                    e.position=WorldMap.Resolve(e.position,Vector3.zero,0.4f);e.position.y=WorldMap.Ground(e.position);
-                }
-                if (distance < reach * reach && nearest.position.y-WorldMap.Ground(nearest.position) < 1.25f && e.attackTimer <= 0)
-                { e.attackTimer = e.kind==EnemyKind.Brute?1.6f:1.15f;e.meleeWindup=e.kind==EnemyKind.Brute?.42f:.28f;e.attackPosition=nearest.position; }
-            }
-        }
-        void TickProjectiles(float dt)
-        {
-            foreach(var b in new List<ProjectileState>(State.projectiles))
-            {
-                if(!State.projectiles.Contains(b))continue;
-                b.life -= dt;
-                var projectileOwner=State.Player(b.owner);
-                var end = b.position + b.direction * 34 * (projectileOwner?.projectileSpeed??1) * dt;
-                bool hit = false;
-                for (int j = State.enemies.Count - 1; j >= 0; j--)
-                {
-                    var e = State.enemies[j];
-                    float radius = e.kind == EnemyKind.Warden ? 1.5f : e.kind == EnemyKind.Brute ? 0.85f : 0.6f;
-                    if (SegmentDistance(b.position, end, e.position + Vector3.up * 0.7f) > radius) continue;
-                    DamageEnemy(e, State.Player(b.owner), b.damage); hit = true; break;
-                }
-                if(!hit)foreach(var node in State.resourceNodes)if(!node.broken&&SegmentDistance(b.position,end,node.position+Vector3.up*.45f)<.8f){DamageResource(node,b.damage,projectileOwner);hit=true;break;}
-                b.position = end;
-                if (hit || b.life <= 0) State.projectiles.Remove(b);
-            }
         }
         static float SegmentDistance(Vector3 a, Vector3 b, Vector3 p)
         {
@@ -351,27 +270,26 @@ namespace Era
             float t = Mathf.Clamp01(Vector3.Dot(p - a, d) / Mathf.Max(0.0001f, d.sqrMagnitude));
             return Vector3.Distance(a + d * t, p);
         }
-        public void DamageEnemy(EnemyState e, PlayerState owner, float damage, bool proc = true)
+        public void DamageEnemy(EnemyState e, PlayerState owner, float damage, bool proc = true, bool weaponHit=false)
         {
             if(e==null||e.hp<=0||damage<=0||!State.enemies.Contains(e))return;
             bool critical=false;
-            if(owner!=null)
+            if(owner!=null&&proc)
             {
-                if(random.NextDouble()<owner.critChance){damage*=owner.critDamage;critical=true;}
-                if(owner.items[17]>0)damage*=1+.18f*owner.items[17];
-                if(owner.items[18]>0)e.frozen=Mathf.Max(e.frozen,.35f+.15f*owner.items[18]);
-                if(owner.items[29]>0)damage*=1+.35f*owner.items[29];
+                critical=Has(owner,ItemId.FateLoom)?++owner.itemCounters[I(ItemId.FateLoom)]%Mathf.Max(2,5-Stack(owner,ItemId.FateLoom))==0:random.NextDouble()<owner.critChance;
+                if(critical)damage*=owner.critDamage;
+                damage*=ItemHitMultiplier(owner,e);
             }
+            if(e.kind==EnemyKind.StoneGolem||e.kind==EnemyKind.CrystalGolem)damage*=.72f;
             float dealt=Mathf.Min(e.hp,damage);e.hp -= damage;e.hitSerial++;
             AddHit(e.id,e.position+Vector3.up*1.4f,damage,critical,false);
-            if (owner != null&&!owner.downed&&!owner.eliminated) owner.hp = Mathf.Min(owner.maxHp, owner.hp + dealt * owner.lifeSteal);
-            if (e.hp > 0) return;
+            if(owner!=null&&proc){Heal(owner,dealt*owner.lifeSteal,true);OnItemHit(owner,e,dealt,critical,weaponHit);}
+            if (e.hp > 0||!State.enemies.Contains(e)) return;
             State.enemies.Remove(e);
             State.kills++;
             if (owner != null) owner.kills++;
             Effect(6, e.position + Vector3.up * 0.5f, 0.8f);
-            if(proc&&owner!=null&&owner.items[20]>0&&random.NextDouble()<.22)
-            {var spirit=State.enemies.Find(other=>Vector3.Distance(other.position,e.position)<8);if(spirit!=null){WeaponEffect(10,e.position+Vector3.up,spirit.position+Vector3.up,1,WeaponKind.LightningStaff);DamageEnemy(spirit,owner,35*owner.items[20],false);}}
+            OnItemKill(owner,e);OnEnemyDeath(e);
             if (e.kind == EnemyKind.Warden) { DefeatBoss(e); return; }
             float xp=(e.kind==EnemyKind.Brute?15:e.kind==EnemyKind.Stalker?9:6)*(e.eliteShrine>=0?3:1)*(owner?.xpGain??1)*(1+(owner?.auraBonuses[7]??0))+(owner?.xpRemainder??0);
             int earnedXp=Mathf.Max(1,Mathf.FloorToInt(xp));if(owner!=null)owner.xpRemainder=xp-earnedXp;
@@ -387,18 +305,21 @@ namespace Era
         public void DamagePlayer(PlayerState p, float damage,Vector3? source=null)
         {
             if (p.downed || p.eliminated || p.invulnerability > 0) return;
-            if(random.NextDouble()<Mathf.Clamp01(p.dodge))return;
+            if(random.NextDouble()<Mathf.Clamp(p.dodge,0,.85f)){if(Has(p,ItemId.DuelistClock)){p.dashCooldown=0;p.qCooldown=Mathf.Max(0,p.qCooldown-2*Stack(p,ItemId.DuelistClock));p.eCooldown=Mathf.Max(0,p.eCooldown-2*Stack(p,ItemId.DuelistClock));}return;}
             damage*=1-Mathf.Clamp(p.armor,0,.75f);
             damage*=1-Mathf.Clamp(p.auraBonuses[5],0,.65f);
+            damage*=1+.25f*Stack(p,ItemId.CrownOfGreed);
             AddHit(p.id,p.position+Vector3.up*1.8f,damage,false,true);
             float absorb = Mathf.Min(p.shield, damage); p.shield -= absorb; damage -= absorb;
-            p.hp = Mathf.Max(0, p.hp - damage); p.invulnerability = 0.5f;
+            if(Has(p,ItemId.TemporalDebt)&&damage>0)
+            {float delayed=damage*Mathf.Min(.85f,.5f+.1f*(Stack(p,ItemId.TemporalDebt)-1));if(p.itemValues[I(ItemId.TemporalDebt)]<=0)p.itemTimers[I(ItemId.TemporalDebt)]=3;p.itemValues[I(ItemId.TemporalDebt)]+=delayed;damage-=delayed;}
+            ApplyHealthDamage(p,damage); p.invulnerability = Mathf.Max(p.invulnerability,0.5f);
+            OnItemHurt(p,damage+absorb);
+            if(p.downed)return;
             var push=source.HasValue?p.position-source.Value:-(Quaternion.Euler(0,p.yaw,0)*Vector3.forward);push.y=0;if(push.sqrMagnitude<.001f)push=Vector3.back;
             p.knockback=push.normalized*4;p.hitSlide=.24f;
             if(p.grounded)Effect(2,p.position+Vector3.up*.05f,.9f);
             Effect(5, p.position + Vector3.up, 0.7f);
-            if(p.hp<=0&&p.reviveCharges>0){p.reviveCharges--;p.hp=p.maxHp*.55f;p.invulnerability=3;Effect(3,p.position,4);return;}
-            if (p.hp <= 0) { p.downed = true;p.knockback=Vector3.zero;p.hitSlide=0;p.crouching=false;p.chargingShrine=-1; p.bleedout = 25; p.position.y = WorldMap.Ground(p.position);p.grounded=true;p.velocity=Vector3.zero; }
         }
         void CollectPickups(float dt)
         {
@@ -412,7 +333,7 @@ namespace Era
                     if (p.downed || p.eliminated) continue;
                     float d = Vector3.Distance(p.position, pickup.position);
                     if (d < 1.15f)
-                    { State.pickups.RemoveAt(i); if(pickup.kind==PickupKind.Gold){State.coins+=pickup.value;State.earnedCoins+=pickup.value;}else GrantExperience(pickup.value); break; }
+                    { State.pickups.RemoveAt(i);OnItemPickup(p,pickup); if(pickup.kind==PickupKind.Gold){State.coins+=pickup.value;State.earnedCoins+=pickup.value;}else GrantExperience(pickup.value); break; }
                     if (d < p.pickupRange) pickup.position = Vector3.MoveTowards(pickup.position, p.position, dt * 16);
                 }
             }
@@ -426,7 +347,7 @@ namespace Era
                 foreach (var p in State.players)
                 {
                     p.pendingLevels++;
-                    if (!p.downed && !p.eliminated) p.hp = Mathf.Min(p.maxHp, p.hp + 12);
+                    if (!p.downed && !p.eliminated) Heal(p,12/Mathf.Max(.01f,p.healingPower));
                     if (p.offers.Length == 0) RollOffers(p);
                 }
             }
@@ -438,7 +359,7 @@ namespace Era
             if(nextLevel>=GameData.SecondWeaponLevel&&p.weapons[1]<0&&p.upgradeStage==0)
             {
                 p.offerKind=RewardKind.Weapon;
-                for(int i=0;i<(int)WeaponKind.Aura;i++)if(Array.IndexOf(p.weapons,i)<0)choices.Add(i);
+                for(int i=0;i<GameData.Weapons.Length;i++)if(i!=(int)WeaponKind.Aura&&Array.IndexOf(p.weapons,i)<0)choices.Add(i);
                 p.offers=choices.ToArray();p.offerRarities=new int[p.offers.Length];return;
             }
             if(p.hero==Hero.Lumen&&p.upgradeStage==2)
@@ -451,7 +372,7 @@ namespace Era
             for (int i = 0; i < GameData.Attributes.Length; i++) choices.Add(i);
             for (int i = choices.Count - 1; i > 0; i--) { int j = random.Next(i + 1); int v = choices[i]; choices[i] = choices[j]; choices[j] = v; }
             p.offers = choices.GetRange(0, 3).ToArray();
-            p.offerRarities=new int[3];for(int i=0;i<3;i++)p.offerRarities[i]=RollRarity(p,0);
+            p.offerRarities=new int[3];for(int i=0;i<3;i++)p.offerRarities[i]=RollRarity(p,0,false);
         }
         public bool ChooseItem(PlayerState p, int slot)
         {
@@ -471,10 +392,10 @@ namespace Era
             if (p.pendingLevels > 0) RollOffers(p); else {p.offers = Array.Empty<int>();p.offerRarities=Array.Empty<int>();}
             return true;
         }
-        public int RollRarity(PlayerState p,int chestTier)
+        public int RollRarity(PlayerState p,int chestTier,bool mythic=true)
         {
-            float luck=Mathf.Max(0,p?.luck??0),fortune=1+(p?.auraBonuses[0]??0),rare=Mathf.Max(10,62-luck*3.2f-chestTier*12),uncommon=Mathf.Max(15,25+luck*.2f),epic=(10+luck*1.8f+chestTier*7)*fortune,legendary=(3+luck*1.2f+chestTier*5)*fortune;
-            double roll=random.NextDouble()*(rare+uncommon+epic+legendary);if((roll-=rare)<0)return 0;if((roll-=uncommon)<0)return 1;if((roll-=epic)<0)return 2;return 3;
+            var odds=ItemCatalog.RarityProbabilities(p?.luck??0,chestTier,1+(p?.auraBonuses[0]??0),mythic);
+            double roll=random.NextDouble();foreach(int rarity in ItemCatalog.RarityOrder)if((roll-=odds[rarity])<0)return rarity;return 3;
         }
         public void ApplyAttribute(PlayerState p,int attribute,int rarity)
         {
@@ -482,34 +403,17 @@ namespace Era
             switch(attribute)
             {
                 case 0:p.damage+=v;break;case 1:p.attackSpeed+=v;break;case 2:p.critChance+=v;break;case 3:p.critDamage+=v;break;
-                case 4:p.maxHp+=v;p.hp=Mathf.Min(p.maxHp,p.hp+v);break;case 5:p.healingPower+=v;break;case 6:p.hpRegen+=v;break;
+                case 4:p.maxHp+=v;Heal(p,v/Mathf.Max(.01f,p.healingPower));break;case 5:p.healingPower+=v;break;case 6:p.hpRegen+=v;break;
                 case 7:p.shield+=v;break;case 8:p.armor+=v;break;case 9:p.lifeSteal+=v;break;case 10:p.moveSpeed+=v;break;
                 case 11:p.dodge+=v;break;case 12:p.cooldownRate+=v;break;case 13:p.weaponRange+=v;break;case 14:p.areaSize+=v;break;
-                case 15:p.projectileCount=Mathf.Min(12,p.projectileCount+Mathf.RoundToInt(v));break;case 16:p.projectileSpeed+=v;break;
+                case 15:p.projectileCount=Mathf.Min(48,p.projectileCount+Mathf.RoundToInt(v));break;case 16:p.projectileSpeed+=v;break;
                 case 17:p.pickupRange+=v;break;case 18:p.luck+=v;break;case 19:p.xpGain+=v;break;case 20:p.goldGain+=v;break;
             }Effect(3,p.position,2);
         }
-        public void ApplyItem(PlayerState p, int item)
-        {
-            if (item < 0 || item >= GameData.Items.Length) return;
-            p.items[item]++;
-            switch (item)
-            {
-                case 0:p.damage+=.15f;break;case 1:p.moveSpeed+=.10f;break;
-                case 2:float hp=(p.maxHp-p.auraMaxHp)*.20f;p.maxHp+=hp;p.hp+=hp;break;case 3:p.armor+=.10f;break;case 4:p.cooldownRate+=.11f;break;
-                case 5:p.goldGain+=.20f;break;case 6:p.luck+=2;break;case 7:p.hpRegen+=1;break;case 8:p.hpRegen+=3;break;
-                case 9:p.projectileCount=Mathf.Min(12,p.projectileCount+1);break;case 10:p.critChance+=.25f;p.critDamage+=.5f;break;
-                case 11:p.moveSpeed+=.20f;p.dodge+=.05f;break;case 12:p.lifeSteal+=.10f;break;case 13:p.critDamage+=.30f;break;
-                case 14:var slots=new List<int>();for(int i=0;i<p.weapons.Length;i++)if(p.weapons[i]>=0&&p.weaponLevels[i]<GameData.MaxWeaponLevel)slots.Add(i);if(slots.Count>0){int slot=slots[random.Next(slots.Count)];GiveWeapon(p,(WeaponKind)p.weapons[slot]);}break;
-                case 16:p.pickupRange*=1.5f;break;case 23:p.goldGain+=.5f;p.xpGain+=.5f;break;case 25:p.extraJumps+=2;p.dodge+=.10f;break;
-                case 28:p.reviveCharges++;break;case 30:p.realityTimer=.1f;break;
-            }
-            Effect(3, p.position, 2);
-        }
         float DamageMultiplier(PlayerState p)
-        {float growth=p.items[26]>0?1+State.elapsed*.0025f*p.items[26]:1;return p.damage*(1+p.auraBonuses[1])*growth*(p.realityBoost>0?2:1);}
+        {return p.damage*(1+p.auraBonuses[1]);}
         void Effect(int kind, Vector3 position, float radius)
-        { State.effects.Add(new EffectState { id = State.nextId++, kind = kind, position = position, radius = radius }); }
+        { if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState { id = State.nextId++, kind = kind, position = position, radius = radius }); }
         void GatherExperience()
         {
             int xp=0;for(int i=State.pickups.Count-1;i>=0;i--)if(State.pickups[i].kind==PickupKind.Experience)

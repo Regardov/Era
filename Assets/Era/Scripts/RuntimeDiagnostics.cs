@@ -15,7 +15,7 @@ namespace Era
             args=Environment.GetCommandLineArgs();start=Time.realtimeSinceStartup;folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","Artifacts"));
             int at=Array.IndexOf(args,"--capture-folder");if(at>=0&&at+1<args.Length)folder=args[at+1];Directory.CreateDirectory(folder);
             third=Has("--smoke-client2");smoke=Has("--smoke-host")||Has("--smoke-client")||third;client=Has("--smoke-client")||third;
-            if(smoke){I18n.Language=client?GameLanguage.Russian:GameLanguage.English;App.PlayerName=third?"Lumen":client?"Willow":"Rowan";App.SelectedHero=third?Hero.Lumen:client?Hero.Echo:Hero.Ember;App.SelectedRelic=Relic.StormCompass;if(client)App.Join();else App.Host();}
+            if(smoke){I18n.Language=client?GameLanguage.Russian:GameLanguage.English;App.Address="127.0.0.1";App.PlayerName=third?"Lumen":client?"Willow":"Rowan";App.SelectedHero=third?Hero.Lumen:client?Hero.Echo:Hero.Ember;App.SelectedRelic=Relic.StormCompass;if(client)App.Join();else App.Host();}
             else if(Has("--capture-lumen")){App.BeginSelection(SessionMode.Solo);App.SelectedHero=Hero.Lumen;I18n.Language=GameLanguage.Russian;}
             else if(Has("--capture-auras")){App.SelectedHero=Hero.Lumen;App.Solo();App.Simulation.GrantExperience(12);App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
             else if(Has("--capture-milestone")){App.SelectedHero=Hero.Lumen;App.Solo();int xp=0;for(int level=1;level<25;level++)xp+=12+(level-1)*7;App.Simulation.GrantExperience(xp);int n=0;while(App.LocalPlayer.offerKind!=RewardKind.Weapon&&n++<100)App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
@@ -99,7 +99,9 @@ namespace Era
                 }
                 if(s.elapsed>21&&!gameShot){Shot(third?"coop-lumen.png":client?"coop-client.png":"coop-host.png");gameShot=true;}
             }
-            if(age>32&&!reported)
+            // Lumen has two decisions per level. Wait for the replicated milestone on all peers,
+            // allowing for different process start times and snapshot/choice latency.
+            if(age>32&&!reported&&(s!=null&&s.players.Count==GameData.MaxPlayers&&s.players.TrueForAll(p=>p.weapons[1]>=0)||age>39))
             {
                 int items=0;if(me!=null)foreach(int count in me.items)items+=count;
                 var report=new Report{connected=s?.players.Count==GameData.MaxPlayers,localId=App.LocalId,ready=readySeen,jump=jumpSeen,actions=castsSeen,music=SynthAudio.Instance!=null&&SynthAudio.Instance.MusicReady,
@@ -110,7 +112,7 @@ namespace Era
                 report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.secondWeapons&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;
                 string json=JsonUtility.ToJson(report);File.WriteAllText(Path.Combine(folder,third?"smoke-client2.json":client?"smoke-client.json":"smoke-host.json"),json);Debug.Log("ERA_SMOKE "+json);exit=report.ok?0:2;reported=true;
             }
-            if(age>(client?34:40))Application.Quit(exit);
+            if(age>(client?42:45))Application.Quit(exit);
         }
     }
 }

@@ -178,7 +178,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8604165020722120696, guid: 826a2643c2cab2041953a53af71e2bd9, type: 2}
+  - {fileID: 5230141828461570483, guid: 1da0b6c5cd9e3264888b6a01ea0c1bfa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -203,7 +203,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -4031393992466731117, guid: 826a2643c2cab2041953a53af71e2bd9, type: 2}
+  m_Mesh: {fileID: 7772595440905249600, guid: 1da0b6c5cd9e3264888b6a01ea0c1bfa, type: 2}
   m_Bones:
   - {fileID: 7693456074203949785}
   - {fileID: 9014835466095311206}
@@ -1874,8 +1874,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3c3f597a70c5fc4d990cdc762f88757, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   animationPlayer: {fileID: 3503201017715698818}
   hips: {fileID: 8170956410469415379}
   spine: {fileID: 4244121595118138612}
@@ -1894,8 +1894,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f42985cd10b48c64c9a3a6e304f18e88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   bones:
   - {fileID: 7693456074203949785}
   - {fileID: 9014835466095311206}
@@ -1993,8 +1993,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 198f154b2db408f4da02292256aa548a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   kind: 0
   body: {fileID: 8170956410469415379}
   limbs:
@@ -2003,6 +2003,7 @@ MonoBehaviour:
   - {fileID: 902833396777613748}
   - {fileID: 8873386960541506843}
   baseScale: {x: 1, y: 1, z: 1}
+  basePosition: {x: 0, y: 0, z: 0}
   hit: 0
   skeletal: {fileID: 4740424135540051510}
 --- !u!1 &9177095380704919955

@@ -1,6 +1,12 @@
-# ERA: Seven Realms — v0.10
+# ERA: Seven Realms — v0.12
 
-В v0.10 добавлены конечные волны с передышкой, каменная статуя для призыва босса, четыре испытания по пять элитных стражей с бесплатным сундуком, 72 видеокарты с золотом/опытом, карта диаметром 600 м с 60 сундуками и стеной по границе. Опыт с обычных врагов увеличен примерно втрое. Удары вызывают короткое скольжение, снаряды получили яркие следы, во время боя играет отдельная музыка. Модели героев имеют сглаженную геометрию и взрослые пропорции. Картинки предметов взяты из исходного присланного атласа. В выборе героя информация об оружии/пассивке расположена справа, кнопки — слева; полноэкранный режим включается в настройках.
+В v0.12 добавлены **130 предметов, пять редкостей и 12 новых видов врагов**. Предметы создают статусные синергии, призывают помощников, меняют лечение и способ атаки, растут за убийства, движение, сундуки и победы над боссами. Необычные дают только характеристики; мифические меняют правила боя; легендарные раскрываются за забег. **[Полный каталог и эффекты](Docs/ITEMS-v0.12.md)** · **[Изменения, формулы и примеры билдов](Docs/RELEASE-v0.12.0.md)**.
+
+**Tab → Каталог → наведение курсора** показывает описание, стаки и синергии каждого предмета. Два дабл-шота дают три снаряда даже по единственной цели. Посох выпускает залп одновременно; меч и копьё выполняют очередь с интервалом `0.75 / 1.5^(N - 2)` секунд при `N ≥ 2`. В формуле удачи используется логарифм с присланного изображения. Новые скелеты, лучники, ревенанты, некроманты, големы, слаймы, огры, шаманы и летающие враги имеют отдельные модели, замахи и наносящие урон атаки.
+
+![Каталог предметов и подсказка](Docs/Images/roguelike-tooltip-v012.png)
+
+В v0.11 каждый этап начинается с таймера **10:00**. Мобы появляются постоянно в **12–19 м** от живых игроков; после каждой прошедшей минуты приходит дополнительная орда и увеличивается частота спавна. Модели снова гранёные: следопыт в зелёном капюшоне, монах в земляных тонах, бородатый хранитель аур, волк и шут созданы по присланным референсам. Камни и деревья получили такой же матовый гранёный стиль. Переносы текста рассчитываются в общих координатах интерфейса и сохраняются при смене разрешения.
 
 ## Скачать готовую игру для Windows
 
@@ -10,7 +16,7 @@
 
 В v0.10 каждое открытие сундука добавляет **10% его базовой цены** к ценам оставшихся сундуков команды. Пример для обычного сундука: **25 → 28 → 30 → 33** золота; округление вверх. Счётчик общий для команды и сохраняется между мирами. Новые модели имеют планки, скобы, ручки, обивку и открывающуюся крышку. У Люмена в HUD, Tab и выборе аур показаны **ранг** и **число улучшений**; получение новой ауры не считается улучшением.
 
-![Новое меню, сглаженные герои и описание оружия/пассивки](Docs/Images/hero-lumen-v010.png)
+![Гранёный хранитель аур и описание оружия/пассивки](Docs/Images/hero-lumen-v011.png)
 
 Unity **2023.1.22f1**, Windows. A third-person survivor for **1–3 players** with **seven realms**, seven different bosses, party portals, sculpted terrain, detailed bark/stone materials, reactive grass and the aura support hero **Lumen**. Russian / English interface, original music and sound effects.
 
@@ -30,13 +36,13 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.10 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.12 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
 5. Selecting **Not ready yet** cancels the countdown. Character changes are available while unready; a player disconnecting also cancels the countdown.
 
-The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 9 is incompatible with older builds.
+The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 11 is incompatible with older builds.
 
 ## Controls
 
@@ -65,11 +71,11 @@ Explore seven large rolling realms. Height, obstacles, chest/shrine positions an
 
 There are **60 chests**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
 
-Press **F** near a chest. Ordinary chests cost **25–45 gold**; **Moon chests cost 65** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **31 items** in four rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
+Press **F** near a chest. Ordinary chests cost **25–45 gold**; **Moon chests cost 65** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **130 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
 
 Every level offers three **accessories** from a pool covering **21 stats**: damage, attack speed, critical chance/damage, max HP, healing, regeneration, shield, armor, lifesteal, movement, evasion, recharge speed, range, area, projectile count/speed, pickup range, luck, XP and gold gain. Examples: **Precision Ring**, **Life Amulet**, **Merchant's Purse**. Rarity sets the bonus: legendary Life Amulet gives +40 max HP; epic Precision Ring gives +15% crit chance. Accessories stack for the run. The level-25 weapon choice is additional to that level's accessory and remains queued correctly after multi-level XP gains.
 
-Waves have a finite spawn quota. Clear every wave enemy to begin an eight-second break, then face a stronger wave. The realm boss appears only when a living player presses **F at the stone boss statue**; elapsed time never summons it automatically. Enemy HP/damage and boss strength increase with realm number and party size. Attacks have visible warnings; jump or leave the danger zone before impact.
+Every realm starts with a ten-minute countdown. Ordinary enemies continuously arrive 12–19 m from living players. At each expired minute, an additional horde joins and the regular spawn interval becomes shorter; previous enemies do not need to die first. A short arrival warning and melee windup let players react. The live-enemy cap prevents unlimited accumulation, while distant ordinary enemies are recycled around the party. The countdown stops at zero and the final spawn pressure continues. The realm boss still appears when a living player presses **F at the stone boss statue**. Enemy HP/damage and boss strength increase with realm number and party size.
 
 | Realm | Boss | Signature attack |
 |---|---|---|
@@ -93,7 +99,7 @@ If a companion falls, approach within 3.5 m and hold F for 2.5 seconds. They hav
 
 **Echo**: 115 health, 90% base damage, Frost Bloom (Q: 35 base damage and 3 s freeze in 8 m, 10 s cooldown), Resonance (E: restore 35 health and give 25 shield to both allies within 12 m, 16 s cooldown).
 
-**Lumen**: 110 HP, an animated ivory-and-gold mage with a jeweled halo. Aura radius is **12 / 1.3 ≈ 9.23 m**, exactly 1.3 times smaller than v0.7. The conduit deals **10 base damage per second** to enemies in range in four pulses, scaling with damage/crit/item modifiers. Starts with **Fortune Aura**. Every level grants an accessory and **one choice: upgrade an owned aura OR add a new buff aura**. Keep up to **five different types**. Repeated choices add 20% of base buff per rank; after five types only those five can be upgraded. Auras affect the bearer and living allies, scale with range/area/conduit level, disappear outside range or when Lumen falls/disconnects, and use the strongest overlapping source.
+**Lumen**: 110 HP, an animated bearded aura keeper in an ivory robe with earth-toned mantle. Aura radius is **12 / 1.3 ≈ 9.23 m**, exactly 1.3 times smaller than v0.7. The conduit deals **10 base damage per second** to enemies in range in four pulses, scaling with damage/crit/item modifiers. Starts with **Fortune Aura**. Every level grants an accessory and **one choice: upgrade an owned aura OR add a new buff aura**. Keep up to **five different types**. Repeated choices add 20% of base buff per rank; after five types only those five can be upgraded. Auras affect the bearer and living allies, scale with range/area/conduit level, disappear outside range or when Lumen falls/disconnects, and use the strongest overlapping source.
 
 | Aura | Rank 1 bonus |
 |---|---|
@@ -110,7 +116,7 @@ Lumen's **Q** deals 45 damage in 8 m and heals allies for 20 (8 s cooldown). **E
 
 **R relics**: Storm Compass (90 base damage in 9 m / 24 s), Hourglass (4 s freeze in 12 m and refresh dash / 30 s), Home Shard (heal 50 and gather all XP / 25 s).
 
-**Thirty-one stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. Every item/accessory uses an individually authored, centered transparent **128×128 icon**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at twelve.
+**130 stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. The first 31 item pictures preserve the supplied atlas; new items use centered transparent **128×128 icons**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at 48; two Double Shots mean three projectiles.
 
 ## Blessing shrines and crouch
 
@@ -122,7 +128,7 @@ Hold **Ctrl or C** to crouch. Movement slows to 43% and the pose and camera blen
 
 ## Animation and audio
 
-All three heroes and enemies use textured, skinned **KayKit Adventurers / Skeletons 1.0** models by Kay Lousberg (CC0). Lumen has a new ivory/gold palette and halo; seven bosses have different bases, horns, crowns, armor, crystals or appendages. Each prefab retains skeletal clips. `SkeletalActor` blends jump launch, rising tuck, descending balance and a soft landing compression, with a subtle squash/stretch overlay; it respects solo pause. `WeaponGrip` aligns hand weapons. Defeated enemies play their death clip. Cloth/skin uses a soft rim shader. Foliage, grass, shrine seals and portal surfaces animate separately.
+The heroes retain CC0 **KayKit Adventurers / Skeletons 1.0** rigs and clips under newly authored faceted geometry. New undead, golems, slimes, ogres and flyers use original meshes and articulated procedural animation. Lumen has a new ivory/gold palette and halo; seven bosses have different bases, horns, crowns, armor, crystals or appendages. The heroes and retained bosses preserve skeletal clips; new creatures animate articulated joints. `SkeletalActor` blends jump launch, rising tuck, descending balance and a soft landing compression, with a subtle squash/stretch overlay; it respects solo pause. `WeaponGrip` aligns hand weapons. Defeated enemies play their death clip. Cloth/skin uses a soft rim shader. Foliage, grass, shrine seals and portal surfaces animate separately.
 
 Original GLB files, license texts, native meshes/clips and painted texture atlases are in `Assets/Era/Art/KayKit`. See `Docs/THIRD-PARTY.md`. `KayKitImporter` performs an offline conversion into native Unity assets; no external runtime importer is needed. Subtle seamless ground, stone and wood detail textures are authored in `SurfaceTextureBuilder`; materials and foliage wind are applied without replacing the baked world scene.
 
@@ -132,6 +138,7 @@ The original **Stillwater at Dawn** score is composed in code: 16 bars, 88 BPM, 
 
 ```powershell
 .\Tools\Build.ps1
+.\Tools\Test-Roguelike.ps1
 .\Tools\Test-Update.ps1
 .\Tools\Test-Chests.ps1
 .\Tools\Test-Campaign.ps1
@@ -150,7 +157,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Update.ps1` checks the v0.10 encounter flow in one game process: finite waves, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, smooth heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Latest validation: [478 assertions and both single-process scenarios](Docs/VALIDATION-v0.10.md).
+`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. Current validation: [v0.12](Docs/VALIDATION-v0.12.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 
@@ -162,8 +169,9 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 - `SkeletalActor.cs`, `HeroMotion.cs`, `CreatureMotion.cs`, `WeaponGrip.cs`, `ArenaView.cs`: models, animation and presentation.
 - `SceneryBuilder.cs`, `LivingGrass.cs`, realm shaders: chunked sculpted world, textured trees/rocks, reactive meadow.
 - `ActorArtBuilder.cs`, `BossArt.cs`: refined hero assets and seven boss identities.
-- `HumanArtBuilder.cs`, `HumanRigShape.cs`: smooth adult proportions, skin weights, bind poses and clip retargeting.
-- `Simulation.Encounters.cs`, `EncounterView.cs`: finite waves, boss statue, four elite trials and resource graphics cards.
+- `FacetedArtBuilder.cs`, `HumanRigShape.cs`: original faceted costumes, restored skeletons, skin weights and clip retargeting.
+- `Simulation.Encounters.cs`, `EncounterView.cs`: continuous nearby spawns, minute hordes, boss statue, elite trials and resource graphics cards.
+- `HudTextLayout.cs`: shared word wrapping for the live UI and screenshots.
 - `Assets/Era/Art/KayKit`: source models, painted atlases, native skeletal clips and licenses.
 - `GameHud.cs`, `I18n.cs`, `IconLibrary.cs`, `FrameCapture.cs`: bilingual HUD, menus and offscreen capture.
 - `MusicComposer.cs`, `SynthAudio.cs`: original soundtrack and effects.

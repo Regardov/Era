@@ -62,6 +62,7 @@ namespace Era
             {"Heal for 2% of damage dealt. Stacks with each copy.","Лечение на 2% нанесённого урона. Эффект складывается."},
             {"Every 0.7 s, deal 12 damage per stack to enemies within 3.5 m.","Каждые 0,7 с наносит 12 урона за копию врагам в радиусе 3,5 м."},
             {"Crescent Axe","Лунный топор"},{"Lightning Staff","Посох молний"},{"Wildwood Bow","Лесной лук"},{"Dawn Spear","Копьё зари"},
+            {"Dawn Sword","Меч зари"},{"Sweeping sword cuts. Extra projectiles repeat the slash with a delay.","Размашистые удары мечом. Дополнительные снаряды повторяют взмах с задержкой."},
             {"A sweeping cleave through nearby enemies.","Размашистый удар по ближайшим врагам."},
             {"Lightning chains between up to four nearby enemies.","Цепная молния поражает до четырёх ближайших врагов."},
             {"Fast arrows seek distant targets. Extra bolts add arrows.","Быстрые стрелы поражают дальние цели. Дополнительные снаряды добавляют стрелы."},

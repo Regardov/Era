@@ -4,6 +4,15 @@ $buildPath = Join-Path $projectPath 'Builds\Windows'
 if (-not (Test-Path -LiteralPath (Join-Path $buildPath 'Era.exe'))) { throw 'Build with Tools\Build.ps1 first' }
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
+foreach ($eraDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md')) {
+    $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
+    if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
+}
+$eraImageFolder = Join-Path $buildPath 'Images'
+New-Item -ItemType Directory -Force -Path $eraImageFolder | Out-Null
+foreach ($eraImage in @('roguelike-tooltip-v012.png','roguelike-creatures-v012.png','roguelike-combat-v012.png')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
+}
 if (Test-Path -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md')) {
     Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md') -Destination (Join-Path $buildPath 'THIRD-PARTY.md') -Force
     $licenseFolder = Join-Path $buildPath 'Licenses'

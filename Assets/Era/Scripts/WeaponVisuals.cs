@@ -28,6 +28,13 @@ namespace Era
                     v.Ellipsoid("Blade edge",root,new Vector3(.39f,.58f,0),new Vector3(.17f,.65f,.075f),metal);
                     v.Ellipsoid("Rivet",root,new Vector3(.02f,.69f,0),Vector3.one*.14f,gold);
                 }
+                else if(kind==WeaponKind.Sword)
+                {
+                    v.Shape("Crossguard",PrimitiveType.Cube,root,new Vector3(0,.2f,0),new Vector3(.58f,.075f,.12f),gold);
+                    v.Shape("Forged blade",PrimitiveType.Cube,root,new Vector3(0,.7f,0),new Vector3(.14f,.95f,.055f),metal);
+                    v.Cone("Sword point",root,new Vector3(0,1.17f,0),.1f,.24f,metal,4);
+                    v.Shape("Fuller",PrimitiveType.Cube,root,new Vector3(0,.72f,.031f),new Vector3(.026f,.8f,.01f),gold);
+                }
                 else if(kind==WeaponKind.Spear)
                 {v.Cone("Leaf spearhead",root,new Vector3(0,1.88f,0),.16f,.59f,metal,6);v.Ellipsoid("Spear collar",root,new Vector3(0,1.88f,0),new Vector3(.13f,.20f,.13f),gold);}
                 else

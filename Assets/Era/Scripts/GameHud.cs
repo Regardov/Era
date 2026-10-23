@@ -10,6 +10,8 @@ namespace Era
         Font font;GUIStyle label,bold,field;Texture2D disc;FrameCapture capture;
         readonly Queue<RewardNotice> rewardQueue=new Queue<RewardNotice>();readonly HashSet<int> seenRewards=new HashSet<int>();int rewardSeed;float rewardClock;
         bool initialized,capturing;string capturePath;float scale;
+        int hoveredItem=-1,itemPage,cataloguePage;bool catalogue,ownedOnly;
+        int captureItem=-1;
         GameApp App=>GameApp.Instance;
         void Init()
         {
@@ -28,10 +30,11 @@ namespace Era
             if(rewardQueue.Count>0&&!App.WorldPaused){rewardClock-=Time.unscaledDeltaTime;if(rewardClock<=0){rewardQueue.Dequeue();rewardClock=4.5f;}}
         }
         public void RequestCapture(string path){capturePath=path;}
+        public void CaptureItemCatalogue(string path,int page,int item=-1){catalogue=true;ownedOnly=false;cataloguePage=page;captureItem=item;App.Inventory=true;capturePath=path;}
         void LateUpdate()
         {
             if(capturePath==null || App?.View?.Camera==null)return;if(!initialized)Init();capture??=new FrameCapture(font);capturing=true;scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
-            try{capture.Save(capturePath,App.View.Camera,Draw);}finally{capturing=false;capturePath=null;}
+            try{capture.Save(capturePath,App.View.Camera,Draw);}finally{capturing=false;capturePath=null;captureItem=-1;}
         }
         void OnGUI()
         {
@@ -39,7 +42,7 @@ namespace Era
             var matrix=GUI.matrix;GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2),Quaternion.identity,Vector3.one*scale);
             Draw();GUI.matrix=matrix;
         }
-        void Draw(){DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();}
+        void Draw(){hoveredItem=-1;DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();if(capturing&&captureItem>=0)hoveredItem=captureItem;if(hoveredItem>=0)ItemTooltip(hoveredItem);}
         void DrawPage()
         {
             if(App.InRun){if(App.Inventory&&!App.Paused&&App.State.phase==RunPhase.Playing){Inventory();return;}HUD();if(App.State.phase==RunPhase.Victory || App.State.phase==RunPhase.Defeat)Results();else if(App.Paused)Settings(true);else if(App.LocalPlayer?.pendingLevels>0&&!App.LocalPlayer.downed&&!App.LocalPlayer.eliminated)Upgrades();return;}
@@ -75,7 +78,7 @@ namespace Era
         {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
         void ItemIcon(int item,float x,float y,float size)
         {
-            var texture=IconLibrary.ItemAtlas;if(texture==null){Icon(GameData.ItemIcons[item],x,y,size);return;}
+            var texture=IconLibrary.ItemAtlas;if(texture==null||item>=31){Icon(GameData.ItemIcons[item],x,y,size);return;}
             var uv=IconLibrary.ItemUV(item);float height=size*uv.height*texture.height/(uv.width*texture.width);var rect=new Rect(x,y+(size-height)/2,size,height);
             if(capturing)capture.Rect(rect,Color.white,texture,uv);else{var previous=GUI.color;GUI.color=Color.white;GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
         }
@@ -415,6 +418,34 @@ namespace Era
             else{Icon(icon,x+6,y+7,42);Text((i+1)+" · "+name,x+57,y+4,w-66,20,13,Ink,true);Text(gain,x+57,y+25,w-66,aura?16:27,11,rarityColor,true);if(aura)Text(tag,x+57,y+43,w-66,15,9,Muted);}
             if(!capturing&&GUI.Button(new Rect(x,y,w,h),GUIContent.none,GUIStyle.none)){App.Choose(i);SynthAudio.Instance?.Play(10);}
         }
+        void ItemHover(int item,Rect rect)
+        {if(!capturing&&rect.Contains(Event.current.mousePosition))hoveredItem=item;}
+        void ItemTooltip(int item)
+        {
+            var definition=GameData.Items[item];var mouse=capturing?new Vector2(1000,460):Event.current.mousePosition;
+            float x=Mathf.Clamp(mouse.x+20,45,1100),y=Mathf.Clamp(mouse.y-30,45,520);
+            Box(x,y,455,330,Panel);Flat(x+2,y+2,4,326,definition.color);ItemIcon(item,x+15,y+14,46);
+            Text(definition.name,x+75,y+13,365,49,21,definition.color,true);
+            Text(GameData.RarityName((int)definition.rarity)+" · ×"+(App.LocalPlayer?.items[item]??0),x+75,y+60,365,22,12,Muted,true);
+            Text(definition.description,x+17,y+93,421,110,17,Ink);
+            Text(I18n.P("STACKING: ","ПОВТОРЫ: ")+(string.IsNullOrEmpty(definition.stacking)?I18n.P("Each copy adds its stated effect.","Каждая копия суммирует указанный эффект."):definition.stacking),x+17,y+207,421,49,13,Sage);
+            if(!string.IsNullOrEmpty(definition.synergy))Text(I18n.P("SYNERGY: ","СИНЕРГИЯ: ")+definition.synergy,x+17,y+267,421,51,13,GameData.Mint);
+        }
+        void ItemCatalogue(PlayerState p)
+        {
+            Text(I18n.P("Hover an item for effects, stacking and synergies","Наведите курсор: эффект, повторы и синергии"),490,107,1038,27,16,Muted);
+            if(Button(ownedOnly?I18n.P("Owned only","Только собранные"):I18n.P("All items","Все предметы"),490,143,230,34)){ownedOnly=!ownedOnly;cataloguePage=0;}
+            var items=new List<int>();foreach(int rarity in ItemCatalog.RarityOrder)for(int n=0;n<GameData.Items.Length;n++)if((int)GameData.Items[n].rarity==rarity&&(!ownedOnly||p.items[n]>0))items.Add(n);
+            const int size=30;int pages=Mathf.Max(1,(items.Count+size-1)/size);cataloguePage=Mathf.Clamp(cataloguePage,0,pages-1);
+            for(int n=cataloguePage*size;n<items.Count&&n<(cataloguePage+1)*size;n++)
+            {
+                int item=items[n],cell=n-cataloguePage*size;float x=490+cell%5*207,y=195+cell/5*98;var d=GameData.Items[item];
+                Box(x,y,195,88,Soft);Flat(x+2,y+2,3,84,d.color);ItemIcon(item,x+10,y+11,39);Text(d.name,x+57,y+10,128,49,14,d.color,true);Text("×"+p.items[item],x+57,y+63,124,18,12,Muted);ItemHover(item,new Rect(x,y,195,88));
+            }
+            if(Button("‹",490,806,65,34))cataloguePage=Mathf.Max(0,cataloguePage-1);
+            Text((cataloguePage+1)+" / "+pages+" · "+items.Count+I18n.P(" items"," предметов"),580,812,835,24,14,Muted,false,TextAnchor.UpperCenter);
+            if(Button("›",1460,806,65,34))cataloguePage=Mathf.Min(pages-1,cataloguePage+1);
+        }
         void Inventory()
         {
             Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.72f));Box(34,38,1532,824,Panel,20);var p=App.LocalPlayer;var s=App.State;
@@ -422,13 +453,17 @@ namespace Era
             Text(GameData.HeroName(p.hero)+" · "+p.name+" · "+I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,70,99,430,25,14,Sage,true);
             Minimap(s,70,140,360);Text(WorldMap.Region(p.position),70,510,360,23,13,Sage,true,TextAnchor.UpperCenter);
             Text(I18n.P("HEALTH","ЗДОРОВЬЕ"),70,545,130,20,11,Muted,true);Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),300,542,130,24,16,Ink,true,TextAnchor.UpperRight);Bar(70,570,360,9,p.hp/p.maxHp,Red);
-            float luck=p.luck,fortune=1+p.auraBonuses[0],rare=Mathf.Max(10,62-luck*3.2f),uncommon=Mathf.Max(15,25+luck*.2f),epic=(10+luck*1.8f)*fortune,legendary=(3+luck*1.2f)*fortune,total=rare+uncommon+epic+legendary;
+            var odds=ItemCatalog.RarityProbabilities(p.luck,0,1+p.auraBonuses[0]);
             Text(I18n.P("DROP CHANCES · LUCK ","ШАНСЫ ДРОПА · УДАЧА ")+p.luck.ToString("0.#"),70,594,360,20,11,Muted,true);
-            Text(Mathf.RoundToInt(rare/total*100)+"%  "+Mathf.RoundToInt(uncommon/total*100)+"%  "+Mathf.RoundToInt(epic/total*100)+"%  "+Mathf.RoundToInt(legendary/total*100)+"%",70,618,360,23,14,Ink,true,TextAnchor.UpperCenter);
-            for(int r=0;r<4;r++)Flat(74+r*89,646,82,3,GameData.RarityColors[r]);
+            for(int rank=0;rank<5;rank++){int r=ItemCatalog.RarityOrder[rank];Text((odds[r]*100).ToString("0.0")+"%",70+rank*72,618,70,23,13,GameData.RarityColors[r],true,TextAnchor.UpperCenter);Flat(74+rank*72,646,64,3,GameData.RarityColors[r]);}
             Text(I18n.P("CHEST ITEMS","ПРЕДМЕТЫ ИЗ СУНДУКОВ"),70,665,360,22,12,Sage,true);
-            int shown=0;for(int item=0;item<p.items.Length&&shown<10;item++)if(p.items[item]>0){int col=shown%5,row=shown/5;float x=70+col*72,y=692+row*70;Flat(x-2,y-2,58,58,GameData.Items[item].color);Flat(x,y,54,54,Soft);ItemIcon(item,x,y,54);Text("×"+p.items[item],x+33,y+39,23,15,11,Ink,true,TextAnchor.UpperRight);shown++;}
+            var owned=new List<int>();for(int item=0;item<p.items.Length;item++)if(p.items[item]>0)owned.Add(item);
+            itemPage=Mathf.Clamp(itemPage,0,Mathf.Max(0,(owned.Count-1)/10));
+            int shown=0;for(int at=itemPage*10;at<owned.Count&&shown<10;at++){int item=owned[at],col=shown%5,row=shown/5;float x=70+col*72,y=692+row*65;Flat(x-2,y-2,58,58,GameData.Items[item].color);Flat(x,y,54,54,Soft);ItemIcon(item,x,y,54);Text("×"+p.items[item],x+33,y+39,23,15,11,Ink,true,TextAnchor.UpperRight);ItemHover(item,new Rect(x-2,y-2,58,58));shown++;}
             if(shown==0)Text(I18n.P("Open a chest to find your first item.","Откройте сундук, чтобы найти первый предмет."),70,710,360,42,13,Muted);
+            if(owned.Count>10){if(Button("‹",70,820,45,27))itemPage=Mathf.Max(0,itemPage-1);Text((itemPage+1)+" / "+((owned.Count+9)/10),130,824,230,21,12,Muted,false,TextAnchor.UpperCenter);if(Button("›",385,820,45,27))itemPage=Mathf.Min((owned.Count-1)/10,itemPage+1);}
+            if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · 130","Каталог · 130 предметов"),1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
+            if(catalogue){ItemCatalogue(p);return;}
             Text(I18n.P("ATTRIBUTES","АТРИБУТЫ"),490,99,1040,25,15,Sage,true);
             for(int attribute=0;attribute<GameData.Attributes.Length;attribute++)AttributeTile(p,attribute,490+(attribute%5)*207,140+(attribute/5)*132,194,121);
             if(p.hero==Hero.Lumen)

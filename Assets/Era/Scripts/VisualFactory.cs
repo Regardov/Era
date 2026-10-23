@@ -27,6 +27,15 @@ namespace Era
         }
         public GameObject Ellipsoid(string name,Transform parent,Vector3 pos,Vector3 scale,Color color,bool glow=false)
             => Shape(name,PrimitiveType.Sphere,parent,pos,scale,color,glow);
+        public GameObject Facet(string name,Transform parent,Vector3 pos,Vector3 radius,Color color,int sides=14,int rings=8)
+        {
+            var vertices=new List<Vector3>();var tris=new List<int>();
+            Vector3 Point(int r,int s){float a=s*Mathf.PI*2/sides,y=-Mathf.PI*.5f+r*Mathf.PI/rings;return Vector3.Scale(new Vector3(Mathf.Cos(a)*Mathf.Cos(y),Mathf.Sin(y),Mathf.Sin(a)*Mathf.Cos(y)),radius);}
+            for(int r=0;r<rings;r++)for(int s=0;s<sides;s++)
+            {if(r>0)AddFace(vertices,tris,Point(r,s),Point(r+1,s),Point(r,s+1));if(r<rings-1)AddFace(vertices,tris,Point(r,s+1),Point(r+1,s),Point(r+1,s+1));}
+            var mesh=new Mesh{name=name+" / faceted"};mesh.SetVertices(vertices);mesh.SetTriangles(tris,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(name);go.transform.SetParent(parent,false);go.transform.localPosition=pos;go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
+        }
         public GameObject Bone(string name,Transform parent,Vector3 pos,Vector3 scale,Color color)
             => Shape(name,PrimitiveType.Capsule,parent,pos,scale,color);
         public GameObject Ring(string name,Transform parent,float radius,Color color,float width=0.07f)

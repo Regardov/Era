@@ -7,13 +7,13 @@ namespace Era
     public enum Hero { Ember, Echo, Lumen }
     public enum Relic { StormCompass, Hourglass, HomeShard }
     public enum RunPhase { Lobby, Playing, Victory, Defeat }
-    public enum EnemyKind { Wisp, Brute, Stalker, Warden }
+    public enum EnemyKind { Wisp, Brute, Stalker, Warden, Skeleton, SkeletonArcher, Revenant, Necromancer, StoneGolem, CrystalGolem, Slime, AcidSlime, Ogre, OgreShaman, Bat, Gargoyle }
     public enum PickupKind { Experience, Gold }
     public enum MenuPage { Home, Characters, Connection, HostLobby, JoinLobby, Settings }
     public enum SessionMode { Solo, Host, Join }
-    public enum WeaponKind { Axe, LightningStaff, Bow, Spear, Aura }
+    public enum WeaponKind { Axe, LightningStaff, Bow, Spear, Aura, Sword }
     public enum RewardKind { Item, Weapon, Blessing, Accessory, Aura }
-    public enum ItemRarity { Rare, Uncommon, Epic, Legendary }
+    public enum ItemRarity { Rare, Uncommon, Epic, Legendary, Mythic }
 
     [Serializable]
     public sealed class InputFrame
@@ -47,7 +47,12 @@ namespace Era
         public bool downed, eliminated;
         public float bleedout = 25, reviveProgress;
         public int kills, pendingLevels;
-        public int[] items = new int[31];
+        public int[] items = new int[ItemCatalog.Count];
+        public float[] itemTimers = new float[ItemCatalog.Count], itemValues = new float[ItemCatalog.Count];
+        public int[] itemCounters = new int[ItemCatalog.Count];
+        public float stillTime, distanceWalked, combatTime, safeTime, lastHp, storedDamage;
+        public int lastVictim=-1, alternatingSlot=-1, lastLand, lastJump;
+        public List<WeaponBurstState> bursts = new List<WeaponBurstState>();
         public int[] attributes = new int[21];
         public int[] accessories = new int[84]; // One stack counter per stat and rarity.
         public int completedLevel = 1, upgradeStage;
@@ -81,6 +86,10 @@ namespace Era
         public EnemyKind kind;
         public Vector3 position;
         public float hp, maxHp, speed, damage, attackTimer, frozen, windup, specialTimer, spawnGrace, meleeWindup;
+        public float recovery, attackDuration, facing, contactTimer;
+        public int attackSerial, attackStyle, summonGeneration;
+        public Vector3 attackDirection;
+        public List<AfflictionState> ailments = new List<AfflictionState>();
         public Vector3 attackPosition;
     }
 
@@ -91,7 +100,29 @@ namespace Era
         public Vector3 position, direction;
         public float damage, life = 2.5f;
         public bool hostile;
+        public float speed=34;
+        public int pierce, bounces;
+        public bool returning;
+        public List<int> hitTargets = new List<int>();
         public WeaponKind weapon = WeaponKind.Bow;
+    }
+
+    [Serializable] public sealed class WeaponBurstState
+    {
+        public int slot, remaining, total;
+        public WeaponKind weapon;
+        public float delay, interval, damage, range;
+        public List<int> usedTargets=new List<int>();
+    }
+    public enum Ailment { Burn, Poison, Bleed, Chill, Shock, Mark, Doom }
+    [Serializable] public sealed class AfflictionState
+    {
+        public Ailment kind; public int owner, stacks=1, hits; public float time, power, tick=.5f;
+    }
+    [Serializable] public sealed class ItemFieldState
+    {
+        public int id, owner, item, target=-1; public Vector3 position, end;
+        public float time, tick, power, radius; public bool armed;
     }
 
     [Serializable]
@@ -213,6 +244,7 @@ namespace Era
         public List<RewardNotice> rewards = new List<RewardNotice>();
         public List<ResourceNodeState> resourceNodes = new List<ResourceNodeState>();
         public List<EliteShrineState> eliteShrines = new List<EliteShrineState>();
+        public List<ItemFieldState> itemFields = new List<ItemFieldState>();
         public PlayerState Player(int id) => players.Find(p => p.id == id);
     }
 
@@ -222,9 +254,10 @@ namespace Era
         public string name => I18n.P(englishName,russianName);
         public string description => I18n.P(englishDescription,russianDescription);
         public readonly ItemRarity rarity;
+        public readonly string icon, synergy, stacking;
         public Color color=>GameData.RarityColor(rarity);
-        public ItemDefinition(string en,string ru,string enDescription,string ruDescription,ItemRarity rarity)
-        {englishName=en;russianName=ru;englishDescription=enDescription;russianDescription=ruDescription;this.rarity=rarity;}
+        public ItemDefinition(string en,string ru,string enDescription,string ruDescription,ItemRarity rarity,string icon="amulet",string synergy="",string stacking="")
+        {englishName=en;russianName=ru;englishDescription=enDescription;russianDescription=ruDescription;this.rarity=rarity;this.icon=icon;this.synergy=synergy;this.stacking=stacking;}
     }
 
     public sealed class AttributeDefinition
@@ -234,7 +267,7 @@ namespace Era
         public readonly float[] values;
         public readonly bool percent;
         public AttributeDefinition(string en,string ru,bool percent,params float[] values)
-        {englishName=en;russianName=ru;this.percent=percent;this.values=values;}
+        {englishName=en;russianName=ru;this.percent=percent;this.values=values;if(values.Length>=2){float low=values[0];values[0]=values[1];values[1]=low;}}
         public string Value(int rarity)
         {
             float value=values[Mathf.Clamp(rarity,0,values.Length-1)];
@@ -257,7 +290,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 10;
+        public const int Protocol = 11;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=60,ResourceNodeCount=72;
@@ -265,14 +298,15 @@ namespace Era
         public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Aura keeper: one aura decision at each level. Add a new buff or improve an owned aura; up to five types.","Хранитель аур: на каждом уровне новая аура или улучшение изученной. До пяти типов; бонусы получают союзники в радиусе."):hero==Hero.Ember?I18n.P("Hunter's training: arrows travel 15% faster, making distant targets easier to hit.","Охотничья подготовка: снаряды летят на 15% быстрее — легче попадать по дальним целям."):I18n.P("Hardiness: 115 starting health, 15 more than the base hero. Base outgoing damage is 90%.","Закалка: 115 начальных ХП, на 15 больше базового героя. Базовый исходящий урон — 90%.");
         public const float BossTime = 150;
         public const int MaxEnemies = 90;
+        public const int MaxProjectiles=384,MaxEffects=320;
         public static readonly Color Amber = new Color(0.93f, 0.65f, 0.49f);
         public static readonly Color Mint = new Color(0.57f, 0.78f, 0.70f);
         public const int WeaponSlots = 2, MaxWeaponLevel = 5, SecondWeaponLevel = 25, MaxAuras = 5;
-        public static readonly Color[] RarityColors={new Color(.10f,.60f,1),new Color(.10f,.88f,.31f),new Color(.76f,.08f,1),new Color(1,.73f,.06f)};
-        public static readonly string[] RarityNamesEn={"RARE","UNCOMMON","EPIC","LEGENDARY"};
-        public static readonly string[] RarityNamesRu={"РЕДКОЕ","НЕОБЫЧНОЕ","ЭПИЧЕСКОЕ","ЛЕГЕНДАРНОЕ"};
+        public static readonly Color[] RarityColors={new Color(.10f,.60f,1),new Color(.10f,.88f,.31f),new Color(.76f,.08f,1),new Color(1,.73f,.06f),new Color(1,.22f,.40f)};
+        public static readonly string[] RarityNamesEn={"RARE","UNCOMMON","EPIC","LEGENDARY","MYTHIC"};
+        public static readonly string[] RarityNamesRu={"РЕДКОЕ","НЕОБЫЧНОЕ","ЭПИЧЕСКОЕ","ЛЕГЕНДАРНОЕ","МИФИЧЕСКОЕ"};
         public static Color RarityColor(ItemRarity rarity)=>RarityColors[(int)rarity];
-        public static string RarityName(int rarity)=>I18n.P(RarityNamesEn[Mathf.Clamp(rarity,0,3)],RarityNamesRu[Mathf.Clamp(rarity,0,3)]);
+        public static string RarityName(int rarity)=>I18n.P(RarityNamesEn[Mathf.Clamp(rarity,0,4)],RarityNamesRu[Mathf.Clamp(rarity,0,4)]);
         public static readonly string[] BlessingIcons={"jump","bell","coil","dawn","heart","shield","hourglass","lantern"};
         public static string BlessingName(int kind)=>I18n.P(new[]{"Skybound","Windstride","Frenzy","Might","Vitality","Stoneguard","Quickening","Star Magnet"}[kind],new[]{"Небесный шаг","Поступь ветра","Неистовство","Мощь","Жизненная сила","Каменная защита","Ускорение","Звёздный магнит"}[kind]);
         public static string BlessingDescription(int kind)=>I18n.P(new[]{"+1 extra jump in the air. Stacks up to 3.","+15% movement speed for this run.","+20% automatic attack speed for this run.","+25% weapon and ability damage for this run.","+30 maximum health and restore 50 health.","Gain 50 shield. Absorbs incoming damage.","Abilities recharge 15% faster for this run.","+3 m pickup radius for this run."}[kind],new[]{"+1 прыжок в воздухе. Можно получить до 3.","+15% к скорости бега до конца забега.","+20% к скорости автоматических атак до конца забега.","+25% к урону оружия и способностей до конца забега.","+30 к максимальному здоровью и лечение на 50.","50 щита, поглощающего входящий урон.","Способности заряжаются на 15% быстрее до конца забега.","+3 м к радиусу подбора до конца забега."}[kind]);
@@ -282,42 +316,10 @@ namespace Era
             new WeaponDefinition("Lightning Staff","Lightning chains between up to four nearby enemies.","lightning",24,1.05f,17,new Color(.69f,.66f,.90f)),
             new WeaponDefinition("Wildwood Bow","Fast arrows seek distant targets. Extra bolts add arrows.","bow",26,.76f,25,Mint),
             new WeaponDefinition("Dawn Spear","A piercing thrust hits every enemy along its path.","spear",38,1.0f,7.5f,new Color(.85f,.75f,.50f)),
-            new WeaponDefinition("Aura Conduit","10 base damage per second and buffs within 9.2 m. Choose or upgrade one aura per level.","aura",10,1,12/1.3f,new Color(.87f,.76f,1))
+            new WeaponDefinition("Aura Conduit","10 base damage per second and buffs within 9.2 m. Choose or upgrade one aura per level.","aura",10,1,12/1.3f,new Color(.87f,.76f,1)),
+            new WeaponDefinition("Dawn Sword","Sweeping sword cuts. Extra projectiles repeat the slash with a delay.","blade",30,.85f,4.5f,new Color(.9f,.84f,.66f))
         };
-        public static readonly ItemDefinition[] Items =
-        {
-            new ItemDefinition("Sharp Blade","Острый клинок","+15% damage.","+15% урона.",ItemRarity.Rare),
-            new ItemDefinition("Swift Boots","Быстрые ботинки","+10% movement speed.","+10% скорости передвижения.",ItemRarity.Rare),
-            new ItemDefinition("Stout Heart","Крепкое сердце","+20% maximum health.","+20% максимального здоровья.",ItemRarity.Rare),
-            new ItemDefinition("Steel Shield","Стальной щит","10% less incoming damage.","-10% получаемого урона.",ItemRarity.Rare),
-            new ItemDefinition("Hourglass","Песочные часы","Abilities recharge 10% faster.","Способности перезаряжаются на 10% быстрее.",ItemRarity.Rare),
-            new ItemDefinition("Golden Coin","Золотая монета","+20% gold gained.","+20% получаемого золота.",ItemRarity.Rare),
-            new ItemDefinition("Beginner's Luck","Удача новичка","Luck increases high-tier drop chances.","Удача повышает шанс предметов высокого тира.",ItemRarity.Rare),
-            new ItemDefinition("Hearty Meal","Сытный обед","Regenerate 1 health per second.","+1 к регенерации здоровья в секунду.",ItemRarity.Rare),
-            new ItemDefinition("Small Potion","Малое зелье","Regenerate 3 health per second.","+3 здоровья в секунду.",ItemRarity.Rare),
-            new ItemDefinition("Throwing Stars","Метательные звёзды","+1 projectile to attacks.","+1 дополнительный снаряд к атакам.",ItemRarity.Rare),
-            new ItemDefinition("Spiked Gloves","Шипованные перчатки","25% critical chance and stronger critical hits.","25% шанс усиленного удара.",ItemRarity.Uncommon),
-            new ItemDefinition("Winged Boots","Крылатые ботинки","+20% movement speed and better evasion.","+20% скорости и уклонение.",ItemRarity.Uncommon),
-            new ItemDefinition("Vampire Fang","Вампирский клык","10% lifesteal.","10% вампиризма.",ItemRarity.Uncommon),
-            new ItemDefinition("True Sight","Точный прицел","+30% critical damage.","+30% критического урона.",ItemRarity.Uncommon),
-            new ItemDefinition("Book of Knowledge","Книга знаний","Upgrade a random equipped weapon.","+1 уровень случайному оружию.",ItemRarity.Uncommon),
-            new ItemDefinition("Fire Sphere","Огненная сфера","Periodically damages nearby enemies.","Периодически наносит урон вокруг героя.",ItemRarity.Uncommon),
-            new ItemDefinition("Magnet","Магнит","+50% pickup radius.","+50% радиуса подбора.",ItemRarity.Uncommon),
-            new ItemDefinition("Flame Blade","Клинок пламени","Attacks ignite and deal extra damage.","Атаки поджигают врагов.",ItemRarity.Epic),
-            new ItemDefinition("Ice Core","Ледяное ядро","Hits slow enemies.","Попадания замедляют врагов.",ItemRarity.Epic),
-            new ItemDefinition("Storm Amulet","Грозовой амулет","Hits arc lightning to a nearby enemy.","Попадания создают цепную молнию.",ItemRarity.Epic),
-            new ItemDefinition("Necronomicon","Некрономикон","Kills may release a damaging spirit.","Убийства могут призвать атакующего духа.",ItemRarity.Epic),
-            new ItemDefinition("Chronosphere","Хроносфера","Every 15 seconds freezes nearby enemies.","Каждые 15 секунд замедляет время вокруг.",ItemRarity.Epic),
-            new ItemDefinition("Chaos Portal","Портал хаоса","Periodically pulls enemies toward a portal.","Периодически притягивает врагов.",ItemRarity.Epic),
-            new ItemDefinition("Crown of Greed","Корона жадности","+50% gold and experience.","+50% золота и опыта.",ItemRarity.Epic),
-            new ItemDefinition("Dragon Breath","Драконий дух","Periodically unleashes a fiery blast.","Периодически выпускает огненный залп.",ItemRarity.Legendary),
-            new ItemDefinition("Angel Wings","Ангельские крылья","Gain two air jumps and increased evasion.","Два прыжка в воздухе и уклонение.",ItemRarity.Legendary),
-            new ItemDefinition("Infinite Power","Бесконечная мощь","Damage grows continuously during the run.","Урон постоянно растёт до конца забега.",ItemRarity.Legendary),
-            new ItemDefinition("Black Hole","Чёрная дыра","Pulls enemies and deals periodic damage.","Притягивает врагов и наносит урон.",ItemRarity.Legendary),
-            new ItemDefinition("Rebirth","Перерождение","Automatically revive once.","Один раз автоматически возрождает.",ItemRarity.Legendary),
-            new ItemDefinition("Time Master","Повелитель времени","Echoes repeat your attacks for bonus damage.","Временные копии повторяют ваши атаки.",ItemRarity.Legendary),
-            new ItemDefinition("Reality Cube","Куб реальности","Every 30 seconds doubles combat stats for 10 seconds.","Каждые 30 секунд удваивает характеристики на 10 секунд.",ItemRarity.Legendary)
-        };
+        public static readonly ItemDefinition[] Items = ItemCatalog.Build();
         public static readonly AttributeDefinition[] Attributes=
         {
             new AttributeDefinition("Damage","Урон",true,.06f,.12f,.20f,.30f),
@@ -342,7 +344,7 @@ namespace Era
             new AttributeDefinition("Experience","Опыт",true,.08f,.15f,.25f,.40f),
             new AttributeDefinition("Gold gain","Доход золота",true,.08f,.15f,.25f,.40f)
         };
-        public static readonly string[] ItemIcons={"blade","boots","heart","shield","hourglass","gold","clover","meal","potion","stars","gloves","wingboots","fang","target","book","fireorb","magnet","flameblade","icecore","stormamulet","necronomicon","chronosphere","portal","crown","dragon","wings","infinity","blackhole","rebirth","timemaster","cube"};
+        public static readonly string[] ItemIcons=Array.ConvertAll(Items,item=>item.icon);
         public static readonly string[] AccessoryIcons={"blade","gloves","ring","target","amulet","potion","leaf","shield","armor","fang","boots","wingboots","hourglass","lens","fireorb","stars","arrow","magnet","clover","book","gold"};
         static readonly string[] AccessoriesEn={"Warrior's charm","Quickstrike gloves","Precision ring","Hunter's lens","Life amulet","Healer's pendant","Living sprout","Guardian's seal","Iron brooch","Blood ruby","Traveler's boots","Feather anklet","Time locket","Eagle monocle","Orbit bracelet","Quiver charm","Wind fletching","Lodestone","Lucky clover","Scholar's tome","Merchant's purse"};
         static readonly string[] AccessoriesRu={"Талисман воина","Перчатки быстроты","Кольцо точности","Линза охотника","Амулет жизни","Подвеска целителя","Живой росток","Печать стража","Железная брошь","Кровавый рубин","Сапоги странника","Браслет пера","Медальон времени","Монокль орла","Орбитальный браслет","Оберег колчана","Оперение ветра","Магнитный камень","Клевер удачи","Том учёного","Кошель торговца"};

@@ -20,7 +20,7 @@ namespace Era
     // All socket I/O runs off the Unity thread; snapshots use a single replaceable send slot.
     public sealed class CoopTransport : IDisposable
     {
-        const int MaxFrame = 512 * 1024;
+        const int MaxFrame = 1024 * 1024;
         readonly ConcurrentQueue<TransportEvent> events = new ConcurrentQueue<TransportEvent>();
         readonly object gate = new object();
         volatile bool stopped;
