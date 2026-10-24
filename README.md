@@ -1,5 +1,7 @@
 # ERA: Seven Realms — v0.18
 
+**[Скачать готовую игру v0.18 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.18.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.18.0). Распакуйте архив целиком и запустите `Era.exe`.
+
 Новое в v0.18: плавные анимации героев и 16 типов врагов, фазы атак боссов, собственные движения оружия и стрел, эффекты способностей, сундуков, лута и окружения, плавный HUD и настройка интенсивности эффектов. Баланс v0.17 сохранён.
 
 **[Аудит и реализация](Docs/ANIMATION-AUDIT-v0.18.md)** · **[Проверки v0.18](Docs/VALIDATION-v0.18.md)**.
