@@ -6,7 +6,7 @@ namespace Era
     {
         public float PartyMultiplier => Mathf.Pow(2,Mathf.Max(0,State.players.Count-1));
         public float SpawnInterval => Mathf.Max(.32f,1.1f-Mathf.Min(10,Mathf.FloorToInt(State.stageElapsed/60))*.075f)
-            /PartyMultiplier/(State.postBossActive?2:1);
+            /PartyMultiplier/(State.postBossActive?2:1)*(State.waveQuota<=0&&!State.postBossActive?1.10f:1);
 
         void ScaleLivingEnemies(float ratio)
         {

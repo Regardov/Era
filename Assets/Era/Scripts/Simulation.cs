@@ -14,13 +14,14 @@ namespace Era
             WorldMap.SetStage(1);
             random = new System.Random(seed);
             State = new WorldState { seed = seed, phase = RunPhase.Lobby, multiplayer = multiplayer };
+            State.playerSpawnPosition=WorldMap.RandomClearLocation(random,5,Vector3.zero,30);
             WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
         }
         public PlayerState AddPlayer(int id, string name, Hero hero, Relic relic = Relic.StormCompass)
         {
             if (State.players.Count >= GameData.MaxPlayers || id<0 || id>=GameData.MaxPlayers || State.Player(id) != null) return null;
             var p = new PlayerState { id = id, name = string.IsNullOrWhiteSpace(name) ? "Wanderer" : name.Substring(0, Math.Min(18, name.Length)),
-                hero = (Hero)Mathf.Clamp((int)hero,0,2), relic = relic, position = WorldMap.OnGround((id-1)*3,0) };
+                hero = (Hero)Mathf.Clamp((int)hero,0,2), relic = relic, position = PartySpawn(id) };
             if (hero == Hero.Echo) { p.maxHp = p.hp = 115; p.damage = 0.9f; }
             if (hero == Hero.Lumen) { p.maxHp=p.hp=110;p.auraLevels[0]=1; }
             GiveStarterWeapon(p);
@@ -29,6 +30,8 @@ namespace Era
             ResetReadiness();
             return p;
         }
+        Vector3 PartySpawn(int id)
+        {var p=WorldMap.Resolve(State.playerSpawnPosition,Vector3.right*((id-1)*2.5f),.45f);p.y=WorldMap.Ground(p);return p;}
         public void Start()
         {
             if (State.phase == RunPhase.Lobby && (State.players.Count == 1&&!State.multiplayer || State.players.Count >= 2 && State.players.TrueForAll(p=>p.ready)))
@@ -259,7 +262,7 @@ namespace Era
             float hp = EnemyCatalog.Health(kind) * scaling;
             float difficulty=State.enemyPartyScale*Mathf.Pow(1.1f,State.postBossGrowthSteps);
             hp *= difficulty;
-            if(kind==EnemyKind.Warden)hp=1700*CampaignData.BossHpScale(State.stage)*difficulty;
+            if(kind==EnemyKind.Warden)hp=CampaignData.BossHealth(State.stage)*difficulty;
             var e = new EnemyState { id = State.nextId++, kind = kind, position = pos, hp = hp, maxHp = hp,
                 speed = kind == EnemyKind.Warden ? 1.9f : EnemyCatalog.Speed(kind),
                 damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute || kind==EnemyKind.Ogre || kind==EnemyKind.StoneGolem ? 22 : 10)*(1+.18f*(State.stage-1))*difficulty, spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
@@ -347,7 +350,7 @@ namespace Era
             State.xp += Mathf.Max(0, amount);
             while (State.xp >= State.xpRequired)
             {
-                State.xp -= State.xpRequired; State.level++; State.xpRequired = 12 + (State.level - 1) * 7;
+                State.xp -= State.xpRequired; State.level++; State.xpRequired = GameData.ExperienceRequired(State.level);
                 foreach (var p in State.players)
                 {
                     p.pendingLevels++;

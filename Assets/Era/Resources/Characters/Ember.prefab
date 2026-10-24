@@ -258,6 +258,37 @@ Transform:
   - {fileID: 4156762016159882380}
   m_Father: {fileID: 1071397300094798084}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1247826595770082779
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 562501592122667491}
+  m_Layer: 0
+  m_Name: Blender character / Ember
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &562501592122667491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247826595770082779}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 470018042511016625}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1354269905620156181
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +687,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5931057916616247697}
-  - component: {fileID: 6645697777123082097}
   m_Layer: 0
   m_Name: Blender character / Ember
   m_TagString: Untagged
@@ -679,101 +709,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 470018042511016625}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &6645697777123082097
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469273044360985696}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 4506998812148731335, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -437223435596519529, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_Bones:
-  - {fileID: 5047177517115055964}
-  - {fileID: 4538646414971405646}
-  - {fileID: 6290311576146677855}
-  - {fileID: 2918775867000603919}
-  - {fileID: 4739053298903183191}
-  - {fileID: 6406077505497989323}
-  - {fileID: 1215380292714986855}
-  - {fileID: 1227238048461579593}
-  - {fileID: 5630809913048292456}
-  - {fileID: 322093703052188927}
-  - {fileID: 6860757380782970433}
-  - {fileID: 1131688638027414419}
-  - {fileID: 7862514496245306224}
-  - {fileID: 1004629681777954168}
-  - {fileID: 9070492900275104512}
-  - {fileID: 4392152607507607354}
-  - {fileID: 463291985894663782}
-  - {fileID: 7501339237553575466}
-  - {fileID: 1071397300094798084}
-  - {fileID: 153829499825617394}
-  - {fileID: 6566818293210491577}
-  - {fileID: 8281174031867064496}
-  - {fileID: 5380644864512225496}
-  - {fileID: 8497734546108315142}
-  - {fileID: 2832062096146213548}
-  - {fileID: 1254094414777544398}
-  - {fileID: 6059151228429210782}
-  - {fileID: 8053501393651389068}
-  - {fileID: 8755182701382276588}
-  - {fileID: 5157848248820498636}
-  - {fileID: 4601147885377162596}
-  - {fileID: 2715801634202179533}
-  - {fileID: 3741091335087931138}
-  - {fileID: 6250587673658699246}
-  - {fileID: 635135851591614673}
-  - {fileID: 4156762016159882380}
-  - {fileID: 5687550702542309066}
-  - {fileID: 830316506609258293}
-  - {fileID: 6176066874977577203}
-  - {fileID: 3288825045447904594}
-  - {fileID: 437428076143358277}
-  - {fileID: 5792175600739928134}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 6290311576146677855}
-  m_AABB:
-    m_Center: {x: 0, y: 1.4, z: 0}
-    m_Extent: {x: 2, y: 2.5, z: 2}
-  m_DirtyAABB: 0
 --- !u!1 &3481941230816490892
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,8 +808,9 @@ Transform:
   m_Children:
   - {fileID: 5047177517115055964}
   - {fileID: 5247206845860571347}
-  - {fileID: 7713681359021847526}
   - {fileID: 5931057916616247697}
+  - {fileID: 562501592122667491}
+  - {fileID: 1425323490983633051}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!111 &6485664964367568976
@@ -1117,9 +1053,9 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: Ember
-  sourceHash: 8acac5981a761fbbdc24a47747ae1fd88dd77b3b5098770a9c8d2b15a64acbd3
-  version: 16
-  triangles: 2382
+  sourceHash: ea54c0ad6d13e481cad580520169c2ef653df6637bdfbae58dc12087771abc66
+  version: 17
+  triangles: 2592
   details:
   - Torso / tailored silhouette.004
   - Neck / weighted continuous bridge.004
@@ -1174,17 +1110,27 @@ MonoBehaviour:
   - Eye / iris.005
   - Brow / angled.005
   - Ear / pointed elven pinna.001
-  - Hair / sculpted lock 0.001
-  - Hair / sculpted lock 1.001
-  - Hair / sculpted lock 2.001
-  - Hair / sculpted lock 3.001
-  - Hair / sculpted lock 4.001
-  - Hair / sculpted lock 5.001
-  - Hair / sculpted lock 6.001
-  - Hair / sculpted lock 7.001
-  - Hair / sculpted lock 8.001
-  - Hair / sculpted lock 9.001
-  - Hair / sculpted lock 10.001
+  - Hair / continuous fitted scalp.002
+  - Hair / layered swept lock 0.002
+  - Hair / layered swept lock 1.002
+  - Hair / layered swept lock 2.002
+  - Hair / layered swept lock 3.002
+  - Hair / layered swept lock 4.002
+  - Hair / layered swept lock 5.002
+  - Hair / layered swept lock 6.002
+  - Hair / layered swept lock 7.002
+  - Hair / layered swept lock 8.002
+  - Hair / layered swept lock 9.002
+  - Hair / layered swept lock 10.002
+  - Hair / layered swept lock 11.002
+  - Hair / layered swept lock 12.002
+  - Hair / layered swept lock 13.002
+  - Hair / layered swept lock 14.002
+  - Hair / layered swept lock 15.002
+  - Hair / side swept fringe 0.002
+  - Hair / side swept fringe 1.002
+  - Hair / side swept fringe 2.002
+  - Hair / side swept fringe 3.002
   - Hood / polygon crown and back.001
   - Hood / thick face opening -1.001
   - Hood / bound face edge.002
@@ -1767,6 +1713,133 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4538646414971405646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6342306393734547241
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1425323490983633051}
+  - component: {fileID: 3014685825508089621}
+  m_Layer: 0
+  m_Name: Blender character / Ember
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1425323490983633051
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6342306393734547241}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 470018042511016625}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &3014685825508089621
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6342306393734547241}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: 206625115842642740, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Bones:
+  - {fileID: 5047177517115055964}
+  - {fileID: 4538646414971405646}
+  - {fileID: 6290311576146677855}
+  - {fileID: 2918775867000603919}
+  - {fileID: 4739053298903183191}
+  - {fileID: 6406077505497989323}
+  - {fileID: 1215380292714986855}
+  - {fileID: 1227238048461579593}
+  - {fileID: 5630809913048292456}
+  - {fileID: 322093703052188927}
+  - {fileID: 6860757380782970433}
+  - {fileID: 1131688638027414419}
+  - {fileID: 7862514496245306224}
+  - {fileID: 1004629681777954168}
+  - {fileID: 9070492900275104512}
+  - {fileID: 4392152607507607354}
+  - {fileID: 463291985894663782}
+  - {fileID: 7501339237553575466}
+  - {fileID: 1071397300094798084}
+  - {fileID: 153829499825617394}
+  - {fileID: 6566818293210491577}
+  - {fileID: 8281174031867064496}
+  - {fileID: 5380644864512225496}
+  - {fileID: 8497734546108315142}
+  - {fileID: 2832062096146213548}
+  - {fileID: 1254094414777544398}
+  - {fileID: 6059151228429210782}
+  - {fileID: 8053501393651389068}
+  - {fileID: 8755182701382276588}
+  - {fileID: 5157848248820498636}
+  - {fileID: 4601147885377162596}
+  - {fileID: 2715801634202179533}
+  - {fileID: 3741091335087931138}
+  - {fileID: 6250587673658699246}
+  - {fileID: 635135851591614673}
+  - {fileID: 4156762016159882380}
+  - {fileID: 5687550702542309066}
+  - {fileID: 830316506609258293}
+  - {fileID: 6176066874977577203}
+  - {fileID: 3288825045447904594}
+  - {fileID: 437428076143358277}
+  - {fileID: 5792175600739928134}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 6290311576146677855}
+  m_AABB:
+    m_Center: {x: 0, y: 1.4, z: 0}
+    m_Extent: {x: 2, y: 2.5, z: 2}
+  m_DirtyAABB: 0
 --- !u!1 &6552318129271766764
 GameObject:
   m_ObjectHideFlags: 0
@@ -2084,37 +2157,6 @@ Transform:
   m_Children:
   - {fileID: 7501339237553575466}
   m_Father: {fileID: 6290311576146677855}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8699279754989338182
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7713681359021847526}
-  m_Layer: 0
-  m_Name: Blender character / Ember
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7713681359021847526
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8699279754989338182}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 470018042511016625}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8841875765352670238
 GameObject:

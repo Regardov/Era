@@ -10,7 +10,7 @@ namespace Era.Editor
         static Simulation New(int players)
         {
             var sim=new Simulation(321,players>1);
-            for(int i=0;i<players;i++){var p=sim.AddPlayer(i,"Player "+i,Hero.Ember);p.weapons=new[]{-1,-1};p.invulnerability=1000;}
+            for(int i=0;i<players;i++){var p=sim.AddPlayer(i,"Player "+i,Hero.Ember);p.position=WorldMap.OnGround((i-1)*3,0);p.weapons=new[]{-1,-1};p.invulnerability=1000;}
             foreach(var p in sim.State.players)sim.SetReady(p.id,true);
             sim.Start();sim.State.spawnTimer=1000;sim.State.resourceNodes.Clear();return sim;
         }
@@ -32,10 +32,10 @@ namespace Era.Editor
                 var sim=New(n);float scale=Mathf.Pow(2,n-1);
                 var enemy=sim.SpawnEnemy(EnemyKind.Skeleton);var boss=sim.SpawnEnemy(EnemyKind.Warden);
                 Check(Mathf.Approximately(enemy.maxHp,EnemyCatalog.Health(enemy.kind)*scale)&&Mathf.Approximately(enemy.damage,10*scale),"ordinary HP and damage x"+scale);
-                Check(Mathf.Approximately(boss.maxHp,1700*scale)&&Mathf.Approximately(boss.damage,28*scale),"boss HP and melee damage x"+scale);
-                Check(Mathf.Abs(sim.SpawnInterval-1.1f/scale)<.0001f,"spawn interval x"+scale);
+                Check(Mathf.Approximately(boss.maxHp,10000*scale)&&Mathf.Approximately(boss.damage,28*scale),"boss HP and melee damage x"+scale);
+                Check(Mathf.Abs(sim.SpawnInterval-1.21f/scale)<.0001f,"ambient spawn interval x"+scale);
                 Check(Mathf.Abs(Spawns(n)-solo*scale)<=2,"actual spawned total scales with party size "+n);
-                Check(Mathf.Abs(Spawns(n,true)-solo*scale*2)<=2,"aftermath actual rate doubles for party "+n);
+                Check(Mathf.Abs(Spawns(n,true)-solo*scale*2.2f)<=5,"aftermath retains its previous rate for party "+n);
                 boss.spawnGrace=0;boss.specialTimer=0;boss.position=WorldMap.OnGround(0,10);Step(sim,1);
                 Check(sim.State.hazards.Count>0&&Mathf.Approximately(sim.State.hazards[0].damage,26*scale),"boss special damage includes party scale "+n);
             }

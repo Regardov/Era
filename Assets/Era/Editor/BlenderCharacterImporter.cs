@@ -20,7 +20,7 @@ namespace Era.Editor
         [MenuItem("ERA/Import Blender character workshop")]
         public static void Prepare()
         {
-            string signature="Blender character workshop v16 / "+string.Join(" / ",Models.Select(n=>Hash(Input+n+".era-mesh.json")));
+            string signature="Blender character workshop v17 / "+string.Join(" / ",Models.Select(n=>Hash(Input+n+".era-mesh.json")));
             if(File.Exists(Marker)&&File.ReadAllText(Marker).Trim()==signature)return;
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             if(File.Exists(Library))AssetDatabase.DeleteAsset(Library);
@@ -65,7 +65,7 @@ namespace Era.Editor
                     AssetDatabase.AddObjectToAsset(mesh,library);
                     var part=new GameObject("Blender character / "+name);part.transform.SetParent(root.transform,false);
                     var surface=part.AddComponent<SkinnedMeshRenderer>();surface.sharedMesh=mesh;surface.sharedMaterial=material;surface.bones=bones;surface.rootBone=rig.hips;surface.localBounds=new Bounds(Vector3.up*1.4f,new Vector3(4,5,4));
-                    var metadata=root.GetComponent<AuthoredCharacter>()??root.AddComponent<AuthoredCharacter>();metadata.model=name;metadata.sourceHash=Hash(file);metadata.triangles=count/3;metadata.details=data.parts.Select(p=>p.name).ToArray();
+                    var metadata=root.GetComponent<AuthoredCharacter>()??root.AddComponent<AuthoredCharacter>();metadata.version=17;metadata.model=name;metadata.sourceHash=Hash(file);metadata.triangles=count/3;metadata.details=data.parts.Select(p=>p.name).ToArray();
                     rig.animationPlayer.enabled=true;
                     PrefabUtility.SaveAsPrefabAsset(root,PrefabPath(name));
                     Debug.Log("ERA_BLENDER_IMPORTED "+name+" / "+count/3+" triangles / "+data.parts.Length+" details");

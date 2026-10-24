@@ -126,6 +126,37 @@ Transform:
   - {fileID: 8680103184391930046}
   m_Father: {fileID: 5949537330495655607}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &744251919705020851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6825505197875420221}
+  m_Layer: 0
+  m_Name: Blender character / Stalker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6825505197875420221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744251919705020851}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9000756020112754471}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1437134220727218595
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +654,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6681775075465603079}
-  - component: {fileID: 1056316831785930941}
   m_Layer: 0
   m_Name: Blender character / Stalker
   m_TagString: Untagged
@@ -646,101 +676,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9000756020112754471}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &1056316831785930941
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3370482143357648991}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 4506998812148731335, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -3929417048468803928, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_Bones:
-  - {fileID: 6938249343188450596}
-  - {fileID: 5949537330495655607}
-  - {fileID: 7025933895069884438}
-  - {fileID: 2196493887884409067}
-  - {fileID: 3756862533641274654}
-  - {fileID: 8909852515870996297}
-  - {fileID: 4228527982912381416}
-  - {fileID: 461028529124443492}
-  - {fileID: 1206038290608091577}
-  - {fileID: 1588207209509024331}
-  - {fileID: 4916952246596847970}
-  - {fileID: 3406508580943075503}
-  - {fileID: 343607104989509589}
-  - {fileID: 7345409162417034986}
-  - {fileID: 8680103184391930046}
-  - {fileID: 4391951392304790290}
-  - {fileID: 1124244630620492852}
-  - {fileID: 5058456407289640385}
-  - {fileID: 7102671061613783052}
-  - {fileID: 6653186821016869869}
-  - {fileID: 2182914498348543914}
-  - {fileID: 6168882517204133693}
-  - {fileID: 585184883415223373}
-  - {fileID: 6836134651786124324}
-  - {fileID: 8819257709502775810}
-  - {fileID: 6164388737833730341}
-  - {fileID: 2029400406116674707}
-  - {fileID: 6643177384349283040}
-  - {fileID: 8543930637864780969}
-  - {fileID: 6227390734098038792}
-  - {fileID: 988922467353722171}
-  - {fileID: 7680240529271682781}
-  - {fileID: 1005929959818606622}
-  - {fileID: 7365909867936260328}
-  - {fileID: 2003929398273457781}
-  - {fileID: 1361932489912886764}
-  - {fileID: 7081454987119008852}
-  - {fileID: 7199163471449921661}
-  - {fileID: 5053902292640654071}
-  - {fileID: 452423036202011295}
-  - {fileID: 4464124340157414268}
-  - {fileID: 4419266029873370253}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 7025933895069884438}
-  m_AABB:
-    m_Center: {x: 0, y: 1.4, z: 0}
-    m_Extent: {x: 2, y: 2.5, z: 2}
-  m_DirtyAABB: 0
 --- !u!1 &3375520684959616894
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,37 +802,6 @@ Transform:
   m_Children:
   - {fileID: 6643177384349283040}
   m_Father: {fileID: 7345409162417034986}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4381141739361635081
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6844868322461408623}
-  m_Layer: 0
-  m_Name: Blender character / Stalker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6844868322461408623
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4381141739361635081}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9000756020112754471}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4390652753528079081
 GameObject:
@@ -1252,6 +1156,133 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4391951392304790290}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5901293427217016469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1925157204035185817}
+  - component: {fileID: 1048578576776587618}
+  m_Layer: 0
+  m_Name: Blender character / Stalker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1925157204035185817
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901293427217016469}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9000756020112754471}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &1048578576776587618
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901293427217016469}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: 6457506925084775946, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Bones:
+  - {fileID: 6938249343188450596}
+  - {fileID: 5949537330495655607}
+  - {fileID: 7025933895069884438}
+  - {fileID: 2196493887884409067}
+  - {fileID: 3756862533641274654}
+  - {fileID: 8909852515870996297}
+  - {fileID: 4228527982912381416}
+  - {fileID: 461028529124443492}
+  - {fileID: 1206038290608091577}
+  - {fileID: 1588207209509024331}
+  - {fileID: 4916952246596847970}
+  - {fileID: 3406508580943075503}
+  - {fileID: 343607104989509589}
+  - {fileID: 7345409162417034986}
+  - {fileID: 8680103184391930046}
+  - {fileID: 4391951392304790290}
+  - {fileID: 1124244630620492852}
+  - {fileID: 5058456407289640385}
+  - {fileID: 7102671061613783052}
+  - {fileID: 6653186821016869869}
+  - {fileID: 2182914498348543914}
+  - {fileID: 6168882517204133693}
+  - {fileID: 585184883415223373}
+  - {fileID: 6836134651786124324}
+  - {fileID: 8819257709502775810}
+  - {fileID: 6164388737833730341}
+  - {fileID: 2029400406116674707}
+  - {fileID: 6643177384349283040}
+  - {fileID: 8543930637864780969}
+  - {fileID: 6227390734098038792}
+  - {fileID: 988922467353722171}
+  - {fileID: 7680240529271682781}
+  - {fileID: 1005929959818606622}
+  - {fileID: 7365909867936260328}
+  - {fileID: 2003929398273457781}
+  - {fileID: 1361932489912886764}
+  - {fileID: 7081454987119008852}
+  - {fileID: 7199163471449921661}
+  - {fileID: 5053902292640654071}
+  - {fileID: 452423036202011295}
+  - {fileID: 4464124340157414268}
+  - {fileID: 4419266029873370253}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 7025933895069884438}
+  m_AABB:
+    m_Center: {x: 0, y: 1.4, z: 0}
+    m_Extent: {x: 2, y: 2.5, z: 2}
+  m_DirtyAABB: 0
 --- !u!1 &6031014552992092593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,8 +1444,9 @@ Transform:
   m_Children:
   - {fileID: 6938249343188450596}
   - {fileID: 3730570879272207974}
-  - {fileID: 6844868322461408623}
   - {fileID: 6681775075465603079}
+  - {fileID: 6825505197875420221}
+  - {fileID: 1925157204035185817}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!111 &1528562244242440105
@@ -1653,8 +1685,8 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: Stalker
-  sourceHash: a3b3f39255c475108c5df499264ebfe6165f31ed6c2ea426181f9c886ed4d758
-  version: 16
+  sourceHash: 8fe468364597a518c964522065a62cb449bfc00ae742a221d229cc4b42d68a53
+  version: 17
   triangles: 2268
   details:
   - Torso / tailored silhouette.002

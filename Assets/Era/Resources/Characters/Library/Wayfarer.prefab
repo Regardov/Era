@@ -503,37 +503,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1607618232011933442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2343135640845089911
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4945422705606995160}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4945422705606995160
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2343135640845089911}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12360679, y: 2.1414256, z: 0.38042262}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2476791878687944237
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,13 +601,14 @@ Transform:
   m_Children:
   - {fileID: 1607618232011933442}
   - {fileID: 3689731507456845647}
-  - {fileID: 2296513562287364483}
-  - {fileID: 4945422705606995160}
-  - {fileID: 1093132533939357422}
   - {fileID: 915283955347610918}
-  - {fileID: 6636187834619751908}
+  - {fileID: 6806513931715925299}
+  - {fileID: 7981194550375068558}
+  - {fileID: 7850369640128195659}
+  - {fileID: 6011793768892360902}
   - {fileID: 5310622047903849321}
   - {fileID: 5754546089784917372}
+  - {fileID: 2125001204808098919}
   - {fileID: 3982866857399769119}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -882,9 +852,9 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: Wayfarer
-  sourceHash: b04aa05f576627df69141431f916c111c9496ff5bd4aa4fe5b898b8539dff236
-  version: 16
-  triangles: 2256
+  sourceHash: 9312f0063fe9d49204337c1dd3f3c2d8b3c14befbb7edd21f0eea9c08e27547e
+  version: 17
+  triangles: 2466
   details:
   - Torso / tailored silhouette
   - Neck / weighted continuous bridge
@@ -949,17 +919,27 @@ MonoBehaviour:
   - Beard / carved lock.002
   - Beard / carved lock.003
   - Beard / carved lock.004
-  - Hair / sculpted lock 0
-  - Hair / sculpted lock 1
-  - Hair / sculpted lock 2
-  - Hair / sculpted lock 3
-  - Hair / sculpted lock 4
-  - Hair / sculpted lock 5
-  - Hair / sculpted lock 6
-  - Hair / sculpted lock 7
-  - Hair / sculpted lock 8
-  - Hair / sculpted lock 9
-  - Hair / sculpted lock 10
+  - Hair / continuous fitted scalp
+  - Hair / layered swept lock 0
+  - Hair / layered swept lock 1
+  - Hair / layered swept lock 2
+  - Hair / layered swept lock 3
+  - Hair / layered swept lock 4
+  - Hair / layered swept lock 5
+  - Hair / layered swept lock 6
+  - Hair / layered swept lock 7
+  - Hair / layered swept lock 8
+  - Hair / layered swept lock 9
+  - Hair / layered swept lock 10
+  - Hair / layered swept lock 11
+  - Hair / layered swept lock 12
+  - Hair / layered swept lock 13
+  - Hair / layered swept lock 14
+  - Hair / layered swept lock 15
+  - Hair / side swept fringe 0
+  - Hair / side swept fringe 1
+  - Hair / side swept fringe 2
+  - Hair / side swept fringe 3
   - Coat / cut panels and split hem
   - Cape / broad folded back silhouette
   - Coat / inset linen placket
@@ -991,7 +971,7 @@ MonoBehaviour:
   - Pouch / clasp
   - Coat / teal hem piping
   - Coat / teal hem piping.001
---- !u!1 &3186212852543140096
+--- !u!1 &3588898559366814377
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -999,7 +979,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1093132533939357422}
+  - component: {fileID: 7850369640128195659}
   m_Layer: 0
   m_Name: Halo jewel
   m_TagString: Untagged
@@ -1007,16 +987,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1093132533939357422
+--- !u!4 &7850369640128195659
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3186212852543140096}
+  m_GameObject: {fileID: 3588898559366814377}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.32360682, y: 2.1414256, z: 0.23511408}
+  m_LocalPosition: {x: -0.3236068, y: 2.1414256, z: -0.23511414}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1147,8 +1127,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 864241739397024569}
-  - {fileID: 5916949471991563889}
   - {fileID: 5313124541644830445}
+  - {fileID: 1382834038986255269}
   m_Father: {fileID: 1049585162364340362}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4217702761586670824
@@ -1176,7 +1156,7 @@ Transform:
   m_GameObject: {fileID: 4217702761586670824}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.39, y: 0.28, z: 0}
+  m_LocalPosition: {x: -0.39, y: 0.28, z: 0}
   m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1310,37 +1290,6 @@ Transform:
   m_Children:
   - {fileID: 1954325946507618920}
   m_Father: {fileID: 1049585162364340362}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4625288771717677315
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6636187834619751908}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6636187834619751908
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4625288771717677315}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12360685, y: 2.1414256, z: -0.3804226}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4651561512878041932
 GameObject:
@@ -1538,68 +1487,6 @@ Transform:
   - {fileID: 5800657438302088920}
   m_Father: {fileID: 3684568095341223204}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5980167361947828621
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2296513562287364483}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2296513562287364483
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5980167361947828621}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.4, y: 2.1414256, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6156975137500835655
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5916949471991563889}
-  m_Layer: 0
-  m_Name: Ivory shoulder mantle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5916949471991563889
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6156975137500835655}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.39, y: 0.28, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2775501819905439601}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6177960587166002052
 GameObject:
   m_ObjectHideFlags: 0
@@ -1779,7 +1666,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4506998812148731335, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1804,7 +1691,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -4531335862366406402, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Mesh: {fileID: -7408741463973511116, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_Bones:
   - {fileID: 1607618232011933442}
   - {fileID: 2269290624197403800}
@@ -1980,6 +1867,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2269290624197403800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6797233947710788259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7981194550375068558}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7981194550375068558
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6797233947710788259}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.32360682, y: 2.1414256, z: 0.23511408}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7121520703233563111
 GameObject:
   m_ObjectHideFlags: 0
@@ -2138,7 +2056,7 @@ Transform:
   m_GameObject: {fileID: 7555765275417264726}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3236068, y: 2.1414256, z: -0.23511414}
+  m_LocalPosition: {x: 0.4, y: 2.1414256, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2174,6 +2092,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6926592160256599497}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7721482020529778628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1382834038986255269}
+  m_Layer: 0
+  m_Name: Ivory shoulder mantle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1382834038986255269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7721482020529778628}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.39, y: 0.28, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2775501819905439601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7737436912177557535
 GameObject:
@@ -2404,6 +2353,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1607618232011933442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8587635705575979010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6806513931715925299}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6806513931715925299
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587635705575979010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12360679, y: 2.1414256, z: 0.38042262}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8629105261736695460
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2125001204808098919}
+  m_Layer: 0
+  m_Name: Blender character / Lumen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2125001204808098919
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629105261736695460}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8659752779977928283
 GameObject:
   m_ObjectHideFlags: 0
@@ -2466,6 +2477,37 @@ Transform:
   m_Children:
   - {fileID: 3684568095341223204}
   m_Father: {fileID: 2269290624197403800}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8716392197509675040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6011793768892360902}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6011793768892360902
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8716392197509675040}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12360685, y: 2.1414256, z: -0.3804226}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9088694286959662966
 GameObject:

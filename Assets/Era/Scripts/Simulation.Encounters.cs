@@ -7,7 +7,7 @@ namespace Era
     {
         void PopulateEncounters()
         {
-            State.bossStatuePosition=WorldMap.Resolve(WorldMap.OnGround(0,32),Vector3.zero,2);State.bossStatuePosition.y=WorldMap.Ground(State.bossStatuePosition);
+            State.bossStatuePosition=WorldMap.RandomClearLocation(random,4,State.playerSpawnPosition,45);
             State.resourceNodes.Clear();State.eliteShrines.Clear();
             for(int i=0;i<4;i++)
             {

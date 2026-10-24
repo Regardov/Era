@@ -217,11 +217,31 @@ class Character:
             self.ribbon('Moustache / parted',h+V((side*.008,.125,.188)),h+V((side*.12,.06,.165)),.055,'hair_light','head')
             self.panel('Beard / side plane',[h+V((side*.15,.12,.08)),h+V((side*.145,-.07,.11)),h+V((side*.04,-.22,.16)),h+V((side*.065,.02,.195))],'hair','head')
         for n in range(5):self.ribbon('Beard / carved lock',h+V(((n-2)*.033,.03,.204)),h+V(((n-2)*.017,-.185+abs(n-2)*.02,.157)),.012,'hair' if n%2 else 'cream','head')
-    def hair(self,elf=False):
-        h=self.p('head');mat='blond' if elf else 'hair'
-        for i in range(11):
-            a=TAU*i/11;start=h+V((math.cos(a)*.13,.32,math.sin(a)*.10));end=h+V((math.cos(a)*.18,.11 if math.sin(a)<0 else .20,math.sin(a)*.15))
-            self.mesh('Hair / sculpted lock '+str(i),[start+V((-.045,.045,0)),start+V((.045,.045,0)),end,start+V((0,.012,.035))],[(0,1,3),(0,3,2),(1,2,3),(0,2,1)],mat,'head',accents=['hair_light' if not elf else 'linen'])
+    def hair(self,elf=False,short=False):
+        h=self.p('head');mat='brown_dark' if short else 'blond' if elf else 'hair'
+        light='brown' if short else 'gold' if elf else 'hair_light'
+        # A continuous scalp covers the entire skull; locks add volume to this surface.
+        n=16;vertices=[]
+        for row,(y,rx,rz) in enumerate([(0,.178,.153),(.34,.184,.154),(.42,.122,.108),(.447,.012,.012)]):
+            for i in range(n):
+                a=TAU*i/n;front=max(0,math.sin(a));back=max(0,-math.sin(a))
+                yy=(.20+.095*front-(.055 if short else .10)*back) if row==0 else y
+                vertices.append(h+V((math.cos(a)*rx,yy,math.sin(a)*rz-.014)))
+        faces=[]
+        for row in range(3):
+            for i in range(n):a=row*n+i;b=row*n+(i+1)%n;faces.append((a,b,b+n,a+n))
+        faces.append(tuple(range(3*n,4*n)))
+        self.mesh('Hair / continuous fitted scalp',vertices,faces,mat,'head')
+        for i in range(n):
+            a=TAU*i/n;tangent=V((-math.sin(a),0,math.cos(a)))*(.027 if short else .035)
+            start=h+V((math.cos(a)*.15,.36,math.sin(a)*.13-.014))
+            y=.29 if math.sin(a)>.35 else (.18 if short else .07)
+            end=h+V((math.cos(a)*.19,y,math.sin(a)*.16-.014))
+            ridge=mix(start,end,.45)+V((math.cos(a)*.025,.007,math.sin(a)*.025))
+            self.mesh('Hair / layered swept lock '+str(i),[start-tangent,start+tangent,end-tangent*.4,end+tangent*.4,ridge],[(0,1,4),(1,3,4),(3,2,4),(2,0,4),(0,2,3,1)],light if i%5==1 else mat,'head')
+        for i in range(4):
+            x=(i-1.5)*.067
+            self.panel('Hair / side swept fringe '+str(i),[h+V((x-.04,.355,.142)),h+V((x+.025,.37,.149)),h+V((x+.057,.277,.15)),h+V((x+.019,.285,.167))],mat,'head',.018)
     def skirt(self,mat='green',bottom=.3,split=True):
         n=12;verts=[]
         for row,(y,rx,rz) in enumerate([(1.04,.25,.17),(.67,.32,.22),(bottom,.40,.29)]):
@@ -296,7 +316,7 @@ def ranger(c):
     for obj in c.parts[start:]:obj['display_only']=True
 
 def monk(c):
-    c.body('brown');c.face();c.skirt('brown',.31)
+    c.body('brown');c.face();c.hair(short=True);c.skirt('brown',.31)
     c.panel('Robe / diagonal ivory lapel',[(-.24,1.63,.17),(-.15,1.66,.20),(.25,1.14,.20),(.17,1.09,.218)],'linen')
     c.panel('Robe / broad overlapping wrap',[(.19,1.61,.17),(.29,1.56,.16),(-.19,1.04,.19),(-.25,1.08,.18)],'brown_light')
     c.ribbon('Harness / back left',(-.27,1.59,-.18),(.21,1.04,-.21),.07,'brown_dark')
@@ -336,7 +356,7 @@ def scholar(c):
     for side in (-1,1):c.ribbon('Coat / teal hem piping',(side*.30,.19,.24),(side*.30,.28,.25),.10,'teal_dark','hips')
 
 def dusk(c):
-    c.body('blue_dark');c.face(kind='shade');c.hood('blue',True);c.cape('blue',.12);c.skirt('blue',.22,True)
+    c.body('blue_dark');c.face(kind='shade');c.hair(short=True);c.hood('blue',True);c.cape('blue',.12);c.skirt('blue',.22,True)
     c.loft('Scarf / high shadow collar',[((0,1.62,.0),.21,.17),((0,1.75,.0),.23,.17)],'blue_dark','chest',8)
     for side in (-1,1):
         for layer in range(3):
@@ -493,6 +513,6 @@ for area in bpy.context.screen.areas if bpy.context.screen else []:
         area.spaces.active.shading.color_type='MATERIAL';area.spaces.active.overlay.show_overlays=False
         area.spaces.active.region_3d.view_distance=12;area.spaces.active.region_3d.view_location=(0,1.5,1)
 bpy.ops.object.select_all(action='DESELECT');CHARACTERS[4].arm.select_set(True);bpy.context.view_layer.objects.active=CHARACTERS[4].arm
-bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'ERA_Character_Workshop.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'ERA_Character_Workshop-v17.blend'))
 (SOURCE/'character-manifest.json').write_text(json.dumps({'blender':bpy.app.version_string,'characters':report},indent=2),encoding='utf-8')
 print('ERA_WORKSHOP_OK',flush=True)

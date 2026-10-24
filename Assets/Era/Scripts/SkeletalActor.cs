@@ -60,12 +60,7 @@ namespace Era
             takeoffTime=Mathf.Max(0,takeoffTime-Time.deltaTime);
             if(actionTime>0){actionTime-=Time.deltaTime;if(actionTime<=0&&upper.Length>0){animationPlayer.Blend(upper,0,.12f);upper="";}}
             crouch=Mathf.MoveTowards(crouch,wantsCrouch?1:0,Time.deltaTime*8);
-            if(crouch>.001f&&hips!=null)
-            {
-                hips.localPosition+=Vector3.down*(.22f*crouch);spine.localRotation*=Quaternion.Euler(16*crouch,0,0);
-                leftThigh.localRotation*=Quaternion.Euler(-65*crouch,0,0);rightThigh.localRotation*=Quaternion.Euler(-65*crouch,0,0);
-                leftKnee.localRotation*=Quaternion.Euler(130*crouch,0,0);rightKnee.localRotation*=Quaternion.Euler(130*crouch,0,0);
-            }
+            // Grounded crouching is solved after bind-length retargeting by HumanRigShape.
             if(heroPose&&hips!=null)
             {
                 spine.localRotation*=Quaternion.Euler(-slide*12,aimTwist*.65f,0);

@@ -50,6 +50,27 @@ namespace Era
         {for(int river=0;river<2;river++)if(Mathf.Abs(x-RiverCenter(z,river))<RiverWidth(z,river)+margin)return true;return false;}
         public static float Ground(Vector3 position) => Height(position.x, position.z);
         public static Vector3 OnGround(float x, float z) => new Vector3(x, Height(x,z), z);
+        public static bool ClearLocation(Vector3 point,float clearance)
+        {
+            if(new Vector2(point.x,point.z).magnitude>GameData.ArenaRadius-clearance-8||InWater(point.x,point.z,clearance))return false;
+            foreach(var prop in Props)
+                if(prop.kind!=2&&Vector2.Distance(new Vector2(point.x,point.z),new Vector2(prop.position.x,prop.position.z))<(prop.kind==0?.48f:.85f)*prop.size+clearance)return false;
+            for(int i=0;i<8;i++)
+            {float a=i*Mathf.PI/4;if(Mathf.Abs(Height(point.x+Mathf.Cos(a)*clearance,point.z+Mathf.Sin(a)*clearance)-point.y)>clearance*.22f)return false;}
+            return true;
+        }
+        public static Vector3 RandomClearLocation(System.Random random,float clearance,Vector3 avoid,float separation)
+        {
+            for(int attempt=0;attempt<1024;attempt++)
+            {
+                float a=(float)random.NextDouble()*Mathf.PI*2,r=Mathf.Sqrt((float)random.NextDouble())*(GameData.ArenaRadius-32);
+                var point=OnGround(Mathf.Cos(a)*r,Mathf.Sin(a)*r);
+                if(Vector3.Distance(point,avoid)>=separation&&ClearLocation(point,clearance))return point;
+            }
+            // The sanctuary is authored flat and clear; retain a safe fallback for future terrain.
+            foreach(var point in Landmarks)if(Vector3.Distance(point,avoid)>=separation&&ClearLocation(OnGround(point.x,point.z),clearance))return OnGround(point.x,point.z);
+            return OnGround(0,0);
+        }
         public static string Region(Vector3 p)
         {
             if (p.sqrMagnitude < 38*38) return "THE WAKING SANCTUARY";
@@ -101,7 +122,7 @@ namespace Era
             {
                 var v=positions[i];if(i>2){float a=(state.stage-1)*.63f;v=new Vector2(v.x*Mathf.Cos(a)-v.y*Mathf.Sin(a),v.x*Mathf.Sin(a)+v.y*Mathf.Cos(a));} var p=Resolve(OnGround(v.x,v.y),Vector3.zero,1);
                 p.y=Ground(p); int tier=i>4 && i%4==0 ? 1 : 0;
-                int baseCost=Mathf.RoundToInt((tier==1?35:12+(i%5)*2)*(1+.10f*(state.stage-1)));
+                int baseCost=Mathf.RoundToInt((tier==1?30:10+(i%5)*2)*(1+.10f*(state.stage-1)));
                 state.chests.Add(new ChestState { id=state.nextId++,position=p,baseCost=baseCost,cost=GameData.ChestPrice(baseCost,state.openedChests),tier=tier });
             }
         }

@@ -18,7 +18,7 @@ namespace Era.Editor
         {
             var sim = new Simulation(23,coop); sim.AddPlayer(0, "Искра", Hero.Ember);
             if (coop) {sim.AddPlayer(1, "Echo", Hero.Echo);sim.SetReady(0,true);sim.SetReady(1,true);}
-            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear(); return sim;
+            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear();foreach(var p in sim.State.players)p.position=WorldMap.OnGround((p.id-1)*3,0);return sim;
         }
         static void Step(Simulation sim, float seconds, Dictionary<int, InputFrame> inputs = null)
         {
@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
+            TuningAndRandomStarts();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -49,6 +49,36 @@ namespace Era.Editor
             Check(!float.IsNaN(p.position.x) && !float.IsInfinity(p.position.z), "invalid input sanitized");
             var input = new InputFrame { jump = true, dash = true, primary = true, secondary = true, choice = 2 };
             input.ConsumeEdges(); Check(!input.jump && !input.dash && !input.primary && !input.secondary && input.choice == -1, "input edges consumed");
+        }
+        static void TuningAndRandomStarts()
+        {
+            var starts=new HashSet<Vector3>();var statues=new HashSet<Vector3>();
+            for(int seed=0;seed<24;seed++)
+            {
+                var sim=new Simulation(900+seed,true);starts.Add(sim.State.playerSpawnPosition);statues.Add(sim.State.bossStatuePosition);
+                Check(WorldMap.ClearLocation(sim.State.playerSpawnPosition,5)&&WorldMap.ClearLocation(sim.State.bossStatuePosition,4),"random start and statue avoid water, steep ground and obstacles: "+seed);
+                Check(Vector3.Distance(sim.State.playerSpawnPosition,sim.State.bossStatuePosition)>=45,"boss statue requires exploration: "+seed);
+                for(int i=0;i<3;i++){var p=sim.AddPlayer(i,"Explorer",Hero.Ember);Check(Vector3.Distance(p.position,sim.State.playerSpawnPosition)<3&&!WorldMap.InWater(p.position.x,p.position.z,1),"party gathers at the safe random start: "+seed+" / "+i);}
+                var duplicate=new Simulation(900+seed,true);
+                Check(duplicate.State.playerSpawnPosition==sim.State.playerSpawnPosition&&duplicate.State.bossStatuePosition==sim.State.bossStatuePosition,"seed reproduces authoritative encounter positions: "+seed);
+                var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
+                Check(copy.playerSpawnPosition==sim.State.playerSpawnPosition&&copy.bossStatuePosition==sim.State.bossStatuePosition,"snapshot preserves random locations: "+seed);
+            }
+            Check(starts.Count==24&&statues.Count==24,"new runs vary both arrival and boss statue locations");
+            var xp=New(true);xp.GrantExperience(29);Check(xp.State.level==1&&xp.State.xp==29,"early XP no longer grants a level every two ordinary kills");
+            xp.GrantExperience(1);Check(xp.State.level==2&&xp.State.xp==0&&xp.State.xpRequired==44,"first level needs thirty XP and preserves its remainder");
+            xp.GrantExperience(45);Check(xp.State.level==3&&xp.State.xp==1&&xp.State.players.TrueForAll(p=>p.pendingLevels==2),"queued shared upgrades retain excess XP");
+            Check(GameData.ExperienceRequired(5)==110&&GameData.ExperienceRequired(10)==300&&GameData.ExperienceRequired(25)==1470,"later levels require progressively more combat");
+            var waves=New();float ambient=waves.SpawnInterval;waves.State.waveQuota=10;float wave=waves.SpawnInterval;
+            Check(Mathf.Abs(ambient/wave-1.1f)<.0001f&&Mathf.Abs(wave-1.1f)<.0001f,"only the ambient interval increases ten percent");
+            WorldMap.SetStage(1);
+            var env=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();Check(env!=null,"baked terrain exists for platform validation");
+            foreach(var filter in env.GetComponentsInChildren<MeshFilter>())if(filter.name=="Weathered stone dais")
+            {
+                float top=filter.GetComponent<Renderer>().bounds.max.y;var center=filter.transform.position;
+                for(int x=-3;x<=3;x++)for(int z=-3;z<=3;z++)if(x*x+z*z<=12)
+                    Check(top>WorldMap.Height(center.x+x,center.z+z)+.025f,"stone platform top clears terrain instead of sharing its depth");
+            }
         }
         static void Readiness()
         {
@@ -88,7 +118,7 @@ namespace Era.Editor
             a.position=chest.position+Vector3.right*20;Step(sim,4);Check(sim.State.loot.Count==1&&a.items[chest.reward]==0&&b.items[chest.reward]==0,"ground loot persists without automatic delivery");
             b.position=sim.State.loot[0].origin;Check(sim.TryCollectLoot(b)&&!sim.TryCollectLoot(a),"ally may claim chest loot and claim is atomic");
             Step(sim,.4f);Check(sim.State.loot.Count==0&&b.items[chest.reward]==1&&a.items[chest.reward]==0,"reward goes to the actual collector");
-            var second=sim.State.chests[1];a.position=second.position;Check(!sim.TryOpenChest(a)&&!second.opened,"insufficient gold leaves chest closed");
+            var second=sim.State.chests[1];sim.State.coins=after=second.cost-1;a.position=second.position;Check(!sim.TryOpenChest(a)&&!second.opened,"insufficient gold leaves chest closed");
             a.position=Vector3.zero;sim.State.pickups.Add(new PickupState{id=500,value=7,kind=PickupKind.Gold,position=Vector3.zero});Step(sim,.4f);
             Check(sim.State.coins==after+7&&sim.State.earnedCoins==7,"gold pickups credit team wallet");
             sim.State.pickups.Add(new PickupState{id=501,value=8,kind=PickupKind.Gold,position=Vector3.forward*30});
@@ -98,10 +128,10 @@ namespace Era.Editor
         static void ChestPricesAndAuraProgress()
         {
             var sim=New(true);var a=sim.State.Player(0);var b=sim.State.Player(1);var first=sim.State.chests[0];var second=sim.State.chests[1];
-            Check(first.baseCost==12&&first.cost==12&&second.cost==14,"first chest uses its original price");
-            a.position=first.position;Check(sim.TryOpenChest(a)&&sim.State.coins==18&&second.cost==24&&first.cost==12,"successful purchase multiplies remaining prices by five thirds rounded up, retaining the paid price");
-            b.position=second.position;Check(!sim.TryOpenChest(b)&&sim.State.openedChests==1&&second.cost==24,"failed purchase cannot increase the team price");
-            sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==976&&sim.State.openedChests==2&&sim.State.chests[2].cost==45,"ally pays the increased price and advances the same team counter");
+            Check(first.baseCost==10&&first.cost==10&&second.cost==12,"ordinary chest bases receive a modest discount");
+            a.position=first.position;Check(sim.TryOpenChest(a)&&sim.State.coins==20&&second.cost==20&&first.cost==10,"successful purchase multiplies remaining prices by five thirds rounded up, retaining the paid price");
+            sim.State.coins=19;b.position=second.position;Check(!sim.TryOpenChest(b)&&sim.State.openedChests==1&&second.cost==20,"failed purchase cannot increase the team price");
+            sim.State.coins=1000;Check(sim.TryOpenChest(b)&&sim.State.coins==980&&sim.State.openedChests==2&&sim.State.chests[2].cost==40,"ally pays the increased price and advances the same team counter");
             Check(!sim.TryOpenChest(b)&&sim.State.openedChests==2,"repeated interaction with an opened chest cannot advance prices");
             var boss=sim.SpawnEnemy(EnemyKind.Warden);sim.DamageEnemy(boss,a,99999999);a.position=sim.State.portal.position;
             Check(sim.TryUsePortal(a)&&sim.State.openedChests==2&&sim.State.chestsOpenedInStage==0&&sim.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,sim.State.openedChests)),"portal transition preserves price progression for the new realm");
@@ -207,7 +237,7 @@ namespace Era.Editor
             Check(sim.State.rewards.Exists(n=>n.kind==RewardKind.Blessing&&n.owner==a.id&&n.content==shrine.buff),"structured shrine reward includes buff description ID");
             int count=a.blessings[shrine.buff];Step(sim,6,commands);Check(a.blessings[shrine.buff]==count,"spent shrine cannot award again");
             shrine=sim.State.shrines[1];a.position=shrine.position;Step(sim,1,commands);a.downed=true;sim.Step(1f/30,commands);Check(shrine.charge==0&&shrine.owner==-1,"downed owner cannot keep charging");
-            var solo=New();var p=solo.State.Player(0);var s=solo.State.shrines[0];p.position=s.position;var held=new Dictionary<int,InputFrame>{{0,new InputFrame{revive=true}}};Step(solo,1,held);float charge=s.charge;solo.GrantExperience(12);Step(solo,1,held);Check(s.charge==charge,"solo level pause freezes shrine charge too");
+            var solo=New();var p=solo.State.Player(0);var s=solo.State.shrines[0];p.position=s.position;var held=new Dictionary<int,InputFrame>{{0,new InputFrame{revive=true}}};Step(solo,1,held);float charge=s.charge;solo.GrantExperience(GameData.ExperienceRequired(1));Step(solo,1,held);Check(s.charge==charge,"solo level pause freezes shrine charge too");
             var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.shrines.Count==12&&copy.shrines[0].spent&&copy.Player(0).blessings.Length==8,"snapshot includes shrine state and personal buffs");
         }
         static void Presentation()
@@ -307,7 +337,7 @@ namespace Era.Editor
             var sim=New();var p=sim.State.Player(0);p.qCooldown=5;p.weaponTimers[0]=5;
             var enemy=sim.SpawnEnemy(EnemyKind.Brute);enemy.position=p.position+Vector3.forward*9;
             sim.State.pickups.Add(new PickupState{id=700,position=p.position,kind=PickupKind.Gold,value=5});
-            sim.GrantExperience(31);float time=sim.State.elapsed;var position=p.position;var enemyPosition=enemy.position;float spawn=sim.State.spawnTimer;
+            sim.GrantExperience(GameData.ExperienceRequired(1)+GameData.ExperienceRequired(2));float time=sim.State.elapsed;var position=p.position;var enemyPosition=enemy.position;float spawn=sim.State.spawnTimer;
             Check(p.pendingLevels==2&&sim.UpgradePaused,"multiple solo levels queue their own choices");
             var input=new InputFrame{x=1,primary=true};var commands=new Dictionary<int,InputFrame>{{0,input}};Step(sim,2,commands);
             Check(sim.State.elapsed==time&&p.position==position&&enemy.position==enemyPosition,"solo upgrade freezes timer and all movement");
@@ -315,7 +345,7 @@ namespace Era.Editor
             input.choice=8;sim.Step(1f/30,commands);Check(sim.UpgradePaused&&p.pendingLevels==2,"invalid choice does not unpause solo");
             input.choice=0;input.primary=false;sim.Step(1f/30,commands);Check(sim.UpgradePaused&&p.pendingLevels==1&&sim.State.elapsed==time,"first choice keeps next queued level paused");
             sim.Step(1f/30,commands);Check(!sim.UpgradePaused&&p.pendingLevels==0&&sim.State.elapsed>time,"last valid choice resumes simulation");
-            sim=New(true);p=sim.State.Player(0);sim.GrantExperience(12);Step(sim,1,new Dictionary<int,InputFrame>{{0,new InputFrame{x=1}}});
+            sim=New(true);p=sim.State.Player(0);sim.GrantExperience(GameData.ExperienceRequired(1));Step(sim,1,new Dictionary<int,InputFrame>{{0,new InputFrame{x=1}}});
             Check(!sim.UpgradePaused&&sim.State.elapsed>.9f&&p.pendingLevels==1,"multiplayer keeps running while players choose");
             sim.State.players.RemoveAt(1);time=sim.State.elapsed;Step(sim,.5f);Check(!sim.UpgradePaused&&sim.State.elapsed>time,"host stays unpaused after companion disconnects");
         }
@@ -369,7 +399,7 @@ namespace Era.Editor
         static void Progression()
         {
             var sim = New(true); var a = sim.State.Player(0); var b = sim.State.Player(1);
-            sim.GrantExperience(12);
+            sim.GrantExperience(GameData.ExperienceRequired(1));
             Check(sim.State.level == 2 && a.pendingLevels == 1 && b.pendingLevels == 1, "shared XP levels both players");
             Check(a.offers.Length == 3 && a.offerRarities.Length==3 && new HashSet<int>(a.offers).Count == 3, "three unique attribute offers carry rarity rolls");
             Check(!sim.ChooseItem(a, 6), "invalid upgrade rejected");
@@ -401,9 +431,9 @@ namespace Era.Editor
             ally.position=lumen.position;sim.RefreshAuras();lumen.downed=true;sim.RefreshAuras();Check(ally.auraBonuses[0]==0&&Mathf.Abs(ally.maxHp-100)<.01f,"downed Lumen cannot buff allies");lumen.downed=false;
             sim.LearnAura(lumen,1);sim.LearnAura(lumen,2);sim.LearnAura(lumen,4);Check(!sim.LearnAura(lumen,5)&&Array.FindAll(lumen.auraLevels,n=>n>0).Length==5,"five-aura limit blocks learning a sixth type");
             int rank=lumen.auraLevels[0];Check(sim.LearnAura(lumen,0)&&lumen.auraLevels[0]==rank+1,"existing auras can always be improved");
-            sim.GrantExperience(12);Check(lumen.offerKind==RewardKind.Accessory,"Lumen receives an accessory on each level");sim.ChooseItem(lumen,0);
+            sim.GrantExperience(GameData.ExperienceRequired(1));Check(lumen.offerKind==RewardKind.Accessory,"Lumen receives an accessory on each level");sim.ChooseItem(lumen,0);
             Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==5,"Lumen also chooses among owned auras once five are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
-            int total=0;for(int level=2;level<26;level++)total+=12+(level-1)*7;sim.GrantExperience(total);
+            int total=0;for(int level=2;level<26;level++)total+=GameData.ExperienceRequired(level);sim.GrantExperience(total);
             bool milestone=false;int choices=0;while(ally.pendingLevels>0&&choices++<100)
             {
                 if(ally.offerKind==RewardKind.Weapon){milestone=ally.completedLevel+1==25;Check(ally.offers.Length==4&&Array.IndexOf(ally.offers,ally.weapons[0])<0,"level 25 offers four distinct non-starter weapons including sword");}
@@ -449,7 +479,7 @@ namespace Era.Editor
                 boss.position=WorldMap.OnGround(0,10);boss.specialTimer=0;boss.frozen=0;boss.spawnGrace=0;sim.Step(1f/30,new Dictionary<int,InputFrame>());
                 Check(sim.State.hazards.Count>0&&sim.State.hazards.TrueForAll(h=>h.delay>0&&h.style==stage),"boss attacks have stage-specific telegraphed hazards: "+stage);
                 var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.stage==stage&&copy.hazards.Count==sim.State.hazards.Count,"stage and boss hazards survive snapshot: "+stage);
-                sim.DamageEnemy(boss,a,999999);
+                sim.DamageEnemy(boss,a,99999999);
                 if(stage==7){Check(sim.State.phase==RunPhase.Victory&&!sim.State.portal.active,"only the seventh boss completes the campaign");break;}
                 Check(sim.State.phase==RunPhase.Playing&&sim.State.portal.active&&sim.State.postBossActive,"boss defeat opens a portal with an ongoing horde: "+stage);
                 var far=b.position;b.position=sim.State.portal.position+Vector3.right*20;Check(!sim.TryUsePortal(b)&&sim.State.stage==stage,"portal requires a nearby living player");
@@ -457,7 +487,7 @@ namespace Era.Editor
                 int level=sim.State.level,weapon=a.weapons[0],accessories=a.attributes[0];sim.ApplyAccessory(a,0,0);
                 Check(sim.TryUsePortal(b)&&sim.State.stage==stage+1&&sim.State.stageSerial==++serial,"any ally can move the party through a portal: "+stage);
                 Check(sim.State.level==level&&a.weapons[0]==weapon&&a.attributes[0]==accessories+1&&!c.downed&&!c.eliminated&&c.hp>0,"party transition preserves builds and restores fallen allies");
-                Check(sim.State.players.TrueForAll(p=>Vector3.Distance(p.position,Vector3.zero)<4)&&sim.State.chests.Count==GameData.ChestCount&&sim.State.shrines.Count==12&&sim.State.stageElapsed==0&&!sim.State.bossSpawned,"new stage resets enemies, treasure, clock and party positions");
+                Check(sim.State.players.TrueForAll(p=>Vector3.Distance(p.position,sim.State.playerSpawnPosition)<4)&&sim.State.chests.Count==GameData.ChestCount&&sim.State.shrines.Count==12&&sim.State.stageElapsed==0&&!sim.State.bossSpawned,"new stage resets encounters and gathers the party at its random arrival");
                 Check(!sim.TryUsePortal(b),"one interaction cannot skip two stages");
             }
             WorldMap.SetStage(1);
@@ -466,7 +496,7 @@ namespace Era.Editor
             var near=damage.SpawnEnemy(EnemyKind.Brute);near.position=lumen.position+Vector3.forward*5;near.hp=near.maxHp=1000;near.frozen=10;
             var outside=damage.SpawnEnemy(EnemyKind.Brute);outside.position=lumen.position+Vector3.forward*11;outside.hp=outside.maxHp=1000;outside.frozen=10;
             Step(damage,1.02f);Check(Mathf.Abs(near.hp-990)<.01f&&outside.hp==1000,"Lumen aura deals ten base damage per second only in its reduced radius");
-            damage.GrantExperience(12);damage.ChooseItem(lumen,0);Check(lumen.offerKind==RewardKind.Aura&&lumen.offers.Length==8&&Array.IndexOf(lumen.offers,0)>=0,"each Lumen level can upgrade the current aura or add a new type");
+            damage.GrantExperience(GameData.ExperienceRequired(1));damage.ChooseItem(lumen,0);Check(lumen.offerKind==RewardKind.Aura&&lumen.offers.Length==8&&Array.IndexOf(lumen.offers,0)>=0,"each Lumen level can upgrade the current aura or add a new type");
         }
         static void Endings()
         {
@@ -480,7 +510,7 @@ namespace Era.Editor
         }
         static void Serialization()
         {
-            var sim = New(true); sim.GrantExperience(12); sim.SpawnEnemy();sim.State.coins=100;sim.State.Player(0).position=sim.State.chests[0].position;sim.TryOpenChest(sim.State.Player(0));sim.State.level=25;sim.GiveWeapon(sim.State.Player(0),WeaponKind.Spear);
+            var sim = New(true); sim.GrantExperience(GameData.ExperienceRequired(1)); sim.SpawnEnemy();sim.State.coins=100;sim.State.Player(0).position=sim.State.chests[0].position;sim.TryOpenChest(sim.State.Player(0));sim.State.level=25;sim.GiveWeapon(sim.State.Player(0),WeaponKind.Spear);
             var copy = JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
             Check(copy.players.Count == 2 && copy.enemies.Count == 1 && copy.Player(1).offers.Length == 3 && copy.level == 25, "network snapshot roundtrip");
             Check(copy.multiplayer&&copy.loot.Count==1&&Array.IndexOf(copy.Player(0).weapons,(int)WeaponKind.Spear)>=0&&copy.Player(0).weaponLevels.Length==2&&copy.Player(0).accessories.Length==84&&copy.Player(0).auraLevels.Length==8,"snapshot carries accessory stacks, aura ranks, floor loot and two weapon slots");

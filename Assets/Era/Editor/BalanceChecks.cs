@@ -7,7 +7,7 @@ namespace Era.Editor
     {
         static int count;
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA balance check failed: "+label);}
-        static Simulation New(){var s=new Simulation(401);var p=s.AddPlayer(0,"Balance",Hero.Ember);p.weapons=new[]{-1,-1};p.critChance=0;s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();return s;}
+        static Simulation New(){var s=new Simulation(401);var p=s.AddPlayer(0,"Balance",Hero.Ember);p.position=WorldMap.OnGround(0,0);p.weapons=new[]{-1,-1};p.critChance=0;s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();return s;}
         static EnemyState Target(Simulation s,float z){var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=s.State.Player(0).position+Vector3.forward*z;e.hp=e.maxHp=1000000;e.frozen=100;return e;}
         static void Step(Simulation s,float time){for(int n=0;n<Mathf.CeilToInt(time*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
@@ -20,7 +20,7 @@ namespace Era.Editor
             Check(GameData.ChestPrice(25,int.MaxValue)==int.MaxValue,"geometric prices saturate without integer overflow");
             var s=New();Check(s.State.chests.Count==240,"four times as many ordinary-world chests");
             var p=s.State.Player(0);s.State.coins=10000;p.position=s.State.chests[0].position;s.TryOpenChest(p);
-            Check(s.State.chestsOpenedInStage==1&&s.State.openedChests==1&&s.State.chests[1].cost==24,"opening updates the shared realm progression");
+            Check(s.State.chestsOpenedInStage==1&&s.State.openedChests==1&&s.State.chests[1].cost==20,"opening updates the shared realm progression");
             var boss=s.SpawnEnemy(EnemyKind.Warden);s.DamageEnemy(boss,p,99999999);p.position=s.State.portal.position;s.TryUsePortal(p);
             Check(s.State.chestsOpenedInStage==0&&s.State.openedChests==1&&s.State.chests.TrueForAll(c=>c.cost==GameData.ChestPrice(c.baseCost,s.State.openedChests)),"travel keeps cumulative prices and total chest statistics");
         }
@@ -74,7 +74,8 @@ namespace Era.Editor
             for(int stage=1;stage<=7;stage++)
             {
                 s=New();s.State.stage=stage;WorldMap.SetStage(stage);var normal=s.SpawnEnemy(EnemyKind.Skeleton);var guardian=s.SpawnEnemy(EnemyKind.Warden);float scale=Mathf.Pow(1.5f,stage-1);
-                Check(Mathf.Abs(normal.maxHp-EnemyCatalog.Health(EnemyKind.Skeleton)*scale)<.01f&&Mathf.Abs(guardian.maxHp-1700*scale)<.02f,"normal and boss HP compound by 1.5 in realm "+stage);
+                float[] bossHp={10000,25000,50000,100000,200000,400000,800000};
+                Check(Mathf.Abs(normal.maxHp-EnemyCatalog.Health(EnemyKind.Skeleton)*scale)<.01f&&guardian.maxHp==bossHp[stage-1],"normal realm scaling and explicit boss HP for realm "+stage);
             }
             s=New();p=s.State.Player(0);p.goldGain=1.5f;var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=p.position+Vector3.forward*250;s.DamageEnemy(e,p,999999);
             Check(s.State.coins==36&&s.State.earnedCoins==6&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"distant kills credit gold immediately with the owner's multiplier");

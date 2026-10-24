@@ -24,7 +24,7 @@ namespace Era
             else if(stage==3&&age>5)
             {
                 App.Solo();App.Simulation.State.spawnTimer=1000;App.Simulation.State.coins=1000;
-                App.Simulation.GrantExperience(12);pausedTime=App.State.elapsed;pausedPosition=App.LocalPlayer.position;pauseStarted=Time.realtimeSinceStartup;stage++;
+                App.Simulation.GrantExperience(GameData.ExperienceRequired(1));pausedTime=App.State.elapsed;pausedPosition=App.LocalPlayer.position;pauseStarted=Time.realtimeSinceStartup;stage++;
             }
             else if(stage==4)
             {

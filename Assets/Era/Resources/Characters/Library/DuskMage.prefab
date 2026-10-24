@@ -1272,7 +1272,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4506998812148731335, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1297,7 +1297,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4632354502059698228, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Mesh: {fileID: 6601418818386593792, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_Bones:
   - {fileID: 6269902713287513408}
   - {fileID: 5166012348641064887}
@@ -1347,6 +1347,37 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 1.4, z: 0}
     m_Extent: {x: 2, y: 2.5, z: 2}
   m_DirtyAABB: 0
+--- !u!1 &6079227845379349120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8806501480408995267}
+  m_Layer: 0
+  m_Name: Blender character / Echo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8806501480408995267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6079227845379349120}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5930328106824408001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6143469801563616727
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,6 +1571,7 @@ Transform:
   - {fileID: 6269902713287513408}
   - {fileID: 4838128238241088940}
   - {fileID: 2540153672838789099}
+  - {fileID: 8806501480408995267}
   - {fileID: 2273532287962569513}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1783,9 +1815,9 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: DuskMage
-  sourceHash: 3effb9ceb34742256e6735023d68f5bda34c7b4bb682369e3e01505dda19498e
-  version: 16
-  triangles: 2136
+  sourceHash: 0f4e5735913c7cacfb1932e7fa98e17449b0e1860fcc3c9f9ccbf4bec794ec69
+  version: 17
+  triangles: 2390
   details:
   - Torso / tailored silhouette.001
   - Neck / weighted continuous bridge.001
@@ -1840,6 +1872,27 @@ MonoBehaviour:
   - Eye / iris.003
   - Brow / angled.003
   - Ear / rim.003
+  - Hair / continuous fitted scalp.001
+  - Hair / layered swept lock 0.001
+  - Hair / layered swept lock 1.001
+  - Hair / layered swept lock 2.001
+  - Hair / layered swept lock 3.001
+  - Hair / layered swept lock 4.001
+  - Hair / layered swept lock 5.001
+  - Hair / layered swept lock 6.001
+  - Hair / layered swept lock 7.001
+  - Hair / layered swept lock 8.001
+  - Hair / layered swept lock 9.001
+  - Hair / layered swept lock 10.001
+  - Hair / layered swept lock 11.001
+  - Hair / layered swept lock 12.001
+  - Hair / layered swept lock 13.001
+  - Hair / layered swept lock 14.001
+  - Hair / layered swept lock 15.001
+  - Hair / side swept fringe 0.001
+  - Hair / side swept fringe 1.001
+  - Hair / side swept fringe 2.001
+  - Hair / side swept fringe 3.001
   - Hood / polygon crown and back
   - Hood / thick face opening -1
   - Hood / bound face edge

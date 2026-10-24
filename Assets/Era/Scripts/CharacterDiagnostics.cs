@@ -33,9 +33,8 @@ namespace Era
             var shape=model.GetComponent<HumanRigShape>();var skeleton=model.GetComponent<SkeletalActor>();
             for(int i=0;i<shape.bones.Length;i++)shape.bones[i].localPosition=shape.originalLocalPositions[i];
             skeleton.animationPlayer.GetClip(clip).SampleAnimation(model,time);
-            if(crouch){skeleton.hips.localPosition+=Vector3.down*.22f;skeleton.spine.localRotation*=Quaternion.Euler(16,0,0);skeleton.leftThigh.localRotation*=Quaternion.Euler(-65,0,0);skeleton.rightThigh.localRotation*=Quaternion.Euler(-65,0,0);skeleton.leftKnee.localRotation*=Quaternion.Euler(130,0,0);skeleton.rightKnee.localRotation*=Quaternion.Euler(130,0,0);}
             shape.ApplyPose();
-            shape.PlantFeet(crouch?1:0);
+            shape.PlantFeet();shape.ApplyCrouch(crouch?1:0);
         }
         void LateUpdate()
         {
@@ -48,12 +47,20 @@ namespace Era
                 camera.transform.position=new Vector3(0,1.5f,5);camera.transform.LookAt(Vector3.up*1.25f);camera.orthographicSize=1.45f;
                 capture.Save(Path.Combine(folder,"character-"+Names[phase]+"-v016.png"),camera,()=>{});report.models++;
             }
-            else if(phase==7||phase==8)
+            else if(phase==7||phase==8||phase==9)
             {
-                for(int i=0;i<3;i++){var model=models[4+i];model.SetActive(true);model.transform.position=Vector3.right*(i-1)*1.5f;model.transform.rotation=Quaternion.identity;Pose(model,phase==7?"Running_A":"Idle",.18f,phase==8);}
+                for(int i=0;i<3;i++){var model=models[4+i];model.SetActive(true);model.transform.position=Vector3.right*(i-1)*1.5f;model.transform.rotation=Quaternion.Euler(0,phase==9?90:0,0);Pose(model,phase==7?"Running_A":"Idle",.18f,phase>=8);}
                 camera.transform.position=new Vector3(0,1.5f,6);camera.transform.LookAt(Vector3.up*1.15f);camera.orthographicSize=1.5f;
-                capture.Save(Path.Combine(folder,phase==7?"characters-running-v016.png":"characters-crouching-v016.png"),camera,()=>{});
-                if(phase==8)report.crouch=models[4].GetComponent<SkeletalActor>().leftKnee.localRotation.eulerAngles.x>80;
+                capture.Save(Path.Combine(folder,phase==7?"characters-running-v017.png":phase==8?"characters-crouching-v017.png":"characters-crouching-side-v017.png"),camera,()=>{});
+                if(phase==8)
+                {
+                    report.crouch=true;
+                    for(int i=4;i<7;i++)foreach(string side in new[]{"l","r"})
+                    {
+                        var actor=models[i].GetComponent<SkeletalActor>();var hip=actor.Bone("upperleg."+side).position;var knee=actor.Bone("lowerleg."+side).position;var foot=actor.Bone("foot."+side).position;
+                        report.crouch&=Vector3.Dot(Vector3.ProjectOnPlane(knee-hip,foot-hip),models[i].transform.forward)>.01f&&Mathf.Abs(models[i].transform.InverseTransformPoint(foot).y-.14f)<.005f;
+                    }
+                }
             }
             else
             {

@@ -5,7 +5,7 @@ namespace Era
     public sealed class AuthoredCharacter:MonoBehaviour
     {
         public string model,sourceHash;
-        public int version=16,triangles;
+        public int version=17,triangles;
         public string[] details;
     }
 }

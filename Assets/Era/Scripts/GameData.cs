@@ -217,7 +217,7 @@ namespace Era
     public sealed class WorldState
     {
         public RunPhase phase;
-        public int seed = 7341, wave = 1, level = 1, xp, xpRequired = 12, kills, nextId = 10;
+        public int seed = 7341, wave = 1, level = 1, xp, xpRequired = GameData.ExperienceRequired(1), kills, nextId = 10;
         public float elapsed, stageElapsed, spawnTimer, nextWave = 60;
         public int spawnCursor;
         public int stage = 1, stageSerial;
@@ -227,6 +227,7 @@ namespace Era
         public float postBossElapsed, enemyPartyScale = 1;
         public int postBossGrowthSteps;
         public Vector3 bossStatuePosition;
+        public Vector3 playerSpawnPosition;
         public int waveQuota,waveSpawned;
         public bool waveActive;
         public int coins = 30, earnedCoins, openedChests, chestsOpenedInStage;
@@ -361,6 +362,8 @@ namespace Era
         // S[n] = ceil(S[n-1] * 5/3). Round each step identically and saturate safely.
         public static int ChestPrice(int baseCost,int openedCount)
         {long price=Mathf.Max(1,baseCost);for(int n=0;n<Mathf.Max(0,openedCount)&&price<int.MaxValue;n++)price=System.Math.Min(int.MaxValue,(price*5+2)/3);return (int)price;}
+        public static int ExperienceRequired(int level)
+        {long n=Mathf.Clamp(level-1,0,100000);return (int)System.Math.Min(int.MaxValue,30+12*n+2*n*n);}
         public static float EvasionChance(float value)=>Mathf.Clamp(value,0,.95f);
         public static float CombineEvasion(float current,float gain)=>Mathf.Min(.95f,EvasionChance(current)+(1-EvasionChance(current))*Mathf.Clamp01(gain));
         public static int LifestealHealth(float chance)=>1+Mathf.CeilToInt(Mathf.Max(0,chance-1)/.5f);

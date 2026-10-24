@@ -44,7 +44,7 @@ namespace Era
                 var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(App.State));report.snapshot=copy.openedChests==1&&copy.chests[1].cost==59&&copy.Player(0).auraLevels[0]==3&&copy.Player(0).currentAura==0;
                 phase++;
             }
-            else if(phase==3&&age>6){App.Simulation.GrantExperience(12);App.Simulation.ChooseItem(App.LocalPlayer,0);report.choices=App.LocalPlayer.offerKind==RewardKind.Aura&&App.LocalPlayer.offers.Length==5;phase++;}
+            else if(phase==3&&age>6){App.Simulation.GrantExperience(GameData.ExperienceRequired(1));App.Simulation.ChooseItem(App.LocalPlayer,0);report.choices=App.LocalPlayer.offerKind==RewardKind.Aura&&App.LocalPlayer.offers.Length==5;phase++;}
             else if(phase==4&&age>7.5f){Shot("aura-choice-v09.png");phase++;}
             else if(phase==5&&age>9){App.Simulation.ChooseItem(App.LocalPlayer,Array.IndexOf(App.LocalPlayer.offers,0));App.Inventory=true;report.upgrades=GameData.AuraUpgradeCount(App.LocalPlayer,0);report.auras&=report.upgrades==3;phase++;}
             else if(phase==6&&age>10.5f){Shot("aura-inventory-v09.png");phase++;}

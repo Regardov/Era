@@ -27,10 +27,11 @@ namespace Era
             State.portal.active=false;State.bossSpawned=false;State.spawnTimer=0;State.chestsOpenedInStage=0;
             State.postBossActive=false;State.postBossElapsed=0;State.postBossGrowthSteps=0;
             State.enemies.Clear();State.projectiles.Clear();State.pickups.Clear();State.effects.Clear();State.hits.Clear();State.hazards.Clear();State.chests.Clear();State.loot.Clear();State.shrines.Clear();State.itemFields.Clear();
+            State.playerSpawnPosition=WorldMap.RandomClearLocation(random,5,Vector3.zero,30);
             WorldMap.PopulateChests(State);PopulateShrines();PopulateEncounters();
             foreach(var player in State.players)
             {
-                player.position=WorldMap.OnGround((player.id-1)*3,0);player.velocity=Vector3.zero;player.verticalSpeed=0;
+                player.position=PartySpawn(player.id);player.velocity=Vector3.zero;player.verticalSpeed=0;
                 player.downed=player.eliminated=false;player.grounded=true;player.crouching=false;player.bleedout=25;player.reviveProgress=0;player.chargingShrine=-1;
                 player.hp=player.maxHp;player.invulnerability=3;player.auraDamageTimer=0;
                 player.knockback=Vector3.zero;player.hitSlide=0;

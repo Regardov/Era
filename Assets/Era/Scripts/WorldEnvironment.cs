@@ -5,7 +5,7 @@ namespace Era
 {
     public sealed class WorldEnvironment : MonoBehaviour
     {
-        public const int CurrentVersion=17;
+        public const int CurrentVersion=18;
         public int bakedVersion,stage=1;
         public string mapName="Seven Realms / streams, rolling hills, old trees and living meadow";
         bool runtimeGenerated;
@@ -19,7 +19,10 @@ namespace Era
             {
                 var root=v.Group("Waystone sanctuary",landmarks,WorldMap.OnGround(point.x,point.z));
                 var stone=new Color(.38f,.43f,.43f);
-                v.Shape("Weathered stone dais",PrimitiveType.Cylinder,root,Vector3.down*.12f,new Vector3(7,.12f,7),stone);
+                // Keep the complete top above terrain, including the lowest tessellated edge.
+                float top=.04f;
+                for(int i=0;i<32;i++){float a=i*Mathf.PI/16;top=Mathf.Max(top,WorldMap.Height(point.x+Mathf.Cos(a)*3.5f,point.z+Mathf.Sin(a)*3.5f)-root.position.y+.04f);}
+                v.Shape("Weathered stone dais",PrimitiveType.Cylinder,root,Vector3.up*(top-.12f),new Vector3(7,.12f,7),stone);
                 for(int i=0;i<3;i++)
                 {
                     float a=i*Mathf.PI*2/3;var pos=new Vector3(Mathf.Cos(a)*3,1.1f,Mathf.Sin(a)*3);

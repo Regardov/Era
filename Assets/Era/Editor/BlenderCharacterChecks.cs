@@ -16,7 +16,8 @@ namespace Era.Editor
                 string resource=(name=="Stalker"||name=="Wisp"?"Creatures/":name=="Wayfarer"||name=="DuskMage"?"Characters/Library/":"Characters/")+name;
                 var source=Resources.Load<GameObject>(resource);Check(source!=null,"prefab exists: "+name);
                 var metadata=source.GetComponent<AuthoredCharacter>();var skin=source.GetComponentInChildren<SkinnedMeshRenderer>();var mesh=skin.sharedMesh;
-                Check(metadata!=null&&metadata.version==16&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
+                Check(metadata!=null&&metadata.version==17&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
+                if(name!="Stalker"&&name!="Wisp")Check(metadata.details.Any(d=>d.StartsWith("Hair / continuous fitted scalp")),"continuous hair covers the scalp: "+name);
                 Check(metadata.details.Length>=65&&metadata.triangles>=1500&&metadata.triangles<7000,"named costume details and bounded polygon budget: "+name);
                 Check(mesh.vertexCount==metadata.triangles*3&&mesh.vertexCount<60000&&mesh.colors.Length==mesh.vertexCount,"flat polygon surfaces carry their authored palette: "+name);
                 Check(mesh.bounds.min.y>=-.08f&&mesh.bounds.max.y>2&&mesh.bounds.max.y<3,"boots meet the floor and proportions stay human scale: "+name);
@@ -39,6 +40,18 @@ namespace Era.Editor
                     {
                         rig.PlantFeet();float lowest=Mathf.Min(root.transform.InverseTransformPoint(actor.Bone("foot.l").position).y,root.transform.InverseTransformPoint(actor.Bone("foot.r").position).y);
                         Check(Mathf.Abs(lowest-rig.footHeight)<.001f,"grounded stance keeps the lowest foot on its bind floor: "+name);
+                        foreach(string clipName in new[]{"Idle","Walking_A"})foreach(float t in new[]{0f,.18f,.36f})foreach(float blend in new[]{.25f,.5f,1f})
+                        {
+                            for(int i=0;i<rig.bones.Length;i++)rig.bones[i].localPosition=rig.originalLocalPositions[i];
+                            actor.animationPlayer.GetClip(clipName).SampleAnimation(root,t);rig.ApplyPose();rig.PlantFeet();rig.ApplyCrouch(blend);
+                            foreach(string side in new[]{"l","r"})
+                            {
+                                var hip=actor.Bone("upperleg."+side).position;var knee=actor.Bone("lowerleg."+side).position;var foot=actor.Bone("foot."+side).position;
+                                var line=foot-hip;var bend=Vector3.ProjectOnPlane(knee-hip,line);
+                                Check(Vector3.Dot(bend,root.transform.forward)>.01f,"crouch knee bends forward: "+name+" / "+clipName+" / "+side);
+                                if(blend==1)Check(Mathf.Abs(root.transform.InverseTransformPoint(foot).y-rig.footHeight)<.005f,"crouch ankle remains planted: "+name+" / "+side);
+                            }
+                        }
                     }
                 }
                 finally{Object.DestroyImmediate(baked);Object.DestroyImmediate(root);}

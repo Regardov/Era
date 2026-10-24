@@ -17,15 +17,15 @@ namespace Era
             third=Has("--smoke-client2");smoke=Has("--smoke-host")||Has("--smoke-client")||third;client=Has("--smoke-client")||third;
             if(smoke){I18n.Language=client?GameLanguage.Russian:GameLanguage.English;App.Address="127.0.0.1";App.PlayerName=third?"Lumen":client?"Willow":"Rowan";App.SelectedHero=third?Hero.Lumen:client?Hero.Echo:Hero.Ember;App.SelectedRelic=Relic.StormCompass;if(client)App.Join();else App.Host();}
             else if(Has("--capture-lumen")){App.BeginSelection(SessionMode.Solo);App.SelectedHero=Hero.Lumen;I18n.Language=GameLanguage.Russian;}
-            else if(Has("--capture-auras")){App.SelectedHero=Hero.Lumen;App.Solo();App.Simulation.GrantExperience(12);App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
-            else if(Has("--capture-milestone")){App.SelectedHero=Hero.Lumen;App.Solo();int xp=0;for(int level=1;level<25;level++)xp+=12+(level-1)*7;App.Simulation.GrantExperience(xp);int n=0;while(App.LocalPlayer.offerKind!=RewardKind.Weapon&&n++<100)App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
+            else if(Has("--capture-auras")){App.SelectedHero=Hero.Lumen;App.Solo();App.Simulation.GrantExperience(GameData.ExperienceRequired(1));App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
+            else if(Has("--capture-milestone")){App.SelectedHero=Hero.Lumen;App.Solo();int xp=0;for(int level=1;level<25;level++)xp+=GameData.ExperienceRequired(level);App.Simulation.GrantExperience(xp);int n=0;while(App.LocalPlayer.offerKind!=RewardKind.Weapon&&n++<100)App.Simulation.ChooseItem(App.LocalPlayer,0);I18n.Language=GameLanguage.Russian;}
             else if(Has("--capture-character")){App.BeginSelection(SessionMode.Solo);App.SelectedHero=Hero.Echo;}
             else if(Has("--capture-network"))App.Page=MenuPage.Connection;
             else if(Has("--capture-host-menu"))App.Page=MenuPage.HostLobby;
             else if(Has("--capture-join-menu"))App.Page=MenuPage.JoinLobby;
             else if(Has("--capture-inventory"))
             {App.Solo();var p=App.LocalPlayer;App.Simulation.ApplyAttribute(p,2,2);App.Simulation.ApplyAttribute(p,4,3);App.Simulation.ApplyAttribute(p,18,2);App.Simulation.ApplyItem(p,(int)ItemId.BeginnersLuck);App.Simulation.ApplyItem(p,(int)ItemId.IceCore);App.Simulation.ApplyItem(p,(int)ItemId.AngelWings);App.Inventory=true;}
-            else if(Has("--capture-upgrade")){App.Solo();App.Simulation.GrantExperience(12);}
+            else if(Has("--capture-upgrade")){App.Solo();App.Simulation.GrantExperience(GameData.ExperienceRequired(1));}
             else if(Has("--capture-roulette"))
             {App.Solo();App.State.coins=200;var p=App.LocalPlayer;App.Simulation.ApplyAttribute(p,18,3);p.position=App.State.chests[0].position;App.Simulation.TryOpenChest(p);}
         }
@@ -88,9 +88,9 @@ namespace Era
                 input.jumpHeld=s.elapsed<2.5f;
                 if(jumpSeen&&!jumpShot){Shot(client?"jump-client.png":"jump-host.png");jumpShot=true;}
                 if(s.elapsed>5&&!castIssued){input.primary=input.secondary=input.relic=input.dash=true;castIssued=true;}
-                if(!client&&s.elapsed>8&&!xpGranted){App.Simulation.GrantExperience(15);xpGranted=true;}
+                if(!client&&s.elapsed>8&&!xpGranted){App.Simulation.GrantExperience(GameData.ExperienceRequired(1));xpGranted=true;}
                 if(!client&&s.elapsed>18&&!milestoneGranted)
-                {int xp=s.xpRequired-s.xp;for(int level=s.level+1;level<26;level++)xp+=12+(level-1)*7;App.Simulation.GrantExperience(xp);milestoneGranted=true;}
+                {int xp=s.xpRequired-s.xp;for(int level=s.level+1;level<26;level++)xp+=GameData.ExperienceRequired(level);App.Simulation.GrantExperience(xp);milestoneGranted=true;}
                 if(me.pendingLevels>0)
                 {
                     if(pendingAt<0)pendingAt=s.elapsed;
