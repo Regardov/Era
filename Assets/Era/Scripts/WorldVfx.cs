@@ -22,6 +22,7 @@ namespace Era
     public sealed class ShrineVisual:MonoBehaviour
     {
         public Transform crystal,inner,outer;public LineRenderer circle;public Light lightSource;public bool announced;public Color color;
+        float charge,spent,clock;
         public static ShrineVisual Create(VisualFactory v,Transform parent,ShrineState s)
         {
             var root=v.Group("Ancient blessing shrine / "+s.style,parent,s.position);var result=root.gameObject.AddComponent<ShrineVisual>();result.color=s.style==0?new Color(.2f,.65f,1):s.style==1?new Color(.87f,.58f,.18f):new Color(.63f,.39f,.91f);
@@ -39,15 +40,16 @@ namespace Era
             result.outer=v.Ring("Outer seal",root,.85f,metal,.035f).transform;result.outer.localPosition=Vector3.up*2;result.outer.localRotation=Quaternion.Euler(25,0,70);
             result.circle=v.Ring("Channel progress circle",root,1.6f,result.color,.06f).GetComponent<LineRenderer>();result.circle.transform.localPosition=Vector3.up*.045f;
             var lamp=new GameObject("Shrine glow");lamp.transform.SetParent(root,false);lamp.transform.localPosition=Vector3.up*2;result.lightSource=lamp.AddComponent<Light>();result.lightSource.color=result.color;result.lightSource.range=6;result.lightSource.intensity=.8f;
-            result.announced=s.spent;SurfaceDetail.Apply(root);return result;
+            result.announced=s.spent;result.spent=s.spent?1:0;result.clock=s.id*.17f;SurfaceDetail.Apply(root);return result;
         }
         public void Present(ShrineState state,float time)
         {
-            float progress=state.charge/5;crystal.localPosition=Vector3.up*(2+Mathf.Sin(time*1.6f+state.id)*.12f+progress*.35f);crystal.localRotation=Quaternion.Euler(0,time*(35+progress*110),Mathf.Sin(time)*8);
-            crystal.localScale=Vector3.one*(state.spent?.28f:.75f+progress*.2f);inner.localRotation=Quaternion.Euler(65,time*48,0);outer.localRotation=Quaternion.Euler(time*19,0,70);
-            inner.gameObject.SetActive(!state.spent);outer.gameObject.SetActive(!state.spent);lightSource.intensity=state.spent?.12f:.8f+progress*2+Mathf.Sin(time*3)*.1f;
-            circle.startColor=circle.endColor=state.spent?new Color(.2f,.25f,.26f):Color.Lerp(color*.5f,Color.white,progress);circle.widthMultiplier=.04f+progress*.09f;
-            if(state.spent&&!announced){announced=true;SynthAudio.Instance?.Play(13);}
+            float dt=PresentationMotion.Delta;charge=PresentationMotion.Damp(charge,state.charge/5,10,dt);spent=PresentationMotion.Damp(spent,state.spent?1:0,5,dt);clock+=dt*(1+charge*2);
+            crystal.localPosition=Vector3.up*(2+Mathf.Sin(clock*1.6f)*.09f*(1-spent)+charge*.35f);crystal.localRotation=Quaternion.Euler(0,clock*35,Mathf.Sin(clock)*6);
+            crystal.localScale=Vector3.one*Mathf.Lerp(.75f+charge*.2f,.28f,spent);inner.localRotation=Quaternion.Euler(65,clock*48,0);outer.localRotation=Quaternion.Euler(clock*19,0,70);
+            inner.localScale=outer.localScale=Vector3.one*(1-spent);lightSource.intensity=Mathf.Lerp(.8f+charge*2,.12f,spent)*(.35f+.65f*PresentationMotion.Intensity);
+            circle.startColor=circle.endColor=Color.Lerp(Color.Lerp(color*.5f,Color.white,charge),new Color(.2f,.25f,.26f),spent);circle.widthMultiplier=.04f+charge*.09f;
+            if(state.spent&&!announced){announced=true;SynthAudio.Instance?.Play(13);PresentationFx.Emit(transform.position+Vector3.up*2,color,2.2f,FeedbackKind.Summon);}
         }
     }
 }

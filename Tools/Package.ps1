@@ -3,13 +3,13 @@ $projectPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $buildPath = Join-Path $projectPath 'Builds\Windows'
 if (-not (Test-Path -LiteralPath (Join-Path $buildPath 'Era.exe'))) { throw 'Build with Tools\Build.ps1 first' }
 # Only remove outdated documents from this generated build folder.
-foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md','RELEASE-v0.16.0.md','VALIDATION-v0.16.md')) {
+foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md','RELEASE-v0.16.0.md','VALIDATION-v0.16.md','RELEASE-v0.17.0.md','VALIDATION-v0.17.md')) {
     $eraOldPath = Join-Path $buildPath $eraOldDocument
     if (Test-Path -LiteralPath $eraOldPath) { Remove-Item -LiteralPath $eraOldPath }
 }
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
-foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.17.0.md','VALIDATION-v0.17.md')) {
+foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.18.0.md','VALIDATION-v0.18.md','ANIMATION-AUDIT-v0.18.md')) {
     $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }

@@ -7,7 +7,7 @@ namespace Era
     public sealed class RuntimeDiagnostics : MonoBehaviour
     {
         string[] args;string folder;float start;bool smoke,client,readyPressed,readySeen,jumpIssued,jumpSeen,castIssued,castsSeen,xpGranted,reported,lobbyShot,gameShot,jumpShot;
-        bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted;float pendingAt=-1;int exit,chosenOffer=-1;
+        bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted,fixtureReady;float pendingAt=-1;int exit,chosenOffer=-1;
         GameApp App=>GameApp.Instance;
         [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,secondWeapons,difficulty;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
         void Start()
@@ -63,6 +63,17 @@ namespace Era
             }
             if(s?.phase==RunPhase.Playing&&me!=null)
             {
+                if(!client&&!fixtureReady)
+                {
+                    // Random party spawns can be hundreds of metres from the original
+                    // fixed test objects. Keep real interactions inside the smoke-test window.
+                    s.chests[0].position=WorldMap.Resolve(me.position,Vector3.forward*4,1);
+                    s.chests[0].position=WorldMap.OnGround(s.chests[0].position.x,s.chests[0].position.z);
+                    s.shrines[0].position=WorldMap.Resolve(me.position,Vector3.back*5,2);
+                    s.shrines[0].position=WorldMap.OnGround(s.shrines[0].position.x,s.shrines[0].position.z);
+                    foreach(var player in s.players)player.invulnerability=999;
+                    fixtureReady=true;
+                }
                 if(me.qCooldown>0&&me.eCooldown>0&&me.relicCooldown>0)castsSeen=true;
                 if(!me.grounded&&me.position.y-WorldMap.Ground(me.position)>0.4f)jumpSeen=true;
                 if(me.crouching)crouchSeen=true;if(s.Player(0)?.chargingShrine>=0)channelSeen=true;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Era
 {
     [DefaultExecutionOrder(100)]
-    public sealed class GameHud : MonoBehaviour
+    public sealed partial class GameHud : MonoBehaviour
     {
         static readonly Color Ink=new Color(.94f,.92f,.84f),Muted=new Color(.61f,.68f,.70f),Panel=new Color(.055f,.085f,.11f,1),Soft=new Color(.12f,.18f,.22f,1),Sage=new Color(.89f,.74f,.42f),Peach=new Color(.26f,.36f,.40f),Lilac=new Color(.63f,.63f,.92f),Red=new Color(.85f,.15f,.21f),Blue=new Color(.19f,.59f,1);
         Font font;GUIStyle label,bold,field;Texture2D disc;FrameCapture capture;
@@ -25,6 +25,7 @@ namespace Era
         }
         void Update()
         {
+            TickPresentation();
             var s=App?.State;if(s==null){rewardQueue.Clear();seenRewards.Clear();return;}
             if(rewardSeed!=s.seed){rewardSeed=s.seed;rewardQueue.Clear();seenRewards.Clear();rewardClock=0;}
             foreach(var reward in s.rewards)if(reward.owner==App.LocalId&&seenRewards.Add(reward.id)){if(rewardQueue.Count==0)rewardClock=4.5f;rewardQueue.Enqueue(reward);}
@@ -42,21 +43,21 @@ namespace Era
         {
             if(App==null)return;if(!initialized)Init();scale=Mathf.Min(Screen.width/1600f,Screen.height/900f);
             var matrix=GUI.matrix;GUI.matrix=Matrix4x4.TRS(new Vector3((Screen.width-1600*scale)/2,(Screen.height-900*scale)/2),Quaternion.identity,Vector3.one*scale);
-            Draw();GUI.matrix=matrix;
+            try{Draw();}finally{GUI.matrix=matrix;}
         }
-        void Draw(){hoveredItem=-1;pendingTooltip=null;DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();if(capturing&&captureAttribute>=0)Tooltip(GameData.Attributes[captureAttribute].name+"\n"+StatHelp(captureAttribute),980,340);if(pendingTooltip!=null)DrawTooltip();if(capturing&&captureItem>=0)hoveredItem=captureItem;if(hoveredItem>=0)ItemTooltip(hoveredItem);}
+        void Draw(){drawAlpha=1;tooltipRequested=false;hoveredItem=-1;pendingTooltip=null;DrawPage();if(!App.InRun)LanguageToggle(1330,18);else if(!App.Inventory&&!App.Paused&&!App.UpgradeSelection)RewardToast();if(capturing&&captureAttribute>=0)Tooltip(GameData.Attributes[captureAttribute].name+"\n"+StatHelp(captureAttribute),980,340);if(capturing&&captureItem>=0)hoveredItem=captureItem;PresentTooltip();}
         void DrawPage()
         {
-            if(App.InRun){if(App.Inventory&&!App.Paused&&App.State.phase==RunPhase.Playing){Inventory();return;}HUD();if(App.State.phase==RunPhase.Victory || App.State.phase==RunPhase.Defeat)Results();else if(App.Paused)Settings(true);else if(App.LocalPlayer?.pendingLevels>0&&!App.LocalPlayer.downed&&!App.LocalPlayer.eliminated)Upgrades();return;}
-            if(App.Page==MenuPage.Catalogue){MenuCatalogue();return;}
-            if(App.Page==MenuPage.Characters){Characters();return;}
-            if(App.State!=null || App.Connecting){Lobby();return;}
-            if(App.Page==MenuPage.Connection)Connection();else if(App.Page==MenuPage.HostLobby)HostLobby();else if(App.Page==MenuPage.JoinLobby)JoinLobby();else if(App.Page==MenuPage.Settings)Settings(false);else Home();
+            if(App.InRun){if(App.Inventory&&!App.Paused&&App.State.phase==RunPhase.Playing){PageLayer(Inventory);return;}HUD();if(App.State.phase==RunPhase.Victory || App.State.phase==RunPhase.Defeat)PageLayer(Results);else if(App.Paused)PageLayer(PauseSettings);else if(App.LocalPlayer?.pendingLevels>0&&!App.LocalPlayer.downed&&!App.LocalPlayer.eliminated)PageLayer(Upgrades);return;}
+            if(App.Page==MenuPage.Catalogue){PageLayer(MenuCatalogue);return;}
+            if(App.Page==MenuPage.Characters){PageLayer(Characters);return;}
+            if(App.State!=null || App.Connecting){PageLayer(Lobby);return;}
+            if(App.Page==MenuPage.Connection)PageLayer(Connection);else if(App.Page==MenuPage.HostLobby)PageLayer(HostLobby);else if(App.Page==MenuPage.JoinLobby)PageLayer(JoinLobby);else if(App.Page==MenuPage.Settings)PageLayer(MenuSettings);else PageLayer(Home);
         }
         void Flat(float x,float y,float w,float h,Color c)
-        {if(w<=0||h<=0)return;if(capturing){capture.Rect(new Rect(x,y,w,h),c);return;}var old=GUI.color;GUI.color=c;GUI.DrawTexture(new Rect(x,y,w,h),Texture2D.whiteTexture);GUI.color=old;}
+        {if(w<=0||h<=0)return;c=WithAlpha(c);if(capturing){capture.Rect(new Rect(x,y,w,h),c);return;}var old=GUI.color;GUI.color=c;GUI.DrawTexture(new Rect(x,y,w,h),Texture2D.whiteTexture);GUI.color=old;}
         void Dot(float x,float y,float size,Color c)
-        {if(capturing){capture.Rect(new Rect(x,y,size,size),c,disc);return;}var old=GUI.color;GUI.color=c;GUI.DrawTexture(new Rect(x,y,size,size),disc);GUI.color=old;}
+        {c=WithAlpha(c);if(capturing){capture.Rect(new Rect(x,y,size,size),c,disc);return;}var old=GUI.color;GUI.color=c;GUI.DrawTexture(new Rect(x,y,size,size),disc);GUI.color=old;}
         void Box(float x,float y,float w,float h,Color c,float r=16)
         {
             if(w<=0||h<=0)return;
@@ -67,8 +68,8 @@ namespace Era
         void Text(string value,float x,float y,float w,float h,int size=20,Color? c=null,bool heavy=false,TextAnchor align=TextAnchor.UpperLeft)
         {
             value=I18n.T(value);var rect=new Rect(x,y,w,h);
-            if(capturing){capture.Text(value,rect,size,c??Ink,heavy,align);return;}
-            var block=HudTextLayout.Fit(font,value,size,w,h,heavy);var style=heavy?bold:label;style.fontSize=block.size;style.normal.textColor=c??Ink;
+            if(capturing){capture.Text(value,rect,size,WithAlpha(c??Ink),heavy,align);return;}
+            var block=HudTextLayout.Fit(font,value,size,w,h,heavy);var style=heavy?bold:label;style.fontSize=block.size;style.normal.textColor=WithAlpha(c??Ink);
             bool center=align==TextAnchor.UpperCenter||align==TextAnchor.MiddleCenter||align==TextAnchor.LowerCenter;
             bool right=align==TextAnchor.UpperRight||align==TextAnchor.MiddleRight||align==TextAnchor.LowerRight;
             style.alignment=center?TextAnchor.UpperCenter:right?TextAnchor.UpperRight:TextAnchor.UpperLeft;
@@ -78,12 +79,12 @@ namespace Era
             GUI.EndGroup();
         }
         void Icon(string name,float x,float y,float size)
-        {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),Color.white,texture);return;}var old=GUI.color;GUI.color=Color.white;GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
+        {var texture=IconLibrary.Get(name);if(texture==null)return;if(capturing){capture.Rect(new Rect(x,y,size,size),WithAlpha(Color.white),texture);return;}var old=GUI.color;GUI.color=WithAlpha(Color.white);GUI.DrawTexture(new Rect(x,y,size,size),texture);GUI.color=old;}
         void ItemIcon(int item,float x,float y,float size)
         {
             var texture=IconLibrary.ItemTexture(item);if(texture==null)return;
             var uv=IconLibrary.ItemUV(item);float height=size*uv.height*texture.height/(uv.width*texture.width);var rect=new Rect(x,y+(size-height)/2,size,height);
-            if(capturing)capture.Rect(rect,Color.white,texture,uv);else{var previous=GUI.color;GUI.color=Color.white;GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
+            if(capturing)capture.Rect(rect,WithAlpha(Color.white),texture,uv);else{var previous=GUI.color;GUI.color=WithAlpha(Color.white);GUI.DrawTextureWithTexCoords(rect,texture,uv);GUI.color=previous;}
         }
         void AttributeIcon(int attribute,float x,float y,float size)=>Icon(GameData.AccessoryIcons[attribute],x,y,size);
         void LanguageToggle(float x,float y)
@@ -91,14 +92,16 @@ namespace Era
         bool Button(string title,float x,float y,float w,float h,bool primary=false,bool enabled=true)
         {
             var rect=new Rect(x,y,w,h);bool hover=!capturing&&rect.Contains(Event.current.mousePosition)&&enabled;
-            Color color=!enabled?new Color(.09f,.12f,.14f,1):primary?new Color(.18f,.30f,.32f,1):new Color(.11f,.17f,.20f,1);if(hover)color=Color.Lerp(color,Color.white,.16f);
+            string motionKey="button/"+pageToken+"/"+x+"/"+y;float focus=capturing?0:hudMotion.Value(motionKey,hover?1:0,18,0),press=hudMotion.Read(motionKey+"/press");
+            Color color=!enabled?new Color(.09f,.12f,.14f,1):primary?new Color(.18f,.30f,.32f,1):new Color(.11f,.17f,.20f,1);color=Color.Lerp(color,Color.white,.14f*focus+.10f*press);
             Box(x,y,w,h,color,14);Text(title,x+16,y,w-32,h,18,enabled?Ink:Muted,true,TextAnchor.MiddleCenter);
-            if(capturing)return false;bool old=GUI.enabled;GUI.enabled=enabled;bool clicked=GUI.Button(rect,GUIContent.none,GUIStyle.none);GUI.enabled=old;if(clicked)SynthAudio.Instance?.Play(10);return clicked;
+            if(focus+press>.01f)Flat(x+12,y+h-3,(w-24)*Mathf.Max(focus,press),1,new Color(Sage.r,Sage.g,Sage.b,.7f*Mathf.Max(focus,press)));
+            if(capturing)return false;bool old=GUI.enabled;GUI.enabled=enabled&&old;bool clicked=GUI.Button(rect,GUIContent.none,GUIStyle.none);GUI.enabled=old;if(clicked){hudMotion.Pulse(motionKey+"/press");SynthAudio.Instance?.Play(10);}return clicked;
         }
         string Field(string value,float x,float y,float w,int max=40)
         {Box(x,y,w,46,Soft,12);if(capturing){Text(value,x+14,y+10,w-28,30);return value;}return GUI.TextField(new Rect(x,y,w,46),value,max,field);}
         void Bar(float x,float y,float w,float h,float progress,Color c)
-        {Flat(x,y,w,h,new Color(.025f,.035f,.045f,.9f));float f=w*Mathf.Clamp01(progress);if(f>0){Flat(x,y,f,h,c);Flat(x,y,f,Mathf.Min(2,h/3),Color.Lerp(c,Color.white,.35f));}}
+        {Flat(x,y,w,h,new Color(.025f,.035f,.045f,.9f));float smooth=capturing?progress:hudMotion.Value("bar/"+pageToken+"/"+x+"/"+y,progress,16);float f=w*Mathf.Clamp01(smooth);if(f>0){Flat(x,y,f,h,c);Flat(x,y,f,Mathf.Min(2,h/3),Color.Lerp(c,Color.white,.35f));}}
         void Brand(float x=90,float y=84){Text("E R A",x,y,500,100,73,Ink,true);Text("S T I L L W A T E R   R E A C H",x+3,y+111,500,28,14,Sage,true);}
         void Home()
         {
@@ -204,11 +207,11 @@ namespace Era
             var s=App.State;var p=App.LocalPlayer;if(p==null)return;
             Box(24,24,294,p.shield>0?112:86,Panel,16);Text(GameData.HeroName(p.hero),40,32,140,21,12,Sage,true);
             Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),174,32,126,21,14,Ink,true,TextAnchor.UpperRight);
-            Bar(40,63,260,13,p.hp/p.maxHp,Red);
+            HealthBar(40,63,260,13);
             if(p.shield>0){Icon("shield",40,81,20);Text(I18n.P("SHIELD ","ЩИТ ")+Mathf.CeilToInt(p.shield),67,82,233,19,13,Blue,true);Bar(40,104,260,5,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);}
             Text(I18n.P("2 weapon slots · second at Lv.25","2 слота оружия · второй на ур.25"),40,p.shield>0?115:85,260,21,11,Muted);
             Box(672,18,256,35,Panel,7);Text(I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,681,20,125,25,17,Ink,true,TextAnchor.MiddleLeft);
-            Text(s.xp+" / "+s.xpRequired+" XP",806,23,111,20,10,Muted,false,TextAnchor.MiddleRight);Bar(681,48,237,2,s.xp/(float)s.xpRequired,Blue);
+            Text(s.xp+" / "+s.xpRequired+" XP",806,23,111,20,10,Muted,false,TextAnchor.MiddleRight);Bar(681,48,237,2,capturing?s.xp/(float)s.xpRequired:xpFill,Color.Lerp(Blue,Ink,xpFlash));
             Text(Clock(Mathf.Ceil(CampaignData.Remaining(s.stageElapsed))),724,146,152,28,21,CampaignData.Remaining(s.stageElapsed)<60?Red:Ink,true,TextAnchor.UpperCenter);
             Box(1394,24,182,48,Panel,14);Icon("gold",1405,35,24);Text(s.coins.ToString(),1432,34,52,28,18,Ink,true);Icon("skull",1491,35,24);Text(s.kills.ToString(),1520,34,48,28,18,Ink,true);
             Box(1000,24,370,48,Panel);
@@ -276,9 +279,9 @@ namespace Era
             string icon=n.kind==RewardKind.Aura?GameData.AuraIcons[n.content]:n.kind==RewardKind.Accessory?GameData.AccessoryIcons[n.content]:n.kind==RewardKind.Weapon?GameData.Weapons[n.content].icon:n.kind==RewardKind.Blessing?GameData.BlessingIcons[n.content]:"";
             string title=n.kind==RewardKind.Aura?GameData.AuraName(n.content):n.kind==RewardKind.Accessory?GameData.AccessoryName(n.content):n.kind==RewardKind.Weapon?GameData.Weapons[n.content].name:n.kind==RewardKind.Blessing?GameData.BlessingName(n.content):GameData.Items[n.content].name;
             string description=n.kind==RewardKind.Aura?GameData.AuraDescription(n.content,App.LocalPlayer.auraLevels[n.content]):n.kind==RewardKind.Accessory?GameData.AccessoryDescription(n.content,n.rarity):n.kind==RewardKind.Weapon?GameData.Weapons[n.content].description:n.kind==RewardKind.Blessing?GameData.BlessingDescription(n.content):GameData.Items[n.content].description;
-            float y=650+Mathf.Max(0,rewardClock-4.25f)*70;Box(27,y,467,128,Panel);Flat(28,y+17,3,92,n.kind==RewardKind.Item?GameData.Items[n.content].color:Sage);if(n.kind==RewardKind.Item)ItemIcon(n.content,40,y+27,65);else Icon(icon,45,y+35,48);
+            float oldAlpha=drawAlpha;drawAlpha*=capturing?1:HudMotion.Envelope(4.5f-rewardClock,4.5f,.25f,.3f);float y=650+(1-HudMotion.EaseOut((4.5f-rewardClock)/.25f))*20;Box(27,y,467,128,Panel);Flat(28,y+17,3,92,n.kind==RewardKind.Item?GameData.Items[n.content].color:Sage);if(n.kind==RewardKind.Item)ItemIcon(n.content,40,y+27,65);else Icon(icon,45,y+35,48);
             Text(n.kind==RewardKind.Aura?GameData.AuraProgress(App.LocalPlayer,n.content):n.kind==RewardKind.Weapon?I18n.P("WEAPON ACQUIRED","ОРУЖИЕ ПОЛУЧЕНО"):n.kind==RewardKind.Blessing?I18n.P("BLESSING RECEIVED","БЛАГОСЛОВЕНИЕ"):I18n.P("ITEM ACQUIRED","ПРЕДМЕТ ПОЛУЧЕН"),109,y+11,370,19,10,Sage,true);
-            Text(title+(n.kind==RewardKind.Item&&n.quantity>1?" ×"+n.quantity:""),109,y+34,369,27,20,Ink,true);Text(description,109,y+71,360,48,14,Muted);Bar(39,y+121,443,2,rewardClock/4.5f,Sage);
+            Text(title+(n.kind==RewardKind.Item&&n.quantity>1?" ×"+n.quantity:""),109,y+34,369,27,20,Ink,true);Text(description,109,y+71,360,48,14,Muted);Bar(39,y+121,443,2,rewardClock/4.5f,Sage);drawAlpha=oldAlpha;
         }
         string Notice(WorldState s)
         {
@@ -357,23 +360,29 @@ namespace Era
         }
         void DamageNumbers(WorldState state)
         {
-            foreach(var hit in state.hits)
+            int drawn=0;
+            // Preserve critical/player feedback first; cap clutter in dense aura/chain damage.
+            for(int priority=0;priority<2;priority++)for(int i=state.hits.Count-1;i>=0&&drawn<40;i--)
             {
+                var hit=state.hits[i];bool important=hit.player||hit.critical||hit.evaded;if(important!=(priority==0))continue;
                 var point=Project(hit.position);if(point.z<=0||point.x<30||point.x>1570||point.y<50||point.y>790)continue;
-                float age=1-hit.life/.9f,x=point.x+((hit.id%5)-2)*12,y=point.y-age*62;
+                drawn++;
+                float age=1-hit.life/.9f,x=point.x+((hit.id%5)-2)*12,y=point.y-HudMotion.EaseOut(age)*62;
                 string value=hit.evaded?I18n.P("Evade!","Уклонился!"):Mathf.Max(1,Mathf.RoundToInt(hit.damage)).ToString()+(hit.critical?"!":"");
-                Color c=hit.evaded?GameData.Mint:hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=Mathf.Clamp01(hit.life*4);
+                Color c=hit.evaded?GameData.Mint:hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=HudMotion.Envelope(.9f-hit.life,.9f,.04f,.25f);
                 int size=hit.critical?28:21;Text(value,x-61,y+2,124,39,size,new Color(.03f,.04f,.06f,c.a),true,TextAnchor.UpperCenter);Text(value,x-62,y,124,39,size,c,true,TextAnchor.UpperCenter);
             }
         }
         void Ability(string key,string icon,string title,float cd,float duration,float x)
         {
             const float y=816;Box(x,y,49,49,Panel,12);Icon(icon,x+5,y+3,39);
+            float ready=capturing?0:hudMotion.Value("ready/"+key,cd<=0?1:0,10,cd<=0?1:0);
+            if(cd<=0&&ready<.99f)Flat(x+4,y+47,41,2,new Color(Sage.r,Sage.g,Sage.b,Mathf.Sin(ready*Mathf.PI)*.8f));
             if(cd>0){Box(x+3,y+3,43,43,new Color(.025f,.04f,.06f,.85f),9);Text(Mathf.CeilToInt(cd).ToString(),x,y+5,49,33,23,Ink,true,TextAnchor.MiddleCenter);Bar(x+7,y+44,35,2,1-cd/duration,Sage);}
             Text(key,x-1,y+54,51,18,key=="SHIFT"?9:11,Ink,true,TextAnchor.UpperCenter);
             if(!capturing&&new Rect(x,y,49,49).Contains(Event.current.mousePosition))Tooltip(title,x+25,y-42);
         }
-        void Tooltip(string title,float x,float y){pendingTooltip=title;tooltipPoint=new Vector2(x,y);}
+        void Tooltip(string title,float x,float y){tooltipRequested=true;pendingTooltip=title;tooltipPoint=new Vector2(x,y);}
         void DrawTooltip(){float h=pendingTooltip.Length>100?152:pendingTooltip.Length>55?100:54,x=Mathf.Clamp(tooltipPoint.x-190,20,1190),y=Mathf.Clamp(tooltipPoint.y,20,880-h);Box(x,y,390,h,Panel);Flat(x+2,y+2,3,h-4,Sage);Text(pendingTooltip,x+15,y+10,360,h-20,15,Ink,true);}
         void Minimap(WorldState s,float x,float y,float size)
         {
@@ -517,7 +526,7 @@ namespace Era
         {Text(name,x,y,310,26,16,Muted);Text(value,x+315,y,140,26,18,Ink,true,TextAnchor.UpperRight);Flat(x,y+35,455,1,new Color(.55f,.66f,.62f,.16f));}
         void Settings(bool paused)
         {
-            Flat(0,0,1600,900,new Color(.27f,.36f,.31f,.58f));Box(470,115,660,670,Panel,28);Text(paused?"Take a breath.":"Make yourself at home.",510,152,580,53,33,Ink,true);
+            Flat(0,0,1600,900,new Color(.27f,.36f,.31f,.58f));Box(470,90,660,760,Panel,28);Text(paused?"Take a breath.":"Make yourself at home.",510,152,580,53,33,Ink,true);
             Text(paused?(App.Online?"Your companion's world keeps moving.":"Your solo adventure is paused."):"A little music. A little magic.",512,222,576,42,20,Muted);
             Text("Music",513,304,574,28,20,Ink,true);if(!capturing)App.MusicVolume=GUI.HorizontalSlider(new Rect(513,353,574,24),App.MusicVolume,0,.7f);else Bar(513,353,574,6,App.MusicVolume/.7f,Sage);
             Text("Sound effects",513,402,574,28,20,Ink,true);if(!capturing)App.Volume=GUI.HorizontalSlider(new Rect(513,451,574,24),App.Volume,0,1);else Bar(513,451,574,6,App.Volume,Sage);
@@ -526,8 +535,9 @@ namespace Era
             if(Button(I18n.P("Windowed","Окно"),806,570,120,35,!Screen.fullScreen))App.SetFullscreen(false);
             if(Button(I18n.P("Fullscreen","Полный экран"),934,570,153,35,Screen.fullScreen))App.SetFullscreen(true);
             Text("Language",513,619,360,28,18,Ink,true);LanguageToggle(950,614);
-            if(Button(paused?"Keep wandering":"Save & return",512,664,576,48,true)){App.SavePreferences();if(paused)App.Paused=false;else App.Page=MenuPage.Home;}
-            if(paused&&Button("Return to main menu",512,730,576,40))App.ReturnToMenu();
+            Text(I18n.P("Visual effects","Интенсивность эффектов"),513,659,574,26,18,Ink,true);if(!capturing)PresentationMotion.Intensity=GUI.HorizontalSlider(new Rect(513,698,574,24),PresentationMotion.Intensity,0,1);
+            if(Button(paused?"Keep wandering":"Save & return",512,739,576,42,true)){App.SavePreferences();if(paused)App.Paused=false;else App.Page=MenuPage.Home;}
+            if(paused&&Button("Return to main menu",512,792,576,36))App.ReturnToMenu();
         }
         void Results()
         {

@@ -34,7 +34,7 @@ namespace Era
             for(int r=0;r<rings;r++)for(int s=0;s<sides;s++)
             {if(r>0)AddFace(vertices,tris,Point(r,s),Point(r+1,s),Point(r,s+1));if(r<rings-1)AddFace(vertices,tris,Point(r,s+1),Point(r+1,s),Point(r+1,s+1));}
             var mesh=new Mesh{name=name+" / faceted"};mesh.SetVertices(vertices);mesh.SetTriangles(tris,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
-            var go=new GameObject(name);go.transform.SetParent(parent,false);go.transform.localPosition=pos;go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
+            var go=new GameObject(name);go.transform.SetParent(parent,false);go.transform.localPosition=pos;go.AddComponent<MeshFilter>().sharedMesh=mesh;if(Application.isPlaying)go.AddComponent<OwnedVisualResource>().mesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
         }
         public GameObject Bone(string name,Transform parent,Vector3 pos,Vector3 scale,Color color)
             => Shape(name,PrimitiveType.Capsule,parent,pos,scale,color);
@@ -56,7 +56,7 @@ namespace Era
                 tris.Add(v);tris.Add(v+1);tris.Add(v+2);
             }
             mesh.SetVertices(verts);mesh.SetTriangles(tris,0);mesh.RecalculateNormals();
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;if(Application.isPlaying)go.AddComponent<OwnedVisualResource>().mesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
         }
         public GameObject Rock(string name,Transform parent,Vector3 pos,Vector3 scale,Color color,int seed)
         {
@@ -83,12 +83,13 @@ namespace Era
             }
             var mesh=new Mesh{name=name};mesh.SetVertices(vertices);mesh.SetTriangles(triangles,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
             var go=new GameObject(name);go.transform.SetParent(parent,false);go.transform.localPosition=pos;go.transform.localScale=scale;
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;if(Application.isPlaying)go.AddComponent<OwnedVisualResource>().mesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=Material(color);return go;
         }
         static void AddFace(List<Vector3> vertices,List<int> triangles,Vector3 a,Vector3 b,Vector3 c)
         {
             int at=vertices.Count;vertices.Add(a);vertices.Add(b);vertices.Add(c);triangles.Add(at);triangles.Add(at+1);triangles.Add(at+2);
         }
+        public void Dispose(){foreach(var m in materials.Values)if(m!=null)Object.Destroy(m);materials.Clear();}
         public void Branch(Transform parent,Vector3 from,Vector3 to,float width,Color color)
         {
             var delta=to-from;var go=Shape("Branch",PrimitiveType.Cylinder,parent,(from+to)/2,new Vector3(width,delta.magnitude/2,width),color);

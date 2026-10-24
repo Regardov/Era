@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            TuningAndRandomStarts();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
+            TuningAndRandomStarts();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");

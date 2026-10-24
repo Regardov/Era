@@ -36,12 +36,12 @@ namespace Era
         }
         void Update()
         {
-            if(bones==null||GameApp.Instance?.WorldPaused==true)return;
+            if(bones==null||GameApp.Instance?.WorldPaused==true||GetComponent<SkeletalActor>()?.PoseFrozen==true)return;
             for(int i=0;i<bones.Length;i++)bones[i].localPosition=originalLocalPositions[i];
         }
         void LateUpdate()
         {
-            if(bones==null||GameApp.Instance?.WorldPaused==true)return;
+            if(bones==null||GameApp.Instance?.WorldPaused==true||GetComponent<SkeletalActor>()?.PoseFrozen==true)return;
             ApplyPose();
             var actor=GetComponent<SkeletalActor>();
             if(plantFeet&&actor?.GroundedPose==true){PlantFeet();ApplyCrouch(actor.CrouchBlend);}

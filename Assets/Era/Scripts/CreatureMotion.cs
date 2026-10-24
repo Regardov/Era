@@ -61,34 +61,111 @@ namespace Era
             for(int s=-1;s<=1;s+=2)
             {v.Ellipsoid("Eye socket",body,new Vector3(s*spread,y,z),new Vector3(0.16f,0.20f,0.06f),new Color(0.17f,0.23f,0.24f));v.Ellipsoid("Eye light",body,new Vector3(s*spread,y,z+0.035f),new Vector3(0.055f,0.085f,0.025f),new Color(0.98f,0.78f,0.56f),true);}
         }
-        public void Pose(float time,bool frozen,float windup)
+        bool poseBound,dying;
+        float motionPhase,idleTime,moveBlend,windupMax,previousWindup,recoveryBlend,freezeTime,spawnMax;
+        Quaternion bodyRotation;
+        Quaternion[] limbRotations;
+        Vector3[] limbPositions;
+        Vector3 impactDirection;
+        ActorMotionProfile profile;
+        Transform secondary,headJoint;
+        Quaternion secondaryRotation,headRotation;
+        public float MovementBlend=>moveBlend;
+        public float AttackPreparation{get;private set;}
+        public float AttackRecovery=>recoveryBlend;
+        void BindPose()
         {
-            if(skeletal!=null)return;
-            if(frozen){body.localRotation=Quaternion.Euler(0,0,4);return;}
-            hit=Mathf.Max(0,hit-Time.unscaledDeltaTime*6);
-            float phase=time*(kind==EnemyKind.Stalker?14:5)+GetInstanceID()%15;
-            body.localPosition=Vector3.up*(kind==EnemyKind.Wisp?0.16f+Mathf.Sin(phase)*0.13f:Mathf.Abs(Mathf.Sin(phase))*0.055f);
-            body.localRotation=Quaternion.Euler(windup>0?-18:-hit*12,0,Mathf.Sin(phase)*2);
-            body.localScale=baseScale*(1+hit*.035f);
-            for(int i=0;i<limbs.Count;i++)limbs[i].localRotation=Quaternion.Euler(Mathf.Sin(phase+i*Mathf.PI)* (kind==EnemyKind.Wisp?12:27),0,kind==EnemyKind.Wisp?Mathf.Cos(phase+i)*10:0);
-        }
-        public void CombatPose(EnemyState enemy,float time)
-        {
-            if(skeletal!=null)return;
-            if(enemy.frozen>0||enemy.spawnGrace>0)return;
-            hit=Mathf.Max(0,hit-Time.unscaledDeltaTime*6);
-            float phase=time*(EnemyCatalog.Flying(kind)?13:kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime?5:6)+enemy.id;
-            float charge=enemy.meleeWindup>0?1-enemy.meleeWindup/Mathf.Max(.01f,enemy.attackDuration):0;
-            float strike=enemy.recovery>0?Mathf.Clamp01(enemy.recovery/.42f):0;
-            bool gel=kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime;
-            body.localPosition=basePosition+Vector3.up*(gel?Mathf.Max(0,Mathf.Sin(phase))*.18f:Mathf.Abs(Mathf.Sin(phase))*.05f);
-            body.localScale=Vector3.Scale(baseScale,gel?new Vector3(1-Mathf.Sin(phase)*.13f,1+Mathf.Sin(phase)*.2f,1-Mathf.Sin(phase)*.13f):new Vector3(1+hit*.03f,1-charge*.08f,1+hit*.03f));
-            body.localRotation=Quaternion.Euler(-charge*22+strike*26-hit*12,enemy.attackStyle==0?charge*-25+strike*35:0,Mathf.Sin(phase)*2);
-            foreach(var limb in limbs)
+            if(poseBound||body==null)return;
+            profile=ActorMotionProfile.For(kind);baseScale=body.localScale;basePosition=body.localPosition;bodyRotation=body.localRotation;
+            limbRotations=new Quaternion[limbs.Count];limbPositions=new Vector3[limbs.Count];
+            for(int i=0;i<limbs.Count;i++){limbRotations[i]=limbs[i].localRotation;limbPositions[i]=limbs[i].localPosition;}
+            foreach(var part in body.GetComponentsInChildren<Transform>(true))
             {
-                bool wing=limb.name.StartsWith("Wing"),arm=limb.name.StartsWith("Arm"),left=limb.name.EndsWith("-1");float side=left?-1:1;
-                limb.localRotation=wing?Quaternion.Euler(0,0,side*(Mathf.Sin(phase)*35-charge*30)):arm?Quaternion.Euler(enemy.meleeWindup>0?-50-charge*85:enemy.recovery>0?strike*75:Mathf.Sin(phase+(left?0:Mathf.PI))*18,charge*side*12,side*charge*18):Quaternion.Euler(Mathf.Sin(phase+(left?Mathf.PI:0))*22,0,0);
+                if(part.name=="Plume tail")secondary=part;
+                if(part.name=="Skull joint"||part.name=="Heavy head")headJoint=part;
             }
+            if(secondary!=null)secondaryRotation=secondary.localRotation;if(headJoint!=null)headRotation=headJoint.localRotation;
+            idleTime=(GetInstanceID()&255)*.03125f;motionPhase=idleTime;poseBound=true;
         }
+        public void Hit(Vector3 direction)
+        {
+            if(dying||GameApp.Instance?.WorldPaused==true)return;
+            impactDirection=transform.InverseTransformDirection(direction.sqrMagnitude>.001f?direction.normalized:-transform.forward);
+            hit=1;skeletal?.Hit(direction);
+        }
+        public void FreezePose(float duration)
+        {freezeTime=Mathf.Max(freezeTime,Mathf.Clamp(duration,0,.045f));skeletal?.FreezePose(duration);}
+        public void Die()
+        {
+            if(dying)return;dying=true;
+            if(skeletal!=null){skeletal.Die();return;}
+            BindPose();CorpseFade.Begin(gameObject,profile.death,body,limbs,false);enabled=false;
+        }
+        public void Present(EnemyState enemy,float speed)
+        {
+            if(dying)return;
+            if(skeletal!=null){skeletal.Enemy(enemy,speed);return;}
+            BindPose();if(!poseBound||enemy.frozen>0||GameApp.Instance?.WorldPaused==true)return;
+            float dt=ActorMotionMath.Delta;if(dt<=0)return;
+            if(freezeTime>0){freezeTime=Mathf.Max(0,freezeTime-dt);return;}
+            idleTime+=dt;hit=Mathf.Max(0,hit-dt*5.5f);
+            float remaining=Mathf.Max(enemy.meleeWindup,enemy.windup);
+            if(remaining>previousWindup+.02f)windupMax=enemy.meleeWindup>0?Mathf.Max(enemy.attackDuration,remaining):remaining;
+            if(previousWindup>0&&remaining<=0)recoveryBlend=1;
+            previousWindup=remaining;
+            AttackPreparation=ActorMotionMath.Anticipation(remaining,windupMax);
+            recoveryBlend=Mathf.Max(ActorMotionMath.Recovery(enemy.recovery,enemy.attackStyle==3?.8f:.42f),Mathf.Max(0,recoveryBlend-dt/(enemy.kind==EnemyKind.Warden?.72f:.42f)));
+            float desired=remaining>0||enemy.recovery>0||enemy.spawnGrace>0?0:Mathf.Clamp01(speed/Mathf.Max(.1f,EnemyCatalog.Speed(kind)));
+            moveBlend=ActorMotionMath.Damp(moveBlend,desired,10,dt);
+            bool flying=EnemyCatalog.Flying(kind),gel=kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime;
+            motionPhase+=dt*profile.cadence*(flying?1:Mathf.Lerp(.12f,1,moveBlend));
+            float step=Mathf.Sin(motionPhase),breath=Mathf.Sin(idleTime*profile.breath),prep=AttackPreparation,strike=recoveryBlend;
+            float impact=ActorMotionMath.Ease(hit),weight=profile.weight;
+            if(enemy.spawnGrace>0)spawnMax=Mathf.Max(spawnMax,enemy.spawnGrace);
+            float arrival=spawnMax>0?1-ActorMotionMath.Ease(1-enemy.spawnGrace/spawnMax):0;
+            float bob=flying?step*profile.bob:gel?Mathf.Max(0,step)*profile.bob*moveBlend:(Mathf.Abs(step)-.4f)*profile.bob*moveBlend;
+            var offset=new Vector3(-impactDirection.x*impact*.035f,bob+breath*.008f*(1-moveBlend)-prep*.055f*weight-arrival*.13f,-prep*.035f+strike*.045f-impactDirection.z*impact*.035f);
+            body.localPosition=basePosition+offset;
+            float pitch=-prep*(18+weight*9)+strike*(22+weight*12)-impactDirection.z*impact*10;
+            float yaw=enemy.attackStyle==0?-prep*23+strike*30:0;
+            float roll=step*profile.sway*moveBlend-impactDirection.x*impact*9;
+            if(flying){pitch+=moveBlend*9;roll+=Mathf.Sin(idleTime*1.7f)*1.5f;}
+            body.localRotation=bodyRotation*Quaternion.Euler(pitch,yaw,roll);
+            if(gel)
+            {
+                float stretch=step*moveBlend*.13f+breath*.015f-prep*.17f+strike*.12f-impact*.08f;
+                body.localScale=Vector3.Scale(baseScale,new Vector3(1-stretch*.55f,1+stretch,1-stretch*.55f));
+            }
+            else body.localScale=Vector3.Scale(baseScale,new Vector3(1+impact*.016f+prep*.012f,1-prep*.025f-impact*.022f,1+impact*.016f+prep*.012f));
+            for(int i=0;i<limbs.Count;i++)
+            {
+                var limb=limbs[i];if(limb==null)continue;
+                bool wing=limb.name.StartsWith("Wing"),arm=limb.name.StartsWith("Arm"),petal=limb.name.StartsWith("Trailing"),paw=limb.name.StartsWith("Paw");
+                bool left=limb.name.EndsWith("-1")||limb.localPosition.x<0;float side=left?-1:1;
+                float gait=Mathf.Sin(motionPhase+(left?Mathf.PI:0)),swing=gait*profile.stride*moveBlend;
+                Vector3 angles;
+                if(wing)
+                {
+                    float flap=Mathf.Sin(motionPhase+(kind==EnemyKind.Gargoyle?.18f:0));
+                    angles=new Vector3(prep*-12+strike*16,0,side*(flap*(kind==EnemyKind.Bat?42:28)-prep*34+strike*20));
+                }
+                else if(petal)angles=new Vector3(Mathf.Sin(idleTime*2.7f+i*.9f)*10-moveBlend*10,0,Mathf.Cos(idleTime*2.2f+i)*7);
+                else if(paw)angles=new Vector3(Mathf.Sin(motionPhase+(i==0||i==3?0:Mathf.PI))*34*moveBlend-prep*14+strike*15,0,0);
+                else if(arm)
+                {
+                    float raised=enemy.attackStyle==2?100:enemy.attackStyle==3?130:left?50:85;
+                    angles=new Vector3(-swing*.72f-prep*raised+strike*(enemy.attackStyle==2?-20:62),prep*side*12,side*(breath*1.2f+prep*(enemy.attackStyle==2?32:15)));
+                }
+                else angles=new Vector3(swing-prep*6,0,-side*prep*3);
+                limb.localRotation=limbRotations[i]*Quaternion.Euler(angles);
+                // Foot lift is limited to the authored joint hierarchy; collision roots stay untouched.
+                limb.localPosition=limbPositions[i]+(arm||wing||petal?Vector3.zero:Vector3.up*Mathf.Max(0,-gait)*.035f*moveBlend);
+            }
+            if(secondary!=null)secondary.localRotation=secondaryRotation*Quaternion.Euler(Mathf.Sin(idleTime*2.2f)*4+moveBlend*8,Mathf.Sin(motionPhase-.55f)*moveBlend*16,Mathf.Sin(idleTime*1.4f)*3);
+            if(headJoint!=null)headJoint.localRotation=headRotation*Quaternion.Euler(-pitch*.32f,Mathf.Sin(idleTime*.8f)*1.5f*(1-moveBlend),-roll*.45f);
+        }
+        public void Pose(float time,bool frozen,float windup)
+        {Present(new EnemyState{kind=kind,frozen=frozen?1:0,windup=windup},0);}
+        public void CombatPose(EnemyState enemy,float time){Present(enemy,enemy.speed);}
     }
 }
