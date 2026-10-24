@@ -63,6 +63,9 @@ namespace Era
             }
             if(s?.phase==RunPhase.Playing&&me!=null)
             {
+                // This scenario measures replication and progression, not survival. Dash
+                // applies its own short invulnerability, so refresh the fixture each frame.
+                if(!client)foreach(var player in s.players)player.invulnerability=999;
                 if(!client&&!fixtureReady)
                 {
                     // Random party spawns can be hundreds of metres from the original

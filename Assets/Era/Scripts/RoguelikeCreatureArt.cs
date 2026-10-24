@@ -26,6 +26,11 @@ namespace Era
         }
         static void Eyes(VisualFactory v,Transform head,float y,float z,float spread,Color light)
         {for(int side=-1;side<=1;side+=2){v.Facet("Deep eye socket",head,new Vector3(side*spread,y,z),new Vector3(.09f,.075f,.04f),Dark,10,5);v.Facet("Eye ember",head,new Vector3(side*spread,y,z+.032f),new Vector3(.025f,.03f,.018f),light,8,4);}}
+        static void HoldWeapon(VisualFactory v,Transform arm,WeaponKind kind,Vector3 palm,float scale=1)
+        {
+            var weapon=WeaponVisuals.Create(v,arm,kind);weapon.transform.localScale=Vector3.one*scale;var points=weapon.GetComponent<WeaponGripPoints>();
+            weapon.transform.localPosition=palm-(points!=null?Vector3.Scale(points.primary.localPosition,weapon.transform.localScale):Vector3.zero);
+        }
         static void Undead(VisualFactory v,CreatureMotion m,EnemyKind kind)
         {
             bool revenant=kind==EnemyKind.Revenant,mage=kind==EnemyKind.Necromancer,archer=kind==EnemyKind.SkeletonArcher;
@@ -49,13 +54,13 @@ namespace Era
                 var leg=Joint(v,m,"Leg / "+side,new Vector3(side*.18f,.83f,0));Segment(v,leg,"Femur",Vector3.zero,new Vector3(0,-.37f,.04f),.075f,bone);v.Facet("Knee",leg,new Vector3(0,-.37f,.055f),Vector3.one*.07f,bone);Segment(v,leg,"Tibia",new Vector3(0,-.38f,.02f),new Vector3(0,-.72f,0),.055f,bone);v.Facet("Foot bones",leg,new Vector3(0,-.77f,.09f),new Vector3(.08f,.045f,.16f),bone);
                 if(revenant){v.Facet("Shoulder plate",arm,new Vector3(0,-.02f,0),new Vector3(.21f,.14f,.22f),Iron);v.Facet("Knee plate",leg,new Vector3(0,-.35f,.10f),new Vector3(.12f,.12f,.06f),Iron);}
             }
-            if(revenant){v.Facet("Armored breastplate",m.body,new Vector3(0,1.28f,.1f),new Vector3(.34f,.33f,.19f),Iron);v.Shape("Tattered tabard",PrimitiveType.Cube,m.body,new Vector3(0,.85f,.23f),new Vector3(.28f,.58f,.035f),Leather);WeaponVisuals.Create(v,m.limbs[2],WeaponKind.Sword).transform.localPosition=new Vector3(.1f,-.7f,.1f);}
-            if(archer){var sword=WeaponVisuals.Create(v,m.limbs[0],WeaponKind.Sword);sword.transform.localPosition=new Vector3(-.08f,-.56f,.17f);sword.transform.localScale=Vector3.one*.7f;v.Facet("Round buckler",m.body,new Vector3(.38f,1.25f,.2f),new Vector3(.23f,.28f,.06f),Iron);}
+            if(revenant){v.Facet("Armored breastplate",m.body,new Vector3(0,1.28f,.1f),new Vector3(.34f,.33f,.19f),Iron);v.Shape("Tattered tabard",PrimitiveType.Cube,m.body,new Vector3(0,.85f,.23f),new Vector3(.28f,.58f,.035f),Leather);HoldWeapon(v,m.limbs[2],WeaponKind.Sword,new Vector3(.11f,-.70f,.10f));}
+            if(archer){HoldWeapon(v,m.limbs[0],WeaponKind.Sword,new Vector3(-.11f,-.70f,.10f),.7f);v.Facet("Round buckler",m.body,new Vector3(.38f,1.25f,.2f),new Vector3(.23f,.28f,.06f),Iron);}
             if(mage)
             {
                 v.Cone("Layered necromancer robe",m.body,new Vector3(0,.12f,0),.53f,1.3f,new Color(.17f,.10f,.24f),16);
                 v.Cone("Ragged cowl",head,new Vector3(0,.12f,-.04f),.3f,.4f,new Color(.17f,.10f,.24f),12);
-                var staff=WeaponVisuals.Create(v,m.limbs[2],WeaponKind.LightningStaff);staff.transform.localPosition=new Vector3(.1f,-.68f,.1f);staff.transform.localScale=Vector3.one*.85f;
+                HoldWeapon(v,m.limbs[2],WeaponKind.LightningStaff,new Vector3(.11f,-.70f,.10f),.85f);
                 for(int n=0;n<4;n++)v.Facet("Soul charm",m.body,new Vector3(Mathf.Cos(n*1.6f)*.28f,1.42f,Mathf.Sin(n*1.6f)*.2f),Vector3.one*.055f,Glow);
             }
         }
@@ -98,7 +103,7 @@ namespace Era
             }
             v.Facet("Hide belt",m.body,new Vector3(0,.89f,.025f),new Vector3(.69f,.16f,.49f),Leather);v.Shape("Belt buckle",PrimitiveType.Cube,m.body,new Vector3(0,.9f,.52f),new Vector3(.23f,.19f,.045f),Iron);
             for(int n=0;n<7;n++){float a=n*Mathf.PI*2/7;v.Facet("Hide skirt panel",m.body,new Vector3(Mathf.Cos(a)*.46f,.64f,Mathf.Sin(a)*.35f),new Vector3(.21f,.25f,.12f),Leather*(n%2==0?1:.8f),8,4);}
-            if(shaman){var staff=WeaponVisuals.Create(v,m.limbs[2],WeaponKind.LightningStaff);staff.transform.localPosition=new Vector3(.2f,-1,.1f);v.Cone("Bone ritual crown",head,new Vector3(0,.25f,0),.39f,.45f,Bone,9);}
+            if(shaman){HoldWeapon(v,m.limbs[2],WeaponKind.LightningStaff,new Vector3(.23f,-.94f,.16f));v.Cone("Bone ritual crown",head,new Vector3(0,.25f,0),.39f,.45f,Bone,9);}
             else{var club=v.Group("Crusher club",m.limbs[2],new Vector3(.23f,-.94f,.16f));Segment(v,club,"Club haft",Vector3.zero,Vector3.up*1.1f,.08f,Leather);v.Facet("Stone club head",club,Vector3.up*1.12f,new Vector3(.35f,.45f,.28f),Iron,12,7);}
         }
         static void Wings(VisualFactory v,CreatureMotion m,Color color,float scale)

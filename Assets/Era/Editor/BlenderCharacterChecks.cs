@@ -16,11 +16,13 @@ namespace Era.Editor
                 string resource=(name=="Stalker"||name=="Wisp"?"Creatures/":name=="Wayfarer"||name=="DuskMage"?"Characters/Library/":"Characters/")+name;
                 var source=Resources.Load<GameObject>(resource);Check(source!=null,"prefab exists: "+name);
                 var metadata=source.GetComponent<AuthoredCharacter>();var skin=source.GetComponentInChildren<SkinnedMeshRenderer>();var mesh=skin.sharedMesh;
-                Check(metadata!=null&&metadata.version==17&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
+                Check(metadata!=null&&metadata.version==19&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
                 if(name!="Stalker"&&name!="Wisp")Check(metadata.details.Any(d=>d.StartsWith("Hair / continuous fitted scalp")),"continuous hair covers the scalp: "+name);
                 Check(metadata.details.Length>=65&&metadata.triangles>=1500&&metadata.triangles<7000,"named costume details and bounded polygon budget: "+name);
-                Check(mesh.vertexCount==metadata.triangles*3&&mesh.vertexCount<60000&&mesh.colors.Length==mesh.vertexCount,"flat polygon surfaces carry their authored palette: "+name);
+                Check(mesh.vertexCount==metadata.triangles*3&&mesh.vertexCount<60000&&mesh.colors.Length==mesh.vertexCount,"smooth low-poly surfaces carry their authored palette: "+name);
                 Check(mesh.bounds.min.y>=-.08f&&mesh.bounds.max.y>2&&mesh.bounds.max.y<3,"boots meet the floor and proportions stay human scale: "+name);
+                Check(mesh.normals.Length==mesh.vertexCount&&mesh.normals.All(n=>n.sqrMagnitude>.98f&&n.sqrMagnitude<1.02f),"authored unit normals preserved: "+name);
+                Check(mesh.GetBlendShapeIndex("Grip.r")>=0&&mesh.GetBlendShapeIndex("StrideClearance")>=0,"hand and cloth shape keys: "+name);
                 Check(mesh.bindposes.Length==skin.bones.Length&&mesh.boneWeights.All(w=>w.boneIndex0<skin.bones.Length&&w.boneIndex1<skin.bones.Length&&Mathf.Abs(w.weight0+w.weight1-1)<.001f),"all skin weights bind to real animation bones: "+name);
                 Check(mesh.boneWeights.Any(w=>w.weight0>.1f&&w.weight1>.1f),"neck and cloth use blended skinning: "+name);
                 Check(mesh.vertices.All(v=>!float.IsNaN(v.x)&&!float.IsInfinity(v.y))&&mesh.colors.All(c=>c.a>.99f),"finite geometry and opaque materials: "+name);

@@ -392,6 +392,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7446607796428106592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2360578141258434085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6419748447412258337}
+  m_Layer: 0
+  m_Name: Blender character / Echo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6419748447412258337
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2360578141258434085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5930328106824408001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2377524038825422757
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,6 +641,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2005765046979372083}
+  - {fileID: 1148780116252427698}
   m_Father: {fileID: 5409608192178094701}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3299447191557547686
@@ -642,6 +674,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6269902713287513408}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3316245211945230679
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6126621144264184738}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6126621144264184738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3316245211945230679}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5000001, y: -0.5000002, z: 0.4999997, w: -0.5000001}
+  m_LocalPosition: {x: 0.05499996, y: 0.07500017, z: 0.015000129}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5317638460062955559}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3366957780832487588
 GameObject:
@@ -1116,6 +1179,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1495887538755041205}
+  - {fileID: 6126621144264184738}
   m_Father: {fileID: 615875254470326678}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5043301078406519352
@@ -1272,7 +1336,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  - {fileID: -8465586628019521445, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1297,7 +1361,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 6601418818386593792, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Mesh: {fileID: 8893041129387490686, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_Bones:
   - {fileID: 6269902713287513408}
   - {fileID: 5166012348641064887}
@@ -1347,37 +1411,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 1.4, z: 0}
     m_Extent: {x: 2, y: 2.5, z: 2}
   m_DirtyAABB: 0
---- !u!1 &6079227845379349120
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8806501480408995267}
-  m_Layer: 0
-  m_Name: Blender character / Echo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8806501480408995267
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6079227845379349120}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5930328106824408001}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6143469801563616727
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,7 +1581,11 @@ GameObject:
   - component: {fileID: 4899793953516363287}
   - component: {fileID: 5546623723249302349}
   - component: {fileID: 2901052113149635391}
-  m_Layer: 0
+  - component: {fileID: 8071134820436853155}
+  - component: {fileID: 7123631269129313553}
+  - component: {fileID: 6589896186120860021}
+  - component: {fileID: 2591661663020058167}
+  m_Layer: 8
   m_Name: DuskMage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1571,7 +1608,8 @@ Transform:
   - {fileID: 6269902713287513408}
   - {fileID: 4838128238241088940}
   - {fileID: 2540153672838789099}
-  - {fileID: 8806501480408995267}
+  - {fileID: 5517581438516433056}
+  - {fileID: 6419748447412258337}
   - {fileID: 2273532287962569513}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1815,42 +1853,42 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: DuskMage
-  sourceHash: 0f4e5735913c7cacfb1932e7fa98e17449b0e1860fcc3c9f9ccbf4bec794ec69
-  version: 17
-  triangles: 2390
+  sourceHash: 4970124ecd690ff0e5bb713cb4ef24046ad49f64c49fdcf60d2e3d87c2c35140
+  version: 19
+  triangles: 6376
   details:
   - Torso / tailored silhouette.001
   - Neck / weighted continuous bridge.001
-  - Sleeve / upper l.001
-  - Sleeve / lower l.001
+  - Sleeve / continuous weighted elbow l.001
   - Cuff / leather band l.001
   - Cuff / raised trim l.002
   - Cuff / raised trim l.003
-  - Palm / articulated l.001
+  - Palm / sculpted grip l.001
   - Finger l0.001
   - Finger l1.001
   - Finger l2.001
   - Finger l3.001
   - Thumb l.001
   - Leg / trousers l.001
+  - Leg / sealed weighted knee l.001
   - Boot / tall shaft l.001
   - Boot / shaped foot l.001
   - Boot / sole l.001
   - Boot / ankle strap l.002
   - Boot / ankle strap l.003
   - Boot / pointed cuff l.001
-  - Sleeve / upper r.001
-  - Sleeve / lower r.001
+  - Sleeve / continuous weighted elbow r.001
   - Cuff / leather band r.001
   - Cuff / raised trim r.002
   - Cuff / raised trim r.003
-  - Palm / articulated r.001
+  - Palm / sculpted grip r.001
   - Finger r0.001
   - Finger r1.001
   - Finger r2.001
   - Finger r3.001
   - Thumb r.001
   - Leg / trousers r.001
+  - Leg / sealed weighted knee r.001
   - Boot / tall shaft r.001
   - Boot / shaped foot r.001
   - Boot / sole r.001
@@ -1873,26 +1911,31 @@ MonoBehaviour:
   - Brow / angled.003
   - Ear / rim.003
   - Hair / continuous fitted scalp.001
-  - Hair / layered swept lock 0.001
-  - Hair / layered swept lock 1.001
-  - Hair / layered swept lock 2.001
-  - Hair / layered swept lock 3.001
-  - Hair / layered swept lock 4.001
-  - Hair / layered swept lock 5.001
-  - Hair / layered swept lock 6.001
-  - Hair / layered swept lock 7.001
-  - Hair / layered swept lock 8.001
-  - Hair / layered swept lock 9.001
-  - Hair / layered swept lock 10.001
-  - Hair / layered swept lock 11.001
-  - Hair / layered swept lock 12.001
-  - Hair / layered swept lock 13.001
-  - Hair / layered swept lock 14.001
-  - Hair / layered swept lock 15.001
-  - Hair / side swept fringe 0.001
-  - Hair / side swept fringe 1.001
-  - Hair / side swept fringe 2.001
-  - Hair / side swept fringe 3.001
+  - Hair / swept volume lock 0.001
+  - Hair / swept volume lock 1.001
+  - Hair / swept volume lock 2.001
+  - Hair / swept volume lock 3.001
+  - Hair / swept volume lock 4.001
+  - Hair / swept volume lock 5.001
+  - Hair / swept volume lock 6.001
+  - Hair / swept volume lock 7.001
+  - Hair / swept volume lock 8.001
+  - Hair / swept volume lock 9.001
+  - Hair / swept volume lock 10.001
+  - Hair / swept volume lock 11.001
+  - Hair / swept volume lock 12.001
+  - Hair / swept volume lock 13.001
+  - Hair / swept volume lock 14.001
+  - Hair / swept volume lock 15.001
+  - Hair / swept volume lock 16.001
+  - Hair / swept volume lock 17.001
+  - Hair / swept volume lock 18.001
+  - Hair / swept volume lock 19.001
+  - Hair / curved fringe 0.001
+  - Hair / curved fringe 1.001
+  - Hair / curved fringe 2.001
+  - Hair / curved fringe 3.001
+  - Hair / curved fringe 4.001
   - Hood / polygon crown and back
   - Hood / thick face opening -1
   - Hood / bound face edge
@@ -1922,6 +1965,81 @@ MonoBehaviour:
   - Tabard / torn front strip.002
   - Dagger / leather grip
   - Dagger / sheath
+--- !u!114 &8071134820436853155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911791102928489249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42022feef409cb04ebcde47618ad3217, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  owner: -1
+--- !u!114 &7123631269129313553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911791102928489249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189d1972853a43e45baf07325ab0c837, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!136 &6589896186120860021
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911791102928489249}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4
+  m_Height: 2.23
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.115, z: 0}
+--- !u!54 &2591661663020058167
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911791102928489249}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &6998685048167519873
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,6 +2136,37 @@ Transform:
   - {fileID: 8045578766916980850}
   - {fileID: 3681319773206846971}
   m_Father: {fileID: 1090637054114153899}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7448709212280844668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5517581438516433056}
+  m_Layer: 0
+  m_Name: Blender character / Echo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5517581438516433056
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7448709212280844668}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5930328106824408001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7636519973042134684
 GameObject:
@@ -2176,6 +2325,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3019499873554920454}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8223274723951818887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1148780116252427698}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1148780116252427698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223274723951818887}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.50000006, y: -0.50000024, z: 0.49999964, w: 0.5}
+  m_LocalPosition: {x: -0.05500001, y: 0.07500016, z: 0.015000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5583893095642028039}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8269547099268071182
 GameObject:

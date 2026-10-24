@@ -10,7 +10,8 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'Assets/Era/Art/BlenderCharacters'
 SOURCE = Path(__file__).resolve().parent
 PREVIEW = SOURCE / 'Previews'
-for p in (OUT, PREVIEW): p.mkdir(parents=True, exist_ok=True)
+EXPORT = SOURCE / 'v19'
+for p in (OUT, PREVIEW, EXPORT): p.mkdir(parents=True, exist_ok=True)
 TAU = math.pi*2
 
 def V(p): return Vector(p)
@@ -102,7 +103,7 @@ class Character:
         obj=bpy.data.objects.new(name,mesh);self.collection.objects.link(obj);obj.parent=self.root
         names=[mat]+list(accents or []);[mesh.materials.append(MATS[m]) for m in names]
         for f in mesh.polygons:
-            f.use_smooth=False
+            f.use_smooth=not any(x in name.lower() for x in ('buckle','cross /','armor','blade','book /','sole','clasp','arrow','rivet','strap','rail'))
             # Facet values come from normals, rather than random light-coloured patches.
             f.material_index=0
         groups={}
@@ -119,6 +120,7 @@ class Character:
         if rotation:verts=[V(p)+rotation@(v-V(p)) for v in verts]
         return self.mesh(name,verts,[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(4,0,3,7)],mat,bone)
     def loft(self,name,rings,mat,bone='spine',n=8,phase=math.pi/8,weight=None,accents=None,split=None):
+        if split is None:n=max(n,12)
         verts=[]
         for p,rx,rz in rings:
             for i in range(n):
@@ -133,6 +135,7 @@ class Character:
         faces += [tuple(range(n-1,-1,-1)),tuple((len(rings)-1)*n+i for i in range(n))]
         return self.mesh(name,verts,faces,mat,bone,weight,accents)
     def tube(self,name,a,b,ra,rb,mat,bone='spine',n=8,depth=1):
+        n=max(n,8)
         a,b=V(a),V(b);axis=(b-a).normalized();u=axis.cross(V((0,0,1))).normalized()
         if u.length<.01:u=V((1,0,0))
         v=axis.cross(u);verts=[]
@@ -143,6 +146,19 @@ class Character:
         for r in range(2):
             for i in range(n):faces.append((r*n+i,r*n+(i+1)%n,(r+1)*n+(i+1)%n,(r+1)*n+i))
         return self.mesh(name,verts,faces,mat,bone)
+    def skin_path(self,name,points,radii,mat,weight,n=12):
+        pts=[V(p) for p in points];verts=[]
+        for row,p in enumerate(pts):
+            tangent=(pts[min(row+1,len(pts)-1)]-pts[max(row-1,0)]).normalized()
+            u=tangent.cross(V((0,0,1))).normalized()
+            if u.length<.01:u=V((1,0,0))
+            v=tangent.cross(u).normalized()
+            for i in range(n):
+                a=TAU*i/n;verts.append(p+(u*math.cos(a)+v*math.sin(a))*radii[row])
+        faces=[tuple(range(n-1,-1,-1)),tuple((len(pts)-1)*n+i for i in range(n))]
+        for row in range(len(pts)-1):
+            for i in range(n):a=row*n+i;b=row*n+(i+1)%n;faces.append((a,b,b+n,a+n))
+        return self.mesh(name,verts,faces,mat,'spine',weight)
     def jewel(self,name,p,size,mat,bone='spine'):
         p=V(p);x,y,z=size
         return self.mesh(name,[p+V(t) for t in [(-x,0,0),(x,0,0),(0,-y,0),(0,y,0),(0,0,-z),(0,0,z)]],[(0,2,4),(1,4,2),(0,5,2),(1,2,5),(0,4,3),(1,3,4),(0,3,5),(1,5,3)],mat,bone)
@@ -163,19 +179,34 @@ class Character:
     def limb(self,side,cloth='green',bare=False,puffy=False,wolf=False):
         s='l' if side<0 else 'r';arm='upperarm.'+s;fore='lowerarm.'+s;hand='hand.'+s
         a,b,c=self.p(arm),self.p(fore),self.p(hand)
-        self.tube('Sleeve / upper '+s,a,b,.145 if not wolf else .19,.12,cloth,arm,8)
-        self.tube('Sleeve / lower '+s,b,c,.13 if not puffy else .20,.073,'skin' if bare else cloth,fore,8)
+        def sleeve_weights(p):
+            along=(p-a).dot((c-a).normalized());elbow=(b-a).length
+            t=max(0,min(1,(along-elbow+.075)/.15))
+            if along<.035:
+                t=max(0,min(1,along/.035));return {'chest':1-t,'upperarm.'+s:t}
+            if along>(c-a).length-.04:
+                hand_t=max(0,min(.75,(along-((c-a).length-.04))/.065));return {fore:1-hand_t,hand:hand_t}
+            return {arm:1-t,fore:t}
+        sleeve=self.skin_path('Sleeve / continuous weighted elbow '+s,[a-(b-a).normalized()*.025,mix(a,b,.45),mix(a,b,.85),b,mix(b,c,.22),mix(b,c,.65),c+V((side*.025,0,0))],[.13 if not wolf else .19,.14,.13,.125,.12,.09,.073],'skin' if bare else cloth,sleeve_weights,12)
+        if bare:
+            sleeve.data.materials.append(MATS[cloth])
+            for face in sleeve.data.polygons:
+                center=sum((V(U(sleeve.data.vertices[i].co)) for i in face.vertices),Vector())/len(face.vertices)
+                if (center-a).dot((c-a).normalized())<.20:face.material_index=1
         self.tube('Cuff / leather band '+s,mix(b,c,.82),mix(b,c,.97),.086,.083,'fur' if wolf else 'leather',fore,8)
         if not wolf:
             for t in (.84,.93):self.tube('Cuff / raised trim '+s,mix(b,c,t),mix(b,c,t+.025),.089,.089,'gold' if puffy else 'leather_edge',fore,8)
-        self.box('Palm / articulated '+s,c+V((side*.035,-.015,.005)),(.13,.13,.10),'fur_dark' if wolf else 'skin' if bare else 'leather',hand)
+        self.loft('Palm / sculpted grip '+s,[(c+V((side*.035,-.075,.002)),.038,.035),(c+V((side*.035,-.025,.005)),.062,.048),(c+V((side*.035,.047,.005)),.048,.040)],'fur_dark' if wolf else 'skin' if bare else 'leather',hand,12)
         for i in range(4):
-            start=c+V((side*.07,-.05+i*.032,.037));end=start+V((side*(.065 if not wolf else .09),-.01,.015))
-            self.tube('Finger '+s+str(i),start,end,.018,.013,'fur' if wolf else 'skin' if bare else 'leather',hand,5)
+            y=(i-1.5)*.026;points=[c+V((side*(.075+math.cos(t)*.043),y,.055+math.sin(t)*.043)) for t in (2.8,2.1,1.4,.7,.05,-.6)]
+            self.skin_path('Finger '+s+str(i),points,[.015,.016,.015,.014,.012,.009],'fur' if wolf else 'skin' if bare else 'leather',lambda p:{hand:1},8);end=points[-1]
             if wolf:self.tube('Ivory claw '+s+str(i),end,end+V((side*.05,-.017,.018)),.014,.001,'linen',hand,4)
         self.tube('Thumb '+s,c+V((side*.006,-.07,.035)),c+V((side*.07,-.10,.048)),.025,.014,'fur' if wolf else 'skin' if bare else 'leather',hand,5)
         thigh,knee,foot=(self.p(k+'.'+s) for k in ('upperleg','lowerleg','foot'))
         self.tube('Leg / trousers '+s,thigh,knee,.145 if not wolf else .17,.11,cloth,'upperleg.'+s,8)
+        def knee_weights(p):
+            t=max(0,min(1,(knee.y+.085-p.y)/.17));return {'upperleg.'+s:1-t,'lowerleg.'+s:t}
+        self.skin_path('Leg / sealed weighted knee '+s,[mix(thigh,knee,.75),knee,mix(knee,foot,.38)],[.115,.115,.108],cloth,knee_weights,12)
         self.tube('Boot / tall shaft '+s,knee,foot+V((0,.01,0)),.112,.078,'fur_dark' if wolf else 'leather','lowerleg.'+s,8)
         p=foot+V((0,-.07,.035))
         self.loft('Boot / shaped foot '+s,[(p+V((0,-.04,0)),.105,.17),(p,.12,.19),(p+V((0,.09,-.045)),.085,.11)],'fur_dark' if wolf else 'leather','foot.'+s,8)
@@ -190,7 +221,11 @@ class Character:
         if not wolf:
             self.panel('Boot / pointed cuff '+s,[knee+V((-.13,.04,.09)),knee+V((.13,.04,.09)),knee+V((.08,-.10,.13)),knee+V((0,-.13,.145)),knee+V((-.08,-.10,.13))],'linen_shadow' if cloth=='green' else 'brown_light','lowerleg.'+s)
     def body(self,cloth='green',wolf=False):
-        self.loft('Torso / tailored silhouette', [((0,.96,0),.23,.14),((0,1.13,0),.25,.155),((0,1.47,0),.32 if not wolf else .39,.18),((0,1.70,0),.28 if not wolf else .36,.15)],cloth,'spine',10,accents=[cloth if wolf else cloth])
+        def torso_weights(p):
+            if p.y<1.15:
+                t=max(0,min(1,(p.y-1.0)/.15));return {'hips':1-t,'spine':t}
+            t=max(0,min(1,(p.y-1.2)/.30));return {'spine':1-t,'chest':t}
+        self.loft('Torso / tailored silhouette', [((0,.96,0),.23,.14),((0,1.10,0),.25,.155),((0,1.30,0),.28 if not wolf else .34,.17),((0,1.47,0),.32 if not wolf else .39,.18),((0,1.62,0),.31 if not wolf else .38,.165),((0,1.70,0),.27 if not wolf else .35,.15)],cloth,'spine',16,weight=torso_weights)
         def neck_w(p):
             t=max(0,min(1,(p.y-1.67)/.16));return {'chest':1-t,'head':t}
         self.loft('Neck / weighted continuous bridge',[((0,1.64,0),.105,.085),((0,1.75,0),.09,.078),((0,1.83,0),.105,.085)],'fur' if wolf else 'skin','chest',8,weight=neck_w)
@@ -199,7 +234,7 @@ class Character:
         self.buckle((0,1.052,.197))
     def face(self,kind='human',beard=False,elf=False):
         h=self.p('head');skin='blue_dark' if kind=='shade' else 'linen' if kind=='mask' else 'skin_light' if elf else 'skin'
-        self.loft('Face / planar jaw and cheekbones',[(h+V((0,.015,.025)),.085,.09),(h+V((0,.10,.015)),.16,.135),(h+V((0,.27,0)),.175,.14),(h+V((0,.36,-.01)),.12,.11),(h+V((0,.39,-.01)),.05,.055)],skin,'head',8)
+        self.loft('Face / planar jaw and cheekbones',[(h+V((0,.015,.025)),.085,.09),(h+V((0,.10,.015)),.16,.135),(h+V((0,.23,0)),.177,.145),(h+V((0,.30,-.005)),.167,.14),(h+V((0,.36,-.01)),.12,.11),(h+V((0,.39,-.01)),.05,.055)],skin,'head',16)
         self.jewel('Face / nose bridge',h+V((0,.19,.15)),(.036,.074,.067),skin,'head')
         self.panel('Face / mouth',[h+V((-.06,.08,.145)),h+V((.06,.08,.145)),h+V((.035,.062,.15)),h+V((-.025,.062,.15))],'skin_shadow' if kind!='mask' else 'black','head')
         for side in (-1,1):
@@ -221,27 +256,27 @@ class Character:
         h=self.p('head');mat='brown_dark' if short else 'blond' if elf else 'hair'
         light='brown' if short else 'gold' if elf else 'hair_light'
         # A continuous scalp covers the entire skull; locks add volume to this surface.
-        n=16;vertices=[]
-        for row,(y,rx,rz) in enumerate([(0,.178,.153),(.34,.184,.154),(.42,.122,.108),(.447,.012,.012)]):
+        n=24;vertices=[]
+        for row,(y,rx,rz) in enumerate([(0,.182,.158),(.30,.190,.163),(.37,.172,.15),(.42,.122,.108),(.447,.012,.012)]):
             for i in range(n):
                 a=TAU*i/n;front=max(0,math.sin(a));back=max(0,-math.sin(a))
                 yy=(.20+.095*front-(.055 if short else .10)*back) if row==0 else y
                 vertices.append(h+V((math.cos(a)*rx,yy,math.sin(a)*rz-.014)))
         faces=[]
-        for row in range(3):
+        for row in range(4):
             for i in range(n):a=row*n+i;b=row*n+(i+1)%n;faces.append((a,b,b+n,a+n))
-        faces.append(tuple(range(3*n,4*n)))
-        self.mesh('Hair / continuous fitted scalp',vertices,faces,mat,'head')
-        for i in range(n):
-            a=TAU*i/n;tangent=V((-math.sin(a),0,math.cos(a)))*(.027 if short else .035)
-            start=h+V((math.cos(a)*.15,.36,math.sin(a)*.13-.014))
-            y=.29 if math.sin(a)>.35 else (.18 if short else .07)
-            end=h+V((math.cos(a)*.19,y,math.sin(a)*.16-.014))
-            ridge=mix(start,end,.45)+V((math.cos(a)*.025,.007,math.sin(a)*.025))
-            self.mesh('Hair / layered swept lock '+str(i),[start-tangent,start+tangent,end-tangent*.4,end+tangent*.4,ridge],[(0,1,4),(1,3,4),(3,2,4),(2,0,4),(0,2,3,1)],light if i%5==1 else mat,'head')
-        for i in range(4):
-            x=(i-1.5)*.067
-            self.panel('Hair / side swept fringe '+str(i),[h+V((x-.04,.355,.142)),h+V((x+.025,.37,.149)),h+V((x+.057,.277,.15)),h+V((x+.019,.285,.167))],mat,'head',.018)
+        faces.append(tuple(range(4*n,5*n)))
+        scalp=self.mesh('Hair / continuous fitted scalp',vertices,faces,mat,'head');solid=scalp.modifiers.new('Sealed hairline thickness','SOLIDIFY');solid.thickness=.008
+        for i in range(20):
+            a=TAU*i/20;y=.29 if math.sin(a)>.35 else (.18 if short else .09 if elf else .12)
+            start=h+V((math.cos(a)*.06,.425,math.sin(a)*.055-.014))
+            control=h+V((math.cos(a+.1)*.21,.38,math.sin(a+.1)*.18-.014))
+            end=h+V((math.cos(a+.13)*.20,y,math.sin(a+.13)*.17-.014))
+            points=[start*(1-t)**2+control*(2*t*(1-t))+end*t*t for t in (0,.2,.4,.6,.8,1)]
+            self.skin_path('Hair / swept volume lock '+str(i),points,[.019,.026,.027,.024,.018,.003],light if i%7==2 else mat,lambda p:{'head':1},8)
+        for i in range(5):
+            x=(i-2)*.052;points=[h+V((x-.02,.405,.08)),h+V((x+.01,.37,.145)),h+V((x+.036,.32,.173)),h+V((x+.048,.285,.16))]
+            self.skin_path('Hair / curved fringe '+str(i),points,[.022,.03,.024,.002],mat,lambda p:{'head':1},8)
     def skirt(self,mat='green',bottom=.3,split=True):
         n=12;verts=[]
         for row,(y,rx,rz) in enumerate([(1.04,.25,.17),(.67,.32,.22),(bottom,.40,.29)]):
@@ -255,7 +290,8 @@ class Character:
                 a=row*n+i;b=row*n+(i+1)%n;c=b+n;d=a+n;faces.extend([(a,b,c),(a,c,d)])
         def weights(p):
             t=max(0,min(.65,(1.0-p.y)*.75));return {'hips':1-t,('upperleg.l' if p.x<0 else 'upperleg.r'):t}
-        return self.mesh('Coat / cut panels and split hem',verts,faces,mat,'hips',weights,[mat+'_light'] if mat+'_light' in MATS else ['linen_shadow'])
+        obj=self.mesh('Coat / cut panels and split hem',verts,faces,mat,'hips',weights,[mat+'_light'] if mat+'_light' in MATS else ['linen_shadow'])
+        solid=obj.modifiers.new('Closed cloth lining and hem','SOLIDIFY');solid.thickness=.018;solid.offset=0;return obj
     def cape(self,mat='green',bottom=.25):
         verts=[]
         for row,(y,w,z) in enumerate([(1.68,.26,-.15),(1.50 if bottom>1 else 1.38,.30,-.22),((1.50+bottom)/2 if bottom>1 else .82,.38,-.25),(bottom,.48,-.30)]):
@@ -268,7 +304,7 @@ class Character:
         sol=obj.modifiers.new('Cloth edge thickness','SOLIDIFY');sol.thickness=.018;return obj
     def hood(self,mat='green',point=False):
         h=self.p('head');rings=[(h+V((0,.0,-.035)),.25,.21),(h+V((0,.25,-.05)),.27,.23),(h+V((0,.46,-.08)),.21,.18),(h+V((0,.53,-.12)),.08,.09)]
-        self.loft('Hood / polygon crown and back',rings,mat,'head',10,split={1,2,3},accents=[mat+'_light'] if mat+'_light' in MATS else ['blue_light'])
+        shell=self.loft('Hood / polygon crown and back',rings,mat,'head',14,split={1,2,3},accents=[mat+'_light'] if mat+'_light' in MATS else ['blue_light']);solid=shell.modifiers.new('Bound hood opening','SOLIDIFY');solid.thickness=.018
         for side in (-1,1):
             self.panel('Hood / thick face opening '+str(side),[h+V((0,.48,.12)),h+V((side*.19,.34,.20)),h+V((side*.20,.03,.15)),h+V((side*.27,-.04,.11)),h+V((side*.27,.30,.12)),h+V((side*.18,.48,.055))],mat,'head')
             self.ribbon('Hood / bound face edge',h+V((0,.49,.125)),h+V((side*.20,.31,.207)),.024,mat+'_light' if mat+'_light' in MATS else 'linen_shadow','head')
@@ -432,7 +468,7 @@ def wolf(c):
 BUILDERS=[('Wayfarer','01 / Grey Wayfarer','Lumen',scholar),('DuskMage','02 / Dusk Mage','Echo',dusk),('Stalker','03 / Ashfang Werewolf','Stalker',wolf),('Wisp','04 / Crimson Harlequin','Wisp',jester),('Ember','05 / Woodland Ranger','Ember',ranger),('Lumen','06 / Ivory Prelate','Lumen',prelate),('Echo','07 / Earthbound Monk','Echo',monk)]
 
 def export_game(c):
-    joints=list(c.rig);positions=[];colors=[];indices=[];weights=[];parts=[]
+    joints=list(c.rig);positions=[];normals=[];surfaces=[];colors=[];indices=[];weights=[];parts=[]
     deps=bpy.context.evaluated_depsgraph_get()
     # Evaluate cloth thickness, keeping the armature in bind pose during the export.
     for obj in c.parts:
@@ -441,15 +477,20 @@ def export_game(c):
         first=len(positions)//3
         for tri in mesh.loop_triangles:
             color=obj.data.materials[mesh.polygons[tri.polygon_index].material_index].diffuse_color
-            for vi in tri.vertices:
+            material_name=obj.data.materials[mesh.polygons[tri.polygon_index].material_index].name
+            surface=(.36,.65) if material_name.startswith(('gold','steel')) else (.18,0) if material_name.startswith(('skin','hair','blond')) else (.07,0)
+            for vi,loop in zip(tri.vertices,tri.loops):
                 v=mesh.vertices[vi];positions.extend(round(n,6) for n in U(v.co));colors.extend(round(n,5) for n in color)
+                normals.extend(round(n,6) for n in U(mesh.corner_normals[loop].vector))
+                surfaces.extend(surface)
                 pairs=sorted([(joints.index(obj.vertex_groups[g.group].name),g.weight) for g in v.groups if obj.vertex_groups[g.group].name in joints],key=lambda p:-p[1])[:2]
                 if not pairs:pairs=[(joints.index('spine'),1)]
                 if len(pairs)==1:pairs.append((pairs[0][0],0))
                 total=sum(p[1] for p in pairs);indices.extend(p[0] for p in pairs);weights.extend(round(p[1]/total,6) for p in pairs)
         parts.append({'name':obj.name,'first':first,'count':len(positions)//3-first});evaluated.to_mesh_clear()
-    payload={'name':c.key,'bones':joints,'bindPositions':[round(v,6) for joint in joints for v in c.rig[joint]['position']],'positions':positions,'colors':colors,'joints':indices,'weights':weights,'parts':parts}
-    path=OUT/(c.key+'.era-mesh.json');path.write_text(json.dumps(payload,separators=(',',':')),encoding='utf-8')
+    payload={'name':c.key,'bones':joints,'bindPositions':[round(v,6) for joint in joints for v in c.rig[joint]['position']],'positions':positions,'normals':normals,'surfaces':surfaces,'colors':colors,'joints':indices,'weights':weights,'parts':parts}
+    path=OUT/(c.key+'.era-mesh.json');pending=path.with_suffix('.pending')
+    pending.write_text(json.dumps(payload,separators=(',',':')),encoding='utf-8');pending.replace(path)
     return {'name':c.key,'triangles':len(positions)//9,'vertices':len(positions)//3,'details':len(c.parts),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
 
 def relaxed_pose(c):
@@ -468,8 +509,9 @@ def render_turnaround(c):
             copy.rotation_euler.z=angle;copy.location.x=(view-1)*1.65
     c.collection.hide_render=True
     scene.camera.location=(0,-10,2.9);aim(scene.camera,(0,0,1.25));scene.camera.data.type='ORTHO';scene.camera.data.ortho_scale=5.2
-    scene.render.resolution_x=1500;scene.render.resolution_y=900;scene.render.filepath=str(PREVIEW/(c.key+'-turnaround.png'))
+    scene.render.resolution_x=1500;scene.render.resolution_y=900;pending=PREVIEW/(c.key+'-turnaround-v19.render.png');scene.render.filepath=str(pending)
     bpy.ops.render.render(write_still=True)
+    pending.replace(PREVIEW/(c.key+'-turnaround-v19.png'))
     for obj in list(temp.objects):
         mesh=obj.data;bpy.data.objects.remove(obj,do_unlink=True);bpy.data.meshes.remove(mesh)
     bpy.data.collections.remove(temp)
@@ -501,18 +543,23 @@ for c in CHARACTERS:
     for obj in list(c.collection.objects):obj.select_set(True)
     # Native export has editable named parts, armature and skinning. Runtime uses the bind-pose JSON.
     for pb in c.arm.pose.bones:pb.rotation_quaternion=Quaternion((1,0,0,0))
-    bpy.ops.export_scene.fbx(filepath=str(SOURCE/(c.key+'.fbx')),use_selection=True,add_leaf_bones=False,bake_anim=False,axis_forward='-Z',axis_up='Y',mesh_smooth_type='FACE')
+    pending=EXPORT/(c.key+'.pending.fbx')
+    bpy.ops.export_scene.fbx(filepath=str(pending),use_selection=True,add_leaf_bones=False,bake_anim=False,axis_forward='-Z',axis_up='Y',mesh_smooth_type='FACE')
+    pending.replace(EXPORT/(c.key+'.fbx'))
     render_turnaround(c)
 for index,c in enumerate(CHARACTERS):
     c.collection.hide_render=False;c.root.location=((index%4-1.5)*2.2,(index//4)*3.5,0);relaxed_pose(c)
 camera.location=(7,-13,10);aim(camera,(0,1.6,1.1));camera.data.ortho_scale=11.7
-scene.render.resolution_x=1920;scene.render.resolution_y=1300;scene.render.filepath=str(PREVIEW/'ERA-seven-characters.png');bpy.ops.render.render(write_still=True)
+scene.render.resolution_x=1920;scene.render.resolution_y=1300;scene.render.filepath=str(PREVIEW/'ERA-seven-characters-v19.render.png');bpy.ops.render.render(write_still=True)
+(PREVIEW/'ERA-seven-characters-v19.render.png').replace(PREVIEW/'ERA-seven-characters-v19.png')
 scene['ERA Workshop']='Seven editable flat shaded characters. Runtime bind meshes in Assets/Era/Art/BlenderCharacters. Existing KayKit animation rig retained in game.'
 for area in bpy.context.screen.areas if bpy.context.screen else []:
     if area.type=='VIEW_3D':
         area.spaces.active.shading.color_type='MATERIAL';area.spaces.active.overlay.show_overlays=False
         area.spaces.active.region_3d.view_distance=12;area.spaces.active.region_3d.view_location=(0,1.5,1)
 bpy.ops.object.select_all(action='DESELECT');CHARACTERS[4].arm.select_set(True);bpy.context.view_layer.objects.active=CHARACTERS[4].arm
-bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'ERA_Character_Workshop-v17.blend'))
-(SOURCE/'character-manifest.json').write_text(json.dumps({'blender':bpy.app.version_string,'characters':report},indent=2),encoding='utf-8')
+bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE/'ERA_Character_Workshop-v19.pending.blend'))
+(SOURCE/'ERA_Character_Workshop-v19.pending.blend').replace(SOURCE/'ERA_Character_Workshop-v19.blend')
+(SOURCE/'character-manifest.pending.json').write_text(json.dumps({'blender':bpy.app.version_string,'characters':report},indent=2),encoding='utf-8')
+(SOURCE/'character-manifest.pending.json').replace(SOURCE/'character-manifest.json')
 print('ERA_WORKSHOP_OK',flush=True)

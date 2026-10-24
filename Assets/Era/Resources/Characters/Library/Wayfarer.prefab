@@ -64,6 +64,37 @@ Transform:
   - {fileID: 2312368543478479211}
   m_Father: {fileID: 4424449206233645416}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &253529548169540671
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5332946029439180110}
+  m_Layer: 0
+  m_Name: Blender character / Lumen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5332946029439180110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253529548169540671}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &332953299739154728
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,6 +410,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2269290624197403800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1651810623418621585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 756478972961371799}
+  m_Layer: 0
+  m_Name: Ivory shoulder mantle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &756478972961371799
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651810623418621585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.39, y: 0.28, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2775501819905439601}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1707541064769074993
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3175172629642799820}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3175172629642799820
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1707541064769074993}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.50000006, y: -0.50000024, z: 0.49999964, w: 0.5}
+  m_LocalPosition: {x: -0.05500001, y: 0.07500016, z: 0.015000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3884460382488576720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1858851189291241864
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,7 +672,11 @@ GameObject:
   - component: {fileID: 6341349019584849531}
   - component: {fileID: 6201224626762484073}
   - component: {fileID: 1526910737425695322}
-  m_Layer: 0
+  - component: {fileID: 5705297116510105921}
+  - component: {fileID: 8863592118005871555}
+  - component: {fileID: 2584602003582023551}
+  - component: {fileID: 6971786080371464816}
+  m_Layer: 8
   m_Name: Wayfarer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -602,13 +699,14 @@ Transform:
   - {fileID: 1607618232011933442}
   - {fileID: 3689731507456845647}
   - {fileID: 915283955347610918}
-  - {fileID: 6806513931715925299}
-  - {fileID: 7981194550375068558}
-  - {fileID: 7850369640128195659}
-  - {fileID: 6011793768892360902}
+  - {fileID: 2571755880010805815}
+  - {fileID: 379481529952234405}
+  - {fileID: 8390095511801926785}
+  - {fileID: 8984468487225119988}
   - {fileID: 5310622047903849321}
-  - {fileID: 5754546089784917372}
   - {fileID: 2125001204808098919}
+  - {fileID: 456509912289961042}
+  - {fileID: 5332946029439180110}
   - {fileID: 3982866857399769119}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -852,42 +950,42 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: Wayfarer
-  sourceHash: 9312f0063fe9d49204337c1dd3f3c2d8b3c14befbb7edd21f0eea9c08e27547e
-  version: 17
-  triangles: 2466
+  sourceHash: db85580502b8f49d4aa2d1cea6034d3f9606bb916c74ddb15ccffc719961a706
+  version: 19
+  triangles: 6272
   details:
   - Torso / tailored silhouette
   - Neck / weighted continuous bridge
-  - Sleeve / upper l
-  - Sleeve / lower l
+  - Sleeve / continuous weighted elbow l
   - Cuff / leather band l
   - Cuff / raised trim l
   - Cuff / raised trim l.001
-  - Palm / articulated l
+  - Palm / sculpted grip l
   - Finger l0
   - Finger l1
   - Finger l2
   - Finger l3
   - Thumb l
   - Leg / trousers l
+  - Leg / sealed weighted knee l
   - Boot / tall shaft l
   - Boot / shaped foot l
   - Boot / sole l
   - Boot / ankle strap l
   - Boot / ankle strap l.001
   - Boot / pointed cuff l
-  - Sleeve / upper r
-  - Sleeve / lower r
+  - Sleeve / continuous weighted elbow r
   - Cuff / leather band r
   - Cuff / raised trim r
   - Cuff / raised trim r.001
-  - Palm / articulated r
+  - Palm / sculpted grip r
   - Finger r0
   - Finger r1
   - Finger r2
   - Finger r3
   - Thumb r
   - Leg / trousers r
+  - Leg / sealed weighted knee r
   - Boot / tall shaft r
   - Boot / shaped foot r
   - Boot / sole r
@@ -920,26 +1018,31 @@ MonoBehaviour:
   - Beard / carved lock.003
   - Beard / carved lock.004
   - Hair / continuous fitted scalp
-  - Hair / layered swept lock 0
-  - Hair / layered swept lock 1
-  - Hair / layered swept lock 2
-  - Hair / layered swept lock 3
-  - Hair / layered swept lock 4
-  - Hair / layered swept lock 5
-  - Hair / layered swept lock 6
-  - Hair / layered swept lock 7
-  - Hair / layered swept lock 8
-  - Hair / layered swept lock 9
-  - Hair / layered swept lock 10
-  - Hair / layered swept lock 11
-  - Hair / layered swept lock 12
-  - Hair / layered swept lock 13
-  - Hair / layered swept lock 14
-  - Hair / layered swept lock 15
-  - Hair / side swept fringe 0
-  - Hair / side swept fringe 1
-  - Hair / side swept fringe 2
-  - Hair / side swept fringe 3
+  - Hair / swept volume lock 0
+  - Hair / swept volume lock 1
+  - Hair / swept volume lock 2
+  - Hair / swept volume lock 3
+  - Hair / swept volume lock 4
+  - Hair / swept volume lock 5
+  - Hair / swept volume lock 6
+  - Hair / swept volume lock 7
+  - Hair / swept volume lock 8
+  - Hair / swept volume lock 9
+  - Hair / swept volume lock 10
+  - Hair / swept volume lock 11
+  - Hair / swept volume lock 12
+  - Hair / swept volume lock 13
+  - Hair / swept volume lock 14
+  - Hair / swept volume lock 15
+  - Hair / swept volume lock 16
+  - Hair / swept volume lock 17
+  - Hair / swept volume lock 18
+  - Hair / swept volume lock 19
+  - Hair / curved fringe 0
+  - Hair / curved fringe 1
+  - Hair / curved fringe 2
+  - Hair / curved fringe 3
+  - Hair / curved fringe 4
   - Coat / cut panels and split hem
   - Cape / broad folded back silhouette
   - Coat / inset linen placket
@@ -971,68 +1074,81 @@ MonoBehaviour:
   - Pouch / clasp
   - Coat / teal hem piping
   - Coat / teal hem piping.001
---- !u!1 &3588898559366814377
-GameObject:
+--- !u!114 &5705297116510105921
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7850369640128195659}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7850369640128195659
-Transform:
+  m_GameObject: {fileID: 2928176790695697728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42022feef409cb04ebcde47618ad3217, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  owner: -1
+--- !u!114 &8863592118005871555
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3588898559366814377}
+  m_GameObject: {fileID: 2928176790695697728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189d1972853a43e45baf07325ab0c837, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!136 &2584602003582023551
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2928176790695697728}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3236068, y: 2.1414256, z: -0.23511414}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3686342763329521545
-GameObject:
+  m_Radius: 0.4
+  m_Height: 2.23
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.115, z: 0}
+--- !u!54 &6971786080371464816
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5754546089784917372}
-  m_Layer: 0
-  m_Name: Blender character / Lumen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5754546089784917372
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3686342763329521545}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 2928176790695697728}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &3987431571559295864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1095,6 +1211,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7443502610401210522}
+  - {fileID: 4717577145258425660}
   m_Father: {fileID: 1448557166220220833}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4172936549238625316
@@ -1127,40 +1244,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 864241739397024569}
-  - {fileID: 5313124541644830445}
   - {fileID: 1382834038986255269}
+  - {fileID: 756478972961371799}
   m_Father: {fileID: 1049585162364340362}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4217702761586670824
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5313124541644830445}
-  m_Layer: 0
-  m_Name: Ivory shoulder mantle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5313124541644830445
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4217702761586670824}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.39, y: 0.28, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2775501819905439601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4225991671734877397
 GameObject:
@@ -1326,6 +1412,37 @@ Transform:
   - {fileID: 5549800900252565632}
   m_Father: {fileID: 2775501819905439601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4836092192518004575
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8984468487225119988}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8984468487225119988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4836092192518004575}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12360685, y: 2.1414256, z: -0.3804226}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4864012334624393741
 GameObject:
   m_ObjectHideFlags: 0
@@ -1419,6 +1536,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6926592160256599497}
+  - {fileID: 3175172629642799820}
   m_Father: {fileID: 687478179139136626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5733976467339981123
@@ -1486,6 +1604,37 @@ Transform:
   - {fileID: 6312180539959443291}
   - {fileID: 5800657438302088920}
   m_Father: {fileID: 3684568095341223204}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6147061279962687538
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4717577145258425660}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4717577145258425660
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147061279962687538}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5000001, y: -0.5000002, z: 0.4999997, w: -0.5000001}
+  m_LocalPosition: {x: 0.05499996, y: 0.07500017, z: 0.015000129}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9061796641244339200}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6177960587166002052
 GameObject:
@@ -1582,6 +1731,37 @@ Transform:
   - {fileID: 3912958572080601757}
   m_Father: {fileID: 606543354126339765}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6367742919794774066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 379481529952234405}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &379481529952234405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6367742919794774066}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.32360682, y: 2.1414256, z: 0.23511408}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6424207763777715599
 GameObject:
   m_ObjectHideFlags: 0
@@ -1666,7 +1846,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  - {fileID: -8465586628019521445, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1691,7 +1871,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -7408741463973511116, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Mesh: {fileID: 2171596760301717770, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
   m_Bones:
   - {fileID: 1607618232011933442}
   - {fileID: 2269290624197403800}
@@ -1741,6 +1921,37 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 1.4, z: 0}
     m_Extent: {x: 2, y: 2.5, z: 2}
   m_DirtyAABB: 0
+--- !u!1 &6538080973552472593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2571755880010805815}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2571755880010805815
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6538080973552472593}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.12360679, y: 2.1414256, z: 0.38042262}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6619209969777587292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1866,37 +2077,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2269290624197403800}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6797233947710788259
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7981194550375068558}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7981194550375068558
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6797233947710788259}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.32360682, y: 2.1414256, z: 0.23511408}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7121520703233563111
 GameObject:
@@ -2118,7 +2298,7 @@ Transform:
   m_GameObject: {fileID: 7721482020529778628}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.39, y: 0.28, z: 0}
+  m_LocalPosition: {x: -0.39, y: 0.28, z: 0}
   m_LocalScale: {x: 0.25, y: 0.19, z: 0.28}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2194,6 +2374,37 @@ Transform:
   - {fileID: 7791772106007677161}
   - {fileID: 2830796948571546387}
   m_Father: {fileID: 1607618232011933442}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7857401265159691147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 456509912289961042}
+  m_Layer: 0
+  m_Name: Blender character / Lumen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &456509912289961042
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7857401265159691147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7904055846876881693
 GameObject:
@@ -2291,6 +2502,37 @@ Transform:
   - {fileID: 2187164312611941543}
   m_Father: {fileID: 3437896289913575792}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8164139303065941675
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8390095511801926785}
+  m_Layer: 0
+  m_Name: Halo jewel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8390095511801926785
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8164139303065941675}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.3236068, y: 2.1414256, z: -0.23511414}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1415379813859040225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8319519735133890332
 GameObject:
   m_ObjectHideFlags: 0
@@ -2352,37 +2594,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1607618232011933442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8587635705575979010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6806513931715925299}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6806513931715925299
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8587635705575979010}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12360679, y: 2.1414256, z: 0.38042262}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8629105261736695460
 GameObject:
@@ -2477,37 +2688,6 @@ Transform:
   m_Children:
   - {fileID: 3684568095341223204}
   m_Father: {fileID: 2269290624197403800}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8716392197509675040
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6011793768892360902}
-  m_Layer: 0
-  m_Name: Halo jewel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6011793768892360902
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8716392197509675040}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12360685, y: 2.1414256, z: -0.3804226}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1415379813859040225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9088694286959662966
 GameObject:

@@ -52,17 +52,10 @@ namespace Era
                 if(distance<reach*.8f)dir=Vector3.zero;
                 if(e.windup<=0&&dir.sqrMagnitude>.01f)
                 {
-                    if(IsFlying(e.kind))e.position+=dir.normalized*pace*dt;
-                    else
-                    {
-                        var next=WorldMap.Resolve(e.position,dir.normalized*pace*dt,EnemyRadius(e)*.6f);
-                        if((next-e.position).sqrMagnitude<dt*dt*.15f)next=WorldMap.Resolve(e.position,Quaternion.Euler(0,e.id%2==0?80:-80,0)*dir.normalized*pace*dt,.4f);
-                        e.position=next;
-                    }
-                    Vector3 separation=Vector3.zero;
-                    foreach(var other in State.enemies)
-                    {if(other==e||IsFlying(e.kind)!=IsFlying(other.kind))continue;var delta=e.position-other.position;delta.y=0;float d=delta.magnitude,min=(EnemyRadius(e)+EnemyRadius(other))*.9f;if(d<min&&d>.01f)separation+=delta.normalized*(1-d/min);}
-                    e.position=IsFlying(e.kind)?e.position+Vector3.ClampMagnitude(separation,1)*dt*2:WorldMap.Resolve(e.position,Vector3.ClampMagnitude(separation,1)*dt*2,EnemyRadius(e)*.6f);
+                    var next=MoveEnemyBody(e,dir.normalized*pace*dt);
+                    if((next-e.position).sqrMagnitude<dt*dt*.15f&&distance>reach*1.2f)
+                        next=MoveEnemyBody(e,Quaternion.Euler(0,e.id%2==0?65:-65,0)*dir.normalized*pace*dt);
+                    e.position=next;
                 }
                 e.position.y=WorldMap.Ground(e.position)+(IsFlying(e.kind)?1.8f+Mathf.Sin(State.elapsed*3+e.id)*.2f:0);
 
@@ -85,7 +78,7 @@ namespace Era
             }
             float reach=EnemyCatalog.Reach(e.kind);
             Vector3 origin=e.position;
-            if(e.attackStyle==4){float dive=Vector3.ProjectOnPlane(e.attackPosition-e.position,Vector3.up).magnitude;e.position=WorldMap.Resolve(e.position,e.attackDirection*Mathf.Min(4,dive),.5f);e.position.y=WorldMap.Ground(e.position)+.7f;origin=e.position;reach=2.4f;}
+            if(e.attackStyle==4){float dive=Vector3.ProjectOnPlane(e.attackPosition-e.position,Vector3.up).magnitude;e.position=MoveEnemyBody(e,e.attackDirection*Mathf.Min(4,dive));e.position.y=WorldMap.Ground(e.position)+.7f;origin=e.position;reach=2.4f;}
             Vector3 end=origin+e.attackDirection*reach;
             foreach(var p in State.players)
             {

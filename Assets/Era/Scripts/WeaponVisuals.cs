@@ -5,6 +5,7 @@ namespace Era
     {
         public static GameObject Create(VisualFactory v,Transform parent,WeaponKind kind)
         {
+            var prefab=Resources.Load<GameObject>("Weapons/"+kind);if(prefab!=null)return Object.Instantiate(prefab,parent,false);
             var root=v.Group(kind.ToString(),parent);Color wood=new Color(.34f,.25f,.21f),metal=new Color(.79f,.84f,.80f),gold=new Color(.87f,.68f,.36f);
             if(kind==WeaponKind.Aura)
             {
@@ -48,6 +49,10 @@ namespace Era
         }
         public static GameObject Arrow(VisualFactory v,Transform parent)
         {
+            var prefab=Resources.Load<GameObject>("Weapons/Arrow");if(prefab!=null)
+            {
+                var copy=Object.Instantiate(prefab,parent,false);var streak=copy.AddComponent<TrailRenderer>();streak.time=.12f;streak.minVertexDistance=.06f;streak.startWidth=.07f;streak.endWidth=.006f;streak.startColor=new Color(1,.82f,.35f,.7f);streak.endColor=new Color(1,.62f,.2f,0);streak.sharedMaterial=PresentationFx.SharedMaterial;streak.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;return copy;
+            }
             var root=v.Group("Wildwood arrow",parent);v.Branch(root,new Vector3(0,0,-.45f),new Vector3(0,0,.35f),.022f,new Color(.51f,.35f,.23f));
             var tip=v.Cone("Arrowhead",root,new Vector3(0,0,.32f),.075f,.23f,new Color(.85f,.9f,.85f),4);tip.transform.localRotation=Quaternion.Euler(90,0,0);
             for(int i=0;i<3;i++){var feather=v.Ellipsoid("Feather",root,new Vector3(0,0,-.35f),new Vector3(.17f,.025f,.24f),GameData.Mint);feather.transform.localRotation=Quaternion.Euler(0,0,i*120);}

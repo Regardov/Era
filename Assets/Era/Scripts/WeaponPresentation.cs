@@ -8,11 +8,11 @@ namespace Era
         public WeaponKind kind;int owner=-1,serial=-1;float age=10,clock;
         public float Anticipation{get;private set;}public float AimYaw{get;private set;}
         public WeaponPoseSample Sample{get;private set;}
-        Transform stringRoot,arrow,focus;LineRenderer bowString,chargeRing;
+        Transform stringRoot,arrow,focus,secondaryGrip;LineRenderer bowString,chargeRing;Vector3 arrowBase;
         public void BindOwner(int id){owner=id;}
         void Start()
         {
-            if(kind==WeaponKind.Bow){stringRoot=transform.Find("Bow string");bowString=stringRoot?.GetComponent<LineRenderer>();arrow=transform.Find("Nocked arrow");}
+            if(kind==WeaponKind.Bow){stringRoot=transform.Find("Bow string");bowString=stringRoot?.GetComponent<LineRenderer>();arrow=transform.Find("Nocked arrow");if(arrow!=null)arrowBase=arrow.localPosition;secondaryGrip=transform.Find("Grip / secondary");}
             focus=transform.Find(kind==WeaponKind.Aura?"Aura focus":"Charged heart");
             if(focus!=null){var g=new GameObject("Focus charge");g.transform.SetParent(transform,false);g.transform.localPosition=focus.localPosition;chargeRing=g.AddComponent<LineRenderer>();chargeRing.useWorldSpace=false;chargeRing.loop=true;chargeRing.positionCount=24;chargeRing.sharedMaterial=PresentationFx.SharedMaterial;chargeRing.widthMultiplier=.018f;for(int i=0;i<24;i++){float a=i*Mathf.PI*2/24;chargeRing.SetPosition(i,new Vector3(Mathf.Cos(a)*.24f,Mathf.Sin(a)*.24f,0));}}
         }
@@ -38,7 +38,7 @@ namespace Era
                 case WeaponKind.Aura:angles=new Vector3(-Anticipation*15+strike*22,0,0);break;
             }
             Sample=new WeaponPoseSample{euler=angles,offset=offset,strike=strike};
-            if(bowString!=null){bowString.SetPosition(1,new Vector3(-Anticipation*.18f,.48f,0));if(arrow!=null){arrow.localPosition=Vector3.left*Anticipation*.18f;arrow.gameObject.SetActive(age>.13f);}}
+            if(bowString!=null){bowString.SetPosition(1,new Vector3(-Anticipation*.18f,.48f,0));if(secondaryGrip!=null)secondaryGrip.localPosition=bowString.GetPosition(1);if(arrow!=null){arrow.localPosition=arrowBase+Vector3.left*Anticipation*.18f;arrow.gameObject.SetActive(age>.13f);}}
             if(chargeRing!=null){float pulse=.03f+Anticipation*.5f+strike*.4f;var c=GameData.Weapons[(int)kind].color;c.a=pulse*PresentationMotion.Intensity;chargeRing.startColor=chargeRing.endColor=c;chargeRing.transform.localRotation=Quaternion.Euler(0,clock*45,0);chargeRing.transform.localScale=Vector3.one*(.8f+pulse*.7f);}
         }
     }

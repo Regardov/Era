@@ -93,7 +93,7 @@ namespace Era
                 else if(item==ItemId.BlackHole||item==ItemId.ChaosPortal||item==ItemId.VoidShepherd)
                 {
                     foreach(var e in new List<EnemyState>(State.enemies))if(!EnemyCatalog.EffectImmune(e.kind)&&(e.position-f.position).sqrMagnitude<f.radius*f.radius)
-                    {var pull=f.position-e.position;pull.y=0;e.position=WorldMap.Resolve(e.position,pull.normalized*Mathf.Min(pull.magnitude,4*dt),EnemyRadius(e)*.55f);e.position.y=WorldMap.Ground(e.position)+(IsFlying(e.kind)?1.8f:0);}
+                    {var pull=f.position-e.position;pull.y=0;e.position=MoveEnemyBody(e,pull.normalized*Mathf.Min(pull.magnitude,4*dt));e.position.y=WorldMap.Ground(e.position)+(IsFlying(e.kind)?1.8f:0);}
                     if(f.time<=0&&item!=ItemId.ChaosPortal)Burst(p,f.position,f.radius,f.power);
                 }
                 else if(item==ItemId.StarMap||item==ItemId.EndlessRefrain)
@@ -161,7 +161,7 @@ namespace Era
             Travel(p,ItemId.LastPilgrim,distance,100,()=>{p.itemCounters[I(ItemId.LastPilgrim)]++;p.damage+=.03f*Stack(p,ItemId.LastPilgrim);if(p.itemCounters[I(ItemId.LastPilgrim)]%5==0)Burst(p,p.position,12,200*Stack(p,ItemId.LastPilgrim)*DamageMultiplier(p));});
             if(Has(p,ItemId.WarDrum)&&p.itemTimers[I(ItemId.WarDrum)]<=0)p.itemCounters[I(ItemId.WarDrum)]=0;
             if(p.stillTime>=2&&Ready(p,ItemId.VoidAnchor,3))
-            {foreach(var e in State.enemies)if(!EnemyCatalog.EffectImmune(e.kind)&&Vector3.Distance(e.position,p.position)<6)e.position=Vector3.MoveTowards(e.position,p.position,2);Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p));}
+            {foreach(var e in State.enemies)if(!EnemyCatalog.EffectImmune(e.kind)&&Vector3.Distance(e.position,p.position)<6)e.position=MoveEnemyBody(e,Vector3.ClampMagnitude(p.position-e.position,2));Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p));}
             if(p.stillTime>=2&&Ready(p,ItemId.WalkingCathedral,1))
             {foreach(var ally in State.players)if(Vector3.Distance(ally.position,p.position)<7*p.areaSize)Heal(ally,4*Stack(p,ItemId.WalkingCathedral));Burst(p,p.position,7,18*Stack(p,ItemId.WalkingCathedral)*DamageMultiplier(p));}
             if(Has(p,ItemId.ArchitectReign)&&p.stillTime>=8&&Ready(p,ItemId.ArchitectReign,8)&&State.itemFields.FindAll(f=>f.owner==p.id&&f.item==I(ItemId.ArchitectReign)).Count<5)

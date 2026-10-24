@@ -62,6 +62,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 463291985894663782}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &325090358909595235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3576596412430846662}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3576596412430846662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325090358909595235}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.50000006, y: -0.50000024, z: 0.49999964, w: 0.5}
+  m_LocalPosition: {x: -0.05500001, y: 0.07500016, z: 0.015000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3288825045447904594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &442715746267470467
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,6 +444,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 437428076143358277}
+  - {fileID: 5912141145754145717}
   m_Father: {fileID: 5687550702542309066}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2023780327274878652
@@ -447,6 +479,133 @@ Transform:
   - {fileID: 5687550702542309066}
   m_Father: {fileID: 8497734546108315142}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2166994006937809704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3689017318330080609}
+  - component: {fileID: 2765644921319000176}
+  m_Layer: 0
+  m_Name: Blender character / Ember
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3689017318330080609
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166994006937809704}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 470018042511016625}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &2765644921319000176
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2166994006937809704}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -8465586628019521445, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -2240192212936419563, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
+  m_Bones:
+  - {fileID: 5047177517115055964}
+  - {fileID: 4538646414971405646}
+  - {fileID: 6290311576146677855}
+  - {fileID: 2918775867000603919}
+  - {fileID: 4739053298903183191}
+  - {fileID: 6406077505497989323}
+  - {fileID: 1215380292714986855}
+  - {fileID: 1227238048461579593}
+  - {fileID: 5630809913048292456}
+  - {fileID: 322093703052188927}
+  - {fileID: 6860757380782970433}
+  - {fileID: 1131688638027414419}
+  - {fileID: 7862514496245306224}
+  - {fileID: 1004629681777954168}
+  - {fileID: 9070492900275104512}
+  - {fileID: 4392152607507607354}
+  - {fileID: 463291985894663782}
+  - {fileID: 7501339237553575466}
+  - {fileID: 1071397300094798084}
+  - {fileID: 153829499825617394}
+  - {fileID: 6566818293210491577}
+  - {fileID: 8281174031867064496}
+  - {fileID: 5380644864512225496}
+  - {fileID: 8497734546108315142}
+  - {fileID: 2832062096146213548}
+  - {fileID: 1254094414777544398}
+  - {fileID: 6059151228429210782}
+  - {fileID: 8053501393651389068}
+  - {fileID: 8755182701382276588}
+  - {fileID: 5157848248820498636}
+  - {fileID: 4601147885377162596}
+  - {fileID: 2715801634202179533}
+  - {fileID: 3741091335087931138}
+  - {fileID: 6250587673658699246}
+  - {fileID: 635135851591614673}
+  - {fileID: 4156762016159882380}
+  - {fileID: 5687550702542309066}
+  - {fileID: 830316506609258293}
+  - {fileID: 6176066874977577203}
+  - {fileID: 3288825045447904594}
+  - {fileID: 437428076143358277}
+  - {fileID: 5792175600739928134}
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 6290311576146677855}
+  m_AABB:
+    m_Center: {x: 0, y: 1.4, z: 0}
+    m_Extent: {x: 2, y: 2.5, z: 2}
+  m_DirtyAABB: 0
 --- !u!1 &2176296373938270403
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,37 +837,6 @@ Transform:
   - {fileID: 6860757380782970433}
   m_Father: {fileID: 5047177517115055964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3469273044360985696
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5931057916616247697}
-  m_Layer: 0
-  m_Name: Blender character / Ember
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5931057916616247697
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469273044360985696}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 470018042511016625}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3481941230816490892
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +868,37 @@ Transform:
   m_Children:
   - {fileID: 6059151228429210782}
   m_Father: {fileID: 7862514496245306224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3596230737839462898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8436757896629214917}
+  m_Layer: 0
+  m_Name: Blender character / Ember
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8436757896629214917
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3596230737839462898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 470018042511016625}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3722320681806466581
 GameObject:
@@ -786,7 +945,11 @@ GameObject:
   - component: {fileID: 2087532831890699141}
   - component: {fileID: 7232776978337938037}
   - component: {fileID: 6499700774402954962}
-  m_Layer: 0
+  - component: {fileID: 4304603734108953065}
+  - component: {fileID: 9148541177126131235}
+  - component: {fileID: 8025061278859692177}
+  - component: {fileID: 2610042400188506897}
+  m_Layer: 8
   m_Name: Ember
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -808,9 +971,10 @@ Transform:
   m_Children:
   - {fileID: 5047177517115055964}
   - {fileID: 5247206845860571347}
-  - {fileID: 5931057916616247697}
   - {fileID: 562501592122667491}
-  - {fileID: 1425323490983633051}
+  - {fileID: 5798883969621610572}
+  - {fileID: 8436757896629214917}
+  - {fileID: 3689017318330080609}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!111 &6485664964367568976
@@ -1053,42 +1217,42 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   model: Ember
-  sourceHash: ea54c0ad6d13e481cad580520169c2ef653df6637bdfbae58dc12087771abc66
-  version: 17
-  triangles: 2592
+  sourceHash: 67b185509fd3eafd9d9b5401f8fed3cca261cccd2a8a52632e30d9eccfa2e688
+  version: 19
+  triangles: 6688
   details:
   - Torso / tailored silhouette.004
   - Neck / weighted continuous bridge.004
-  - Sleeve / upper l.004
-  - Sleeve / lower l.004
+  - Sleeve / continuous weighted elbow l.004
   - Cuff / leather band l.004
   - Cuff / raised trim l.006
   - Cuff / raised trim l.007
-  - Palm / articulated l.004
+  - Palm / sculpted grip l.004
   - Finger l0.004
   - Finger l1.004
   - Finger l2.004
   - Finger l3.004
   - Thumb l.004
   - Leg / trousers l.004
+  - Leg / sealed weighted knee l.004
   - Boot / tall shaft l.004
   - Boot / shaped foot l.004
   - Boot / sole l.004
   - Boot / ankle strap l.006
   - Boot / ankle strap l.007
   - Boot / pointed cuff l.003
-  - Sleeve / upper r.004
-  - Sleeve / lower r.004
+  - Sleeve / continuous weighted elbow r.004
   - Cuff / leather band r.004
   - Cuff / raised trim r.006
   - Cuff / raised trim r.007
-  - Palm / articulated r.004
+  - Palm / sculpted grip r.004
   - Finger r0.004
   - Finger r1.004
   - Finger r2.004
   - Finger r3.004
   - Thumb r.004
   - Leg / trousers r.004
+  - Leg / sealed weighted knee r.004
   - Boot / tall shaft r.004
   - Boot / shaped foot r.004
   - Boot / sole r.004
@@ -1111,26 +1275,31 @@ MonoBehaviour:
   - Brow / angled.005
   - Ear / pointed elven pinna.001
   - Hair / continuous fitted scalp.002
-  - Hair / layered swept lock 0.002
-  - Hair / layered swept lock 1.002
-  - Hair / layered swept lock 2.002
-  - Hair / layered swept lock 3.002
-  - Hair / layered swept lock 4.002
-  - Hair / layered swept lock 5.002
-  - Hair / layered swept lock 6.002
-  - Hair / layered swept lock 7.002
-  - Hair / layered swept lock 8.002
-  - Hair / layered swept lock 9.002
-  - Hair / layered swept lock 10.002
-  - Hair / layered swept lock 11.002
-  - Hair / layered swept lock 12.002
-  - Hair / layered swept lock 13.002
-  - Hair / layered swept lock 14.002
-  - Hair / layered swept lock 15.002
-  - Hair / side swept fringe 0.002
-  - Hair / side swept fringe 1.002
-  - Hair / side swept fringe 2.002
-  - Hair / side swept fringe 3.002
+  - Hair / swept volume lock 0.002
+  - Hair / swept volume lock 1.002
+  - Hair / swept volume lock 2.002
+  - Hair / swept volume lock 3.002
+  - Hair / swept volume lock 4.002
+  - Hair / swept volume lock 5.002
+  - Hair / swept volume lock 6.002
+  - Hair / swept volume lock 7.002
+  - Hair / swept volume lock 8.002
+  - Hair / swept volume lock 9.002
+  - Hair / swept volume lock 10.002
+  - Hair / swept volume lock 11.002
+  - Hair / swept volume lock 12.002
+  - Hair / swept volume lock 13.002
+  - Hair / swept volume lock 14.002
+  - Hair / swept volume lock 15.002
+  - Hair / swept volume lock 16.002
+  - Hair / swept volume lock 17.002
+  - Hair / swept volume lock 18.002
+  - Hair / swept volume lock 19.002
+  - Hair / curved fringe 0.002
+  - Hair / curved fringe 1.002
+  - Hair / curved fringe 2.002
+  - Hair / curved fringe 3.002
+  - Hair / curved fringe 4.002
   - Hood / polygon crown and back.001
   - Hood / thick face opening -1.001
   - Hood / bound face edge.002
@@ -1176,6 +1345,81 @@ MonoBehaviour:
   - Arrow / split fletching.012
   - Arrow / split fletching.013
   - Tunic / woven centre trim
+--- !u!114 &4304603734108953065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3854681598343300688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42022feef409cb04ebcde47618ad3217, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  owner: -1
+--- !u!114 &9148541177126131235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3854681598343300688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189d1972853a43e45baf07325ab0c837, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!136 &8025061278859692177
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3854681598343300688}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4
+  m_Height: 2.23
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.115, z: 0}
+--- !u!54 &2610042400188506897
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3854681598343300688}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &3882448820957543765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,6 +1607,37 @@ Transform:
   m_Children:
   - {fileID: 6250587673658699246}
   m_Father: {fileID: 463291985894663782}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4381376864729492538
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5912141145754145717}
+  m_Layer: 0
+  m_Name: ERA palm socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5912141145754145717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381376864729492538}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5000001, y: -0.5000002, z: 0.4999997, w: -0.5000001}
+  m_LocalPosition: {x: 0.05499996, y: 0.07500017, z: 0.015000129}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6176066874977577203}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4388374482847907418
 GameObject:
@@ -1713,7 +1988,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4538646414971405646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6342306393734547241
+--- !u!1 &6372264806623604364
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1721,8 +1996,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1425323490983633051}
-  - component: {fileID: 3014685825508089621}
+  - component: {fileID: 5798883969621610572}
   m_Layer: 0
   m_Name: Blender character / Ember
   m_TagString: Untagged
@@ -1730,13 +2004,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1425323490983633051
+--- !u!4 &5798883969621610572
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6342306393734547241}
+  m_GameObject: {fileID: 6372264806623604364}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1745,101 +2019,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 470018042511016625}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!137 &3014685825508089621
-SkinnedMeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6342306393734547241}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 3
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 8069653407409333753, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  serializedVersion: 2
-  m_Quality: 0
-  m_UpdateWhenOffscreen: 0
-  m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 206625115842642740, guid: aafd94f076e618344996339a4e7be2d8, type: 2}
-  m_Bones:
-  - {fileID: 5047177517115055964}
-  - {fileID: 4538646414971405646}
-  - {fileID: 6290311576146677855}
-  - {fileID: 2918775867000603919}
-  - {fileID: 4739053298903183191}
-  - {fileID: 6406077505497989323}
-  - {fileID: 1215380292714986855}
-  - {fileID: 1227238048461579593}
-  - {fileID: 5630809913048292456}
-  - {fileID: 322093703052188927}
-  - {fileID: 6860757380782970433}
-  - {fileID: 1131688638027414419}
-  - {fileID: 7862514496245306224}
-  - {fileID: 1004629681777954168}
-  - {fileID: 9070492900275104512}
-  - {fileID: 4392152607507607354}
-  - {fileID: 463291985894663782}
-  - {fileID: 7501339237553575466}
-  - {fileID: 1071397300094798084}
-  - {fileID: 153829499825617394}
-  - {fileID: 6566818293210491577}
-  - {fileID: 8281174031867064496}
-  - {fileID: 5380644864512225496}
-  - {fileID: 8497734546108315142}
-  - {fileID: 2832062096146213548}
-  - {fileID: 1254094414777544398}
-  - {fileID: 6059151228429210782}
-  - {fileID: 8053501393651389068}
-  - {fileID: 8755182701382276588}
-  - {fileID: 5157848248820498636}
-  - {fileID: 4601147885377162596}
-  - {fileID: 2715801634202179533}
-  - {fileID: 3741091335087931138}
-  - {fileID: 6250587673658699246}
-  - {fileID: 635135851591614673}
-  - {fileID: 4156762016159882380}
-  - {fileID: 5687550702542309066}
-  - {fileID: 830316506609258293}
-  - {fileID: 6176066874977577203}
-  - {fileID: 3288825045447904594}
-  - {fileID: 437428076143358277}
-  - {fileID: 5792175600739928134}
-  m_BlendShapeWeights: []
-  m_RootBone: {fileID: 6290311576146677855}
-  m_AABB:
-    m_Center: {x: 0, y: 1.4, z: 0}
-    m_Extent: {x: 2, y: 2.5, z: 2}
-  m_DirtyAABB: 0
 --- !u!1 &6552318129271766764
 GameObject:
   m_ObjectHideFlags: 0
@@ -2222,6 +2401,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5792175600739928134}
+  - {fileID: 3576596412430846662}
   m_Father: {fileID: 830316506609258293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9013773085571639451

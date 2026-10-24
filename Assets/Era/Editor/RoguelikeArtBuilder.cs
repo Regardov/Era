@@ -7,11 +7,12 @@ namespace Era.Editor
 {
     public static class RoguelikeArtBuilder
     {
-        const string Marker="Assets/Era/Generated/RoguelikeActors-v13.txt";
+        const string Marker="Assets/Era/Generated/RoguelikeActors-v19.txt";
         public static void Prepare()
         {
-            if(File.Exists(Marker))return;
-            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,"Assets/Era/Generated/RoguelikeActors-v13.asset");
+            if(File.Exists(Marker)&&File.ReadAllText(Marker).StartsWith("v19.3"))return;
+            const string libraryPath="Assets/Era/Generated/RoguelikeActors-v19.asset";if(File.Exists(libraryPath))AssetDatabase.DeleteAsset(libraryPath);
+            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,libraryPath);
             var parent=new GameObject("Creature authoring");var v=new VisualFactory();
             try
             {
@@ -19,12 +20,13 @@ namespace Era.Editor
                 {
                     if(kind<EnemyKind.Skeleton&&kind!=EnemyKind.Brute)continue;
                     var m=RoguelikeCreatureArt.Create(v,parent.transform,kind);
+                    CharacterBodyBuilder.SmoothOrganicSurfaces(m);
                     Compact(m);
                     foreach(var f in m.GetComponentsInChildren<MeshFilter>())if(f.sharedMesh!=null&&!AssetDatabase.Contains(f.sharedMesh))AssetDatabase.AddObjectToAsset(f.sharedMesh,library);
                     foreach(var r in m.GetComponentsInChildren<Renderer>())foreach(var mat in r.sharedMaterials)if(mat!=null&&!AssetDatabase.Contains(mat))AssetDatabase.AddObjectToAsset(mat,library);
                     PrefabUtility.SaveAsPrefabAsset(m.gameObject,"Assets/Era/Resources/Creatures/"+kind+".prefab");UnityEngine.Object.DestroyImmediate(m.gameObject);
                 }
-                File.WriteAllText(Marker,"Original low-poly undead anatomy, layered stone/crystal golems, gel slimes, articulated ogres and flying wings. Flat normals; 12-20 radial sides and 6-12 rings.");AssetDatabase.SaveAssets();AssetDatabase.Refresh();
+                File.WriteAllText(Marker,"v19.3 / Smooth organic anatomy with angle-limited normals; hard stone/crystal and armor edges retained; crafted weapon meshes and anatomical grip sockets.");AssetDatabase.SaveAssets();AssetDatabase.Refresh();
             }
             finally{UnityEngine.Object.DestroyImmediate(parent);}
         }

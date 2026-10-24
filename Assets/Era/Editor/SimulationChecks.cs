@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            TuningAndRandomStarts();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
+            TuningAndRandomStarts();assertions+=BodyCollisionChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
@@ -261,7 +261,7 @@ namespace Era.Editor
                 Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=1,"skeletal actor retains real animation clips: "+character);
                 var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
                 bool faceted=character.StartsWith("Characters/")||character.EndsWith("Stalker")||character.EndsWith("Wisp");
-                Check(faceted?skin.sharedMaterial.shader.name=="Era/Faceted Realm"&&skin.sharedMesh.vertexCount<60000&&skin.sharedMesh.vertexCount==skin.sharedMesh.triangles.Length:skin.sharedMaterial.mainTexture!=null,"bounded detailed faceted mesh or existing painted atlas: "+character);
+                Check(faceted?skin.sharedMaterial.shader.name=="Era/Character Surface"&&skin.sharedMesh.vertexCount<60000&&skin.sharedMesh.vertexCount==skin.sharedMesh.triangles.Length&&skin.sharedMesh.normals.Length==skin.sharedMesh.vertexCount:skin.sharedMaterial.mainTexture!=null,"bounded authored smooth mesh or existing painted atlas: "+character);
             }
             for(int stage=1;stage<=7;stage++)
             {

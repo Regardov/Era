@@ -3,13 +3,13 @@ $projectPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $buildPath = Join-Path $projectPath 'Builds\Windows'
 if (-not (Test-Path -LiteralPath (Join-Path $buildPath 'Era.exe'))) { throw 'Build with Tools\Build.ps1 first' }
 # Only remove outdated documents from this generated build folder.
-foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md','RELEASE-v0.16.0.md','VALIDATION-v0.16.md','RELEASE-v0.17.0.md','VALIDATION-v0.17.md')) {
+foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md','RELEASE-v0.16.0.md','VALIDATION-v0.16.md','RELEASE-v0.17.0.md','VALIDATION-v0.17.md','RELEASE-v0.18.0.md','VALIDATION-v0.18.md')) {
     $eraOldPath = Join-Path $buildPath $eraOldDocument
     if (Test-Path -LiteralPath $eraOldPath) { Remove-Item -LiteralPath $eraOldPath }
 }
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
-foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.18.0.md','VALIDATION-v0.18.md','ANIMATION-AUDIT-v0.18.md')) {
+foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.19.0.md','VALIDATION-v0.19.md','CHARACTER-BODY-v0.19.md','ANIMATION-AUDIT-v0.18.md','body-checks-v019.json','rig-smoke-v019.json','animation-smoke-v019.json')) {
     $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
@@ -25,6 +25,7 @@ foreach ($eraImage in @('living-meadow-v015.png','raised-boss-hud-v015.png','bos
 foreach ($eraHero in @('ember','echo','lumen')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\hero-$eraHero-v016.png") -Destination (Join-Path $eraImageFolder "hero-$eraHero-v016.png") -Force
 }
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v019.png' | Copy-Item -Destination $eraImageFolder -Force
 foreach ($eraImage in @('character-Echo-v017.png','characters-crouching-v017.png','characters-crouching-side-v017.png')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
 }
@@ -40,3 +41,4 @@ Compress-Archive -Path (Join-Path $buildPath '*') -DestinationPath $archive -For
 $eraHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 [IO.File]::WriteAllText($archive + '.sha256', "$eraHash  Era-Windows.zip`n", [Text.UTF8Encoding]::new($false))
 Write-Output "Ready to share: $archive"
+& (Join-Path $PSScriptRoot 'Verify-Package.ps1')

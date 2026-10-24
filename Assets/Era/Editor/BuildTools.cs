@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.18.0";
+            PlayerSettings.bundleVersion = "0.19.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -46,7 +46,7 @@ namespace Era.Editor
             // Runtime-generated materials still need explicit shader references in the player build.
             var graphics = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")[0]);
             var included = graphics.FindProperty("m_AlwaysIncludedShaders");
-            foreach (string shaderName in new[] { "Standard", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture" })
+            foreach (string shaderName in new[] { "Standard", "Era/Character Surface", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture" })
             {
                 var shader = Shader.Find(shaderName); bool found = false;
                 if (shader == null) throw new Exception("Missing shader: " + shaderName);
@@ -58,7 +58,7 @@ namespace Era.Editor
             for(int i=0;i<included.arraySize;i++)if(included.GetArrayElementAtIndex(i).objectReferenceValue==waterShader)waterIncluded=true;
             if(!waterIncluded){included.InsertArrayElementAtIndex(included.arraySize);included.GetArrayElementAtIndex(included.arraySize-1).objectReferenceValue=waterShader;graphics.ApplyModifiedPropertiesWithoutUndo();}
             IconBuilder.Prepare();PrepareItemArtwork();SurfaceTextureBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();CharacterBodyBuilder.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);

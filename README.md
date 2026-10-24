@@ -1,6 +1,12 @@
-# ERA: Seven Realms — v0.18
+# ERA: Seven Realms — v0.19
 
-**[Скачать готовую игру v0.18 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.18.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.18.0). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать готовую игру v0.19 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.19.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.19.0). Распакуйте архив целиком и запустите `Era.exe`.
+
+Новое в v0.19: столкновения капсул игрока и врагов на хосте, скольжение вдоль тел, разделение толпы и учёт высоты прыжка. Семь моделей переработаны в Blender: сглаженные органические поверхности, объёмные пряди, закрытые рукава, толщина одежды и исправленные веса. Шесть видов оружия получили собственные меши, настраиваемые точки хвата, привязку к ладони и IK второй руки.
+
+**[Изменения и устройство систем v0.19](Docs/CHARACTER-BODY-v0.19.md)** · **[Проверки v0.19](Docs/VALIDATION-v0.19.md)** · **[Исходники Blender](ArtSource/Characters/README.md)**.
+
+![Обновлённые персонажи](ArtSource/Characters/Previews/ERA-seven-characters-v19.png)
 
 Новое в v0.18: плавные анимации героев и 16 типов врагов, фазы атак боссов, собственные движения оружия и стрел, эффекты способностей, сундуков, лута и окружения, плавный HUD и настройка интенсивности эффектов. Баланс v0.17 сохранён.
 

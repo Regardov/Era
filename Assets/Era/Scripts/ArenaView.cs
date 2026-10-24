@@ -26,7 +26,7 @@ namespace Era
         Transform dynamicRoot,previewRoot;
         float shake,footstep;
         int lastCoins,lastLevel=1;
-        class Actor {public GameObject root,weapon;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph,attackTelegraph;public float hp=-1,hitFlash;public int jump,land,cast,weaponKind=-1,weaponSerial,hitSerial;public Hero kind;public Renderer[] renderers;public Color[][] colors;public Vector3 lastPosition;}
+        class Actor {public GameObject root,weapon;public ActorBodyCollider body;public HeroMotion hero;public CreatureMotion creature;public Transform telegraph,attackTelegraph;public float hp=-1,hitFlash;public int jump,land,cast,weaponKind=-1,weaponSerial,hitSerial;public Hero kind;public Renderer[] renderers;public Color[][] colors;public Vector3 lastPosition;}
         class ChestVisual {public GameObject root;public Transform lid;public float openness;public bool announced;}
         void Awake()
         {
@@ -84,6 +84,7 @@ namespace Era
                     var hero=HeroMotion.Create(v,dynamicRoot,p.hero,p.name);actor=new Actor{root=hero.gameObject,hero=hero,kind=p.hero,hp=p.hp,jump=p.jumpSerial,land=p.landSerial,cast=p.castSerial};actors[p.id]=actor;actor.root.transform.position=p.position;
                     v.Ring("Ally marker",actor.root.transform,0.67f,GameData.HeroColor(p.hero),0.035f).transform.localPosition=Vector3.up*0.045f;
                 }
+                actor.body??=ActorBodyCollider.Attach(actor.root);actor.body.Present(p);var costume=actor.root.GetComponent<CostumeMotion>();if(costume!=null)costume.owner=p.id;
                 actor.root.SetActive(!p.eliminated);
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,p.position,blend);
                 actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
@@ -131,11 +132,12 @@ namespace Era
                 }
                 else if(actor.attackTelegraph!=null){Destroy(actor.attackTelegraph.gameObject);actor.attackTelegraph=null;}
                 float measured=PresentationMotion.Delta>0?Mathf.Min(e.speed,(e.position-actor.lastPosition).magnitude/PresentationMotion.Delta):0;
+                actor.body??=ActorBodyCollider.Attach(actor.root);actor.body.Present(e);
                 actor.creature.Present(e,measured);actor.lastPosition=e.position;
             }
             var dead=new List<int>();foreach(var pair in actors)if(!seen.Contains(pair.Key))dead.Add(pair.Key);
             foreach(int id in dead)
-            {var a=actors[id];if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.attackTelegraph!=null)Destroy(a.attackTelegraph.gameObject);if(a.creature!=null)a.creature.Die();else Destroy(a.root);actors.Remove(id);}
+            {var a=actors[id];a.body?.Retire();if(a.telegraph!=null)Destroy(a.telegraph.gameObject);if(a.attackTelegraph!=null)Destroy(a.attackTelegraph.gameObject);if(a.creature!=null)a.creature.Die();else Destroy(a.root);actors.Remove(id);}
             SyncHits(state);
             SyncAuras(state);SyncPortal(state);SyncHazards(state);SyncItemFields(state);SyncProjectiles(state,blend);SyncPickups(state,blend);SyncLoot(state);SyncEffects(state);SyncChests(state);
             encounters??=new EncounterView(v,dynamicRoot);encounters.Present(state);

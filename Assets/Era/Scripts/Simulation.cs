@@ -82,6 +82,7 @@ namespace Era
                 TickPlayer(p, input ?? new InputFrame(), dt);
             }
             TickShrines(dt,inputs);TickAfflictions(dt);TickEnemies(dt);TickHazards(dt);TickItemFields(dt);
+            SettleBodies(dt);
             TickProjectiles(dt);
             TickLoot(dt);
             CollectPickups(dt);
@@ -141,11 +142,11 @@ namespace Era
                 Effect(2, p.position + Vector3.up * 0.2f, 2);
                 OnItemDash(p,p.position);
             }
-            if (p.dashTime > 0) { p.position=WorldMap.Resolve(p.position,p.dashDirection*24*dt,0.4f); p.dashTime -= dt; }
-            else p.position=WorldMap.Resolve(p.position,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt,0.4f);
-            if(p.hitSlide>0){p.position=WorldMap.Resolve(p.position,p.knockback*dt,.4f);p.knockback*=Mathf.Exp(-11*dt);p.hitSlide=Mathf.Max(0,p.hitSlide-dt);}
-            float ground=WorldMap.Ground(p.position);
-            if(p.grounded && ground-p.position.y<0.5f)p.position.y=ground;
+            if (p.dashTime > 0) { p.position=MovePlayerBody(p,p.dashDirection*24*dt); p.dashTime -= dt; }
+            else p.position=MovePlayerBody(p,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt);
+            if(p.hitSlide>0){p.position=MovePlayerBody(p,p.knockback*dt);p.knockback*=Mathf.Exp(-11*dt);p.hitSlide=Mathf.Max(0,p.hitSlide-dt);}
+            float ground=ActorBodies.Support(State,p,p.position,p.position.y);
+            if(p.grounded){if(ground-p.position.y>=-.14f&&ground-p.position.y<.5f)p.position.y=ground;else if(p.position.y>ground+.14f){p.grounded=false;p.verticalSpeed=Mathf.Min(0,p.verticalSpeed);}}
             p.coyoteTime=p.grounded?0.12f:Mathf.Max(0,p.coyoteTime-dt);
             p.jumpBuffer=input.jump?0.14f:Mathf.Max(0,p.jumpBuffer-dt);
             if(p.grounded)p.airJumpsUsed=0;
@@ -156,7 +157,10 @@ namespace Era
             {
                 if(!input.jumpHeld && p.verticalSpeed>4.5f)p.verticalSpeed=4.5f;
                 p.verticalSpeed-=(p.verticalSpeed>0?24:36)*dt;
-                p.position.y+=p.verticalSpeed*dt;
+                float nextFeet=p.position.y+p.verticalSpeed*dt;
+                if(p.verticalSpeed>0){float ceiling=ActorBodies.Ceiling(State,p,nextFeet);if(ceiling<nextFeet){nextFeet=ceiling;p.verticalSpeed=0;}}
+                ground=ActorBodies.Support(State,p,p.position,p.position.y);
+                p.position.y=nextFeet;
                 if(p.position.y<=ground) { p.position.y=ground;p.verticalSpeed=0;p.grounded=true;p.landSerial++; }
             }
             p.velocity=(p.position-before)/Mathf.Max(0.001f,dt);
@@ -267,6 +271,8 @@ namespace Era
                 speed = kind == EnemyKind.Warden ? 1.9f : EnemyCatalog.Speed(kind),
                 damage = (kind == EnemyKind.Warden ? 28 : kind == EnemyKind.Brute || kind==EnemyKind.Ogre || kind==EnemyKind.StoneGolem ? 22 : 10)*(1+.18f*(State.stage-1))*difficulty, spawnGrace=.65f,attackTimer=1,specialTimer = 4,bossStage=kind==EnemyKind.Warden?State.stage:0 };
             if(IsFlying(kind))e.position.y+=1.8f;
+            e.position=ActorBodies.Recover(State,e.position,ActorBodies.Enemy(e),e.id,true,5);
+            e.position.y=WorldMap.Ground(e.position)+(IsFlying(kind)?1.8f:0);
             State.enemies.Add(e);
             return e;
         }
