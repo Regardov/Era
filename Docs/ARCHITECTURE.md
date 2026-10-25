@@ -58,7 +58,7 @@ Resources/Characters and Resources/Creatures contain editable runtime prefabs. H
 
 The 30 remaining original item pictures retain their supplied atlas UVs. New item definitions use complete centered transparent icons from Resources/Icons. IconLibrary handles both paths for HUD and floor sprites; sprite caches cover all 129 IDs.
 
-GameHud uses 1600×900 reference coordinates. Level/XP are top-center above two weapon slots; both teammates appear on the left, abilities at the bottom. Tab shows the map, items and 21 attribute/accessory tiles. I18n keeps language local. RewardNotice contains structured IDs. MusicComposer and SynthAudio provide original music and effects.
+GameHud uses 1600×900 reference coordinates. Level/XP are top-center above two weapon slots; both teammates appear on the left, abilities at the bottom. Tab shows the map, items and 21 attribute/accessory tiles. I18n keeps language local. RewardNotice contains structured IDs. MusicCatalog maps the menu and seven realms to eight streamed scores; SynthAudio crossfades two music sources and supplies synthesized effects. Editable scores and offline music rendering live in ArtSource/Music.
 
 ## Validation
 

@@ -1,4 +1,4 @@
-# Third-party game art
+# Third-party art and instruments
 
 Textured, rigged actors and their skeletal animation clips are by **Kay Lousberg / KayKit**. They are used under **Creative Commons Zero 1.0 Universal (CC0)**. These models and animations are not original ERA artwork.
 
@@ -10,7 +10,7 @@ Original GLB sources and original license files are retained under `Assets/Era/A
 
 The v0.8 Lumen and all seven realm bosses are derived from those same CC0 skeletal actors. ERA adds the ivory/gold palette, satin material, halo, crystals, antlers, crowns, armor and appendages. Their base meshes and animation clips remain KayKit work. Jump phase overlays, landing compression, portal effects, surface/normal maps and interactive grass are authored in this project.
 
-The terrain geometry, detail textures, icons, shrine meshes, crystal mesh, weapon meshes, music and synthesized sounds are authored in this project.
+The terrain geometry, detail textures, icons, shrine meshes, crystal mesh, weapon meshes, musical compositions and synthesized effects are authored in this project. The current soundtrack uses the sampled instruments credited below.
 # v0.10 additions
 
 Storm of the Seven is an original programmatically composed battle score (128 BPM, minor orchestral synth/pulse/percussion), authored in MusicComposer.cs. HumanArtBuilder derives smooth, adult-proportioned meshes from the existing CC0 KayKit models while retaining their UVs, skin weights and clips. Original templates and KayKit licensing remain in the project. The supplied item artwork in Resources/UI/item-atlas.png is preserved; UI and loot use sprite regions from that file. Stone walls, resource graphics cards and trial altar decorations are original code-authored meshes.
@@ -26,3 +26,7 @@ The four item sheets in Resources/UI/item-sheet-1.png through item-sheet-4.png w
 # v0.16 additions
 
 The seven meshes in `ArtSource/Characters/ERA_Character_Workshop.blend` are newly authored Blender geometry, created by the project's `build_characters.py` from the character references supplied by the owner. Reference images are not redistributed. Costume parts, per-face palettes, skin weights and proportion targets are authored in this project. The models reuse the existing CC0 KayKit bone hierarchy; the Unity prefabs retain the KayKit animation clips listed above. The exported FBX files contain armatures and weights, without animation clips. Earlier KayKit source meshes and licenses remain available for provenance and for creatures not replaced in this release.
+
+# Eight-track soundtrack
+
+The current eight musical compositions, melodies and MIDI arrangements are original ERA work in `ArtSource/Music/compose_soundtrack.py`. Their instrumental performances were rendered offline with **GeneralUser GS 2.0.3 by S. Christian Collins** using **FluidSynth 2.6.1**. GeneralUser GS permits private/commercial music creation and publication of recordings. The author's full license is included at `ArtSource/Music/GeneralUser-GS-LICENSE.txt`; [official instrument repository and documentation](https://github.com/mrbumpy409/GeneralUser-GS) and [official FluidSynth release](https://github.com/FluidSynth/fluidsynth/releases/tag/v2.6.1) provide provenance. Only the rendered music ships in the player; the SoundFont bank and FluidSynth libraries are authoring tools, not runtime dependencies. The previous two synthesized music loops have been replaced.

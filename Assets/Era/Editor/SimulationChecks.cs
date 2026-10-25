@@ -209,7 +209,16 @@ namespace Era.Editor
             }
             Check(supplied==120,"all 120 supplied pictures are mapped to distinct existing items");
             foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);Check(model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses the smooth adult proportion rig: "+hero);}
-            Check(Resources.Load<AudioClip>("Audio/Storm-of-the-Seven")?.length>25,"separate battle score is included");
+            Check(MusicCatalog.Count==CampaignData.StageCount+1,"menu and all seven realms have separate scores");
+            var musicPaths=new System.Collections.Generic.HashSet<string>();
+            for(int music=0;music<MusicCatalog.Count;music++)
+            {
+                Check(musicPaths.Add(MusicCatalog.Path(music)),"soundtrack resource is unique: "+music);
+                var score=Resources.Load<AudioClip>(MusicCatalog.Path(music));
+                Check(score!=null&&score.channels==2&&score.frequency==44100&&score.length>85,"full stereo score is included: "+music);
+                Check(score!=null&&score.loadType==AudioClipLoadType.Streaming,"soundtrack streams rather than decompressing the full album: "+music);
+            }
+            Check(MusicCatalog.Select(false,7)==0&&MusicCatalog.Select(true,1)==1&&MusicCatalog.Select(true,7)==7,"music follows menu and realm state");
             WorldMap.SetStage(1);
         }
         static void Crouching()
@@ -242,7 +251,7 @@ namespace Era.Editor
         }
         static void Presentation()
         {
-            var audio=Resources.Load<AudioClip>("Audio/Stillwater-at-Dawn");Check(audio!=null&&audio.length>40&&audio.channels==2,"original stereo music is included");
+            var audio=Resources.Load<AudioClip>(MusicCatalog.Path(0));Check(audio!=null&&audio.length>120&&audio.channels==2,"full original menu score is included");
             var echoPrefab=Resources.Load<GameObject>("Characters/Echo");
             Check(echoPrefab!=null&&echoPrefab.GetComponent<HeroMotion>().Hero==Hero.Echo,"editable Echo prefab keeps selected character identity");
             var brutePrefab=Resources.Load<GameObject>("Creatures/Brute");Check(brutePrefab!=null&&brutePrefab.GetComponent<CreatureMotion>().limbs.Count==4,"creature prefab preserves animation joints");

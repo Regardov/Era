@@ -516,6 +516,7 @@ namespace Era
             Flat(0,0,1600,900,new Color(.27f,.36f,.31f,.58f));Box(470,90,660,760,Panel,28);Text(paused?"Take a breath.":"Make yourself at home.",510,152,580,53,33,Ink,true);
             Text(paused?(App.Online?"Your companion's world keeps moving.":"Your solo adventure is paused."):"A little music. A little magic.",512,222,576,42,20,Muted);
             Text("Music",513,304,574,28,20,Ink,true);if(!capturing)App.MusicVolume=GUI.HorizontalSlider(new Rect(513,353,574,24),App.MusicVolume,0,.7f);else Bar(513,353,574,6,App.MusicVolume/.7f,Sage);
+            Text(I18n.P("Now playing: ","Сейчас: ")+MusicCatalog.Title(SynthAudio.Instance!=null?SynthAudio.Instance.CurrentMusicIndex:0),513,376,574,18,12,Sage);
             Text("Sound effects",513,402,574,28,20,Ink,true);if(!capturing)App.Volume=GUI.HorizontalSlider(new Rect(513,451,574,24),App.Volume,0,1);else Bar(513,451,574,6,App.Volume,Sage);
             Text("Mouse sensitivity",513,498,574,28,20,Ink,true);if(!capturing)App.MouseSensitivity=GUI.HorizontalSlider(new Rect(513,547,574,24),App.MouseSensitivity,.5f,5);else Bar(513,547,574,6,App.MouseSensitivity/5,Sage);
             Text(I18n.P("Display mode","Режим экрана"),513,577,280,25,18,Ink,true);

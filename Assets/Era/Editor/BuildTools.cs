@@ -86,15 +86,16 @@ namespace Era.Editor
         }
         static void PrepareMusic()
         {
-            foreach(string path in new[]{"Assets/Era/Resources/Audio/Stillwater-at-Dawn.wav","Assets/Era/Resources/Audio/Storm-of-the-Seven.wav"})
+            for(int index=0;index<MusicCatalog.Count;index++)
             {
-                if(!File.Exists(path)){if(path.Contains("Storm-of-the-Seven"))MusicComposer.WriteBattleWave(path);else MusicComposer.WriteWave(path);}
+                string path="Assets/Era/Resources/Audio/"+MusicCatalog.Files[index]+".ogg";
+                if(!File.Exists(path))throw new Exception("Missing soundtrack master: "+path+". Render ArtSource/Music/compose_soundtrack.py first.");
                 AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceSynchronousImport);
                 var importer=(AudioImporter)AssetImporter.GetAtPath(path);
                 if(importer!=null)
                 {
-                    var settings=importer.defaultSampleSettings;settings.loadType=AudioClipLoadType.DecompressOnLoad;settings.compressionFormat=AudioCompressionFormat.Vorbis;settings.quality=.7f;
-                    importer.defaultSampleSettings=settings;importer.forceToMono=false;importer.SaveAndReimport();
+                    var settings=importer.defaultSampleSettings;settings.loadType=AudioClipLoadType.Streaming;settings.compressionFormat=AudioCompressionFormat.Vorbis;settings.quality=.85f;
+                    importer.defaultSampleSettings=settings;importer.forceToMono=false;importer.loadInBackground=true;importer.SaveAndReimport();
                 }
             }
         }

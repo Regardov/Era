@@ -4,6 +4,8 @@
 
 В текущих исходниках обновлено окружение: прозрачные ручьи с преломлением, галечным дном и мягкими бликами; разветвлённые деревья с отдельными колышущимися листьями и хвойными кронами. Справа в игре появилась **квадратная миникарта ближайшей местности**, а Tab открывает квадратную карту всего мира с реками, рельефом и живыми маркерами. [Описание и проверка окружения](Docs/ENVIRONMENT-POLISH.md).
 
+Добавлен новый саундтрек: **отдельная композиция меню и семь тем миров**, всего 15 минут музыки с семплированными инструментами, развитием аранжировок и зацикливанием. Между треками — плавные переходы; на паузе музыка приглушается. [Превью, список треков и MIDI](ArtSource/Music/README.md) · [Воспроизведение и проверки](Docs/MUSIC.md).
+
 Новое в v0.19: столкновения капсул игрока и врагов на хосте, скольжение вдоль тел, разделение толпы и учёт высоты прыжка. Семь моделей переработаны в Blender: сглаженные органические поверхности, объёмные пряди, закрытые рукава, толщина одежды и исправленные веса. Шесть видов оружия получили собственные меши, настраиваемые точки хвата, привязку к ладони и IK второй руки.
 
 **[Изменения и устройство систем v0.19](Docs/CHARACTER-BODY-v0.19.md)** · **[Проверки v0.19](Docs/VALIDATION-v0.19.md)** · **[Исходники Blender](ArtSource/Characters/README.md)**.
@@ -160,7 +162,7 @@ The heroes retain CC0 **KayKit Adventurers / Skeletons 1.0** rigs and clips unde
 
 Original GLB files, license texts, native meshes/clips and painted texture atlases are in `Assets/Era/Art/KayKit`. See `Docs/THIRD-PARTY.md`. `KayKitImporter` performs an offline conversion into native Unity assets; no external runtime importer is needed. Subtle seamless ground, stone and wood detail textures are authored in `SurfaceTextureBuilder`; materials and foliage wind are applied without replacing the baked world scene.
 
-The original **Stillwater at Dawn** score is composed in code: 16 bars, 88 BPM, stereo pads, plucked bells, bass and soft percussion. The actual WAV asset is in **`Assets/Era/Resources/Audio/Stillwater-at-Dawn.wav`**. `MusicComposer.cs` contains the score and synthesizer. `SynthAudio.cs` supplies footsteps, jumps, landings, spells, shots, pickups, chest opening, level-ups, hurt and menu cues. Music and effects have independent sliders.
+The soundtrack has **eight original compositions: one for the menu and one for each realm**, totalling 15:06. The sampled arrangements include piano, harp, woodwinds, strings, horns, choir, organ and percussion. Editable MIDI and the score/rendering script are in **`ArtSource/Music`**; stereo Ogg masters are in **`Assets/Era/Resources/Audio`**. Music streams through a pair of sources with 2.4-second crossfades and pause ducking. `SynthAudio.cs` also supplies footsteps, jumps, landings, spells, shots, pickups, chest opening, level-ups, hurt and menu cues. Music and effects have independent sliders.
 
 ## Build and verification
 
@@ -204,7 +206,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 - `HudTextLayout.cs`: shared word wrapping for the live UI and screenshots.
 - `Assets/Era/Art/KayKit`: source models, painted atlases, native skeletal clips and licenses.
 - `GameHud.cs`, `I18n.cs`, `IconLibrary.cs`, `FrameCapture.cs`: bilingual HUD, menus and offscreen capture.
-- `MusicComposer.cs`, `SynthAudio.cs`: original soundtrack and effects.
+- `ArtSource/Music/compose_soundtrack.py`, `MusicCatalog.cs`, `SynthAudio.cs`: original soundtrack, realm selection, streaming transitions and effects.
 - `Assets/Era/Generated/`: saved map meshes/materials. `Assets/Era/Editor/`: bake/build/check tools.
 
 This is a prototype: seven realms/bosses, three heroes, four attack weapon types plus an aura conduit, 31 chest items, 21 accessories/stats, eight auras, three relics and eight blessings. Online matchmaking, gamepads and persistent meta-progression are not implemented. All heroes use CC0 skeletal clips with authored overlays and original decoration. The host remains authoritative; TCP snapshots suit LAN/VPN, with no local prediction for high latency.

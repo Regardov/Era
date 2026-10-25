@@ -5,20 +5,34 @@ namespace Era
     public sealed class SynthAudio : MonoBehaviour
     {
         public static SynthAudio Instance {get;private set;}
-        public bool MusicPlaying=>music!=null && music.isPlaying;
-        public bool MusicReady=>music!=null && music.clip!=null&&battle!=null&&battle.clip!=null;
-        public bool BattlePlaying=>battle!=null&&battle.isPlaying&&battle.volume>.001f;
-        AudioSource source,music,battle;
+        public bool MusicPlaying=>musicSources!=null&&((musicSources[0].isPlaying&&musicSources[0].volume>.001f)||(musicSources[1].isPlaying&&musicSources[1].volume>.001f));
+        public bool MusicReady {get{if(scores==null||scores.Length!=MusicCatalog.Count)return false;foreach(var score in scores)if(score==null)return false;return true;}}
+        public bool BattlePlaying=>CurrentMusicIndex>0&&MusicPlaying;
+        public int CurrentMusicIndex {get;private set;}=-1;
+        public bool MusicTransitioning=>transition<1;
+        public float MusicClock=>musicSources!=null?musicSources[activeSource].time:0;
+        public float MusicGain=>musicSources!=null?Mathf.Max(musicSources[0].volume,musicSources[1].volume):0;
+        public const float CrossfadeSeconds=2.4f;
+        AudioSource source;
+        AudioSource[] musicSources;
+        AudioClip[] scores;
+        readonly int[] sourceTracks={-1,-1};
+        readonly float[] weights=new float[2],startWeights=new float[2];
+        int activeSource;float transition=1,duck=1;
         AudioClip[] clips;
         AudioClip step;
         float lastShot,lastCoin,lastHit;
         void Awake()
         {
             Instance=this;source=gameObject.AddComponent<AudioSource>();source.spatialBlend=0;
-            music=gameObject.AddComponent<AudioSource>();music.spatialBlend=0;music.loop=true;
-            music.clip=Resources.Load<AudioClip>("Audio/Stillwater-at-Dawn");
-            music.volume=GameApp.Instance!=null?GameApp.Instance.MusicVolume:.3f;if(music.clip!=null)music.Play();
-            battle=gameObject.AddComponent<AudioSource>();battle.spatialBlend=0;battle.loop=true;battle.clip=Resources.Load<AudioClip>("Audio/Storm-of-the-Seven");battle.volume=0;if(battle.clip!=null)battle.Play();
+            scores=new AudioClip[MusicCatalog.Count];for(int i=0;i<scores.Length;i++)scores[i]=Resources.Load<AudioClip>(MusicCatalog.Path(i));
+            musicSources=new AudioSource[2];
+            for(int i=0;i<2;i++)
+            {
+                var player=gameObject.AddComponent<AudioSource>();player.playOnAwake=false;player.spatialBlend=0;player.loop=true;
+                player.ignoreListenerPause=true;player.priority=0;player.dopplerLevel=0;player.volume=0;musicSources[i]=player;
+            }
+            if(MusicReady)SwitchMusic(0);else Debug.LogError("ERA: one or more soundtrack clips are missing");
             clips=new[]{Tone("Seeker",720,350,.11f,.13f),Tone("Sunburst",200,70,.46f,.25f,0.13f),Tone("Mote",900,1300,.12f,.12f),
                 Tone("Resonance",410,820,.65f,.19f),Tone("Jump",160,500,.23f,.14f),Tone("Landing",110,50,.17f,.16f,0.65f),
                 Tone("Dash",300,720,.20f,.14f,0.5f),Tone("Coin",1250,1700,.15f,.14f),Tone("Chest",410,1040,.70f,.23f),
@@ -28,9 +42,30 @@ namespace Era
         void Update()
         {
             var app=GameApp.Instance;if(app==null)return;
-            bool combat=app.InRun&&app.State.phase==RunPhase.Playing;float target=app.MusicVolume*(combat?0:1);
-            music.volume=Mathf.Lerp(music.volume,target,1-Mathf.Exp(-Time.unscaledDeltaTime*2));
-            battle.volume=Mathf.Lerp(battle.volume,combat?app.MusicVolume:0,1-Mathf.Exp(-Time.unscaledDeltaTime*2));
+            int desired=MusicCatalog.Select(app.InRun,app.State?.stage??1);
+            // Reverse an existing fade immediately. Other rapid changes coalesce to the latest realm.
+            if(desired!=CurrentMusicIndex&&(!MusicTransitioning||sourceTracks[0]==desired||sourceTracks[1]==desired))SwitchMusic(desired);
+            float dt=Time.unscaledDeltaTime;transition=Mathf.Min(1,transition+dt/CrossfadeSeconds);
+            float blend=Mathf.SmoothStep(0,1,transition);
+            float targetDuck=app.WorldPaused?.48f:app.InRun&&app.State.phase!=RunPhase.Playing?.65f:1;
+            duck=Mathf.Lerp(duck,targetDuck,1-Mathf.Exp(-dt*3));
+            for(int i=0;i<2;i++)
+            {
+                weights[i]=Mathf.Lerp(startWeights[i],i==activeSource?1:0,blend);
+                musicSources[i].volume=Mathf.Sqrt(Mathf.Max(0,weights[i]))*Mathf.Clamp(app.MusicVolume,0,.7f)*duck;
+                if(transition>=1&&i!=activeSource&&musicSources[i].isPlaying){musicSources[i].Stop();musicSources[i].clip=null;sourceTracks[i]=-1;}
+            }
+        }
+        void SwitchMusic(int index)
+        {
+            if(!MusicReady)return;
+            int next=sourceTracks[0]==index?0:sourceTracks[1]==index?1:weights[0]<=weights[1]?0:1;
+            if(sourceTracks[next]!=index)
+            {
+                var player=musicSources[next];player.Stop();player.clip=scores[index];player.volume=0;player.time=0;player.Play();sourceTracks[next]=index;weights[next]=0;
+            }
+            for(int i=0;i<2;i++)startWeights[i]=weights[i];
+            activeSource=next;CurrentMusicIndex=index;transition=0;
         }
         static AudioClip Tone(string name,float start,float end,float length,float volume,float noise=0)
         {
