@@ -40,6 +40,18 @@ namespace Era
                 {float a=s*Mathf.PI*2/sides;Add((r==0?from:to)+(side*Mathf.Cos(a)+other*Mathf.Sin(a))*(r==0?radius:endRadius),new Vector2(s/(float)sides,r*(to-from).magnitude*.6f),color);}
                 for(int s=0;s<sides;s++){int a=first+s,b=first+s+1,c=first+s+sides+1,d=c+1;Tri(a,c,b);Tri(b,c,d);}
             }
+            public void Leaf(Vector3 root,Vector3 direction,Vector3 side,float length,float width,Color color)
+            {
+                direction.Normalize();side.Normalize();var fold=Vector3.Cross(direction,side)*width*.22f;
+                int a=Add(root,new Vector2(.5f,0),color*.76f);
+                int b=Add(root+direction*length*.38f-side*width,new Vector2(0,.38f),color);
+                int c=Add(root+direction*length*.38f+fold,new Vector2(.5f,.38f),color*1.06f);
+                int d=Add(root+direction*length*.38f+side*width,new Vector2(1,.38f),color);
+                int e=Add(root+direction*length*.75f-side*width*.57f,new Vector2(.21f,.75f),color*1.07f);
+                int f=Add(root+direction*length*.75f+side*width*.57f,new Vector2(.79f,.75f),color*1.07f);
+                int g=Add(root+direction*length+fold*.3f,new Vector2(.5f,1),color*1.12f);
+                Tri(a,b,c);Tri(a,c,d);Tri(b,e,c);Tri(c,f,d);Tri(c,e,g);Tri(c,g,f);
+            }
             public void Boulder(Vector3 center,Vector3 scale,Color color,int seed,bool leaves=false)
             {
                 const int sides=12,rings=7;int start=v.Count;
@@ -69,7 +81,7 @@ namespace Era
             var props=new GameObject("02 / Bark, foliage and weathered rocks").transform;props.SetParent(root,false);
             var grass=new GameObject("03 / Meadow carpet").transform;grass.SetParent(root,false);
             Color grassColor=CampaignData.GrassColors[stage-1],leafColor=CampaignData.LeafColors[stage-1];
-            var terrainMat=new Material(Shader.Find("Era/Realm Terrain")){name="Terrain / "+stage};terrainMat.SetTexture("_MainTex",Resources.Load<Texture2D>("Textures/MeadowDetail"));terrainMat.SetTexture("_StoneTex",Resources.Load<Texture2D>("Textures/StoneDetail"));terrainMat.SetColor("_Color",grassColor.linear*1.45f);
+            var terrainMat=new Material(Shader.Find("Era/Realm Terrain")){name="Terrain / "+stage};terrainMat.SetTexture("_MainTex",Resources.Load<Texture2D>("Textures/MeadowDetail"));terrainMat.SetTexture("_StoneTex",Resources.Load<Texture2D>("Textures/StoneDetail"));terrainMat.SetColor("_Color",grassColor.linear*1.45f);terrainMat.SetFloat("_RealmStage",stage);
             var barkMat=Surface("Bark",1,Resources.Load<Texture2D>("Textures/WoodDetail"),Resources.Load<Texture2D>("Textures/WoodNormal"));
             var rockMat=Surface("Stone",0,Resources.Load<Texture2D>("Textures/StoneDetail"),Resources.Load<Texture2D>("Textures/StoneNormal"));rockMat.SetColor("_MossColor",grassColor);
             var leafMat=new Material(Shader.Find("Era/Realm Leaves")){name="Canopy / "+stage};leafMat.mainTexture=Resources.Load<Texture2D>("Textures/LeafDetail");
@@ -140,19 +152,35 @@ namespace Era
         {var mat=new Material(Shader.Find("Era/Realm Surface")){name=name,mainTexture=texture};mat.SetFloat("_Kind",kind);mat.SetTexture("_BumpMap",normal);return mat;}
         static void Bush(Cell cell,WorldProp prop,Color leaf,int seed)
         {
-            float s=prop.size;
-            for(int branch=0;branch<5;branch++)
+            float s=prop.size;var random=new System.Random(seed);
+            for(int branch=0;branch<7;branch++)
             {
-                float a=branch*2.39996f+prop.angle;var tip=prop.position+new Vector3(Mathf.Cos(a)*.48f,.5f+branch*.08f,Mathf.Sin(a)*.48f)*s;
+                float a=branch*2.39996f+prop.angle*Mathf.Deg2Rad;var tip=prop.position+new Vector3(Mathf.Cos(a)*.48f,.5f+branch*.08f,Mathf.Sin(a)*.48f)*s;
                 cell.bark.Tube(prop.position,tip,.035f*s,.012f*s,new Color(.37f,.29f,.18f),5);
-                cell.leaves.Boulder(tip,new Vector3(.58f,.42f,.53f)*s,leaf*(1.1f+branch*.025f),seed+branch,true);
+                Spray(cell.leaves,tip,new Vector3(.48f,.32f,.48f)*s,leaf,random,22,false);
+            }
+        }
+        static float Range(System.Random random,float min,float max)=>Mathf.Lerp(min,max,(float)random.NextDouble());
+        static void Spray(Draft draft,Vector3 center,Vector3 spread,Color tint,System.Random random,int count,bool needles)
+        {
+            for(int i=0;i<count;i++)
+            {
+                float a=i*2.399963f+Range(random,-.5f,.5f),y=Range(random,-.7f,1),r=Mathf.Sqrt(1-y*y);
+                var direction=new Vector3(Mathf.Cos(a)*r,y,Mathf.Sin(a)*r);
+                var root=center+Vector3.Scale(direction,spread)*Range(random,.25f,1);
+                var forward=(direction+Vector3.up*Range(random,.15f,.7f)).normalized;
+                var side=Quaternion.AngleAxis(Range(random,-70,70),forward)*Vector3.Cross(forward,Vector3.up).normalized;
+                float size=Range(random,.30f,.55f)*(spread.x+spread.z);
+                draft.Leaf(root,forward,side,size, size*(needles?.11f:.32f),tint*Range(random,.78f,1.18f));
             }
         }
         static void BuildStreams(Transform root,int stage)
         {
             var streams=new GameObject("04 / Flowing streams").transform;streams.SetParent(root,false);
             var material=new Material(Shader.Find("Era/Stream Water")){name="Clear flowing water / "+stage};
-            material.SetColor("_Color",stage>=5?new Color(.18f,.34f,.48f):new Color(.15f,.46f,.46f));
+            material.SetColor("_Color",stage>=5?new Color(.10f,.22f,.35f):new Color(.07f,.32f,.34f));
+            material.SetColor("_ShallowColor",stage>=5?new Color(.35f,.56f,.68f):new Color(.38f,.73f,.66f));
+            material.SetFloat("_Clarity",.42f);
             for(int river=0;river<2;river++)for(int chunk=-8;chunk<8;chunk++)
             {
                 var draft=new Draft();
@@ -172,28 +200,61 @@ namespace Era
         }
         static void Tree(Cell cell,WorldProp prop,System.Random random,int stage,Color leaf)
         {
-            Vector3 p=prop.position;float scale=prop.size,height=(4.5f+(float)random.NextDouble()*2)*scale;float lean=((float)random.NextDouble()-.5f)*.6f;
-            Color bark=new Color(.50f,.39f,.28f);Vector3 middle=p+new Vector3(lean,height*.52f,0),top=p+new Vector3(lean*.6f,height,0);
-            cell.bark.Tube(p,middle,.31f*scale,.22f*scale,bark);cell.bark.Tube(middle,top,.22f*scale,.07f*scale,bark);
-            for(int r=0;r<4;r++){float a=r*Mathf.PI*.5f+prop.angle;cell.bark.Tube(p+new Vector3(Mathf.Cos(a),.015f,Mathf.Sin(a))*scale,p+Vector3.up*.8f*scale,.10f*scale,.18f*scale,bark);}
+            Vector3 p=prop.position;float scale=prop.size,height=Range(random,6.4f,8.6f)*scale,angle=prop.angle*Mathf.Deg2Rad;
+            Color bark=Color.Lerp(new Color(.39f,.31f,.23f),new Color(.62f,.52f,.38f),Range(random,0,1));
+            var lean=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*Range(random,.18f,.65f)*scale;
+            Vector3 previous=p-Vector3.up*.12f;
+            for(int segment=1;segment<=6;segment++)
+            {
+                float t=segment/6f;var next=p+Vector3.up*height*t+lean*(t*t)+new Vector3(Mathf.Sin(t*5+angle),0,Mathf.Cos(t*4+angle))*.10f*scale*t;
+                cell.bark.Tube(previous,next,Mathf.Lerp(.34f,.025f,(segment-1)/6f)*scale,Mathf.Lerp(.34f,.025f,t)*scale,bark,10);previous=next;
+            }
+            for(int r=0;r<6;r++)
+            {
+                float a=r*Mathf.PI/3+angle,reach=Range(random,.7f,1.25f)*scale;
+                var root=WorldMap.OnGround(p.x+Mathf.Cos(a)*reach,p.z+Mathf.Sin(a)*reach)+Vector3.up*.025f;
+                var knee=Vector3.Lerp(root,p,.65f)+Vector3.up*.23f*scale;
+                cell.bark.Tube(root,knee,.035f*scale,.14f*scale,bark,6);cell.bark.Tube(knee,p+Vector3.up*.85f*scale,.14f*scale,.23f*scale,bark,8);
+            }
             bool pine=stage==3||stage==6||random.NextDouble()<.22;
             if(pine)
             {
-                for(int band=0;band<4;band++)
+                for(int band=0;band<7;band++)
                 {
-                    float h=height*(.38f+band*.17f),radius=(1.6f-band*.3f)*scale;Vector3 center=p+new Vector3(lean*.5f,h,0);
-                    cell.leaves.Boulder(center,new Vector3(radius,height*.19f,radius),leaf*(1+band*.035f),prop.kind+band*39,true);
+                    float t=.27f+band*.103f,reach=(2.3f-band*.28f)*scale;var start=p+Vector3.up*height*t+lean*t*t;
+                    for(int b=0;b<6;b++)
+                    {
+                        float a=angle+b*Mathf.PI/3+band*.72f;var radial=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));
+                        var end=start+radial*reach+Vector3.up*height*.035f;
+                        cell.bark.Tube(start,end,.085f*scale*(1-t),.012f*scale,bark,6);
+                        for(int twig=0;twig<3;twig++)
+                        {
+                            var tip=Vector3.Lerp(start,end,.42f+twig*.25f)+Vector3.up*.15f*scale;
+                            Spray(cell.leaves,tip,new Vector3(.55f,.30f,.55f)*scale*(1-band*.07f),leaf*(.84f+band*.035f),random,12,true);
+                        }
+                    }
                 }
+                Spray(cell.leaves,previous,new Vector3(.25f,.5f,.25f)*scale,leaf,random,20,true);
                 return;
             }
-            for(int b=0;b<6;b++)
+            int limbs=random.Next(8,12);
+            for(int b=0;b<limbs;b++)
             {
-                float a=b*Mathf.PI/3+prop.angle*Mathf.Deg2Rad,reach=(1.1f+(float)random.NextDouble()*.65f)*scale;
-                var end=p+new Vector3(Mathf.Cos(a)*reach,height*(.64f+(b%3)*.09f),Mathf.Sin(a)*reach);
-                cell.bark.Tube(middle,end,.14f*scale,.035f*scale,bark);
-                cell.leaves.Boulder(end+Vector3.up*.42f*scale,new Vector3(1.25f,.93f,1.16f)*scale,leaf,41+b*71,true);
+                float a=angle+b*2.399963f,t=.34f+b/(float)limbs*.48f,reach=Range(random,1.8f,2.9f)*scale*(1-(t-.34f)*.6f);
+                var radial=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));var start=p+Vector3.up*height*t+lean*t*t;
+                var elbow=start+radial*reach*.62f+Vector3.up*height*.10f;
+                var tip=start+radial*reach+Vector3.up*height*Range(random,.15f,.25f);
+                float thickness=(.15f-b*.007f)*scale;
+                cell.bark.Tube(start,elbow,thickness,thickness*.55f,bark,8);cell.bark.Tube(elbow,tip,thickness*.55f,.02f*scale,bark,7);
+                for(int fork=0;fork<4;fork++)
+                {
+                    float turn=a+(fork-1.5f)*.70f;var twigStart=Vector3.Lerp(elbow,tip,.25f+fork*.18f);
+                    var end=twigStart+new Vector3(Mathf.Cos(turn)*.8f,Range(random,.25f,.8f),Mathf.Sin(turn)*.8f)*scale;
+                    cell.bark.Tube(twigStart,end,.035f*scale,.008f*scale,bark,5);
+                    Spray(cell.leaves,end,new Vector3(.78f,.50f,.78f)*scale,leaf*(.94f+t*.15f),random,23,false);
+                }
             }
-            cell.leaves.Boulder(top,new Vector3(1.25f,1.1f,1.2f)*scale,leaf*1.06f,719,true);
+            Spray(cell.leaves,previous,new Vector3(.85f,.60f,.85f)*scale,leaf*1.12f,random,42,false);
         }
     }
 }

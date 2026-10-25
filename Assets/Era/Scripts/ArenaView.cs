@@ -35,6 +35,7 @@ namespace Era
             var cam=new GameObject("Player camera");Camera=cam.AddComponent<Camera>();cam.tag="MainCamera";cam.AddComponent<AudioListener>();
             Camera.fieldOfView=60;Camera.nearClipPlane=0.13f;Camera.farClipPlane=360;
             Camera.backgroundColor=new Color(0.64f,0.77f,0.78f);Camera.clearFlags=CameraClearFlags.Skybox;Camera.allowHDR=true;
+            Camera.depthTextureMode=DepthTextureMode.Depth|DepthTextureMode.DepthNormals;
             cam.AddComponent<StillwaterLens>();
             dynamicRoot=new GameObject("Runtime / Heroes, creatures & loot").transform;
             var fxRoot=new GameObject("Reusable combat feedback");fxRoot.transform.SetParent(transform,false);feedback=fxRoot.AddComponent<PresentationFx>();spellEffects=fxRoot.AddComponent<EffectPresentation>();

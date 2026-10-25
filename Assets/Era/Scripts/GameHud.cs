@@ -217,6 +217,7 @@ namespace Era
             Box(1000,24,370,48,Panel);
             Text(s.postBossActive?I18n.P("HORDE ×2 · HP / DMG ×","ОРДА ×2 · ОЗ / УРОН ×")+Mathf.Pow(1.1f,s.postBossGrowthSteps).ToString("0.00"):s.phase==RunPhase.Victory?I18n.P("REALM CLEARED","ЭТАП ПРОЙДЕН"):s.waveActive?I18n.P("HORDE ","ОРДА ")+(s.wave-1)+" · "+I18n.P("INCOMING ","ПРИБЫВАЕТ ")+s.waveQuota:s.nextWave>0?I18n.P("NEXT HORDE IN ","СЛЕДУЮЩАЯ ОРДА ЧЕРЕЗ ")+Mathf.CeilToInt(s.nextWave)+I18n.P(" s"," с"):I18n.P("TEN MINUTES SURVIVED","ДЕСЯТЬ МИНУТ ПРОЙДЕНЫ"),1014,38,342,24,14,Sage,true,TextAnchor.UpperCenter);
             Box(1178,86,398,57,Panel);Text(I18n.P("REALM ","ЭТАП ")+s.stage+" / 7",1193,94,367,18,11,CampaignData.Color(s.stage),true);Text(CampaignData.Name(s.stage),1193,116,367,24,17,Ink,true);
+            Minimap(s,1386,160,190,true);
             if(App.Online)
             {
                 int row=0;foreach(var partner in s.players)if(partner.id!=p.id)
@@ -384,20 +385,6 @@ namespace Era
         }
         void Tooltip(string title,float x,float y){tooltipRequested=true;pendingTooltip=title;tooltipPoint=new Vector2(x,y);}
         void DrawTooltip(){float h=pendingTooltip.Length>100?152:pendingTooltip.Length>55?100:54,x=Mathf.Clamp(tooltipPoint.x-190,20,1190),y=Mathf.Clamp(tooltipPoint.y,20,880-h);Box(x,y,390,h,Panel);Flat(x+2,y+2,3,h-4,Sage);Text(pendingTooltip,x+15,y+10,360,h-20,15,Ink,true);}
-        void Minimap(WorldState s,float x,float y,float size)
-        {
-            float centerX=x+size*.5f,centerY=y+size*.5f,radius=size*.5f,k=(radius-15)/GameData.ArenaRadius;
-            Dot(x,y,size,new Color(.07f,.13f,.15f,.98f));
-            Flat(x+18,centerY,size-36,1,new Color(.53f,.67f,.62f,.16f));Flat(centerX,y+18,1,size-36,new Color(.53f,.67f,.62f,.16f));
-            for(int i=0;i<96;i++){float a=i*Mathf.PI*2/96;Dot(centerX+Mathf.Cos(a)*(radius-5)-1,centerY+Mathf.Sin(a)*(radius-5)-1,2,new Color(Sage.r,Sage.g,Sage.b,.7f));}
-            foreach(var landmark in WorldMap.Landmarks)Dot(centerX+landmark.x*k-4,centerY-landmark.z*k-4,8,new Color(.78f,.83f,.73f,.8f));
-            foreach(var chest in s.chests)if(!chest.opened)Dot(centerX+chest.position.x*k-3,centerY-chest.position.z*k-3,6,Sage);
-            foreach(var shrine in s.shrines)if(!shrine.spent)Dot(centerX+shrine.position.x*k-4,centerY-shrine.position.z*k-4,8,Blue);
-            if(s.portal.active)Dot(centerX+s.portal.position.x*k-6,centerY-s.portal.position.z*k-6,12,Lilac);
-            foreach(var e in s.enemies)Dot(centerX+e.position.x*k-2,centerY-e.position.z*k-2,e.kind==EnemyKind.Warden?8:4,Red);
-            foreach(var p in s.players)if(!p.eliminated){float marker=p.id==App.LocalId?12:10;Dot(centerX+p.position.x*k-marker*.5f,centerY-p.position.z*k-marker*.5f,marker,p.id==App.LocalId?GameData.Mint:Lilac);}
-            Text("N",centerX-15,y+17,30,22,12,Muted,true,TextAnchor.UpperCenter);
-        }
         void Upgrades()
         {
             var p=App.LocalPlayer;bool solo=!App.Online;
@@ -475,7 +462,7 @@ namespace Era
             Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.72f));Box(34,38,1532,824,Panel,20);var p=App.LocalPlayer;var s=App.State;
             Text(I18n.P("MAP, ITEMS & ATTRIBUTES","КАРТА, ПРЕДМЕТЫ И АТРИБУТЫ"),70,62,1460,40,26,Ink,true);
             Text(GameData.HeroName(p.hero)+" · "+p.name+" · "+I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,70,99,430,25,14,Sage,true);
-            Minimap(s,70,140,360);Text(WorldMap.Region(p.position),70,510,360,23,13,Sage,true,TextAnchor.UpperCenter);
+            Minimap(s,70,140,360);MapLegend(70,506);Text(WorldMap.Region(p.position),70,525,360,18,11,Sage,true,TextAnchor.UpperCenter);
             Text(I18n.P("HEALTH","ЗДОРОВЬЕ")+(p.shield>0?I18n.P(" · SHIELD "," · ЩИТ ")+Mathf.CeilToInt(p.shield):""),70,545,228,20,11,p.shield>0?Blue:Muted,true);Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),300,542,130,24,16,Ink,true,TextAnchor.UpperRight);Bar(70,570,360,9,p.hp/p.maxHp,Red);if(p.shield>0)Bar(70,582,360,4,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);
             var odds=ItemCatalog.RarityProbabilities(p.luck,0,1+p.auraBonuses[0]);
             Text(I18n.P("DROP CHANCES · LUCK ","ШАНСЫ ДРОПА · УДАЧА ")+p.luck.ToString("0.#"),70,594,360,20,11,Muted,true);
@@ -549,6 +536,6 @@ namespace Era
             if(Button("Return to the sanctuary",415,613,770,63,true))App.ReturnToMenu();
         }
         static string Clock(float seconds)=>Mathf.FloorToInt(seconds/60).ToString("00")+":"+Mathf.FloorToInt(seconds%60).ToString("00");
-        void OnDestroy(){capture?.Dispose();if(disc!=null)Destroy(disc);if(font!=null)Destroy(font);}
+        void OnDestroy(){capture?.Dispose();if(disc!=null)Destroy(disc);if(mapTexture!=null)Destroy(mapTexture);if(font!=null)Destroy(font);}
     }
 }
