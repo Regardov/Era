@@ -8,7 +8,8 @@ namespace Era
         public static float AuraRadius(PlayerState p)
         {
             int slot=Array.IndexOf(p.weapons,(int)WeaponKind.Aura);
-            return slot<0?0:Mathf.Max(3,(12+(p.weaponLevels[slot]-1)*1.5f+p.weaponRange-15)*p.areaSize+(p.auraSurge>0?6:0))/1.3f;
+            float growth=p.hero==Hero.Lumen?1+.03f*p.levelUps:1;
+            return slot<0?0:Mathf.Max(3,(12+(p.weaponLevels[slot]-1)*1.5f+p.weaponRange-15)*p.areaSize*growth+(p.auraSurge>0?6:0))/1.3f;
         }
 
         void TickAuraDamage(PlayerState p,float dt)

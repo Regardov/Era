@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            TuningAndRandomStarts();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
+            TuningAndRandomStarts();assertions+=PassiveAutumnChecks.Run();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             assertions+=ArcherAnimationChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember"));
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
@@ -191,10 +191,10 @@ namespace Era.Editor
             var ally=sim.State.Player(1);ally.position=free.position;int gold=sim.State.coins;
             Check(sim.TryOpenChest(ally)&&sim.State.coins==gold&&free.opened&&sim.State.loot.Count>0,"any ally can open the free chest without paying");
             sim=new Simulation(12);p=sim.AddPlayer(0,"Test",Hero.Ember);p.weapons=new[]{-1,-1};sim.Start();sim.State.spawnTimer=1000;
-            Check(sim.State.resourceNodes.Count==72&&sim.State.resourceNodes.FindAll(n=>n.kind==PickupKind.Gold).Count==36,"map contains seventy-two evenly split GPU resource nodes");
-            var node=sim.State.resourceNodes[0];p.position=node.position;gold=sim.State.coins;Check(sim.TryBreakResource(p)&&node.broken&&sim.State.pickups.Count==0&&sim.State.coins==gold+33,"gold GPU immediately credits the shared wallet");
-            int count=sim.State.pickups.Count;Check(!sim.TryBreakResource(p)&&sim.State.pickups.Count==count,"broken graphics cards cannot be farmed twice");
-            var blue=sim.State.resourceNodes[1];sim.DamageResource(blue,100,p);Check(blue.broken&&sim.State.pickups.FindAll(d=>d.kind==PickupKind.Experience).Count==4,"blue GPU drops experience");
+            Check(sim.State.resourceNodes.Count==72,"map contains seventy-two autumn leaf piles");
+            var node=sim.State.resourceNodes[0];p.position=node.position;gold=sim.State.coins;Check(sim.TryBreakResource(p)&&node.broken,"leaf pile can be scattered by interaction");
+            Check(node.kind==PickupKind.Gold?sim.State.coins==gold+33&&sim.State.pickups.Count==0:sim.State.coins==gold&&sim.State.pickups.Count==4,"random leaves award gold immediately or four XP pickups");
+            int count=sim.State.pickups.Count;gold=sim.State.coins;Check(!sim.TryBreakResource(p)&&sim.State.pickups.Count==count&&sim.State.coins==gold,"broken leaves cannot be farmed twice");
             var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));Check(copy.resourceNodes[0].broken&&copy.eliteShrines.Count==4&&copy.bossStatuePosition==sim.State.bossStatuePosition,"snapshot retains resource nodes and encounter objects");
             sim=New(true);p=sim.State.Player(0);p.weapons=new[]{-1,-1};var origin=p.position;sim.DamagePlayer(p,5,p.position+Vector3.forward);
             Check(p.hitSlide>.2f&&p.knockback.z<0,"enemy hit starts a short backward slide");Step(sim,.4f);float slide=Vector2.Distance(new Vector2(origin.x,origin.z),new Vector2(p.position.x,p.position.z));
@@ -457,7 +457,7 @@ namespace Era.Editor
             sim.LearnAura(lumen,1);sim.LearnAura(lumen,2);sim.LearnAura(lumen,4);Check(!sim.LearnAura(lumen,5)&&Array.FindAll(lumen.auraLevels,n=>n>0).Length==5,"five-aura limit blocks learning a sixth type");
             int rank=lumen.auraLevels[0];Check(sim.LearnAura(lumen,0)&&lumen.auraLevels[0]==rank+1,"existing auras can always be improved");
             sim.GrantExperience(GameData.ExperienceRequired(1));Check(lumen.offerKind==RewardKind.Accessory,"Lumen receives an accessory on each level");sim.ChooseItem(lumen,0);
-            Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==5,"Lumen also chooses among owned auras once five are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
+            Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==3&&Array.TrueForAll(lumen.offers,a=>lumen.auraLevels[a]>0),"Lumen chooses three random owned upgrades once five auras are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
             int total=0;for(int level=2;level<26;level++)total+=GameData.ExperienceRequired(level);sim.GrantExperience(total);
             bool milestone=false;int choices=0;while(ally.pendingLevels>0&&choices++<100)
             {
@@ -521,7 +521,7 @@ namespace Era.Editor
             var near=damage.SpawnEnemy(EnemyKind.Brute);near.position=lumen.position+Vector3.forward*5;near.hp=near.maxHp=1000;near.frozen=10;
             var outside=damage.SpawnEnemy(EnemyKind.Brute);outside.position=lumen.position+Vector3.forward*11;outside.hp=outside.maxHp=1000;outside.frozen=10;
             Step(damage,1.02f);Check(Mathf.Abs(near.hp-990)<.01f&&outside.hp==1000,"Lumen aura deals ten base damage per second only in its reduced radius");
-            damage.GrantExperience(GameData.ExperienceRequired(1));damage.ChooseItem(lumen,0);Check(lumen.offerKind==RewardKind.Aura&&lumen.offers.Length==8&&Array.IndexOf(lumen.offers,0)>=0,"each Lumen level can upgrade the current aura or add a new type");
+            damage.GrantExperience(GameData.ExperienceRequired(1));damage.ChooseItem(lumen,0);Check(lumen.offerKind==RewardKind.Aura&&lumen.offers.Length==3&&new HashSet<int>(lumen.offers).Count==3,"each Lumen level offers three random aura acquisitions or upgrades");
         }
         static void Endings()
         {

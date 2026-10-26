@@ -55,7 +55,7 @@ namespace Era
         public List<WeaponBurstState> bursts = new List<WeaponBurstState>();
         public int[] attributes = new int[21];
         public int[] accessories = new int[84]; // One stack counter per stat and rarity.
-        public int completedLevel = 1, upgradeStage;
+        public int completedLevel = 1, upgradeStage, levelUps;
         public RewardKind offerKind = RewardKind.Accessory;
         public int[] auraLevels = new int[8];
         public int currentAura;
@@ -295,12 +295,15 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 14;
+        public const int Protocol = 15;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=240,ResourceNodeCount=72;
         public static WeaponKind StarterWeapon(Hero hero)=>hero==Hero.Lumen?WeaponKind.Aura:hero==Hero.Ember?WeaponKind.Bow:WeaponKind.LightningStaff;
-        public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Aura keeper: one aura decision at each level. Add a new buff or improve an owned aura; up to five types.","Хранитель аур: на каждом уровне новая аура или улучшение изученной. До пяти типов; бонусы получают союзники в радиусе."):hero==Hero.Ember?I18n.P("Hunter's training: arrows travel 15% faster, making distant targets easier to hit.","Охотничья подготовка: снаряды летят на 15% быстрее — легче попадать по дальним целям."):I18n.P("Hardiness: 115 starting health, 15 more than the base hero. Base outgoing damage is 90%.","Закалка: 115 начальных ХП, на 15 больше базового героя. Базовый исходящий урон — 90%.");
+        public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Growing light: +3% aura radius per level-up. Each level offers three random new auras or upgrades; up to five types.","Растущий свет: +3% к радиусу аур за каждое повышение уровня. На каждом уровне — три случайные новые ауры или улучшения; до пяти типов."):hero==Hero.Ember?I18n.P("Hunter's instinct: +3 percentage points of critical chance per level-up.","Инстинкт охотника: +3 процентных пункта к шансу крита за каждое повышение уровня."):I18n.P("Chain lightning: +10% weapon lightning ricochet per level-up. Each 100% guarantees one extra bounce; the remainder is the chance for another.","Цепная молния: +10% к рикошету молний оружия за каждое повышение уровня. Каждые 100% гарантируют ещё один переход; остаток — шанс следующего.");
+        public static int LightningRicochetPercent(PlayerState p)=>p.hero==Hero.Echo?p.levelUps*10:0;
+        public static int ChanceRicochets(int percent,double roll)=>Mathf.Max(0,percent)/100+(roll<(Mathf.Max(0,percent)%100)/100.0?1:0);
+        public static string PassiveProgress(PlayerState p)=>p.hero==Hero.Ember?I18n.P("Passive crit chance: +","Крит от пассивки: +")+(p.levelUps*3)+"%":p.hero==Hero.Lumen?I18n.P("Passive aura radius: +","Радиус аур от пассивки: +")+(p.levelUps*3)+"%":I18n.P("Ricochet: ","Рикошет: ")+LightningRicochetPercent(p)+"% · "+LightningRicochetPercent(p)/100+I18n.P(" + chance "," + шанс ")+LightningRicochetPercent(p)%100+"%";
         public const float BossTime = 150;
         public const int MaxEnemies = 90;
         public const int MaxProjectiles=384,MaxEffects=320;
@@ -318,7 +321,7 @@ namespace Era
         public static readonly WeaponDefinition[] Weapons =
         {
             new WeaponDefinition("Crescent Axe","Each heavy swing hits one enemy. Extra strikes follow in sequence.","axe",35,1.15f,4.8f,Amber),
-            new WeaponDefinition("Lightning Staff","Each beam hits one enemy. Extra beams fire simultaneously; Ricochet Seed adds chain hits.","lightning",24,1.05f,17,new Color(.69f,.66f,.90f)),
+            new WeaponDefinition("Lightning Staff","Extra beams fire simultaneously. Echo gains +10% ricochet per level-up; Ricochet Seed adds guaranteed bounces.","lightning",24,1.05f,17,new Color(.69f,.66f,.90f)),
             new WeaponDefinition("Wildwood Bow","Fast arrows seek distant targets. Extra bolts add arrows.","bow",26,.76f,25,Mint),
             new WeaponDefinition("Dawn Spear","Each thrust hits one enemy. Extra thrusts follow in a short sequence.","spear",38,1.0f,7.5f,new Color(.85f,.75f,.50f)),
             new WeaponDefinition("Aura Conduit","10 base damage per second and buffs within 9.2 m. Choose or upgrade one aura per level.","aura",10,1,12/1.3f,new Color(.87f,.76f,1)),

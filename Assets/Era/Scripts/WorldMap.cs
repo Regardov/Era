@@ -9,16 +9,25 @@ namespace Era
         public float size, angle;
         public int kind;
     }
+    public struct WorldBuilding
+    {
+        public Vector3 position;
+        public float angle,size;
+        public bool ruined;
+        public Vector2 HalfSize=>new Vector2(3.3f,2.6f)*size;
+    }
 
     // Shared terrain and collision definitions. No client-only decorative physics affects movement.
     public static class WorldMap
     {
         public static int Stage {get;private set;}=1;
         static List<WorldProp> props;
+        static List<WorldBuilding> buildings;
         public static List<WorldProp> Props=>props??(props=CreateProps());
+        public static List<WorldBuilding> Buildings=>buildings??(buildings=CreateBuildings());
         public static readonly Vector3[] Landmarks = { new Vector3(0,0,0), new Vector3(-95,0,70), new Vector3(105,0,80), new Vector3(60,0,-110) };
         public static void SetStage(int stage)
-        {stage=Mathf.Clamp(stage,1,CampaignData.StageCount);if(Stage==stage)return;Stage=stage;props=null;}
+        {stage=Mathf.Clamp(stage,1,CampaignData.StageCount);if(Stage==stage)return;Stage=stage;props=null;buildings=null;}
         public static float Height(float x,float z)
         {
             float height=NaturalHeight(x,z);
@@ -53,6 +62,7 @@ namespace Era
         public static bool ClearLocation(Vector3 point,float clearance)
         {
             if(new Vector2(point.x,point.z).magnitude>GameData.ArenaRadius-clearance-8||InWater(point.x,point.z,clearance))return false;
+            foreach(var building in Buildings)if(BuildingContains(building,point,clearance))return false;
             foreach(var prop in Props)
                 if(prop.kind!=2&&Vector2.Distance(new Vector2(point.x,point.z),new Vector2(prop.position.x,prop.position.z))<(prop.kind==0?.48f:.85f)*prop.size+clearance)return false;
             for(int i=0;i<8;i++)
@@ -88,6 +98,7 @@ namespace Era
                 float r = 24 + Mathf.Sqrt((float)random.NextDouble()) * (GameData.ArenaRadius-40);
                 var p = OnGround(Mathf.Sin(a)*r, Mathf.Cos(a)*r);
                 if(InWater(p.x,p.z,1.3f))continue;
+                bool settlement=false;foreach(var building in Buildings)if(BuildingContains(building,p,4)){settlement=true;break;}if(settlement)continue;
                 int kind = i < 240 ? 0 : i<350?1:2;
                 float size = kind == 0 ? .85f+(float)random.NextDouble()*1.05f : kind==1?.7f+(float)random.NextDouble()*1.8f:.65f+(float)random.NextDouble()*.8f;
                 if(kind==0&&i%9==0)size*=1.65f;
@@ -95,12 +106,42 @@ namespace Era
             }
             return result;
         }
+        static List<WorldBuilding> CreateBuildings()
+        {
+            var result=new List<WorldBuilding>();var rng=new System.Random(68423+Stage*917);
+            for(int i=0;i<32;i++)for(int attempt=0;attempt<12;attempt++)
+            {
+                float angle=i*2.399963f+Stage*.41f+attempt*.08f,r=48+Mathf.Sqrt(i/31f)*194;
+                var p=OnGround(Mathf.Cos(angle)*r,Mathf.Sin(angle)*r);bool clear=!InWater(p.x,p.z,8);
+                foreach(var landmark in Landmarks)if(Vector2.Distance(new Vector2(p.x,p.z),new Vector2(landmark.x,landmark.z))<20)clear=false;
+                foreach(var other in result)if(Vector3.Distance(other.position,p)<19)clear=false;
+                float min=p.y,max=p.y;
+                for(int k=0;k<8;k++){float a=k*Mathf.PI/4,h=Height(p.x+Mathf.Cos(a)*6,p.z+Mathf.Sin(a)*6);min=Mathf.Min(min,h);max=Mathf.Max(max,h);}
+                if(!clear||max-min>2.6f)continue;
+                result.Add(new WorldBuilding{position=new Vector3(p.x,max,p.z),size=.85f+(float)rng.NextDouble()*.25f,angle=(float)rng.NextDouble()*360,ruined=i%4==3});break;
+            }
+            return result;
+        }
+        public static bool BuildingContains(WorldBuilding building,Vector3 point,float margin)
+        {
+            var local=Quaternion.Euler(0,-building.angle,0)*(point-building.position);var half=building.HalfSize;
+            return Mathf.Abs(local.x)<half.x+margin&&Mathf.Abs(local.z)<half.y+margin;
+        }
         public static Vector3 Resolve(Vector3 from, Vector3 delta, float radius)
         {
             Vector3 next = from + delta;
             var planar = Vector2.ClampMagnitude(new Vector2(next.x,next.z), GameData.ArenaRadius-radius-6);
             next.x=planar.x; next.z=planar.y;
             for (int pass=0; pass<2; pass++)
+            {
+            foreach(var building in Buildings)
+            {
+                var inverse=Quaternion.Euler(0,-building.angle,0);var local=inverse*(next-building.position);var half=building.HalfSize+Vector2.one*radius;
+                if(Mathf.Abs(local.x)>=half.x||Mathf.Abs(local.z)>=half.y)continue;
+                if(half.x-Mathf.Abs(local.x)<half.y-Mathf.Abs(local.z))local.x=(local.x<0?-1:1)*half.x;
+                else local.z=(local.z<0?-1:1)*half.y;
+                var corrected=building.position+Quaternion.Euler(0,building.angle,0)*local;next.x=corrected.x;next.z=corrected.z;
+            }
             foreach (var prop in Props)
             {
                 if(prop.kind==2)continue; // Low shrubs bend visually and do not trap movement.
@@ -110,6 +151,7 @@ namespace Era
                 if (sq>=extent*extent) continue;
                 if (sq<0.0001f) { dx=1; dz=0; sq=1; }
                 float scale=extent/Mathf.Sqrt(sq); next.x=prop.position.x+dx*scale; next.z=prop.position.z+dz*scale;
+            }
             }
             var inside=Vector2.ClampMagnitude(new Vector2(next.x,next.z),GameData.ArenaRadius-radius-6);next.x=inside.x;next.z=inside.y;
             return next;

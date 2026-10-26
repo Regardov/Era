@@ -80,9 +80,10 @@ namespace Era.Editor
             s=New();p=s.State.Player(0);p.goldGain=1.5f;var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=p.position+Vector3.forward*250;s.DamageEnemy(e,p,999999);
             Check(s.State.coins==36&&s.State.earnedCoins==6&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"distant kills credit gold immediately with the owner's multiplier");
             var node=new ResourceNodeState{kind=PickupKind.Gold,hp=100,position=p.position+Vector3.forward*250};s.DamageResource(node,100,p);s.DamageResource(node,100,p);
-            Check(s.State.coins==69&&s.State.earnedCoins==39&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"gold GPU credits once without floor bundles");
+            int leafGold=node.kind==PickupKind.Gold?33:0;
+            Check(s.State.coins==36+leafGold&&s.State.earnedCoins==6+leafGold&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"leaf gold credits once without floor bundles");
             s.State.pickups.Add(new PickupState{kind=PickupKind.Gold,value=7,position=p.position+Vector3.forward*290});Step(s,.04f);
-            Check(s.State.coins==76&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"legacy gold converts regardless of distance and age");
+            Check(s.State.coins==43+leafGold&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"legacy gold converts regardless of distance and age");
             s.ApplyItem(p,(int)ItemId.MiserFuse);s.ApplyItem(p,(int)ItemId.AlchemyEngine);s.GrantGold(10,p);
             Check(s.State.itemFields.Exists(f=>f.item==(int)ItemId.MiserFuse)&&p.itemCounters[(int)ItemId.AlchemyEngine]>0,"automatic gold retains mine and alchemy synergies");
             s=New();p=s.State.Player(0);p.relic=Relic.Hourglass;p.critChance=1;

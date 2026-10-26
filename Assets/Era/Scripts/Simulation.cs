@@ -359,6 +359,8 @@ namespace Era
                 State.xp -= State.xpRequired; State.level++; State.xpRequired = GameData.ExperienceRequired(State.level);
                 foreach (var p in State.players)
                 {
+                    p.levelUps++;
+                    if(p.hero==Hero.Ember)p.critChance+=.03f;
                     p.pendingLevels++;
                     if (!p.downed && !p.eliminated) Heal(p,12/Mathf.Max(.01f,p.healingPower));
                     if (p.offers.Length == 0) RollOffers(p);
@@ -379,7 +381,8 @@ namespace Era
             {
                 p.offerKind=RewardKind.Aura;int count=Array.FindAll(p.auraLevels,a=>a>0).Length;
                 for(int i=0;i<p.auraLevels.Length;i++)if(count<GameData.MaxAuras||p.auraLevels[i]>0)choices.Add(i);
-                p.offers=choices.ToArray();p.offerRarities=new int[p.offers.Length];return;
+                for(int i=choices.Count-1;i>0;i--){int j=random.Next(i+1);int value=choices[i];choices[i]=choices[j];choices[j]=value;}
+                p.offers=choices.GetRange(0,Mathf.Min(3,choices.Count)).ToArray();p.offerRarities=new int[p.offers.Length];return;
             }
             p.offerKind=RewardKind.Accessory;
             for (int i = 0; i < GameData.Attributes.Length; i++) choices.Add(i);

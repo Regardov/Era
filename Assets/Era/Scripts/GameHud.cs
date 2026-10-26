@@ -333,8 +333,8 @@ namespace Era
             }
             foreach(var node in s.resourceNodes)if(!node.broken)
             {
-                float distance=Vector3.Distance(p.position,node.position);if(distance<13)WorldLabel(node.position+Vector3.up*1.3f,node.kind==PickupKind.Gold?I18n.P("GPU · GOLD","GPU · ЗОЛОТО"):I18n.P("GPU · EXPERIENCE","GPU · ОПЫТ"),Panel);
-                if(distance<2.7f&&!p.downed&&!p.eliminated){Box(580,635,440,43,Panel);Text(I18n.P("[ F ]  Break graphics card","[ F ]  Разбить видеокарту"),592,645,416,24,17,node.kind==PickupKind.Gold?Sage:Blue,true,TextAnchor.UpperCenter);}
+                float distance=Vector3.Distance(p.position,node.position);if(distance<13)WorldLabel(node.position+Vector3.up*1.1f,I18n.P("AUTUMN LEAVES","ОСЕННИЕ ЛИСТЬЯ"),Panel);
+                if(distance<2.7f&&!p.downed&&!p.eliminated){Box(560,635,480,43,Panel);Text(I18n.P("[ F ]  Scatter leaves · random loot","[ F ]  Разворошить листья · случайный лут"),572,645,456,24,17,Sage,true,TextAnchor.UpperCenter);}
             }
         }
         void AuraHud(PlayerState p)
@@ -390,14 +390,14 @@ namespace Era
         {
             var p=App.LocalPlayer;bool solo=!App.Online;
             bool aura=p.offerKind==RewardKind.Aura,weapon=p.offerKind==RewardKind.Weapon;
-            string title=weapon?I18n.P("LEVEL 25 · CHOOSE YOUR SECOND WEAPON","УРОВЕНЬ 25 · ВЫБЕРИТЕ ВТОРОЕ ОРУЖИЕ"):aura?I18n.P("LUMEN · CHOOSE OR IMPROVE ANY AURA","ЛЮМЕН · ВЫБЕРИТЕ ИЛИ УЛУЧШИТЕ ЛЮБУЮ АУРУ"):I18n.P("CHOOSE AN ACCESSORY","ВЫБЕРИТЕ АКСЕССУАР");
+            string title=weapon?I18n.P("LEVEL 25 · CHOOSE YOUR SECOND WEAPON","УРОВЕНЬ 25 · ВЫБЕРИТЕ ВТОРОЕ ОРУЖИЕ"):aura?I18n.P("LUMEN · CHOOSE ONE OF THREE AURAS","ЛЮМЕН · ВЫБЕРИТЕ ОДНУ ИЗ ТРЁХ АУР"):I18n.P("CHOOSE AN ACCESSORY","ВЫБЕРИТЕ АКСЕССУАР");
             if(solo)
             {
-                Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(220,238,1160,aura?500:410,Panel,26);
+                Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(220,238,1160,410,Panel,26);
                 Text(title,250,260,1100,38,23,Sage,true,TextAnchor.UpperCenter);
-                Text(aura?I18n.P("Up to five different auras. Repeated choices increase their rank.","До пяти разных аур. Повторный выбор повышает ранг."):"The world is paused until you choose.",250,305,1100,30,16,Muted,false,TextAnchor.UpperCenter);
-                int cols=aura||p.offers.Length>3?4:3;for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,245+(i%cols)*(cols==4?280:370),355+(i/cols)*161,cols==4?266:350,aura?147:210,true);
-                Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),250,aura?699:602,1100,26,15,Muted,false,TextAnchor.UpperCenter);
+                Text(aura?I18n.P("Three random new auras or upgrades. Up to five aura types.","Три случайные новые ауры или улучшения. До пяти типов аур."):"The world is paused until you choose.",250,305,1100,30,16,Muted,false,TextAnchor.UpperCenter);
+                int cols=p.offers.Length>3?4:3;for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,245+(i%cols)*(cols==4?280:370),355+(i/cols)*161,cols==4?266:350,210,true);
+                Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),250,602,1100,26,15,Muted,false,TextAnchor.UpperCenter);
             }
             else
             {
@@ -463,6 +463,7 @@ namespace Era
             Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.72f));Box(34,38,1532,824,Panel,20);var p=App.LocalPlayer;var s=App.State;
             Text(I18n.P("MAP, ITEMS & ATTRIBUTES","КАРТА, ПРЕДМЕТЫ И АТРИБУТЫ"),70,62,1460,40,26,Ink,true);
             Text(GameData.HeroName(p.hero)+" · "+p.name+" · "+I18n.P("LEVEL ","УРОВЕНЬ ")+s.level,70,99,430,25,14,Sage,true);
+            Text(GameData.PassiveProgress(p),70,124,360,16,11,Sage);
             Minimap(s,70,140,360);MapLegend(70,506);Text(WorldMap.Region(p.position),70,525,360,18,11,Sage,true,TextAnchor.UpperCenter);
             Text(I18n.P("HEALTH","ЗДОРОВЬЕ")+(p.shield>0?I18n.P(" · SHIELD "," · ЩИТ ")+Mathf.CeilToInt(p.shield):""),70,545,228,20,11,p.shield>0?Blue:Muted,true);Text(Mathf.CeilToInt(p.hp)+" / "+p.maxHp.ToString("0"),300,542,130,24,16,Ink,true,TextAnchor.UpperRight);Bar(70,570,360,9,p.hp/p.maxHp,Red);if(p.shield>0)Bar(70,582,360,4,p.shield/Mathf.Max(p.maxHp,p.shield),Blue);
             var odds=ItemCatalog.RarityProbabilities(p.luck,0,1+p.auraBonuses[0]);

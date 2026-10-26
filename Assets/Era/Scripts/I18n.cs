@@ -66,6 +66,7 @@ namespace Era
             {"Dawn Sword","Меч зари"},{"Sweeping sword cuts. Extra projectiles repeat the slash with a delay.","Размашистые удары мечом. Дополнительные снаряды повторяют взмах с задержкой."},
             {"Each heavy swing hits one enemy. Extra strikes follow in sequence.","Каждый тяжёлый взмах поражает одного врага. Дополнительные удары идут очередью."},
             {"Each beam hits one enemy. Extra beams fire simultaneously; Ricochet Seed adds chain hits.","Один луч — одна цель. Все дополнительные лучи бьют одновременно; Семя рикошета добавляет переходы."},
+            {"Extra beams fire simultaneously. Echo gains +10% ricochet per level-up; Ricochet Seed adds guaranteed bounces.","Дополнительные лучи бьют одновременно. Эхо получает +10% к рикошету за уровень; Семя рикошета добавляет гарантированные переходы."},
             {"Fast arrows seek distant targets. Extra bolts add arrows.","Быстрые стрелы поражают дальние цели. Дополнительные снаряды добавляют стрелы."},
             {"Each thrust hits one enemy. Extra thrusts follow in a short sequence.","Каждый выпад поражает одного врага. Дополнительные выпады идут короткой очередью."},
             {"Companion disconnected","Напарник отключился"},{"Hold F to revive your companion","Удерживайте F, чтобы поднять напарника"},

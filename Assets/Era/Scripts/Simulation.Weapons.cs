@@ -76,7 +76,7 @@ namespace Era
             else if(shot.weapon==WeaponKind.LightningStaff)
             {
                 var chain=new HashSet<int>();Vector3 previous=origin;EnemyState next=target;
-                int count=1+Mathf.Min(4,Stack(p,ItemId.RicochetSeed));
+                int count=1+Mathf.Min(4,Stack(p,ItemId.RicochetSeed))+GameData.ChanceRicochets(GameData.LightningRicochetPercent(p),random.NextDouble());
                 for(int bounce=0;bounce<count&&next!=null;bounce++)
                 {
                     chain.Add(next.id);Vector3 end=EnemyAim(next);WeaponEffect(10,previous,end,1,WeaponKind.LightningStaff);DamageEnemy(next,p,shot.damage*Mathf.Pow(.65f,bounce),true,true);previous=end;

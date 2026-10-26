@@ -33,6 +33,11 @@ namespace Era
                 for(int dy=-radius;dy<=radius;dy++)for(int dx=-radius;dx<=radius;dx++)
                 {int x=px+dx,y=py+dy;if(x<0||y<0||x>=n||y>=n||dx*dx+dy*dy>radius*radius)continue;pixels[y*n+x]=tint*(dy>0?1.1f:.85f);}
             }
+            foreach(var building in WorldMap.Buildings)
+            {
+                var uv=UV(building.position);int px=Mathf.RoundToInt(uv.x*(n-1)),py=Mathf.RoundToInt(uv.y*(n-1));
+                for(int dy=-2;dy<=2;dy++)for(int dx=-2;dx<=2;dx++){int x=px+dx,y=py+dy;if(x>=0&&y>=0&&x<n&&y<n)pixels[y*n+x]=building.ruined?new Color(.58f,.55f,.43f):new Color(.66f,.35f,.20f);}
+            }
             var texture=new Texture2D(n,n,TextureFormat.RGB24,false){name="Realm "+WorldMap.Stage+" / relief chart",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
             texture.SetPixels32(pixels);texture.Apply(false,true);return texture;
         }
