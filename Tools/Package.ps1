@@ -9,7 +9,7 @@ foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-
 }
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
 Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
-foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.20.0.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md','feedback-changed-files.txt','ENVIRONMENT-POLISH.md','MUSIC.md','CHARACTER-BODY-v0.19.md','ANIMATION-AUDIT-v0.18.md','body-checks-v019.json','rig-smoke-v019.json','animation-smoke-v019.json')) {
+foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.21.md','ARCHER-RECOVERY-v0.21.md','archer-runtime-v021.json','archer-runtime-before-recovery.json','archer-editor-v021.json','archer-source-v021.json','archer-preservation-v021.json','characters-smoke-v021.json','rig-smoke-v021.json','animation-smoke-v021.json','feedback-smoke-v021.json','RELEASE-v0.20.0.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md','feedback-changed-files.txt','ENVIRONMENT-POLISH.md','MUSIC.md','CHARACTER-BODY-v0.19.md','ANIMATION-AUDIT-v0.18.md','body-checks-v019.json','rig-smoke-v019.json','animation-smoke-v019.json')) {
     $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }

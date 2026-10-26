@@ -41,7 +41,7 @@ namespace Era.Editor
         {
             if (!File.Exists(FbxPath) || !File.Exists(ManifestPath)) throw new FileNotFoundException("Archer FBX and manifest are required");
             var manifest = ReadManifest();
-            string signature = "archer-generic-v3 / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
+            string signature = "archer-generic-v4-runtime-clips / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
             var current = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (File.Exists(Marker) && File.ReadAllText(Marker).Trim() == signature && current != null && current.GetComponent<HeroMotion>()?.archer != null && AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null) return;
             string guid = AssetDatabase.AssetPathToGUID(PrefabPath);
@@ -87,10 +87,20 @@ namespace Era.Editor
             {
                 var sourceClip = bakedTakes.First(c => c.name == data.name || c.name.EndsWith("|" + data.name, StringComparison.Ordinal));
                 string path = Folder + "/Animations/" + data.name + ".anim";
-                var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
-                if (clip == null) { clip = Object.Instantiate(sourceClip); clip.name = data.name; AssetDatabase.CreateAsset(clip, path); }
-                else { EditorUtility.CopySerialized(sourceClip, clip); clip.name = data.name; }
-                clip.legacy = false;
+                // FBX exposes editor-native PreviewAnimationClip objects (class 1108).
+                // Cloning/CopySerialized retains that native class: Editor playback
+                // works, but Player builds strip it and every reference becomes null.
+                // Rebind the existing baked curves into a real runtime clip (class 74).
+                string previousGuid = AssetDatabase.AssetPathToGUID(path);
+                var clip = new AnimationClip { name = data.name, frameRate = sourceClip.frameRate, legacy = false, hideFlags = HideFlags.None };
+                foreach (var binding in AnimationUtility.GetCurveBindings(sourceClip))
+                    AnimationUtility.SetEditorCurve(clip, binding, AnimationUtility.GetEditorCurve(sourceClip, binding));
+                foreach (var binding in AnimationUtility.GetObjectReferenceCurveBindings(sourceClip))
+                    AnimationUtility.SetObjectReferenceCurve(clip, binding, AnimationUtility.GetObjectReferenceCurve(sourceClip, binding));
+                clip.EnsureQuaternionContinuity();
+                AssetDatabase.CreateAsset(clip, path);
+                if (!string.IsNullOrEmpty(previousGuid) && AssetDatabase.AssetPathToGUID(path) != previousGuid)
+                    throw new Exception("Archer clip GUID changed while replacing editor preview: " + data.name);
                 var settings = AnimationUtility.GetAnimationClipSettings(clip); settings.loopTime = data.loop; settings.loopBlend = data.loop;
                 settings.keepOriginalOrientation = true; settings.keepOriginalPositionY = true; settings.keepOriginalPositionXZ = true;
                 settings.loopBlendOrientation = true; settings.loopBlendPositionY = true; settings.loopBlendPositionXZ = true;

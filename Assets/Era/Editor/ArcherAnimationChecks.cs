@@ -60,6 +60,7 @@ namespace Era.Editor
             foreach (var clipData in data.clips)
             {
                 var clip = driver.Clip(clipData.name); Check(clip != null && !clip.legacy && Mathf.Abs(clip.frameRate - 30) < .1f && clip.length > .06f, "nonempty 30fps Generic clip: " + clipData.name);
+                Check(File.ReadLines(AssetDatabase.GetAssetPath(clip)).Take(6).Any(line => line == "AnimationClip:"), "serialized runtime AnimationClip class, never editor-only PreviewAnimationClip: " + clipData.name);
                 Check(clip.isLooping == clipData.loop, "loop flag: " + clipData.name);
                 if (clipData.duration > 0) Check(Mathf.Abs(clip.length - clipData.duration) <= .04f, "clip duration matches export manifest: " + clipData.name);
                 Check(AnimationUtility.GetCurveBindings(clip).Length > 15, "clip contains actual baked skeleton curves: " + clipData.name);
@@ -126,6 +127,11 @@ namespace Era.Editor
                 Check(Vector3.Distance(idleFoot[0], actor.leftFoot.position) < .025f && Vector3.Distance(idleFoot[1], actor.rightFoot.position) < .025f, "existing crouch input preserves planted ankles");
                 int events = actor.ArrowEventCount; actor.SpawnArrow(); actor.SpawnArrow(); Check(actor.ArrowEventCount == events + 1, "duplicate SpawnArrow callbacks do not duplicate visual release");
                 actor.TeleportDisappear(); Check(actor.modelRenderers.All(r => !r.enabled), "teleport event hides visual only"); actor.TeleportComplete(); Check(actor.modelRenderers.Any(r => r.enabled), "teleport completion restores visual");
+                actor.animator.enabled=true;actor.Stand();
+                var shotState=new PlayerState{id=0,hp=100,maxHp=100,grounded=true,lastWeapon=(int)WeaponKind.Bow,weapons=new[]{(int)WeaponKind.Bow,-1},weaponTimers=new[]{.1f,0},weaponCastSerial=10};
+                actor.Present(shotState);actor.Stand();shotState.castSerial++;shotState.weaponCastSerial++;actor.Present(shotState);
+                actor.animator.SetLayerWeight(1,1);actor.animator.Update(0);
+                Check(actor.animator.GetCurrentAnimatorStateInfo(1).IsName("UpperBody.Archer_BowRelease")||actor.animator.GetNextAnimatorStateInfo(1).IsName("UpperBody.Archer_BowRelease"),"cast plus auto-fire still requests the bow release on the upper layer");
             }
             finally { Object.DestroyImmediate(baked); Object.DestroyImmediate(instance); }
             return assertions - before;

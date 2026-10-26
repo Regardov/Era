@@ -43,7 +43,7 @@ namespace Era
         string upperState = "", fullState = "Locomotion";
         float upperRemaining, fullRemaining, smoothedSpeed, layerWeight, aimYaw, crouchBlend, shotInterval = .76f;
         float lastHp = -1, previousDash;
-        int owner = -1, attackSerial = -1, castSerial = -1, releaseEventSerial = int.MinValue, castEventSerial = int.MinValue, chestStamp;
+        int owner = -1, attackSerial = -1, castSerial = -1, releaseEventSerial = int.MinValue, castEventSerial = int.MinValue, chestStamp, upperStartedFrame = -1;
         bool bound, dead, manualAim, manualDraw, bowVisible = true, arrowVisible, vanished, sampled, standing;
         PlayerState presented;
 
@@ -133,18 +133,20 @@ namespace Era
             if (shot && !dead)
             {
                 if (timer > 0) shotInterval = timer;
-                // Auto-fire can occur during a cast/dash. Keep the full-body
-                // action and its events; don't cancel it with a ranged pose.
-                if (fullState == "Locomotion") BeginUpper("Archer_BowRelease", Mathf.Min(Duration("Archer_BowRelease"), Mathf.Clamp(shotInterval * .14f, .045f, .18f)));
+                // Release on the upper layer even during a cast/dash. The base
+                // action keeps running, including its gameplay/VFX markers.
+                BeginUpper("Archer_BowRelease", Mathf.Min(Duration("Archer_BowRelease"), Mathf.Clamp(shotInterval * .14f, .045f, .18f)));
                 // t=0 is the baked release marker. Dedupe the imported AnimationEvent
                 // against this immediate host-shot presentation; never create damage here.
                 SpawnArrow();
             }
-            if (fullRemaining <= 0 && fullState == "Locomotion")
+            bool canPrepare = fullRemaining <= 0 && fullState == "Locomotion";
+            bool preparing = canPrepare && hasBow && (manualAim || target && timer >= 0 && timer < .62f);
             {
-                bool preparing = hasBow && (manualAim || target && timer >= 0 && timer < .62f);
                 if (upperState.Length == 0 && preparing) BeginUpper("Archer_Aim", manualAim ? Duration("Archer_Aim") : Mathf.Clamp(timer * .20f, .025f, .15f));
-                if (upperState.Length > 0 && upperState != "Archer_BowHold")
+                // Do not consume an entire short release before the Animator
+                // has evaluated even one frame at low FPS/high attack speed.
+                if (upperState.Length > 0 && upperState != "Archer_BowHold" && Time.frameCount != upperStartedFrame)
                 {
                     upperRemaining = Mathf.Max(0, upperRemaining - dt);
                     if (upperRemaining <= 0)
@@ -161,7 +163,7 @@ namespace Era
                 if (upperState == "Archer_BowHold" && !preparing && !manualDraw) ClearUpper(false);
                 if (!hasBow) ClearUpper(false);
             }
-            float weight = upperState.Length > 0 && fullRemaining <= 0 ? 1 : 0;
+            float weight = upperState.Length > 0 ? 1 : 0;
             layerWeight = PresentationMotion.Damp(layerWeight, weight, 24, dt); animator.SetLayerWeight(1, layerWeight);
             crouchBlend = PresentationMotion.Damp(crouchBlend, p.crouching && p.grounded ? 1 : 0, 14, dt);
         }
@@ -183,7 +185,7 @@ namespace Era
         void BeginUpper(string name, float seconds)
         {
             if (Clip(name) == null || animator == null) return;
-            upperState = name; upperRemaining = Mathf.Max(.033f, seconds); animator.SetFloat("UpperRate", Mathf.Clamp(Duration(name) / upperRemaining, .3f, 12));
+            upperState = name; upperStartedFrame = Time.frameCount; upperRemaining = Mathf.Max(.033f, seconds); animator.SetFloat("UpperRate", Mathf.Clamp(Duration(name) / upperRemaining, .3f, 12));
             animator.CrossFadeInFixedTime("UpperBody." + name, .045f, 1, 0);
             SetArrowVisible(name == "Archer_Aim" || name == "Archer_BowDraw" || name == "Archer_BowHold");
         }

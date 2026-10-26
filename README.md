@@ -1,12 +1,18 @@
-# ERA: Seven Realms — v0.20
+# ERA: Seven Realms — v0.21
 
-**[Скачать готовую игру v0.20 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.20.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.20.0). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать готовую игру v0.21 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.21.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.21.0). Распакуйте архив целиком и запустите `Era.exe`.
+
+**v0.21 восстанавливает анимации обновлённого лучника в Windows-игре.** Исправлен прежний импортёр: редакторские `PreviewAnimationClip` заменены настоящими runtime-клипами с сохранением GUID. Модель, 54-костный Generic-риг и 16 авторских Actions восстановлены без повторного моделирования и создания движений. В собранном Player проверяются реальные движения костей, события и игровые снаряды. Автовыстрел больше не теряет release-позу при заклинании. Все изменения v0.20 сохранены.
+
+**[Причина сбоя и восстановление](Docs/ARCHER-RECOVERY-v0.21.md)** · **[Проверки и ограничения](Docs/VALIDATION-v0.21.md)** · **[Исходник Blender и клипы](ArtSource/Characters/Archer/README.md)**. Вспомогательные клипы импортированы и проверены технически; DodgeRoll и Death остаются художественными черновиками, полноценное падение при смерти по умолчанию выключено.
+
+![Лучник и другие герои в Windows Player v0.21](Docs/Images/archer-Run-v021.png)
 
 В текущих исходниках обновлено окружение: прозрачные ручьи с преломлением, галечным дном и мягкими бликами; разветвлённые деревья с отдельными колышущимися листьями и хвойными кронами. Справа в игре появилась **квадратная миникарта ближайшей местности**, а Tab открывает квадратную карту всего мира с реками, рельефом и живыми маркерами. [Описание и проверка окружения](Docs/ENVIRONMENT-POLISH.md).
 
 Добавлен новый саундтрек: **отдельная композиция меню и семь тем миров**, всего 15 минут музыки с семплированными инструментами, развитием аранжировок и зацикливанием. Между треками — плавные переходы; на паузе музыка приглушается. [Превью, список треков и MIDI](ArtSource/Music/README.md) · [Воспроизведение и проверки](Docs/MUSIC.md).
 
-В исходниках также исправлена замкнутая геометрия стволов и добавлены густые объёмные кроны. Вместо декоративных кругов предметов — огонь, лёд, яд, разряды, духи, мины, метеоры и эффекты действительного лечения, щита и ускорения. Звуки атак и статусов пространственные, с ограничением повторов и голосов. Обычный прыжок больше не позволяет перескочить врага; головы врагов не служат опорой. [Аудит всех 129 предметов и остальных механик](Docs/MECHANIC-FEEDBACK-AUDIT.md) · [Проверки и список изменённых файлов](Docs/FEEDBACK-VALIDATION.md). Windows-сборка v0.20 по ссылке выше включает эти изменения.
+В v0.20 исправлена замкнутая геометрия стволов и добавлены густые объёмные кроны. Вместо декоративных кругов предметов — огонь, лёд, яд, разряды, духи, мины, метеоры и эффекты действительного лечения, щита и ускорения. Звуки атак и статусов пространственные, с ограничением повторов и голосов. Обычный прыжок больше не позволяет перескочить врага; головы врагов не служат опорой. [Аудит всех 129 предметов и остальных механик](Docs/MECHANIC-FEEDBACK-AUDIT.md) · [Проверки и список изменённых файлов](Docs/FEEDBACK-VALIDATION.md). Windows-сборка v0.21 включает эти изменения.
 
 Новое в v0.19: столкновения капсул игрока и врагов на хосте, скольжение вдоль тел, разделение толпы и учёт высоты прыжка. Семь моделей переработаны в Blender: сглаженные органические поверхности, объёмные пряди, закрытые рукава, толщина одежды и исправленные веса. Шесть видов оружия получили собственные меши, настраиваемые точки хвата, привязку к ладони и IK второй руки.
 
@@ -68,7 +74,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.17 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.21 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
@@ -160,7 +166,7 @@ Hold **Ctrl or C** to crouch. Movement slows to 43% and the pose and camera blen
 
 ## Animation and audio
 
-The heroes retain CC0 **KayKit Adventurers / Skeletons 1.0** rigs and clips under newly authored faceted geometry. New undead, golems, slimes, ogres and flyers use original meshes and articulated procedural animation. Lumen has a new ivory/gold palette and halo; seven bosses have different bases, horns, crowns, armor, crystals or appendages. The heroes and retained bosses preserve skeletal clips; new creatures animate articulated joints. `SkeletalActor` blends jump launch, rising tuck, descending balance and a soft landing compression, with a subtle squash/stretch overlay; it respects solo pause. `WeaponGrip` aligns hand weapons. Defeated enemies play their death clip. Cloth/skin uses a soft rim shader. Foliage, grass, shrine seals and portal surfaces animate separately.
+Echo, Lumen and the retained legacy characters use CC0 **KayKit Adventurers / Skeletons 1.0** rigs and clips under newly authored faceted geometry. Ember uses the separate 54-bone authored Generic archer rig, its own controller and 16 runtime AnimationClips; legacy avatars/controllers are preserved. New undead, golems, slimes, ogres and flyers use original meshes and articulated procedural animation. Lumen has a new ivory/gold palette and halo; seven bosses have different bases, horns, crowns, armor, crystals or appendages. The heroes and retained bosses preserve skeletal clips; new creatures animate articulated joints. `SkeletalActor` blends jump launch, rising tuck, descending balance and a soft landing compression, with a subtle squash/stretch overlay; it respects solo pause. `WeaponGrip` aligns hand weapons. Defeated enemies play their death clip. Cloth/skin uses a soft rim shader. Foliage, grass, shrine seals and portal surfaces animate separately.
 
 Original GLB files, license texts, native meshes/clips and painted texture atlases are in `Assets/Era/Art/KayKit`. See `Docs/THIRD-PARTY.md`. `KayKitImporter` performs an offline conversion into native Unity assets; no external runtime importer is needed. Subtle seamless ground, stone and wood detail textures are authored in `SurfaceTextureBuilder`; materials and foliage wind are applied without replacing the baked world scene.
 
@@ -170,6 +176,7 @@ The soundtrack has **eight original compositions: one for the menu and one for e
 
 ```powershell
 .\Tools\Build.ps1
+.\Tools\Test-Archer.ps1
 .\Tools\Test-Balance.ps1
 .\Tools\Test-Roguelike.ps1
 .\Tools\Test-Meadow.ps1
@@ -190,6 +197,8 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 `Build.ps1` uses two worker threads, at most two CPU cores and a lower process priority. It detects a Unity shutdown stall only after the log confirms a successfully saved build and shutdown.
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
+
+`Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 16 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. It does not manually sample clips. See [v0.21 recovery validation](Docs/VALIDATION-v0.21.md).
 
 `Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.16](Docs/VALIDATION-v0.16.md).
 

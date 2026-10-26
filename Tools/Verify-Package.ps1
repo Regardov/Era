@@ -5,7 +5,7 @@ $eraArchivePath = Join-Path $eraProject 'Releases\Era-Windows.zip'
 $eraBuildPath = Join-Path $eraProject 'Builds\Windows'
 $eraZip = [IO.Compression.ZipFile]::OpenRead($eraArchivePath)
 try {
-    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.20.0.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
+    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.21.0.md','VALIDATION-v0.21.md','ARCHER-RECOVERY-v0.21.md','archer-runtime-v021.json','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
         $eraEntry = $eraZip.GetEntry($eraName)
         if ($null -eq $eraEntry -or $eraEntry.Length -le 0) { throw "Missing or empty ZIP entry: $eraName" }
     }
