@@ -1,10 +1,27 @@
-# ERA: Seven Realms — v0.22
+# ERA: Seven Realms — v0.23
 
-**[Скачать готовую игру v0.22 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.22.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.22.0). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать последнюю игру v0.23 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.23.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.23.0). Распакуйте архив целиком и запустите `Era.exe`.
 
-**v0.22 — обновлённые анимации лучника в готовой Windows-игре:** перенос веса и работа плеч при беге, боковое и обратное движение, стрельба поверх locomotion, повороты корпуса, инерция плаща и колчана. Внешность и материалы сохранены; всего 22 клипа. **[Что нового](Docs/RELEASE-v0.22.0.md)** · **[Проверки Windows-сборки](Docs/VALIDATION-v0.22.md)** · **[Устройство анимаций и ограничения](Docs/ARCHER-MOTION.md)**.
+**v0.23 объединяет все завершённые изменения `main` и `codex/autumn-passives-auras`.** В одной игре: обновлённые движения лучника и стрельба на ходу, инерция плаща/колчана, новые пассивки и три случайные ауры Люмена, домики и руины, осенние листья со случайным лутом, пышная полупрозрачная листва, −8% HP обычных мобов и +12 базового урона оружия/Q лучнику и Эхо. Урон Люмена сохранён. Базовые ОЗ семи боссов: **2500 / 5000 / 5500 / 6500 / 7500 / 10000 / 12000**.
 
-![Бег лучника с прицеливанием — v0.22](Docs/Images/archer-motion-run-aim.png)
+[Изменения v0.23](Docs/RELEASE-v0.23.0.md) · [Проверки объединённой сборки](Docs/VALIDATION-v0.23.md) · [Движение лучника](Docs/ARCHER-MOTION.md).
+
+У лучника 22 клипа: перенос веса и работа плеч при беге, боковое и обратное движение, прицеливание/натяжение/выпуск поверх locomotion, повороты корпуса и инерция экипировки. Внешность и материалы сохранены. [Исходные изменения движения](Docs/RELEASE-v0.22.0.md).
+
+![Бег лучника с прицеливанием](Docs/Images/archer-motion-run-aim.png)
+
+В v0.22.1 кроны стали пышными и полупрозрачными: вместо сплошных объёмов — больше отдельных листьев с непрозрачностью 58%. Здоровье обычных мобов уменьшено на 8%. Лучник и Эхо получили +12 к базовому урону оружия и Q до множителей; у Люмена прежний урон. [Проверки и кадры v0.22.1](Docs/VALIDATION-v0.22.1.md).
+
+![Пышная полупрозрачная листва v0.22.1](Docs/Images/branching-trees-v0221.png)
+
+В v0.22 добавлены пассивки за повышение уровня: **лучнику +3 п.п. шанса крита**, **Эхо +10% к рикошету молний оружия**, **Люмину +3% к радиусу аур**. У Эхо каждые полные 100% дают гарантированный переход, остаток — шанс следующего: 230% = 2 перехода + 30% на третий. У Люмина на каждом уровне после аксессуара появляется **три случайных варианта** новых аур или улучшений изученных; лимит остаётся пять типов. Бонусы начисляются сразу при получении уровня, независимо от завершения выбора. Базовые параметры героев сохранены.
+
+Видеокарты заменены **72 кучками осенних листьев**: золото или опыт выбираются случайно при разрушении с равными шансами; оттенок листьев не сообщает награду. По всем семи картам расставлены домики и руины, деревья получили резные листья с прожилками и более разнообразную осеннюю палитру. Строения учитываются в общей коллизии, размещении объектов и карте Tab.
+
+Локальная сборка: `Builds/Windows/Era.exe`; исходники открываются в Unity **2023.1.22f1**. Итоговые проверки: [v0.23](Docs/VALIDATION-v0.23.md).
+
+![Домики и осенняя листва в Windows Player v0.22](Docs/Images/autumn-cottage-v022.png)
+
 
 **v0.21 восстанавливает анимации обновлённого лучника в Windows-игре.** Исправлен прежний импортёр: редакторские `PreviewAnimationClip` заменены настоящими runtime-клипами с сохранением GUID. Модель, 54-костный Generic-риг и 16 авторских Actions восстановлены без повторного моделирования и создания движений. В собранном Player проверяются реальные движения костей, события и игровые снаряды. Автовыстрел больше не теряет release-позу при заклинании. Все изменения v0.20 сохранены.
 
@@ -40,7 +57,7 @@
 
 Новое в v0.15: **120 иконок из предоставленных изображений**, ручьи, пригорки, кусты, крупные деревья и трава из изогнутых травинок. Панель уровня вдвое тоньше, полоса босса выше. Каждый дополнительный игрок даёт **×2 спавн / ОЗ / урон** (трое — ×4). После босса орда продолжает идти ещё вдвое чаще, а ОЗ и урон врагов растут на **10% каждые 10 секунд** до перехода в следующий мир.
 
-У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **129 предметов**. Максимальные ОЗ обычных мобов растут **×1,5 за каждый новый мир**; у боссов отдельная шкала v0.17. Цены 240 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
+У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **129 предметов**. Максимальные ОЗ обычных мобов растут **×1,5 за каждый новый мир**; у боссов новая шкала v0.23. Цены 240 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
 
 Золото сразу поступает в общий кошелёк; опыт подбирается кристаллами. Прицел убран. Полоса босса показывает текущие и максимальные ОЗ; босс имеет иммунитет к статусам и контролю, сохраняя уязвимость к прямому урону.
 
@@ -78,13 +95,13 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.22 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.21 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
 5. Selecting **Not ready yet** cancels the countdown. Character changes are available while unready; a player disconnecting also cancels the countdown.
 
-The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 14 is incompatible with older builds.
+The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 15 carries passive level gains and is incompatible with older builds. All three players need the same build.
 
 ## Controls
 
@@ -137,11 +154,11 @@ If a companion falls, approach within 3.5 m and hold F for 2.5 seconds. They hav
 
 **Weapons**: Crescent Axe cleaves an arc; Lightning Staff chains between enemies; Wildwood Bow fires arrows; Dawn Spear pierces in a line. Ember starts with a bow, Echo with a staff, Lumen with an Aura Conduit. At level 25 choose one different attack weapon. Book of Knowledge upgrades an equipped weapon up to level 5.
 
-**Ember**: 100 health, Sunburst (Q: 65 base damage in 7 m, 8 s cooldown), Overdrive (E: double fire rate and +30% movement for 6 s, 18 s cooldown).
+**Ember**: +3 percentage points of critical chance per level-up. 100 health, Sunburst (Q: 77 base damage in 7 m, 8 s cooldown), Overdrive (E: double fire rate and +30% movement for 6 s, 18 s cooldown).
 
-**Echo**: 115 health, 90% base damage, Frost Bloom (Q: 35 base damage and 3 s freeze in 8 m, 10 s cooldown), Resonance (E: restore 35 health and give 25 shield to both allies within 12 m, 16 s cooldown).
+**Echo**: +10% weapon lightning ricochet per level-up. Each full 100% guarantees an additional new target; the remainder rolls once for the next bounce. This adds to Ricochet Seed and keeps the existing 65% damage per transition. 115 health, 90% base damage, Frost Bloom (Q: 47 base damage and 3 s freeze in 8 m, 10 s cooldown), Resonance (E: restore 35 health and give 25 shield to both allies within 12 m, 16 s cooldown).
 
-**Lumen**: 110 HP, an animated bearded aura keeper in an ivory robe with earth-toned mantle. Aura radius is **12 / 1.3 ≈ 9.23 m**, exactly 1.3 times smaller than v0.7. The conduit deals **10 base damage per second** to enemies in range in four pulses, scaling with damage/crit/item modifiers. Starts with **Fortune Aura**. Every level grants an accessory and **one choice: upgrade an owned aura OR add a new buff aura**. Keep up to **five different types**. Repeated choices add 20% of base buff per rank; after five types only those five can be upgraded. Auras affect the bearer and living allies, scale with range/area/conduit level, disappear outside range or when Lumen falls/disconnects, and use the strongest overlapping source.
+**Lumen**: 110 HP, an animated bearded aura keeper in an ivory robe with earth-toned mantle. Initial aura radius is **12 / 1.3 ≈ 9.23 m**, growing by **3% of base radius per level-up**. This affects the aura weapon and allied aura range, while ability radii retain their own scaling. The conduit deals **10 base damage per second** to enemies in range in four pulses, scaling with damage/crit/item modifiers. Starts with **Fortune Aura**. Every level grants an accessory and **one choice from three random distinct aura cards: upgrade an owned aura OR add a new buff aura**. Keep up to **five different types**. Repeated choices add 20% of base buff per rank; after five types the three cards are randomly drawn from owned upgrades. Auras affect the bearer and living allies, scale with range/area/conduit level, disappear outside range or when Lumen falls/disconnects, and use the strongest overlapping source.
 
 | Aura | Rank 1 bonus |
 |---|---|
@@ -202,9 +219,9 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 22 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. `Test-ArcherMotion.ps1 -Fps 30` also checks 16 combined movement/aiming/turning scenarios (15 and 60 are supported). See [v0.22 validation](Docs/VALIDATION-v0.22.md).
+`Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 16 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. It does not manually sample clips. See [v0.21 recovery validation](Docs/VALIDATION-v0.21.md).
 
-`Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.16](Docs/VALIDATION-v0.16.md).
+`Test-Update.ps1` checks the encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, breakable leaf piles, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Environment.ps1` checks water, foliage, buildings, leaf meshes and three aura cards with captures. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.22.1](Docs/VALIDATION-v0.22.1.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 
@@ -217,11 +234,11 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 - `SceneryBuilder.cs`, `LivingGrass.cs`, realm shaders: chunked sculpted world, textured trees/rocks, reactive meadow.
 - `ActorArtBuilder.cs`, `BossArt.cs`: refined hero assets and seven boss identities.
 - `FacetedArtBuilder.cs`, `HumanRigShape.cs`: original faceted costumes, restored skeletons, skin weights and clip retargeting.
-- `Simulation.Encounters.cs`, `EncounterView.cs`: continuous nearby spawns, minute hordes, boss statue, elite trials and resource graphics cards.
+- `Simulation.Encounters.cs`, `EncounterView.cs`: continuous nearby spawns, minute hordes, boss statue, elite trials and autumn leaf piles with random loot.
 - `HudTextLayout.cs`: shared word wrapping for the live UI and screenshots.
 - `Assets/Era/Art/KayKit`: source models, painted atlases, native skeletal clips and licenses.
 - `GameHud.cs`, `I18n.cs`, `IconLibrary.cs`, `FrameCapture.cs`: bilingual HUD, menus and offscreen capture.
 - `ArtSource/Music/compose_soundtrack.py`, `MusicCatalog.cs`, `SynthAudio.cs`: original soundtrack, realm selection, streaming transitions and effects.
 - `Assets/Era/Generated/`: saved map meshes/materials. `Assets/Era/Editor/`: bake/build/check tools.
 
-This is a prototype: seven realms/bosses, three heroes, four attack weapon types plus an aura conduit, 31 chest items, 21 accessories/stats, eight auras, three relics and eight blessings. Online matchmaking, gamepads and persistent meta-progression are not implemented. All heroes use CC0 skeletal clips with authored overlays and original decoration. The host remains authoritative; TCP snapshots suit LAN/VPN, with no local prediction for high latency.
+This is a prototype: seven realms/bosses, three heroes, five attack weapon types plus an aura conduit, 129 chest items, 21 accessories/stats, eight auras, three relics and eight blessings. Online matchmaking, gamepads and persistent meta-progression are not implemented. All heroes use CC0 skeletal clips with authored overlays and original decoration. The host remains authoritative; TCP snapshots suit LAN/VPN, with no local prediction for high latency.

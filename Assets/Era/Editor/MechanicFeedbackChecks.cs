@@ -58,6 +58,14 @@ namespace Era.Editor
                 foreach(var f in root.GetComponentsInChildren<MeshFilter>())
                 {
                     var mesh=f.sharedMesh;var v=mesh.vertices;var uv=mesh.uv;var t=mesh.triangles;triangles+=t.Length/3;bool crown=f.name=="Dense crown";
+                    if(crown)
+                    {
+                        var material=f.GetComponent<Renderer>().sharedMaterial;
+                        Check(material.GetTag("RenderType",false)=="Transparent"&&material.renderQueue>=3000&&material.GetFloat("_Opacity")>.3f&&material.GetFloat("_Opacity")<.8f,"canopy uses translucent leaf material");
+                        Check(Array.TrueForAll(uv,q=>q.x>-.5f)&&mesh.colors.Length==v.Length,"canopy contains individual colored leaves without a solid shell");
+                        for(int i=0;i<t.Length;i+=3)Check(Vector3.Cross(v[t[i+1]]-v[t[i]],v[t[i+2]]-v[t[i]]).sqrMagnitude>1e-12f,"nondegenerate individual leaf surface");
+                        Check(mesh.bounds.size.x>3.5f&&mesh.bounds.size.y>4&&t.Length/3>6000,"lush volumetric crown silhouette");continue;
+                    }
                     var weld=new Dictionary<Vector3Int,int>();var indices=new int[v.Length];
                     for(int i=0;i<v.Length;i++){var k=Vector3Int.RoundToInt(v[i]*10000);if(!weld.TryGetValue(k,out int id)){id=weld.Count;weld.Add(k,id);}indices[i]=id;}
                     var edges=new Dictionary<(int,int),(int count,int winding)>();double volume=0;int faces=0;
@@ -71,7 +79,7 @@ namespace Era.Editor
                     Check(volume>1&&faces>200,"outward dense closed volume "+f.name);
                     if(crown)Check(mesh.bounds.size.x>3.5f&&mesh.bounds.size.y>4,"volumetric crown silhouette");
                 }
-                Check(triangles<12000&&root.GetComponentsInChildren<Renderer>().Length==2,"two batched renderers and bounded tree geometry");
+                Check(triangles<22000&&root.GetComponentsInChildren<Renderer>().Length==2,"two batched renderers and bounded lush tree geometry");
             }
             finally
             {

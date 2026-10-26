@@ -32,7 +32,7 @@ namespace Era.Editor
                 var sim=New(n);float scale=Mathf.Pow(2,n-1);
                 var enemy=sim.SpawnEnemy(EnemyKind.Skeleton);var boss=sim.SpawnEnemy(EnemyKind.Warden);
                 Check(Mathf.Approximately(enemy.maxHp,EnemyCatalog.Health(enemy.kind)*scale)&&Mathf.Approximately(enemy.damage,10*scale),"ordinary HP and damage x"+scale);
-                Check(Mathf.Approximately(boss.maxHp,10000*scale)&&Mathf.Approximately(boss.damage,28*scale),"boss HP and melee damage x"+scale);
+                Check(Mathf.Approximately(boss.maxHp,2500*scale)&&Mathf.Approximately(boss.damage,28*scale),"boss HP and melee damage x"+scale);
                 Check(Mathf.Abs(sim.SpawnInterval-1.21f/scale)<.0001f,"ambient spawn interval x"+scale);
                 Check(Mathf.Abs(Spawns(n)-solo*scale)<=2,"actual spawned total scales with party size "+n);
                 Check(Mathf.Abs(Spawns(n,true)-solo*scale*2.2f)<=5,"aftermath retains its previous rate for party "+n);

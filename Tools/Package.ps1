@@ -14,7 +14,7 @@ foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
 $eraImageFolder = Join-Path $buildPath 'Images'
-foreach ($eraDocument in @('RELEASE-v0.22.0.md','VALIDATION-v0.22.md','ARCHER-MOTION.md','archer-runtime-v022.json','archer-motion-release-v022.json','campaign-smoke-v022.json')) {
+foreach ($eraDocument in @('RELEASE-v0.23.0.md','VALIDATION-v0.23.md','RELEASE-v0.22.0.md','VALIDATION-v0.22.md','archer-runtime-v022.json','campaign-smoke-v022.json','ARCHER-MOTION.md','VALIDATION-AUTUMN-v0.22.md','VALIDATION-v0.22.1.md','archer-runtime-v023.json','archer-motion-release-v023.json','campaign-smoke-v023.json','merged-validation-v023.json')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
 }
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'archer-motion-*.json' | Copy-Item -Destination $buildPath -Force
@@ -32,6 +32,9 @@ foreach ($eraHero in @('ember','echo','lumen')) {
 }
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v019.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v021.png' | Copy-Item -Destination $eraImageFolder -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v023.png' | Copy-Item -Destination $eraImageFolder -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0221.png' | Copy-Item -Destination $eraImageFolder -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v022.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'feedback-*.json' | Copy-Item -Destination $buildPath -Force
 foreach ($eraImage in @('character-Echo-v017.png','characters-crouching-v017.png','characters-crouching-side-v017.png')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force

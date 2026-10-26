@@ -12,7 +12,31 @@ namespace Era.Editor
         static void Step(Simulation s,float time){for(int n=0;n<Mathf.CeilToInt(time*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
         {
-            count=0;Economy();Healing();Evasion();Projectiles();Models();CurrentRules();return count;
+            count=0;Economy();Healing();Evasion();Projectiles();Models();CurrentRules();SofterMobsAndHeroDamage();return count;
+        }
+        static void SofterMobsAndHeroDamage()
+        {
+            float[] previousHp={44,110,32,44,42,35,125,80,260,150,65,75,230,135,24,100};
+            var s=New();foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))
+            {
+                var enemy=s.SpawnEnemy(kind);float expected=kind==EnemyKind.Warden?CampaignData.BossHealth(1):previousHp[(int)kind]*.92f;
+                Check(Mathf.Abs(enemy.maxHp-expected)<.001f,"actual spawned HP reduced eight percent except boss: "+kind);s.State.enemies.Clear();
+            }
+            foreach(Hero hero in Enum.GetValues(typeof(Hero)))
+            {
+                s=new Simulation(675);var p=s.AddPlayer(0,"Damage",hero);p.position=Vector3.zero;p.critChance=0;p.weapons=new[]{(int)WeaponKind.LightningStaff,-1};p.weaponLevels=new[]{1,0};s.State.resourceNodes.Clear();s.Start();s.State.spawnTimer=100000;
+                var e=new EnemyState{id=s.State.nextId++,kind=EnemyKind.Wisp,position=Vector3.forward*3,hp=10000,maxHp=10000,frozen=10000,spawnGrace=10000};s.State.enemies.Add(e);
+                s.Step(.01f,new Dictionary<int,InputFrame>());float expected=(hero==Hero.Lumen?24:36)*(hero==Hero.Echo?.9f:1);
+                Check(Mathf.Abs(10000-e.hp-expected)<.001f,"hero-specific flat weapon damage and Echo multiplier: "+hero);
+                p.weapons=new[]{-1,-1};e.hp=10000;s.Step(.01f,new Dictionary<int,InputFrame>{{0,new InputFrame{primary=true}}});
+                float q=(hero==Hero.Ember?77:hero==Hero.Echo?47*.9f:45);Check(Mathf.Abs(10000-e.hp-q)<.001f,"Q gains twelve base damage except Lumen: "+hero);
+                if(hero==Hero.Lumen)
+                {
+                    p.weapons=new[]{(int)WeaponKind.Aura,-1};p.weaponLevels=new[]{1,0};p.qCooldown=100;p.auraDamageTimer=0;e.hp=10000;
+                    for(int n=0;n<20;n++)s.Step(.05f,new Dictionary<int,InputFrame>());
+                    Check(Mathf.Abs(10000-e.hp-10)<.001f,"Lumen aura remains ten base DPS");
+                }
+            }
         }
         static void Economy()
         {
@@ -74,15 +98,22 @@ namespace Era.Editor
             for(int stage=1;stage<=7;stage++)
             {
                 s=New();s.State.stage=stage;WorldMap.SetStage(stage);var normal=s.SpawnEnemy(EnemyKind.Skeleton);var guardian=s.SpawnEnemy(EnemyKind.Warden);float scale=Mathf.Pow(1.5f,stage-1);
-                float[] bossHp={10000,25000,50000,100000,200000,400000,800000};
+                float[] bossHp={2500,5000,5500,6500,7500,10000,12000};
                 Check(Mathf.Abs(normal.maxHp-EnemyCatalog.Health(EnemyKind.Skeleton)*scale)<.01f&&guardian.maxHp==bossHp[stage-1],"normal realm scaling and explicit boss HP for realm "+stage);
+                for(int party=2;party<=3;party++)
+                {
+                    var coop=new Simulation(741+stage,true);for(int id=0;id<party;id++)coop.AddPlayer(id,"Boss HP",(Hero)id);
+                    coop.State.stage=stage;WorldMap.SetStage(stage);var partyBoss=coop.SpawnEnemy(EnemyKind.Warden);
+                    Check(partyBoss.maxHp==bossHp[stage-1]*Mathf.Pow(2,party-1),"boss HP retains co-op scaling in realm "+stage+" / party "+party);
+                }
             }
             s=New();p=s.State.Player(0);p.goldGain=1.5f;var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=p.position+Vector3.forward*250;s.DamageEnemy(e,p,999999);
             Check(s.State.coins==36&&s.State.earnedCoins==6&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"distant kills credit gold immediately with the owner's multiplier");
             var node=new ResourceNodeState{kind=PickupKind.Gold,hp=100,position=p.position+Vector3.forward*250};s.DamageResource(node,100,p);s.DamageResource(node,100,p);
-            Check(s.State.coins==69&&s.State.earnedCoins==39&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"gold GPU credits once without floor bundles");
+            int leafGold=node.kind==PickupKind.Gold?33:0;
+            Check(s.State.coins==36+leafGold&&s.State.earnedCoins==6+leafGold&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"leaf gold credits once without floor bundles");
             s.State.pickups.Add(new PickupState{kind=PickupKind.Gold,value=7,position=p.position+Vector3.forward*290});Step(s,.04f);
-            Check(s.State.coins==76&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"legacy gold converts regardless of distance and age");
+            Check(s.State.coins==43+leafGold&&!s.State.pickups.Exists(c=>c.kind==PickupKind.Gold),"legacy gold converts regardless of distance and age");
             s.ApplyItem(p,(int)ItemId.MiserFuse);s.ApplyItem(p,(int)ItemId.AlchemyEngine);s.GrantGold(10,p);
             Check(s.State.itemFields.Exists(f=>f.item==(int)ItemId.MiserFuse)&&p.itemCounters[(int)ItemId.AlchemyEngine]>0,"automatic gold retains mine and alchemy synergies");
             s=New();p=s.State.Player(0);p.relic=Relic.Hourglass;p.critChance=1;

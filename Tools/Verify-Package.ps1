@@ -5,14 +5,20 @@ $eraArchivePath = Join-Path $eraProject 'Releases\Era-Windows.zip'
 $eraBuildPath = Join-Path $eraProject 'Builds\Windows'
 $eraZip = [IO.Compression.ZipFile]::OpenRead($eraArchivePath)
 try {
-    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.22.0.md','VALIDATION-v0.22.md','ARCHER-MOTION.md','archer-runtime-v022.json','archer-motion-release-v022.json','campaign-smoke-v022.json','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
+    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.23.0.md','VALIDATION-v0.23.md','ARCHER-MOTION.md','archer-runtime-v023.json','archer-motion-release-v023.json','campaign-smoke-v023.json','merged-validation-v023.json','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
         $eraEntry = $eraZip.GetEntry($eraName)
         if ($null -eq $eraEntry -or $eraEntry.Length -le 0) { throw "Missing or empty ZIP entry: $eraName" }
     }
-    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('archer-runtime-v022.json').Open())
+    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('archer-runtime-v023.json').Open())
     try { $eraRuntime = $eraRuntimeReader.ReadToEnd() | ConvertFrom-Json }
     finally { $eraRuntimeReader.Dispose() }
-    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.22.0') { throw 'ZIP must contain validation from the tested 0.22.0 Player' }
+    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.23.0') { throw 'ZIP must contain validation from the tested 0.23.0 Player' }
+    $eraMergedReader = [IO.StreamReader]::new($eraZip.GetEntry('merged-validation-v023.json').Open())
+    try { $eraMergedValidation = $eraMergedReader.ReadToEnd() | ConvertFrom-Json }
+    finally { $eraMergedReader.Dispose() }
+    $eraAssemblyHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath 'Era_Data\Managed\Assembly-CSharp.dll') -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($eraMergedValidation.version -ne '0.23.0' -or $eraMergedValidation.managedSha256 -ne $eraAssemblyHash) { throw 'Merged validation belongs to a different Player build' }
+    foreach ($eraTest in $eraMergedValidation.tests.PSObject.Properties) { if (-not $eraTest.Value.ok) { throw "Failed merged validation: $($eraTest.Name)" } }
     $eraPlayerFiles = Get-ChildItem -LiteralPath $eraBuildPath -Recurse -File
     foreach ($eraPlayerFile in $eraPlayerFiles) {
         $eraName = $eraPlayerFile.FullName.Substring($eraBuildPath.Length+1).Replace('\','/')

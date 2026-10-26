@@ -12,5 +12,5 @@ try {
     $eraResult = Get-Content -LiteralPath $eraReport -Raw | ConvertFrom-Json
     if (-not $eraResult.ok -or $eraProcess.ExitCode -ne 0) { throw "Environment check failed: $($eraResult | ConvertTo-Json -Compress)" }
     if (Select-String -LiteralPath (Join-Path $eraFolder 'environment-player.log') -Pattern 'Shader error|Exception|ERROR' -Quiet) { throw 'Environment player log contains an error.' }
-    Write-Output "PASS Environment: transparentWater=$($eraResult.transparentWater), depth=$($eraResult.depth), foliage=$($eraResult.foliage), map=$($eraResult.map), realmChange=$($eraResult.realmChange), streams=$($eraResult.streams), renderers=$($eraResult.renderers)"
+    Write-Output "PASS Environment: transparentWater=$($eraResult.transparentWater), depth=$($eraResult.depth), foliage=$($eraResult.foliage), transparentFoliage=$($eraResult.transparentFoliage), map=$($eraResult.map), realmChange=$($eraResult.realmChange), streams=$($eraResult.streams), renderers=$($eraResult.renderers), buildings=$($eraResult.buildings), leafPiles=$($eraResult.leafPiles), threeAuras=$($eraResult.threeAuras)"
 } finally { if (-not $eraProcess.HasExited) { Stop-Process -Id $eraProcess.Id } }

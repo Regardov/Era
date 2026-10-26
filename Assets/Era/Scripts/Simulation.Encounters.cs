@@ -18,7 +18,7 @@ namespace Era
             {
                 float a=i*2.399963f+State.stage*.31f,r=i<2?13:30+Mathf.Sqrt((i-2)/(float)(GameData.ResourceNodeCount-3))*(GameData.ArenaRadius-52);
                 var p=WorldMap.Resolve(WorldMap.OnGround(Mathf.Cos(a)*r,Mathf.Sin(a)*r),Vector3.zero,1);p.y=WorldMap.Ground(p);
-                State.resourceNodes.Add(new ResourceNodeState{id=State.nextId++,position=p,kind=i%2==0?PickupKind.Gold:PickupKind.Experience});
+                State.resourceNodes.Add(new ResourceNodeState{id=State.nextId++,position=p});
             }
         }
         void TickWaves(float dt)
@@ -96,6 +96,7 @@ namespace Era
         public void DamageResource(ResourceNodeState node,float damage,PlayerState owner)
         {
             if(node.broken||damage<=0)return;node.hp-=damage;node.hitSerial++;if(node.hp>0)return;node.broken=true;
+            node.kind=random.Next(2)==0?PickupKind.Gold:PickupKind.Experience;
             int value=node.kind==PickupKind.Gold?28+State.stage*5:18+State.stage*4;
             if(node.kind==PickupKind.Gold)GrantGold(value,owner);
             else for(int i=0;i<4;i++)

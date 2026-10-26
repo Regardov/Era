@@ -79,6 +79,18 @@ namespace Era
                 int g=Add(root+direction*length+fold*.3f,new Vector2(.5f,1),color*1.12f);
                 Tri(a,b,c);Tri(a,c,d);Tri(b,e,c);Tri(c,f,d);Tri(c,e,g);Tri(c,g,f);
             }
+            public void Maple(Vector3 root,Vector3 direction,Vector3 side,float length,Color color)
+            {
+                direction.Normalize();side.Normalize();var normal=Vector3.Cross(direction,side).normalized;
+                // Lobed outline and a raised midrib give each leaf a folded silhouette.
+                var outline=new[]{new Vector2(0,0),new Vector2(-.25f,.22f),new Vector2(-.49f,.27f),new Vector2(-.30f,.43f),new Vector2(-.52f,.64f),new Vector2(-.22f,.61f),new Vector2(-.18f,.82f),new Vector2(0,1),new Vector2(.18f,.82f),new Vector2(.22f,.61f),new Vector2(.52f,.64f),new Vector2(.30f,.43f),new Vector2(.49f,.27f),new Vector2(.25f,.22f)};
+                int center=Add(root+direction*length*.48f+normal*length*.075f,new Vector2(.5f,.48f),color*1.08f),first=v.Count;
+                foreach(var q in outline)Add(root+(direction*q.y+side*q.x)*length+normal*(Mathf.Abs(q.x)*length*.10f),new Vector2(q.x+.5f,q.y),color*Mathf.Lerp(.86f,1.12f,q.y));
+                for(int i=0;i<outline.Length;i++)Tri(center,first+i,first+(i+1)%outline.Length);
+                var stemColor=new Color(.36f,.23f,.10f);int stem=v.Count;
+                Add(root-direction*length*.14f-side*length*.012f,Vector2.zero,stemColor);Add(root-direction*length*.14f+side*length*.012f,Vector2.right,stemColor);
+                Add(root+direction*length*.28f-side*length*.006f,Vector2.up,stemColor);Add(root+direction*length*.28f+side*length*.006f,Vector2.one,stemColor);Tri(stem,stem+2,stem+1);Tri(stem+1,stem+2,stem+3);
+            }
             public void Boulder(Vector3 center,Vector3 scale,Color color,int seed,bool leaves=false)
             {
                 const int sides=12,rings=7;int start=v.Count;
@@ -130,7 +142,7 @@ namespace Era
             {
                 var key=new Vector2Int(Mathf.FloorToInt(prop.position.x/60),Mathf.FloorToInt(prop.position.z/60));if(!cells.TryGetValue(key,out var cell)){cell=new Cell();cells[key]=cell;}
                 int seed=Mathf.RoundToInt(prop.angle*13+prop.position.x*7);var random=new System.Random(seed);
-                if(prop.kind==0)Tree(cell,prop,random,stage,leafColor);
+                if(prop.kind==0)Tree(cell,prop,random,stage,Color.Lerp(leafColor,AutumnColors[seed&3],stage==1||stage==4?.50f:.22f));
                 else if(prop.kind==2)Bush(cell,prop,leafColor,seed);
                 else
                 {
@@ -177,6 +189,22 @@ namespace Era
         }
         static Material Surface(string name,int kind,Texture2D texture,Texture2D normal)
         {var mat=new Material(Shader.Find("Era/Realm Surface")){name=name,mainTexture=texture};mat.SetFloat("_Kind",kind);mat.SetTexture("_BumpMap",normal);return mat;}
+        static readonly Color[] AutumnColors={new Color(.86f,.43f,.12f),new Color(.95f,.68f,.20f),new Color(.66f,.23f,.12f),new Color(.65f,.53f,.20f)};
+        public static GameObject LeafPile(Transform parent,int variant)
+        {
+            var d=new Draft();var rng=new System.Random(3817+variant*193);
+            for(int i=0;i<64;i++)
+            {
+                float a=Range(rng,0,Mathf.PI*2),r=Mathf.Sqrt(Range(rng,0,1))*.70f;
+                var p=new Vector3(Mathf.Cos(a)*r,.045f+(1-r/.9f)*.16f+Range(rng,0,.10f),Mathf.Sin(a)*r);
+                float turn=Range(rng,0,Mathf.PI*2);var direction=new Vector3(Mathf.Cos(turn),Range(rng,-.18f,.45f),Mathf.Sin(turn)).normalized;
+                var side=Quaternion.AngleAxis(Range(rng,-20,20),direction)*Vector3.Cross(direction,Vector3.up);
+                Color tint=AutumnColors[rng.Next(AutumnColors.Length)]*Range(rng,.85f,1.10f);float length=Range(rng,.28f,.50f);
+                if(i%3==0)d.Leaf(p,direction,side,length,length*.30f,tint);else d.Maple(p,direction,side,length,tint);
+            }
+            var material=new Material(Shader.Find("Era/Realm Leaves")){name="Autumn leaf grain / "+variant,mainTexture=Resources.Load<Texture2D>("Textures/LeafDetail")};
+            return d.Save("Autumn maple and birch handful / "+variant,parent,material);
+        }
         public static GameObject TreePreview(Transform parent,bool conifer)
         {
             var root=new GameObject(conifer?"Closed conifer preview":"Closed broadleaf preview");root.transform.SetParent(parent,false);var cell=new Cell();
@@ -205,7 +233,8 @@ namespace Era
                 var forward=(direction+Vector3.up*Range(random,.15f,.7f)).normalized;
                 var side=Quaternion.AngleAxis(Range(random,-70,70),forward)*Vector3.Cross(forward,Vector3.up).normalized;
                 float size=Range(random,.30f,.55f)*(spread.x+spread.z);
-                draft.Leaf(root,forward,side,size, size*(needles?.11f:.32f),tint*Range(random,.78f,1.18f));
+                if(needles)draft.Leaf(root,forward,side,size,size*.25f,tint*Range(random,.78f,1.18f));
+                else draft.Maple(root,forward,side,size,tint*Range(random,.78f,1.18f));
             }
         }
         static void BuildStreams(Transform root,int stage)
@@ -257,7 +286,6 @@ namespace Era
                 for(int band=0;band<7;band++)
                 {
                     float t=.27f+band*.103f,reach=(2.3f-band*.28f)*scale;var start=p+Vector3.up*height*t+lean*t*t;
-                    cell.leaves.Crown(start+Vector3.up*.3f*scale,new Vector3(reach,.86f*scale,reach),leaf*(.88f+band*.025f),band*71+(int)prop.angle);
                     for(int b=0;b<6;b++)
                     {
                         float a=angle+b*Mathf.PI/3+band*.72f;var radial=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));
@@ -266,15 +294,15 @@ namespace Era
                         for(int twig=0;twig<3;twig++)
                         {
                             var tip=Vector3.Lerp(start,end,.42f+twig*.25f)+Vector3.up*.15f*scale;
-                            if(twig==2)Spray(cell.leaves,tip,new Vector3(.50f,.30f,.50f)*scale*(1-band*.07f),leaf*(.84f+band*.035f),random,7,true);
+                            Spray(cell.leaves,tip,new Vector3(.66f,.40f,.66f)*scale*(1-band*.06f),leaf*(.84f+band*.035f),random,twig==2?22:10,true);
                         }
                     }
                 }
-                Spray(cell.leaves,previous,new Vector3(.25f,.5f,.25f)*scale,leaf,random,20,true);
+                Spray(cell.leaves,previous,new Vector3(.38f,.65f,.38f)*scale,leaf,random,45,true);
                 return;
             }
             int limbs=random.Next(8,12);
-            cell.leaves.Crown(p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.9f,1.75f,1.9f)*scale,leaf,(int)prop.angle);
+            Spray(cell.leaves,p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.80f,1.6f,1.80f)*scale,leaf,random,120,false);
             for(int b=0;b<limbs;b++)
             {
                 float a=angle+b*2.399963f,t=.34f+b/(float)limbs*.48f,reach=Range(random,1.8f,2.9f)*scale*(1-(t-.34f)*.6f);
@@ -283,16 +311,16 @@ namespace Era
                 var tip=start+radial*reach+Vector3.up*height*Range(random,.15f,.25f);
                 float thickness=(.15f-b*.007f)*scale;
                 cell.bark.Branch(new[]{start,elbow,tip},new[]{thickness,thickness*.55f,.02f*scale},bark,8);
-                cell.leaves.Crown(tip+Vector3.up*.22f*scale,new Vector3(1.20f,1.02f,1.18f)*scale,leaf*(.95f+t*.08f),b*97+(int)prop.angle);
+                Spray(cell.leaves,tip+Vector3.up*.22f*scale,new Vector3(1.40f,1.12f,1.40f)*scale,leaf,random,55,false);
                 for(int fork=0;fork<4;fork++)
                 {
                     float turn=a+(fork-1.5f)*.70f;var twigStart=Vector3.Lerp(elbow,tip,.25f+fork*.18f);
                     var end=twigStart+new Vector3(Mathf.Cos(turn)*.8f,Range(random,.25f,.8f),Mathf.Sin(turn)*.8f)*scale;
                     cell.bark.Tube(twigStart,end,.035f*scale,.008f*scale,bark,5);
-                    if(fork%2==0)Spray(cell.leaves,end,new Vector3(.65f,.44f,.65f)*scale,leaf*(.94f+t*.15f),random,8,false);
+                    if(fork%2==0)Spray(cell.leaves,end,new Vector3(.74f,.56f,.74f)*scale,leaf*(.94f+t*.15f),random,14,false);
                 }
             }
-            cell.leaves.Crown(previous-Vector3.up*.35f*scale,new Vector3(1.1f,1.2f,1.08f)*scale,leaf*1.04f,719+(int)prop.angle);
+            Spray(cell.leaves,previous-Vector3.up*.35f*scale,new Vector3(1.25f,1.35f,1.25f)*scale,leaf*1.04f,random,90,false);
         }
     }
 }
