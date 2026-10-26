@@ -32,7 +32,7 @@ namespace Era.Editor
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
             TuningAndRandomStarts();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
-            assertions+=ArcherAnimationChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember"));
+            assertions+=ArcherAnimationChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember"));assertions+=ArcherMotionChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember")).assertions;
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
             Debug.Log("ERA_CHECKS_OK " + assertions + " assertions");
         }
@@ -271,7 +271,7 @@ namespace Era.Editor
                 var archer=model.GetComponent<HeroMotion>()?.archer;
                 if(archer!=null)
                 {
-                    Check(archer.animator!=null&&archer.animator.runtimeAnimatorController!=null&&archer.clips.Length==16&&archer.GetComponentsInChildren<SkinnedMeshRenderer>().Length>0,"Generic archer has real animation clips: "+character);
+                    Check(archer.animator!=null&&archer.animator.runtimeAnimatorController!=null&&archer.clips.Length==ArcherAnimationImporter.ClipNames.Length&&archer.GetComponentsInChildren<SkinnedMeshRenderer>().Length>0,"Generic archer has real animation clips: "+character);
                     foreach(var renderer in archer.GetComponentsInChildren<SkinnedMeshRenderer>())Check(renderer.sharedMesh.vertexCount<60000&&renderer.sharedMesh.normals.Length==renderer.sharedMesh.vertexCount&&Array.TrueForAll(renderer.sharedMaterials,m=>m!=null&&m.shader!=null),"bounded Generic mesh retains authored palette and normals: "+renderer.name);
                     continue;
                 }

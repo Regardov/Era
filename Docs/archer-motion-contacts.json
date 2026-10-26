@@ -1,0 +1,2404 @@
+{
+  "method": "BVH triangle surface intersections, epsilon=0, real combined Player poses. Open/intersecting garment shells can have intentional contacts. This is a sampled audit, not a continuous collision guarantee.",
+  "samples": [
+    {
+      "pose": "Accelerate-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 27,
+        "Shoulder_Armor_R / Scarf": 38
+      }
+    },
+    {
+      "pose": "Accelerate-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 30,
+        "Shoulder_Armor_R / Scarf": 40
+      }
+    },
+    {
+      "pose": "Accelerate-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 47
+      }
+    },
+    {
+      "pose": "Accelerate-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 27,
+        "Shoulder_Armor_R / Scarf": 38
+      }
+    },
+    {
+      "pose": "Backpedal-1",
+      "pairs": {
+        "Cloak / Leg_L": 124,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 76
+      }
+    },
+    {
+      "pose": "Backpedal-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 56
+      }
+    },
+    {
+      "pose": "Backpedal-3",
+      "pairs": {
+        "Cloak / Leg_L": 126,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 82,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 55
+      }
+    },
+    {
+      "pose": "Backpedal-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 88,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "Decelerate-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Decelerate-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Decelerate-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Decelerate-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Idle-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Idle-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Idle-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Idle-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "ReturnRun-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 27,
+        "Shoulder_Armor_R / Scarf": 38
+      }
+    },
+    {
+      "pose": "ReturnRun-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "ReturnRun-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 47
+      }
+    },
+    {
+      "pose": "ReturnRun-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Roll-1",
+      "pairs": {
+        "Cloak / Leg_L": 32,
+        "Cloak / Leg_R": 87,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 46
+      }
+    },
+    {
+      "pose": "Roll-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Roll-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "RunAim-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 53,
+        "Shoulder_Armor_R / Scarf": 71
+      }
+    },
+    {
+      "pose": "RunAim-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 45,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "RunAim-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 90,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "RunAim-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 67,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 53,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "RunFire-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "RunFire-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 54,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 55
+      }
+    },
+    {
+      "pose": "RunFire-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 51
+      }
+    },
+    {
+      "pose": "RunFire-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 46
+      }
+    },
+    {
+      "pose": "RunForward-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 27,
+        "Shoulder_Armor_R / Scarf": 38
+      }
+    },
+    {
+      "pose": "RunForward-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "RunForward-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 47
+      }
+    },
+    {
+      "pose": "RunForward-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Settled-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Settled-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Settled-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Settled-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "StrafeLeft-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 63
+      }
+    },
+    {
+      "pose": "StrafeLeft-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 56
+      }
+    },
+    {
+      "pose": "StrafeLeft-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 88,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "StrafeLeft-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 88,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "StrafeRight-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "StrafeRight-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "StrafeRight-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 90,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 51,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "StrafeRight-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 70,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 53,
+        "Shoulder_Armor_R / Scarf": 52
+      }
+    },
+    {
+      "pose": "Turn180-1",
+      "pairs": {
+        "Cloak / Leg_L": 88,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 74
+      }
+    },
+    {
+      "pose": "Turn180-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 53,
+        "Shoulder_Armor_R / Scarf": 52
+      }
+    },
+    {
+      "pose": "Turn180-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 88,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 47,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "Turn180-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 74,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "Turn90-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 76
+      }
+    },
+    {
+      "pose": "Turn90-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 51
+      }
+    },
+    {
+      "pose": "Turn90-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 90,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 50
+      }
+    },
+    {
+      "pose": "Turn90-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 89,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 49,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "TurnFire-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 45,
+        "Shoulder_Armor_R / Scarf": 53
+      }
+    },
+    {
+      "pose": "TurnFire-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 60,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 43,
+        "Shoulder_Armor_R / Scarf": 57
+      }
+    },
+    {
+      "pose": "TurnFire-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 59,
+        "Shoulder_Armor_R / Scarf": 54
+      }
+    },
+    {
+      "pose": "TurnFire-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 22,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 48
+      }
+    },
+    {
+      "pose": "Walk-1",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Walk-2",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 43
+      }
+    },
+    {
+      "pose": "Walk-3",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 34,
+        "Shoulder_Armor_R / Scarf": 42
+      }
+    },
+    {
+      "pose": "Walk-4",
+      "pairs": {
+        "Cloak / Leg_L": 0,
+        "Cloak / Leg_R": 0,
+        "Cloak / Quiver_Case": 0,
+        "Cloak / Harness": 20,
+        "Bow_Wood / Body_Head": 0,
+        "Bow_Wood / Hood": 0,
+        "Bow_Wood / Cloak": 0,
+        "Bow_Wood / Clothing_Tunic_Coat": 0,
+        "Bow_Wood / Leg_L": 0,
+        "Bow_Wood / Leg_R": 0,
+        "Arm_L / Hood": 0,
+        "Arm_R / Hood": 0,
+        "Quiver_Case / Shoulder_Armor_L": 0,
+        "Quiver_Case / Shoulder_Armor_R": 0,
+        "Shoulder_Armor_L / Scarf": 32,
+        "Shoulder_Armor_R / Scarf": 38
+      }
+    }
+  ],
+  "contacts": [
+    {
+      "pose": "Accelerate-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Accelerate-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 27
+    },
+    {
+      "pose": "Accelerate-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 38
+    },
+    {
+      "pose": "Accelerate-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Accelerate-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 30
+    },
+    {
+      "pose": "Accelerate-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 40
+    },
+    {
+      "pose": "Accelerate-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Accelerate-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "Accelerate-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "Accelerate-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Accelerate-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 27
+    },
+    {
+      "pose": "Accelerate-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 38
+    },
+    {
+      "pose": "Backpedal-1",
+      "pair": "Cloak / Leg_L",
+      "trianglePairs": 124,
+      "approxSampleDepthMeters": 0.01466870866715908
+    },
+    {
+      "pose": "Backpedal-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Backpedal-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Backpedal-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 76
+    },
+    {
+      "pose": "Backpedal-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Backpedal-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "Backpedal-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 56
+    },
+    {
+      "pose": "Backpedal-3",
+      "pair": "Cloak / Leg_L",
+      "trianglePairs": 126,
+      "approxSampleDepthMeters": 0.008567186072468758
+    },
+    {
+      "pose": "Backpedal-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Backpedal-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 82,
+      "approxSampleDepthMeters": 0.015479612164199352
+    },
+    {
+      "pose": "Backpedal-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Backpedal-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 55
+    },
+    {
+      "pose": "Backpedal-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Backpedal-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 88,
+      "approxSampleDepthMeters": 0.018360845744609833
+    },
+    {
+      "pose": "Backpedal-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "Backpedal-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "Decelerate-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Decelerate-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Decelerate-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Decelerate-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Decelerate-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Decelerate-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Decelerate-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Decelerate-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Decelerate-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Decelerate-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Decelerate-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Decelerate-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Idle-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Idle-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Idle-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Idle-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Idle-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Idle-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Idle-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Idle-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Idle-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Idle-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Idle-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Idle-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "ReturnRun-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "ReturnRun-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 27
+    },
+    {
+      "pose": "ReturnRun-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 38
+    },
+    {
+      "pose": "ReturnRun-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "ReturnRun-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "ReturnRun-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "ReturnRun-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "ReturnRun-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "ReturnRun-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "ReturnRun-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "ReturnRun-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "ReturnRun-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Roll-1",
+      "pair": "Cloak / Leg_L",
+      "trianglePairs": 32,
+      "approxSampleDepthMeters": 0.03419315069913864
+    },
+    {
+      "pose": "Roll-1",
+      "pair": "Cloak / Leg_R",
+      "trianglePairs": 87,
+      "approxSampleDepthMeters": 0.023145832121372223
+    },
+    {
+      "pose": "Roll-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Roll-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Roll-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 46
+    },
+    {
+      "pose": "Roll-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Roll-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Roll-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Roll-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Roll-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Roll-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "RunAim-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunAim-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 53
+    },
+    {
+      "pose": "RunAim-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 71
+    },
+    {
+      "pose": "RunAim-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunAim-2",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 45,
+      "approxSampleDepthMeters": 0.025454841554164886
+    },
+    {
+      "pose": "RunAim-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "RunAim-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "RunAim-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunAim-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 90,
+      "approxSampleDepthMeters": 0.018039418384432793
+    },
+    {
+      "pose": "RunAim-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "RunAim-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "RunAim-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunAim-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 67,
+      "approxSampleDepthMeters": 0.026255136355757713
+    },
+    {
+      "pose": "RunAim-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 53
+    },
+    {
+      "pose": "RunAim-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "RunFire-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunFire-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "RunFire-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "RunFire-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunFire-2",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 54,
+      "approxSampleDepthMeters": 0.022791465744376183
+    },
+    {
+      "pose": "RunFire-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "RunFire-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 55
+    },
+    {
+      "pose": "RunFire-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunFire-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "RunFire-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 51
+    },
+    {
+      "pose": "RunFire-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunFire-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "RunFire-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 46
+    },
+    {
+      "pose": "RunForward-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunForward-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 27
+    },
+    {
+      "pose": "RunForward-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 38
+    },
+    {
+      "pose": "RunForward-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunForward-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "RunForward-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "RunForward-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunForward-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "RunForward-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "RunForward-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "RunForward-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "RunForward-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Settled-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Settled-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Settled-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Settled-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Settled-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Settled-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Settled-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Settled-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Settled-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Settled-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Settled-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Settled-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "StrafeLeft-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "StrafeLeft-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "StrafeLeft-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 63
+    },
+    {
+      "pose": "StrafeLeft-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "StrafeLeft-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "StrafeLeft-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 56
+    },
+    {
+      "pose": "StrafeLeft-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeLeft-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 88,
+      "approxSampleDepthMeters": 0.017782466486096382
+    },
+    {
+      "pose": "StrafeLeft-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "StrafeLeft-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "StrafeLeft-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeLeft-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 88,
+      "approxSampleDepthMeters": 0.018518831580877304
+    },
+    {
+      "pose": "StrafeLeft-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "StrafeLeft-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "StrafeRight-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeRight-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "StrafeRight-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "StrafeRight-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeRight-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "StrafeRight-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "StrafeRight-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeRight-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 90,
+      "approxSampleDepthMeters": 0.01652652397751808
+    },
+    {
+      "pose": "StrafeRight-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 51
+    },
+    {
+      "pose": "StrafeRight-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "StrafeRight-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "StrafeRight-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 70,
+      "approxSampleDepthMeters": 0.02398480661213398
+    },
+    {
+      "pose": "StrafeRight-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 53
+    },
+    {
+      "pose": "StrafeRight-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 52
+    },
+    {
+      "pose": "Turn180-1",
+      "pair": "Cloak / Leg_L",
+      "trianglePairs": 88,
+      "approxSampleDepthMeters": 0.022199010476469994
+    },
+    {
+      "pose": "Turn180-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn180-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Turn180-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 74
+    },
+    {
+      "pose": "Turn180-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn180-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 53
+    },
+    {
+      "pose": "Turn180-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 52
+    },
+    {
+      "pose": "Turn180-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn180-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 88,
+      "approxSampleDepthMeters": 0.017699498683214188
+    },
+    {
+      "pose": "Turn180-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 47
+    },
+    {
+      "pose": "Turn180-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "Turn180-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Turn180-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 74,
+      "approxSampleDepthMeters": 0.02026752009987831
+    },
+    {
+      "pose": "Turn180-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "Turn180-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "Turn90-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn90-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Turn90-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 76
+    },
+    {
+      "pose": "Turn90-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn90-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Turn90-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 51
+    },
+    {
+      "pose": "Turn90-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn90-3",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 90,
+      "approxSampleDepthMeters": 0.016340142115950584
+    },
+    {
+      "pose": "Turn90-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "Turn90-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 50
+    },
+    {
+      "pose": "Turn90-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "Turn90-4",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 89,
+      "approxSampleDepthMeters": 0.017905615270137787
+    },
+    {
+      "pose": "Turn90-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 49
+    },
+    {
+      "pose": "Turn90-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "TurnFire-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "TurnFire-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 45
+    },
+    {
+      "pose": "TurnFire-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 53
+    },
+    {
+      "pose": "TurnFire-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "TurnFire-2",
+      "pair": "Arm_R / Hood",
+      "trianglePairs": 60,
+      "approxSampleDepthMeters": 0.01708208955824375
+    },
+    {
+      "pose": "TurnFire-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "TurnFire-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 57
+    },
+    {
+      "pose": "TurnFire-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "TurnFire-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 59
+    },
+    {
+      "pose": "TurnFire-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 54
+    },
+    {
+      "pose": "TurnFire-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 22
+    },
+    {
+      "pose": "TurnFire-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "TurnFire-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 48
+    },
+    {
+      "pose": "Walk-1",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Walk-1",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "Walk-1",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Walk-2",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Walk-2",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "Walk-2",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 43
+    },
+    {
+      "pose": "Walk-3",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Walk-3",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 34
+    },
+    {
+      "pose": "Walk-3",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 42
+    },
+    {
+      "pose": "Walk-4",
+      "pair": "Cloak / Harness",
+      "trianglePairs": 20
+    },
+    {
+      "pose": "Walk-4",
+      "pair": "Shoulder_Armor_L / Scarf",
+      "trianglePairs": 32
+    },
+    {
+      "pose": "Walk-4",
+      "pair": "Shoulder_Armor_R / Scarf",
+      "trianglePairs": 38
+    }
+  ],
+  "sampleCount": 63,
+  "byPair": {
+    "Cloak / Harness": 63,
+    "Shoulder_Armor_L / Scarf": 63,
+    "Shoulder_Armor_R / Scarf": 63,
+    "Cloak / Leg_L": 4,
+    "Arm_R / Hood": 15,
+    "Cloak / Leg_R": 1
+  }
+}

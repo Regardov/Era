@@ -40,6 +40,8 @@ namespace Era
         Transform[] bindTransforms;
         Vector3[] bindPositions, bindScales;
         Quaternion[] bindRotations;
+        ArcherMotionRig motion;
+        Vector2 localMotion;
         string upperState = "", fullState = "Locomotion";
         float upperRemaining, fullRemaining, smoothedSpeed, layerWeight, aimYaw, crouchBlend, shotInterval = .76f;
         float lastHp = -1, previousDash;
@@ -55,6 +57,9 @@ namespace Era
         public string LastAnimationEvent { get; private set; }
         public int ArrowEventCount { get; private set; }
         public int CastEventCount { get; private set; }
+        public ArcherMotionRig Motion=>motion;
+        public bool IsLocomotion=>fullState=="Locomotion";
+        public bool IsAiming=>layerWeight>.05f;
 
         void Awake() { Bind(); Stand(); }
         void Bind()
@@ -67,6 +72,7 @@ namespace Era
             bindPositions = new Vector3[bindTransforms.Length]; bindRotations = new Quaternion[bindTransforms.Length]; bindScales = new Vector3[bindTransforms.Length];
             for (int i = 0; i < bindTransforms.Length; i++) { bindPositions[i] = bindTransforms[i].localPosition; bindRotations[i] = bindTransforms[i].localRotation; bindScales[i] = bindTransforms[i].localScale; }
             if (animator != null) { animator.applyRootMotion = false; animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; animator.updateMode = AnimatorUpdateMode.UnscaledTime; }
+            motion=GetComponent<ArcherMotionRig>()??gameObject.AddComponent<ArcherMotionRig>();
             bound = true;
         }
         public Transform Bone(string name)
@@ -78,6 +84,7 @@ namespace Era
             Bind(); if (animator == null || dead) return;
             if (standing && !sampled) return;
             animator.enabled = true; animator.speed = 1; animator.SetFloat("Speed", 0); animator.SetFloat("LocomotionRate", 1); animator.SetFloat("UpperRate", 1);
+            animator.SetFloat("MoveX",0);animator.SetFloat("MoveZ",0);localMotion=Vector2.zero;motion?.ResetMotion();
             animator.SetLayerWeight(1, 0); animator.Play("Base Layer.Locomotion", 0, 0); fullState = "Locomotion"; fullRemaining = 0; upperState = ""; upperRemaining = 0; sampled = false;
             SetArrowVisible(false);standing = true;
         }
@@ -92,10 +99,19 @@ namespace Era
             float speed = Vector3.ProjectOnPlane(p.velocity, Vector3.up).magnitude;
             smoothedSpeed = PresentationMotion.Damp(smoothedSpeed, p.grounded ? speed : 0, 12, dt);
             animator.SetFloat("Speed", smoothedSpeed);
+            var local=actorRoot.InverseTransformDirection(Vector3.ProjectOnPlane(p.velocity,Vector3.up));
+            localMotion=Vector2.Lerp(localMotion,p.grounded?new Vector2(local.x,local.z):Vector2.zero,1-Mathf.Exp(-14*dt));
+            // Outside the authored speed radius Unity's directional tree can
+            // select only the nearest forward clip. Keep direction inside the
+            // tree; cadence below carries the actual gameplay speed.
+            var blendMotion=Vector2.ClampMagnitude(localMotion,runSpeed*DirectionalScale(localMotion));
+            animator.SetFloat("MoveX",blendMotion.x);animator.SetFloat("MoveZ",blendMotion.y);
             // Blend-tree thresholds already interpolate authored stride speeds.
             // Only rescale cadence outside the tree's walking/running range.
-            float rate = speed < walkSpeed ? speed / Mathf.Max(.1f, walkSpeed) : speed > runSpeed ? speed / Mathf.Max(.1f, runSpeed) : 1;
-            animator.SetFloat("LocomotionRate", speed > .15f ? Mathf.Clamp(rate, .25f, 3.2f) : 1);
+            float authoredScale=DirectionalScale(new Vector2(local.x,local.z));
+            float walk=walkSpeed*authoredScale,run=runSpeed*authoredScale;
+            float rate = speed < walk ? speed / Mathf.Max(.1f, walk) : speed > run ? speed / Mathf.Max(.1f, run) : 1;
+            animator.SetFloat("LocomotionRate", speed > .15f ? Mathf.Clamp(rate, .25f, 5.5f) : 1);
             bool hasBow = p.lastWeapon == (int)WeaponKind.Bow || p.lastWeapon < 0 && Array.IndexOf(p.weapons, (int)WeaponKind.Bow) >= 0;
             SetBowVisible(hasBow);
             if (attackSerial < 0) { attackSerial = p.weaponCastSerial; castSerial = p.castSerial; chestStamp = ChestStamp(p.id); }
@@ -156,7 +172,7 @@ namespace Era
                             case "Archer_Aim": BeginUpper("Archer_BowDraw", manualAim ? Duration("Archer_BowDraw") : Mathf.Clamp(timer, .03f, .65f)); break;
                             case "Archer_BowDraw": BeginUpper("Archer_BowHold", Duration("Archer_BowHold")); break;
                             case "Archer_BowRelease": BeginUpper("Archer_ShootRecovery", Mathf.Min(Duration("Archer_ShootRecovery"), Mathf.Clamp(shotInterval * .14f, .045f, .18f))); break;
-                            case "Archer_ShootRecovery": ClearUpper(false); break;
+                            case "Archer_ShootRecovery": if(preparing)BeginUpper("Archer_BowDraw",Mathf.Clamp(timer,.06f,.65f));else ClearUpper(false); break;
                         }
                     }
                 }
@@ -166,6 +182,19 @@ namespace Era
             float weight = upperState.Length > 0 ? 1 : 0;
             layerWeight = PresentationMotion.Damp(layerWeight, weight, 24, dt); animator.SetLayerWeight(1, layerWeight);
             crouchBlend = PresentationMotion.Damp(crouchBlend, p.crouching && p.grounded ? 1 : 0, 14, dt);
+        }
+        public static float DirectionalScale(Vector2 movement)
+        {
+            float total=Mathf.Abs(movement.x)+Mathf.Abs(movement.y);
+            return total<.001f?1:(Mathf.Abs(movement.x)*.55f+Mathf.Abs(movement.y)*(movement.y>=0?1:.68f))/total;
+        }
+        public float ResolveFacing(PlayerState p,float dt)
+        {
+            Bind();if(p==null||p.downed||GameApp.Instance?.WorldPaused==true)return actorRoot.eulerAngles.y;
+            bool bow=p.lastWeapon==(int)WeaponKind.Bow||p.lastWeapon<0&&Array.IndexOf(p.weapons,(int)WeaponKind.Bow)>=0;
+            float desired=aimYaw;bool target=bow&&TargetInRange(p,out desired);
+            if(manualAim)desired=aimYaw;
+            return motion.Facing(this,p,desired,bow&&(manualAim||target||layerWeight>.05f),dt);
         }
         float BowTimer(PlayerState p)
         { for (int i = 0; i < p.weapons.Length; i++) if (p.weapons[i] == (int)WeaponKind.Bow && i < p.weaponTimers.Length) return p.weaponTimers[i]; return -1; }
@@ -185,7 +214,7 @@ namespace Era
         void BeginUpper(string name, float seconds)
         {
             if (Clip(name) == null || animator == null) return;
-            upperState = name; upperStartedFrame = Time.frameCount; upperRemaining = Mathf.Max(.033f, seconds); animator.SetFloat("UpperRate", Mathf.Clamp(Duration(name) / upperRemaining, .3f, 12));
+            upperState = name; upperStartedFrame = Time.frameCount; upperRemaining = Mathf.Max(.033f, seconds); animator.SetFloat("UpperRate", Mathf.Clamp(Duration(name)*(name=="Archer_ShootRecovery"?.4f:1) / upperRemaining, .3f, 12));
             animator.CrossFadeInFixedTime("UpperBody." + name, .045f, 1, 0);
             SetArrowVisible(name == "Archer_Aim" || name == "Archer_BowDraw" || name == "Archer_BowHold");
         }
@@ -209,12 +238,7 @@ namespace Era
         void LateUpdate()
         {
             if (sampled || presented == null || dead || GameApp.Instance?.WorldPaused == true || animator == null || !animator.enabled) return;
-            if (layerWeight > .01f && actorRoot != null)
-            {
-                float yaw = Mathf.Clamp(Mathf.DeltaAngle(actorRoot.eulerAngles.y, aimYaw), -65, 65) * layerWeight;
-                if (spine != null) spine.rotation = Quaternion.AngleAxis(yaw * .35f, actorRoot.up) * spine.rotation;
-                if (chest != null) chest.rotation = Quaternion.AngleAxis(yaw * .65f, actorRoot.up) * chest.rotation;
-            }
+            motion.Compose(this,presented,aimYaw,layerWeight,IsLocomotion,PresentationMotion.Delta);
             // Maintain the game's existing crouch input with a floor-constrained
             // additive IK adjustment; authored clips remain the movement source.
             if (crouchBlend > .001f && fullState == "Locomotion") ApplyCrouch(crouchBlend);
@@ -259,6 +283,7 @@ namespace Era
         public bool SampleClip(string name, float time)
         {
             Bind(); var clip = Clip(name); if (clip == null) return false;
+            motion?.ResetMotion();
             if (animator != null) animator.enabled = false;
             for (int i = 0; i < bindTransforms.Length; i++) if (bindTransforms[i] != null) { bindTransforms[i].localPosition = bindPositions[i]; bindTransforms[i].localRotation = bindRotations[i]; bindTransforms[i].localScale = bindScales[i]; }
             clip.SampleAnimation(gameObject, Mathf.Clamp(time, 0, clip.length)); sampled = true; vanished = false; SetModelVisible(true); SetBowVisible(true);

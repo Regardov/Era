@@ -27,7 +27,7 @@ namespace Era
                 if(archer!=null)
                 {
                     archer.enabled=false;archer.SampleClip("Archer_Idle",.1f);ankleFloors[i,0]=models[i].transform.InverseTransformPoint(archer.leftFoot.position).y;ankleFloors[i,1]=models[i].transform.InverseTransformPoint(archer.rightFoot.position).y;
-                    report.clips&=archer.clips.Length==16&&archer.animator.avatar.isValid;report.skins&=models[i].GetComponentsInChildren<SkinnedMeshRenderer>().Length>0;
+                    report.clips&=archer.clips.Length==22&&Array.TrueForAll(archer.clips,c=>c.clip!=null&&!c.clip.empty)&&archer.animator.avatar.isValid;report.skins&=models[i].GetComponentsInChildren<SkinnedMeshRenderer>().Length>0;
                 }
                 else
                 {

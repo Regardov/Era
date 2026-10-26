@@ -44,7 +44,7 @@ namespace Era.Editor
             foreach (string bone in new[] { "Root", "Pelvis", "Spine", "Chest", "Neck", "Head", "UpperArm.L", "Forearm.L", "Hand.L", "UpperArm.R", "Forearm.R", "Hand.R", "Thigh.L", "Shin.L", "Foot.L", "Toe.L", "Thigh.R", "Shin.R", "Foot.R", "Toe.R", "BowRoot" }) Check(driver.Bone(bone) != null, "shared animation bone: " + bone);
             var controller = driver.animator.runtimeAnimatorController as AnimatorController;
             Check(controller != null && controller.layers.Length == 2, "locomotion plus masked upper-body controller");
-            foreach (string param in new[] { "Speed", "LocomotionRate", "UpperRate" }) Check(controller.parameters.Any(p => p.name == param), "controller parameter: " + param);
+            foreach (string param in new[] { "Speed", "MoveX", "MoveZ", "LocomotionRate", "UpperRate" }) Check(controller.parameters.Any(p => p.name == param), "controller parameter: " + param);
             var mask = controller.layers[1].avatarMask;
             Check(mask != null && mask.transformCount > 20, "upper-body transform mask exists");
             bool spineActive = false;
@@ -52,11 +52,13 @@ namespace Era.Editor
             {
                 string path = mask.GetTransformPath(i);
                 if (path.EndsWith("Spine", StringComparison.Ordinal)) spineActive |= mask.GetTransformActive(i);
+                if(path.Contains("Cape")||path.Contains("QuiverAttach"))Check(!mask.GetTransformActive(i),"shooting cannot overwrite secondary animation: "+path);
                 if (path.Contains("Thigh.") || path.Contains("Shin.") || path.Contains("Foot.")) Check(!mask.GetTransformActive(i), "upper layer cannot overwrite locomotion legs: " + path);
             }
-            Check(spineActive, "upper layer animates the spine");
+            Check(!spineActive, "base spine motion survives the shooting layer");
+            Check(driver.GetComponent<ArcherMotionRig>()!=null,"single post-Animator motion composer present");
             var data = ArcherAnimationImporter.ReadManifest();
-            Check(driver.clips.Length == 16, "sixteen standalone clips assigned");
+            Check(driver.clips.Length == 22, "sixteen existing and six derived directional clips assigned");
             foreach (var clipData in data.clips)
             {
                 var clip = driver.Clip(clipData.name); Check(clip != null && !clip.legacy && Mathf.Abs(clip.frameRate - 30) < .1f && clip.length > .06f, "nonempty 30fps Generic clip: " + clipData.name);
@@ -112,6 +114,7 @@ namespace Era.Editor
                 actor.SampleClip("Archer_Run", .04f); var left = actor.leftThigh.localRotation; actor.SampleClip("Archer_Run", actor.Duration("Archer_Run") * .45f);
                 Check(Quaternion.Angle(left, actor.leftThigh.localRotation) > 10, "running clip articulates actual thigh joint");
                 actor.animator.enabled = true; actor.animator.Rebind(); actor.animator.SetFloat("Speed", actor.runSpeed); actor.animator.SetFloat("LocomotionRate", 1); actor.animator.SetFloat("UpperRate", 1);
+                actor.animator.SetFloat("MoveX",0);actor.animator.SetFloat("MoveZ",actor.runSpeed);
                 actor.animator.Play("Base Layer.Locomotion", 0, .25f); actor.animator.SetLayerWeight(1, 0); actor.animator.Update(0);
                 var runThigh = actor.leftThigh.localRotation; var runHand = actor.Bone("Hand.R").position;
                 actor.animator.Play("UpperBody.Archer_BowHold", 1, .25f); actor.animator.SetLayerWeight(1, 1); actor.animator.Update(0);

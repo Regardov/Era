@@ -22,7 +22,7 @@ namespace Era.Editor
         public const string MaskPath = Folder + "/Archer_UpperBody.mask";
         public const float VisualScale = 2.23f / 1.8f;
         const string Marker = "Assets/Era/Generated/ArcherAnimation-v1.txt";
-        public static readonly string[] ClipNames = { "Archer_Idle", "Archer_Walk", "Archer_Run", "Archer_Aim", "Archer_BowDraw", "Archer_BowHold", "Archer_BowRelease", "Archer_ShootRecovery", "Archer_DodgeRoll", "Archer_Dash", "Archer_Hit", "Archer_Death", "Archer_Cast", "Archer_Interact", "Archer_TeleportOut", "Archer_TeleportIn" };
+        public static readonly string[] ClipNames = { "Archer_Idle", "Archer_Walk", "Archer_Run", "Archer_Aim", "Archer_BowDraw", "Archer_BowHold", "Archer_BowRelease", "Archer_ShootRecovery", "Archer_DodgeRoll", "Archer_Dash", "Archer_Hit", "Archer_Death", "Archer_Cast", "Archer_Interact", "Archer_TeleportOut", "Archer_TeleportIn", "Archer_WalkLeft", "Archer_WalkRight", "Archer_WalkBack", "Archer_RunLeft", "Archer_RunRight", "Archer_RunBack" };
         [Serializable] public sealed class EventData { public string name; public float time = -1; public int frame = -1; }
         [Serializable] public sealed class ClipData { public string name; public float duration; public bool loop; public int frameStart, frameEnd; public EventData[] events; }
         [Serializable] public sealed class PaletteData { public string name; public float[] rgba; }
@@ -41,7 +41,7 @@ namespace Era.Editor
         {
             if (!File.Exists(FbxPath) || !File.Exists(ManifestPath)) throw new FileNotFoundException("Archer FBX and manifest are required");
             var manifest = ReadManifest();
-            string signature = "archer-generic-v4-runtime-clips / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
+            string signature = "archer-generic-v5-directional-motion / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
             var current = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (File.Exists(Marker) && File.ReadAllText(Marker).Trim() == signature && current != null && current.GetComponent<HeroMotion>()?.archer != null && AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null) return;
             string guid = AssetDatabase.AssetPathToGUID(PrefabPath);
@@ -139,6 +139,7 @@ namespace Era.Editor
                 var driver = visual.GetComponent<ArcherAnimationDriver>() ?? visual.AddComponent<ArcherAnimationDriver>();
                 Transform Bone(string name) => visual.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name) ?? throw new Exception("Missing archer bone/socket: " + name);
                 driver.animator = animator; driver.actorRoot = root.transform; driver.pelvis = Bone("Pelvis"); driver.spine = Bone("Spine"); driver.chest = Bone("Chest"); driver.head = Bone("Head");
+                if(visual.GetComponent<ArcherMotionRig>()==null)visual.AddComponent<ArcherMotionRig>();
                 driver.leftThigh = Bone("Thigh.L"); driver.rightThigh = Bone("Thigh.R"); driver.leftShin = Bone("Shin.L"); driver.rightShin = Bone("Shin.R"); driver.leftFoot = Bone("Foot.L"); driver.rightFoot = Bone("Foot.R");
                 driver.weaponSocket = Bone("WeaponSocket"); driver.arrowNock = Bone("ArrowNock"); driver.arrowSpawn = Bone("ArrowSpawn");
                 driver.walkSpeed = manifest.walkSpeed * VisualScale; driver.runSpeed = manifest.runSpeed * VisualScale;
@@ -159,7 +160,7 @@ namespace Era.Editor
             finally { PrefabUtility.UnloadPrefabContents(root); }
             if (AssetDatabase.AssetPathToGUID(PrefabPath) != guid) throw new Exception("Ember GUID changed unexpectedly");
             Directory.CreateDirectory(Path.GetDirectoryName(Marker)); File.WriteAllText(Marker, signature + "\n");
-            AssetDatabase.SaveAssets(); AssetDatabase.Refresh(); Debug.Log("ERA_ARCHER_IMPORTED sixteen Generic clips; Ember root and GUID preserved");
+            AssetDatabase.SaveAssets(); AssetDatabase.Refresh(); Debug.Log("ERA_ARCHER_IMPORTED "+ClipNames.Length+" Generic clips; Ember root and GUID preserved");
         }
         public static float EventTime(EventData e, int fps) => e.time >= 0 ? e.time : Mathf.Max(0, e.frame - 1) / (float)fps;
         public static Color PaletteColor(PaletteData entry)
@@ -197,7 +198,8 @@ namespace Era.Editor
                 // root object's name or the scene hierarchy used for import.
                 string path = AnimationUtility.CalculateTransformPath(transforms[i], model.transform);
                 mask.SetTransformPath(i, path); string[] parts = path.Split('/');
-                bool active = parts.Contains("Spine") || parts.Contains("BowRoot") || parts.Contains("WeaponSocket") || parts.Contains("ArrowNock") || parts.Contains("ArrowSpawn");
+                bool secondary=parts.Any(p=>p.StartsWith("Cape",StringComparison.Ordinal)||p=="QuiverAttach");
+                bool active = parts.Contains("Chest")&&!secondary;
                 mask.SetTransformActive(i, active);
             }
             EditorUtility.SetDirty(mask); return mask;
@@ -209,16 +211,26 @@ namespace Era.Editor
             foreach (var layer in controller.layers) if (layer.stateMachine != null) Object.DestroyImmediate(layer.stateMachine, true);
             controller.layers = Array.Empty<AnimatorControllerLayer>(); controller.parameters = Array.Empty<AnimatorControllerParameter>();
             controller.AddParameter("Speed", AnimatorControllerParameterType.Float); controller.AddParameter("LocomotionRate", AnimatorControllerParameterType.Float); controller.AddParameter("UpperRate", AnimatorControllerParameterType.Float);
+            controller.AddParameter("MoveX",AnimatorControllerParameterType.Float);controller.AddParameter("MoveZ",AnimatorControllerParameterType.Float);
             var lower = new AnimatorStateMachine { name = "Base Layer" }; AssetDatabase.AddObjectToAsset(lower, controller);
             var upper = new AnimatorStateMachine { name = "UpperBody" }; AssetDatabase.AddObjectToAsset(upper, controller);
             controller.layers = new[] { new AnimatorControllerLayer { name = "Base Layer", stateMachine = lower, defaultWeight = 1 }, new AnimatorControllerLayer { name = "UpperBody", stateMachine = upper, defaultWeight = 0, avatarMask = mask, blendingMode = AnimatorLayerBlendingMode.Override } };
-            var tree = new BlendTree { name = "Archer ground speed", blendType = BlendTreeType.Simple1D, blendParameter = "Speed", useAutomaticThresholds = false }; AssetDatabase.AddObjectToAsset(tree, controller);
-            tree.AddChild(clips["Archer_Idle"], 0); tree.AddChild(clips["Archer_Walk"], manifest.walkSpeed * VisualScale); tree.AddChild(clips["Archer_Run"], manifest.runSpeed * VisualScale);
+            var tree = new BlendTree { name = "Archer directional velocity", blendType = BlendTreeType.FreeformDirectional2D, blendParameter = "MoveX",blendParameterY="MoveZ", useAutomaticThresholds = false }; AssetDatabase.AddObjectToAsset(tree, controller);
+            tree.AddChild(clips["Archer_Idle"],Vector2.zero);
+            foreach(string gait in new[]{"Walk","Run"})
+            {
+                float speed=(gait=="Walk"?manifest.walkSpeed:manifest.runSpeed)*VisualScale;
+                tree.AddChild(clips["Archer_"+gait],Vector2.up*speed);
+                tree.AddChild(clips["Archer_"+gait+"Left"],Vector2.left*speed*.55f);
+                tree.AddChild(clips["Archer_"+gait+"Right"],Vector2.right*speed*.55f);
+                tree.AddChild(clips["Archer_"+gait+"Back"],Vector2.down*speed*.68f);
+            }
             var locomotion = lower.AddState("Locomotion", new Vector3(200, 40)); locomotion.motion = tree; locomotion.speedParameter = "LocomotionRate"; locomotion.speedParameterActive = true; lower.defaultState = locomotion;
             var empty = upper.AddState("Empty", new Vector3(200, 40)); upper.defaultState = empty;
             int baseIndex = 0, upperIndex = 0;
             foreach (string name in ClipNames.Skip(3))
             {
+                if(name.StartsWith("Archer_Walk",StringComparison.Ordinal)||name.StartsWith("Archer_Run",StringComparison.Ordinal))continue;
                 bool bow = name == "Archer_Aim" || name.StartsWith("Archer_Bow", StringComparison.Ordinal) || name == "Archer_ShootRecovery";
                 var state = (bow ? upper : lower).AddState(name, new Vector3(bow ? 420 : 200, 130 + 70 * (bow ? upperIndex++ : baseIndex++))); state.motion = clips[name];
                 if (bow) { state.speedParameter = "UpperRate"; state.speedParameterActive = true; }

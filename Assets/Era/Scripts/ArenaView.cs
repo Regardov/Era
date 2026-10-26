@@ -88,7 +88,7 @@ namespace Era
                 actor.body??=ActorBodyCollider.Attach(actor.root);actor.body.Present(p);var costume=actor.root.GetComponent<CostumeMotion>();if(costume!=null)costume.owner=p.id;
                 actor.root.SetActive(!p.eliminated);
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,p.position,blend);
-                actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
+                actor.root.transform.rotation=actor.hero.archer!=null?Quaternion.Euler(0,actor.hero.archer.ResolveFacing(p,PresentationMotion.Delta),0):Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
                 if(actor.root.GetComponent<AbilityPresentation>()==null)actor.root.AddComponent<AbilityPresentation>().owner=p.id;
                 if(actor.hero.archer!=null)actor.hero.archer.Present(p);else if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
                 if(actor.weaponKind!=p.lastWeapon&&p.lastWeapon>=0)

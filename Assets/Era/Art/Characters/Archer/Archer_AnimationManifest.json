@@ -173,6 +173,60 @@
         }
       ],
       "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_WalkLeft",
+      "duration": 1.0,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 31,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+    },
+    {
+      "name": "Archer_WalkRight",
+      "duration": 1.0,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 31,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+    },
+    {
+      "name": "Archer_WalkBack",
+      "duration": 1.0,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 31,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+    },
+    {
+      "name": "Archer_RunLeft",
+      "duration": 0.6666666666666666,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 21,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+    },
+    {
+      "name": "Archer_RunRight",
+      "duration": 0.6666666666666666,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 21,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+    },
+    {
+      "name": "Archer_RunBack",
+      "duration": 0.6666666666666666,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 21,
+      "events": [],
+      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
     }
   ],
   "arrowSpawn": {
@@ -202,7 +256,8 @@
   "notes": [
     "Generic rig preserves bow/cloth bones; FK baked at 30 fps, no runtime Blender constraints.",
     "SpawnArrow is presentation-only; Unity Simulation owns projectile creation and damage.",
-    "DodgeRoll and Death unfinished. Secondary actions are basic versions. See ArtSource README."
+    "DodgeRoll and Death unfinished. Secondary actions are basic versions. See ArtSource README.",
+    "Run refined in the existing source; directional strides derived with ankle-path retargeting. Geometry and rest skeleton preserved."
   ],
   "blenderPaletteLinear": [
     {
