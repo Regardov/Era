@@ -117,12 +117,12 @@ namespace Era
     public enum Ailment { Burn, Poison, Bleed, Chill, Shock, Mark, Doom }
     [Serializable] public sealed class AfflictionState
     {
-        public Ailment kind; public int owner, stacks=1, hits; public float time, power, tick=.5f;
+        public Ailment kind; public int owner, stacks=1, hits; public float time, power, tick=.5f;public FeedbackStyle visual;
     }
     [Serializable] public sealed class ItemFieldState
     {
         public int id, owner, item, target=-1; public Vector3 position, end;
-        public float time, tick, power, radius; public bool armed;
+        public float time, tick, power, radius; public bool armed;public FeedbackStyle visual;
     }
 
     [Serializable]
@@ -158,7 +158,7 @@ namespace Era
     {
         public int id, target;
         public Vector3 position;
-        public float damage, life = .9f;
+        public float damage, absorbed, life = .9f;
         public bool critical, player, evaded;
     }
 
@@ -182,6 +182,7 @@ namespace Era
         public Vector3 position, end;
         public float radius, life = 0.55f;
         public WeaponKind weapon;
+        public FeedbackStyle style;
     }
 
     [Serializable]public sealed class ShrineState

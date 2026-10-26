@@ -34,11 +34,38 @@ namespace Era
             }
             public void Tube(Vector3 from,Vector3 to,float radius,float endRadius,Color color,int sides=8)
             {
-                Vector3 direction=(to-from).normalized,side=Vector3.Cross(direction,Vector3.forward).normalized;
-                if(side.sqrMagnitude<.1f)side=Vector3.right;Vector3 other=Vector3.Cross(direction,side);int first=v.Count;
-                for(int r=0;r<2;r++)for(int s=0;s<=sides;s++)
-                {float a=s*Mathf.PI*2/sides;Add((r==0?from:to)+(side*Mathf.Cos(a)+other*Mathf.Sin(a))*(r==0?radius:endRadius),new Vector2(s/(float)sides,r*(to-from).magnitude*.6f),color);}
-                for(int s=0;s<sides;s++){int a=first+s,b=first+s+1,c=first+s+sides+1,d=c+1;Tri(a,c,b);Tri(b,c,d);}
+                Branch(new[]{from,to},new[]{radius,endRadius},color,sides);
+            }
+            public void Branch(Vector3[] points,float[] radii,Color color,int sides=8)
+            {
+                int first=v.Count;float length=0;Vector3 side=Vector3.zero;
+                for(int r=0;r<points.Length;r++)
+                {
+                    var tangent=(points[Mathf.Min(r+1,points.Length-1)]-points[Mathf.Max(0,r-1)]).normalized;
+                    side=Vector3.ProjectOnPlane(side,tangent).normalized;
+                    if(side.sqrMagnitude<.1f){side=Vector3.Cross(tangent,Vector3.forward).normalized;if(side.sqrMagnitude<.1f)side=Vector3.right;}
+                    Vector3 other=Vector3.Cross(tangent,side);if(r>0)length+=Vector3.Distance(points[r-1],points[r]);
+                    for(int s=0;s<=sides;s++){float a=(s%sides)*Mathf.PI*2/sides;Add(points[r]+(side*Mathf.Cos(a)+other*Mathf.Sin(a))*radii[r],new Vector2(s/(float)sides,length*.6f),color);}
+                }
+                // Outward winding and shared joint rings: no open or inverted tube segments.
+                for(int r=0;r<points.Length-1;r++)for(int s=0;s<sides;s++){int a=first+r*(sides+1)+s,b=a+1,c=a+sides+1;Tri(a,b,c);Tri(b,c+1,c);}
+                int bottom=Add(points[0],Vector2.zero,color),top=Add(points[points.Length-1],Vector2.one,color);
+                for(int s=0;s<sides;s++){Tri(bottom,first+s+1,first+s);int a=first+(points.Length-1)*(sides+1)+s;Tri(top,a,a+1);}
+            }
+            public void Crown(Vector3 center,Vector3 scale,Color color,int seed)
+            {
+                const int sides=12,rings=6;int bottom=Add(center-Vector3.up*scale.y,new Vector2(-1,0),color*.78f),first=v.Count;
+                for(int r=1;r<rings;r++)for(int s=0;s<=sides;s++)
+                {
+                    float y=-Mathf.PI*.5f+r*Mathf.PI/rings,a=(s%sides)*Mathf.PI*2/sides;
+                    float wobble=1+Mathf.Sin(a*3+seed*.71f)*.10f+Mathf.Sin(a*5+y*3+seed)*.055f;
+                    var local=new Vector3(Mathf.Cos(a)*Mathf.Cos(y)*wobble,Mathf.Sin(y),Mathf.Sin(a)*Mathf.Cos(y)*wobble);
+                    Add(center+Vector3.Scale(local,scale),new Vector2(-1,r/(float)rings),color*Mathf.Lerp(.78f,1.1f,(local.y+1)*.5f));
+                }
+                for(int s=0;s<sides;s++)Tri(bottom,first+s,first+s+1);
+                for(int r=0;r<rings-2;r++)for(int s=0;s<sides;s++){int a=first+r*(sides+1)+s,c=a+sides+1;Tri(a,c,a+1);Tri(a+1,c,c+1);}
+                int top=Add(center+Vector3.up*scale.y,new Vector2(-1,1),color*1.1f);
+                for(int s=0;s<sides;s++){int a=first+(rings-2)*(sides+1)+s;Tri(a,top,a+1);}
             }
             public void Leaf(Vector3 root,Vector3 direction,Vector3 side,float length,float width,Color color)
             {
@@ -150,6 +177,13 @@ namespace Era
         }
         static Material Surface(string name,int kind,Texture2D texture,Texture2D normal)
         {var mat=new Material(Shader.Find("Era/Realm Surface")){name=name,mainTexture=texture};mat.SetFloat("_Kind",kind);mat.SetTexture("_BumpMap",normal);return mat;}
+        public static GameObject TreePreview(Transform parent,bool conifer)
+        {
+            var root=new GameObject(conifer?"Closed conifer preview":"Closed broadleaf preview");root.transform.SetParent(parent,false);var cell=new Cell();
+            var prop=new WorldProp{position=WorldMap.OnGround(0,0),size=1,angle=42};Tree(cell,prop,new System.Random(4817),conifer?3:1,CampaignData.LeafColors[conifer?2:0],conifer);
+            var bark=Surface("Preview bark",1,Resources.Load<Texture2D>("Textures/WoodDetail"),Resources.Load<Texture2D>("Textures/WoodNormal"));var leaf=new Material(Shader.Find("Era/Realm Leaves"));leaf.mainTexture=Resources.Load<Texture2D>("Textures/LeafDetail");
+            cell.bark.Save("Closed trunk",root.transform,bark);cell.leaves.Save("Dense crown",root.transform,leaf);return root;
+        }
         static void Bush(Cell cell,WorldProp prop,Color leaf,int seed)
         {
             float s=prop.size;var random=new System.Random(seed);
@@ -198,30 +232,32 @@ namespace Era
                 draft.Save("Stream "+river+" / "+chunk,streams,material,default,false);
             }
         }
-        static void Tree(Cell cell,WorldProp prop,System.Random random,int stage,Color leaf)
+        static void Tree(Cell cell,WorldProp prop,System.Random random,int stage,Color leaf,bool? conifer=null)
         {
             Vector3 p=prop.position;float scale=prop.size,height=Range(random,6.4f,8.6f)*scale,angle=prop.angle*Mathf.Deg2Rad;
             Color bark=Color.Lerp(new Color(.39f,.31f,.23f),new Color(.62f,.52f,.38f),Range(random,0,1));
             var lean=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*Range(random,.18f,.65f)*scale;
-            Vector3 previous=p-Vector3.up*.12f;
+            var trunk=new Vector3[7];var radii=new float[7];trunk[0]=p-Vector3.up*.18f;radii[0]=.43f*scale;
             for(int segment=1;segment<=6;segment++)
             {
                 float t=segment/6f;var next=p+Vector3.up*height*t+lean*(t*t)+new Vector3(Mathf.Sin(t*5+angle),0,Mathf.Cos(t*4+angle))*.10f*scale*t;
-                cell.bark.Tube(previous,next,Mathf.Lerp(.34f,.025f,(segment-1)/6f)*scale,Mathf.Lerp(.34f,.025f,t)*scale,bark,10);previous=next;
+                trunk[segment]=next;radii[segment]=Mathf.Lerp(.34f,.025f,t)*scale;
             }
+            cell.bark.Branch(trunk,radii,bark,10);Vector3 previous=trunk[6];
             for(int r=0;r<6;r++)
             {
                 float a=r*Mathf.PI/3+angle,reach=Range(random,.7f,1.25f)*scale;
                 var root=WorldMap.OnGround(p.x+Mathf.Cos(a)*reach,p.z+Mathf.Sin(a)*reach)+Vector3.up*.025f;
                 var knee=Vector3.Lerp(root,p,.65f)+Vector3.up*.23f*scale;
-                cell.bark.Tube(root,knee,.035f*scale,.14f*scale,bark,6);cell.bark.Tube(knee,p+Vector3.up*.85f*scale,.14f*scale,.23f*scale,bark,8);
+                cell.bark.Branch(new[]{root-Vector3.up*.06f,knee,p+Vector3.up*.65f*scale},new[]{.025f*scale,.12f*scale,.20f*scale},bark,8);
             }
-            bool pine=stage==3||stage==6||random.NextDouble()<.22;
+            bool pine=conifer??(stage==3||stage==6||random.NextDouble()<.22);
             if(pine)
             {
                 for(int band=0;band<7;band++)
                 {
                     float t=.27f+band*.103f,reach=(2.3f-band*.28f)*scale;var start=p+Vector3.up*height*t+lean*t*t;
+                    cell.leaves.Crown(start+Vector3.up*.3f*scale,new Vector3(reach,.86f*scale,reach),leaf*(.88f+band*.025f),band*71+(int)prop.angle);
                     for(int b=0;b<6;b++)
                     {
                         float a=angle+b*Mathf.PI/3+band*.72f;var radial=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));
@@ -230,7 +266,7 @@ namespace Era
                         for(int twig=0;twig<3;twig++)
                         {
                             var tip=Vector3.Lerp(start,end,.42f+twig*.25f)+Vector3.up*.15f*scale;
-                            Spray(cell.leaves,tip,new Vector3(.55f,.30f,.55f)*scale*(1-band*.07f),leaf*(.84f+band*.035f),random,12,true);
+                            if(twig==2)Spray(cell.leaves,tip,new Vector3(.50f,.30f,.50f)*scale*(1-band*.07f),leaf*(.84f+band*.035f),random,7,true);
                         }
                     }
                 }
@@ -238,6 +274,7 @@ namespace Era
                 return;
             }
             int limbs=random.Next(8,12);
+            cell.leaves.Crown(p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.9f,1.75f,1.9f)*scale,leaf,(int)prop.angle);
             for(int b=0;b<limbs;b++)
             {
                 float a=angle+b*2.399963f,t=.34f+b/(float)limbs*.48f,reach=Range(random,1.8f,2.9f)*scale*(1-(t-.34f)*.6f);
@@ -245,16 +282,17 @@ namespace Era
                 var elbow=start+radial*reach*.62f+Vector3.up*height*.10f;
                 var tip=start+radial*reach+Vector3.up*height*Range(random,.15f,.25f);
                 float thickness=(.15f-b*.007f)*scale;
-                cell.bark.Tube(start,elbow,thickness,thickness*.55f,bark,8);cell.bark.Tube(elbow,tip,thickness*.55f,.02f*scale,bark,7);
+                cell.bark.Branch(new[]{start,elbow,tip},new[]{thickness,thickness*.55f,.02f*scale},bark,8);
+                cell.leaves.Crown(tip+Vector3.up*.22f*scale,new Vector3(1.20f,1.02f,1.18f)*scale,leaf*(.95f+t*.08f),b*97+(int)prop.angle);
                 for(int fork=0;fork<4;fork++)
                 {
                     float turn=a+(fork-1.5f)*.70f;var twigStart=Vector3.Lerp(elbow,tip,.25f+fork*.18f);
                     var end=twigStart+new Vector3(Mathf.Cos(turn)*.8f,Range(random,.25f,.8f),Mathf.Sin(turn)*.8f)*scale;
                     cell.bark.Tube(twigStart,end,.035f*scale,.008f*scale,bark,5);
-                    Spray(cell.leaves,end,new Vector3(.78f,.50f,.78f)*scale,leaf*(.94f+t*.15f),random,23,false);
+                    if(fork%2==0)Spray(cell.leaves,end,new Vector3(.65f,.44f,.65f)*scale,leaf*(.94f+t*.15f),random,8,false);
                 }
             }
-            Spray(cell.leaves,previous,new Vector3(.85f,.60f,.85f)*scale,leaf*1.12f,random,42,false);
+            cell.leaves.Crown(previous-Vector3.up*.35f*scale,new Vector3(1.1f,1.2f,1.08f)*scale,leaf*1.04f,719+(int)prop.angle);
         }
     }
 }

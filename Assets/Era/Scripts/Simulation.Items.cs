@@ -12,7 +12,8 @@ namespace Era
         static float Power(PlayerState p,ItemId item)=>1+.6f*Mathf.Log(Mathf.Max(1,Stack(p,item)));
         bool Ready(PlayerState p,ItemId item,float cooldown)
         {int i=I(item);if(!Has(p,item)||p.itemTimers[i]>0)return false;p.itemTimers[i]=cooldown;return true;}
-        void PayHealth(PlayerState p,float value)=>p.hp=Mathf.Max(1,p.hp-value);
+        void PayHealth(PlayerState p,float value)
+        {float before=p.hp;p.hp=Mathf.Max(1,p.hp-value);if(p.hp<before)Effect(5,p.position+Vector3.up,.18f,FeedbackStyle.Blood);}
         public void Heal(PlayerState p,float value,bool lifesteal=false)
         {
             if(p==null||p.downed||p.eliminated||value<=0)return;
@@ -22,7 +23,7 @@ namespace Era
             if(lifesteal&&Has(p,ItemId.ParasiteCrown))
             {
                 int i=I(ItemId.ParasiteCrown);p.itemValues[i]+=excess;
-                if(p.itemValues[i]>=15){p.itemValues[i]-=15;var target=FindItemTarget(p.position,24);if(target!=null){DamageEnemy(target,p,50*Stack(p,ItemId.ParasiteCrown)*DamageMultiplier(p),false);WeaponEffect(10,p.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff);}}
+                if(p.itemValues[i]>=15){p.itemValues[i]-=15;var target=FindItemTarget(p.position,24);if(target!=null){DamageEnemy(target,p,50*Stack(p,ItemId.ParasiteCrown)*DamageMultiplier(p),false);WeaponEffect(10,p.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff,FeedbackStyle.Blood);}}
             }
         }
         EnemyState FindItemTarget(Vector3 origin,float range,int except=-1,bool farthest=false)
@@ -34,25 +35,28 @@ namespace Era
         {if(EnemyCatalog.EffectImmune(e.kind))return 0;int total=0;foreach(var a in e.ailments)if(a.kind==kind&&a.time>0&&(owner<0||a.owner==owner))total+=a.stacks;return total;}
         void FreezeEnemy(EnemyState e,float duration)
         {if(!EnemyCatalog.EffectImmune(e.kind))e.frozen=Mathf.Max(e.frozen,duration);}
-        void Afflict(EnemyState e,PlayerState p,Ailment kind,float time,float power=0,int maxStacks=1)
+        void Afflict(EnemyState e,PlayerState p,Ailment kind,float time,float power=0,int maxStacks=1,FeedbackStyle visual=FeedbackStyle.None)
         {
             if(e==null||p==null||e.hp<=0||EnemyCatalog.EffectImmune(e.kind))return;
             var a=e.ailments.Find(s=>s.kind==kind&&s.owner==p.id);
             if(a==null){a=new AfflictionState{kind=kind,owner=p.id};e.ailments.Add(a);}else a.stacks=Mathf.Min(maxStacks,a.stacks+1);
             a.time=Mathf.Max(a.time,time);a.power=Mathf.Max(a.power,power);
+            a.visual=kind==Ailment.Chill&&visual==FeedbackStyle.Root?FeedbackStyle.Root:MechanicFeedback.Status(kind);
         }
-        void Burst(PlayerState p,Vector3 position,float radius,float damage,Ailment? ailment=null,float duration=3)
+        void Burst(PlayerState p,Vector3 position,float radius,float damage,Ailment? ailment=null,float duration=3,FeedbackStyle visual=FeedbackStyle.None,ItemId? sourceItem=null)
         {
+            if(visual==FeedbackStyle.None)visual=sourceItem.HasValue?MechanicFeedback.Item(sourceItem.Value):ailment.HasValue?MechanicFeedback.Status(ailment.Value):FeedbackStyle.Impact;
+            int contacts=0;
             foreach(var e in new List<EnemyState>(State.enemies))if(Vector3.Distance(position,e.position)<=radius*p.areaSize+EnemyRadius(e)*.3f)
-            {if(ailment.HasValue)Afflict(e,p,ailment.Value,duration,ailment==Ailment.Burn?6:ailment==Ailment.Poison?4:0,5);DamageEnemy(e,p,damage,false);}
-            Effect(ailment==Ailment.Chill?1:4,position,radius*p.areaSize);
+            {contacts++;if(ailment.HasValue)Afflict(e,p,ailment.Value,duration,ailment==Ailment.Burn?6:ailment==Ailment.Poison?4:0,5,visual);DamageEnemy(e,p,damage,false);}
+            if(sourceItem!=ItemId.OrbitalSaw||contacts>0)Effect(4,position,radius*p.areaSize,visual);
         }
-        ItemFieldState Field(PlayerState p,ItemId item,Vector3 position,float time,float radius,float power,int target=-1)
+        ItemFieldState Field(PlayerState p,ItemId item,Vector3 position,float time,float radius,float power,int target=-1,FeedbackStyle visual=FeedbackStyle.None)
         {
             if((item==ItemId.GravePact||item==ItemId.HuntingPack||item==ItemId.HiveMind)&&State.itemFields.FindAll(f=>f.owner==p.id&&(f.item==I(ItemId.GravePact)||f.item==I(ItemId.HuntingPack)||f.item==I(ItemId.HiveMind))).Count>=6)return null;
             // Bound persistent proc entities per owner, keeping multiplayer snapshots predictable.
             if(State.itemFields.FindAll(f=>f.owner==p.id).Count>=70)return null;
-            var field=new ItemFieldState{id=State.nextId++,owner=p.id,item=I(item),position=position,time=time,radius=radius,power=power,target=target};
+            var field=new ItemFieldState{id=State.nextId++,owner=p.id,item=I(item),position=position,time=time,radius=radius,power=power,target=target,visual=visual==FeedbackStyle.None?MechanicFeedback.Item(item):visual};
             State.itemFields.Add(field);return field;
         }
         void TickAfflictions(float dt)
@@ -64,7 +68,7 @@ namespace Era
                 {
                     a.time-=dt;a.tick-=dt;
                     if(a.kind==Ailment.Doom&&e.frozen<=0)
-                    {var owner=State.Player(a.owner);float power=a.power;a.power=0;a.time=0;if(owner!=null)Burst(owner,e.position,5,power);}
+                    {var owner=State.Player(a.owner);float power=a.power;a.power=0;a.time=0;if(owner!=null)Burst(owner,e.position,5,power,sourceItem:ItemId.WinterSleep);}
                     if(a.tick<=0&&a.power>0&&(a.kind==Ailment.Burn||a.kind==Ailment.Poison||a.kind==Ailment.Bleed))
                     {a.tick=.5f;DamageEnemy(e,State.Player(a.owner),a.power*a.stacks*.5f,false);}
                     if(!State.enemies.Contains(e))break;
@@ -83,21 +87,21 @@ namespace Era
                 if(item==ItemId.TimeMaster||item==ItemId.SplitSoul)
                 {
                     if(f.time>0)continue;var target=State.enemies.Find(e=>e.id==f.target);
-                    if(target!=null&&Vector3.Distance(f.position,target.position)<40){WeaponEffect(10,f.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff);DamageEnemy(target,p,f.power,false);}
+                    if(target!=null&&Vector3.Distance(f.position,target.position)<40){WeaponEffect(10,f.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff,FeedbackStyle.Echo);DamageEnemy(target,p,f.power,false);}
                 }
                 else if(item==ItemId.MiserFuse||item==ItemId.PacifistEngine)
                 {
                     if(!f.armed){f.tick=.8f;f.armed=true;}
-                    if(f.tick<=0&&FindItemTarget(f.position,2.5f)!=null){Burst(p,f.position,f.radius,f.power);f.time=0;}
+                    if(f.tick<=0&&FindItemTarget(f.position,2.5f)!=null){Burst(p,f.position,f.radius,f.power,visual:f.visual);f.time=0;}
                 }
                 else if(item==ItemId.BlackHole||item==ItemId.ChaosPortal||item==ItemId.VoidShepherd)
                 {
                     foreach(var e in new List<EnemyState>(State.enemies))if(!EnemyCatalog.EffectImmune(e.kind)&&(e.position-f.position).sqrMagnitude<f.radius*f.radius)
                     {var pull=f.position-e.position;pull.y=0;e.position=MoveEnemyBody(e,pull.normalized*Mathf.Min(pull.magnitude,4*dt));e.position.y=WorldMap.Ground(e.position)+(IsFlying(e.kind)?1.8f:0);}
-                    if(f.time<=0&&item!=ItemId.ChaosPortal)Burst(p,f.position,f.radius,f.power);
+                    if(f.time<=0&&item!=ItemId.ChaosPortal)Burst(p,f.position,f.radius,f.power,visual:f.visual);
                 }
                 else if(item==ItemId.StarMap||item==ItemId.EndlessRefrain)
-                {if(f.time<=0)Burst(p,f.position,f.radius,f.power);}
+                {if(f.time<=0)Burst(p,f.position,f.radius,f.power,visual:f.visual);}
                 else if(item==ItemId.HuntingPack||item==ItemId.GravePact||item==ItemId.HiveMind||item==ItemId.ArchitectReign)
                 {
                     var target=State.enemies.Find(e=>e.id==f.target&&e.hp>0&&(e.position-f.position).sqrMagnitude<625);
@@ -115,7 +119,7 @@ namespace Era
                     if(target!=null&&f.tick<=0&&(item==ItemId.ArchitectReign||(f.position-target.position).sqrMagnitude<12))
                     {
                         f.tick=1;float power=f.power*DamageMultiplier(p)*(item==ItemId.ArchitectReign?1+p.itemValues[I(ItemId.ArchitectReign)]:1);
-                        WeaponEffect(10,f.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff);
+                        WeaponEffect(10,f.position+Vector3.up,target.position+Vector3.up,1,WeaponKind.LightningStaff,f.visual);
                         if(item==ItemId.HiveMind)Afflict(target,p,Ailment.Poison,5,6*Stack(p,ItemId.HiveMind),8);
                         DamageEnemy(target,p,power,false);
                     }
@@ -124,7 +128,7 @@ namespace Era
                 {
                     f.tick=.5f;
                     bool root=item==ItemId.Overgrowth||item==ItemId.WorldSeed;
-                    Burst(p,f.position,f.radius,f.power*.5f,root?Ailment.Chill:Ailment.Burn,2);
+                    Burst(p,f.position,f.radius,f.power*.5f,root?Ailment.Chill:Ailment.Burn,2,visual:f.visual);
                 }
                 if(f.time<=0)State.itemFields.Remove(f);
             }
@@ -140,10 +144,10 @@ namespace Era
             {
                 int phase=Mathf.FloorToInt(p.combatTime/12)%2;
                 if(phase==1){float before=p.hp+p.shield;Heal(p,p.maxHp*.03f*Stack(p,ItemId.RealityCube)*dt);p.itemValues[I(ItemId.RealityCube)]+=Mathf.Max(0,p.hp+p.shield-before);}
-                else if(p.itemValues[I(ItemId.RealityCube)]>0){float power=p.itemValues[I(ItemId.RealityCube)]*4;p.itemValues[I(ItemId.RealityCube)]=0;Burst(p,p.position,10,power);}
+                else if(p.itemValues[I(ItemId.RealityCube)]>0){float power=p.itemValues[I(ItemId.RealityCube)]*4;p.itemValues[I(ItemId.RealityCube)]=0;Burst(p,p.position,10,power,sourceItem:ItemId.RealityCube);}
             }
             if(Ready(p,ItemId.FireSphere,4)){foreach(var e in State.enemies)if(Vector3.Distance(p.position,e.position)<4*p.areaSize)Afflict(e,p,Ailment.Burn,3,8*Stack(p,ItemId.FireSphere)*DamageMultiplier(p),5);Effect(4,p.position,4*p.areaSize);}
-            if(Ready(p,ItemId.FrostBell,8))Burst(p,p.position,7,0,Ailment.Chill,3+Stack(p,ItemId.FrostBell));
+            if(Ready(p,ItemId.FrostBell,8))Burst(p,p.position,7,0,Ailment.Chill,3+Stack(p,ItemId.FrostBell),sourceItem:ItemId.FrostBell);
             if(Ready(p,ItemId.ThunderRod,6)){var e=FindItemTarget(p.position,20,-1,true);if(e!=null){Afflict(e,p,Ailment.Shock,6);DamageEnemy(e,p,45*Stack(p,ItemId.ThunderRod)*DamageMultiplier(p),false);WeaponEffect(10,p.position+Vector3.up,e.position+Vector3.up,1,WeaponKind.LightningStaff);}}
             if(Ready(p,ItemId.Chronosphere,15)){foreach(var e in State.enemies)if(Vector3.Distance(e.position,p.position)<9*p.areaSize)FreezeEnemy(e,2+Stack(p,ItemId.Chronosphere));Effect(1,p.position,9*p.areaSize);}
             float vortexBonus=p.itemValues[I(ItemId.SingularityTestament)];
@@ -153,21 +157,21 @@ namespace Era
             {
                 var forward=Quaternion.Euler(0,p.yaw,0)*Vector3.forward;
                 foreach(var e in new List<EnemyState>(State.enemies)){var delta=e.position-p.position;delta.y=0;if(delta.magnitude<10*p.areaSize&&Vector3.Dot(delta.normalized,forward)>.55f){Afflict(e,p,Ailment.Burn,4,10*Stack(p,ItemId.DragonBreath),5);DamageEnemy(e,p,60*Stack(p,ItemId.DragonBreath)*DamageMultiplier(p),false);}}
-                WeaponEffect(11,p.position+Vector3.up,p.position+forward*10+Vector3.up,10,WeaponKind.LightningStaff);
+                WeaponEffect(11,p.position+Vector3.up,p.position+forward*10+Vector3.up,10,WeaponKind.LightningStaff,FeedbackStyle.Fire);
             }
             Travel(p,ItemId.KineticSpool,distance,20,()=>p.itemCounters[I(ItemId.KineticSpool)]++);
             Travel(p,ItemId.PacifistEngine,distance,8,()=>DropMovementMine(p));
             Travel(p,ItemId.VoidShepherd,distance,12,()=>Field(p,ItemId.VoidShepherd,p.position,4,6+vortexBonus,75*Stack(p,ItemId.VoidShepherd)*DamageMultiplier(p)));
-            Travel(p,ItemId.LastPilgrim,distance,100,()=>{p.itemCounters[I(ItemId.LastPilgrim)]++;p.damage+=.03f*Stack(p,ItemId.LastPilgrim);if(p.itemCounters[I(ItemId.LastPilgrim)]%5==0)Burst(p,p.position,12,200*Stack(p,ItemId.LastPilgrim)*DamageMultiplier(p));});
+            Travel(p,ItemId.LastPilgrim,distance,100,()=>{p.itemCounters[I(ItemId.LastPilgrim)]++;p.damage+=.03f*Stack(p,ItemId.LastPilgrim);if(p.itemCounters[I(ItemId.LastPilgrim)]%5==0)Burst(p,p.position,12,200*Stack(p,ItemId.LastPilgrim)*DamageMultiplier(p),sourceItem:ItemId.LastPilgrim);});
             if(Has(p,ItemId.WarDrum)&&p.itemTimers[I(ItemId.WarDrum)]<=0)p.itemCounters[I(ItemId.WarDrum)]=0;
             if(p.stillTime>=2&&Ready(p,ItemId.VoidAnchor,3))
-            {foreach(var e in State.enemies)if(!EnemyCatalog.EffectImmune(e.kind)&&Vector3.Distance(e.position,p.position)<6)e.position=MoveEnemyBody(e,Vector3.ClampMagnitude(p.position-e.position,2));Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p));}
+            {foreach(var e in State.enemies)if(!EnemyCatalog.EffectImmune(e.kind)&&Vector3.Distance(e.position,p.position)<6)e.position=MoveEnemyBody(e,Vector3.ClampMagnitude(p.position-e.position,2));Burst(p,p.position,6,60*Stack(p,ItemId.VoidAnchor)*DamageMultiplier(p),sourceItem:ItemId.VoidAnchor);}
             if(p.stillTime>=2&&Ready(p,ItemId.WalkingCathedral,1))
-            {foreach(var ally in State.players)if(Vector3.Distance(ally.position,p.position)<7*p.areaSize)Heal(ally,4*Stack(p,ItemId.WalkingCathedral));Burst(p,p.position,7,18*Stack(p,ItemId.WalkingCathedral)*DamageMultiplier(p));}
+            {foreach(var ally in State.players)if(Vector3.Distance(ally.position,p.position)<7*p.areaSize)Heal(ally,4*Stack(p,ItemId.WalkingCathedral));Burst(p,p.position,7,18*Stack(p,ItemId.WalkingCathedral)*DamageMultiplier(p),sourceItem:ItemId.WalkingCathedral);}
             if(Has(p,ItemId.ArchitectReign)&&p.stillTime>=8&&Ready(p,ItemId.ArchitectReign,8)&&State.itemFields.FindAll(f=>f.owner==p.id&&f.item==I(ItemId.ArchitectReign)).Count<5)
                 Field(p,ItemId.ArchitectReign,p.position,36000,1,22*Stack(p,ItemId.ArchitectReign));
             if(Ready(p,ItemId.EventHorizon,6))
-            {float power=p.itemValues[I(ItemId.EventHorizon)];p.itemValues[I(ItemId.EventHorizon)]=0;if(power>0)Burst(p,p.position,8,power*1.5f);}
+            {float power=p.itemValues[I(ItemId.EventHorizon)];p.itemValues[I(ItemId.EventHorizon)]=0;if(power>0)Burst(p,p.position,8,power*1.5f,sourceItem:ItemId.EventHorizon);}
             if(Ready(p,ItemId.StormCircuit,2))
             {
                 var charged=State.enemies.FindAll(e=>Layers(e,Ailment.Shock)>0);
@@ -178,21 +182,21 @@ namespace Era
             if(Ready(p,ItemId.DebtOfKing,30))
             {int shares=Mathf.Max(0,State.openedChests-p.itemCounters[I(ItemId.DebtOfKing)]);State.coins+=shares*2*Stack(p,ItemId.DebtOfKing);State.earnedCoins+=shares*2*Stack(p,ItemId.DebtOfKing);p.damage+=shares*.01f*Stack(p,ItemId.DebtOfKing);}
             if(Has(p,ItemId.Chronicle)&&p.safeTime>=45)
-            {p.safeTime-=45;p.projectileCount=Mathf.Min(48,p.projectileCount+Stack(p,ItemId.Chronicle));p.itemCounters[I(ItemId.Chronicle)]++;Effect(3,p.position,3);}
+            {p.safeTime-=45;p.projectileCount=Mathf.Min(48,p.projectileCount+Stack(p,ItemId.Chronicle));p.itemCounters[I(ItemId.Chronicle)]++;Effect(7,p.position,1,FeedbackStyle.Pickup);}
             if(Has(p,ItemId.EclipseCrown))
             {
                 int i=I(ItemId.EclipseCrown),cycle=Mathf.FloorToInt(p.combatTime/24);
                 p.itemCounters[i]=Mathf.Max(p.itemCounters[i],cycle);
                 if(p.combatTime%24>=12&&Ready(p,ItemId.EclipseCrown,1))
-                {float power=Mathf.Min(p.itemValues[i],Mathf.Max(20,p.itemValues[i]/3));p.itemValues[i]-=power;if(power>0){Burst(p,p.position,9,power);Heal(p,power*.08f);}}
+                {float power=Mathf.Min(p.itemValues[i],Mathf.Max(20,p.itemValues[i]/3));p.itemValues[i]-=power;if(power>0){Burst(p,p.position,9,power,sourceItem:ItemId.EclipseCrown);Heal(p,power*.08f);}}
             }
             if(Has(p,ItemId.OrbitalSaw)&&Ready(p,ItemId.OrbitalSaw,.4f))
-            {int count=Stack(p,ItemId.OrbitalSaw);for(int n=0;n<count;n++){float a=p.combatTime*3+n*Mathf.PI*2/count;var pos=p.position+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*3*p.areaSize;Burst(p,pos,1.15f,22*DamageMultiplier(p));}}
+            {int count=Stack(p,ItemId.OrbitalSaw);for(int n=0;n<count;n++){float a=p.combatTime*3+n*Mathf.PI*2/count;var pos=p.position+new Vector3(Mathf.Cos(a),0,Mathf.Sin(a))*3*p.areaSize;Burst(p,pos,1.15f,22*DamageMultiplier(p),sourceItem:ItemId.OrbitalSaw);}}
             bool landed=p.landSerial!=p.lastLand;
             if(landed)
             {
-                if(Ready(p,ItemId.LandingStone,2))Burst(p,p.position,4,30*Stack(p,ItemId.LandingStone)*DamageMultiplier(p));
-                if(Has(p,ItemId.AngelWings)&&p.itemCounters[I(ItemId.AngelWings)]>0){p.itemCounters[I(ItemId.AngelWings)]=0;Burst(p,p.position,6,55*Stack(p,ItemId.AngelWings)*DamageMultiplier(p));}
+                if(Ready(p,ItemId.LandingStone,2))Burst(p,p.position,4,30*Stack(p,ItemId.LandingStone)*DamageMultiplier(p),sourceItem:ItemId.LandingStone);
+                if(Has(p,ItemId.AngelWings)&&p.itemCounters[I(ItemId.AngelWings)]>0){p.itemCounters[I(ItemId.AngelWings)]=0;Burst(p,p.position,6,55*Stack(p,ItemId.AngelWings)*DamageMultiplier(p),sourceItem:ItemId.AngelWings);}
             }
             if(!p.grounded&&p.airJumpsUsed>0)p.itemCounters[I(ItemId.AngelWings)]=1;
             p.lastLand=p.landSerial;p.lastJump=p.jumpSerial;
@@ -211,17 +215,17 @@ namespace Era
         void OnItemDash(PlayerState p,Vector3 origin)
         {
             if(Ready(p,ItemId.DashFlint,2))Field(p,ItemId.DashFlint,origin,3,3,16*Stack(p,ItemId.DashFlint)*DamageMultiplier(p));
-            if(Ready(p,ItemId.Thunderstep,3)){Burst(p,origin,3,45*Stack(p,ItemId.Thunderstep)*DamageMultiplier(p),Ailment.Shock);Field(p,ItemId.StarMap,WorldMap.Resolve(origin,p.dashDirection*4.5f,.4f),.2f,3,45*Stack(p,ItemId.Thunderstep)*DamageMultiplier(p));}
-            if(Has(p,ItemId.GlassWorld)){p.invulnerability=.6f;Burst(p,p.position,8,100*Power(p,ItemId.GlassWorld)*DamageMultiplier(p));}
+            if(Ready(p,ItemId.Thunderstep,3)){Burst(p,origin,3,45*Stack(p,ItemId.Thunderstep)*DamageMultiplier(p),Ailment.Shock,sourceItem:ItemId.Thunderstep);Field(p,ItemId.StarMap,WorldMap.Resolve(origin,p.dashDirection*4.5f,.4f),.2f,3,45*Stack(p,ItemId.Thunderstep)*DamageMultiplier(p),visual:FeedbackStyle.Lightning);}
+            if(Has(p,ItemId.GlassWorld)){p.invulnerability=.6f;Burst(p,p.position,8,100*Power(p,ItemId.GlassWorld)*DamageMultiplier(p),sourceItem:ItemId.GlassWorld);}
         }
         void OnItemCast(PlayerState p,int kind)
         {
             if(Has(p,ItemId.SilentVow))PayHealth(p,5*Stack(p,ItemId.SilentVow));
-            if(Has(p,ItemId.SacrificialBrazier)){PayHealth(p,5);Burst(p,p.position,8,0,Ailment.Burn,4);}
+            if(Has(p,ItemId.SacrificialBrazier)){PayHealth(p,5);Burst(p,p.position,8,0,Ailment.Burn,4,sourceItem:ItemId.SacrificialBrazier);}
             if(Has(p,ItemId.InversionHeart)&&p.shield>=80)
-            {float shield=p.shield;p.shield=0;Burst(p,p.position,8,shield*(1+.5f*(Stack(p,ItemId.InversionHeart)-1)),Ailment.Shock);}
+            {float shield=p.shield;p.shield=0;Burst(p,p.position,8,shield*(1+.5f*(Stack(p,ItemId.InversionHeart)-1)),Ailment.Shock,sourceItem:ItemId.InversionHeart);}
             if(Has(p,ItemId.Capacitor)&&p.shield>0)
-            {float spent=Mathf.Min(p.shield,20*Stack(p,ItemId.Capacitor));p.shield-=spent;Burst(p,p.position,7,spent*2,Ailment.Shock);}
+            {float spent=Mathf.Min(p.shield,20*Stack(p,ItemId.Capacitor));p.shield-=spent;Burst(p,p.position,7,spent*2,Ailment.Shock,sourceItem:ItemId.Capacitor);}
             if(Has(p,ItemId.SpellLoom))p.itemCounters[I(ItemId.SpellLoom)]|=1<<kind;
             if(Has(p,ItemId.EndlessRefrain))
             {
@@ -238,11 +242,11 @@ namespace Era
             if(Has(p,ItemId.SilentVow))multiplier+=.35f*Power(p,ItemId.SilentVow);
             if(Has(p,ItemId.BloodMoon)){PayHealth(p,p.maxHp*.02f);multiplier+=.6f*Power(p,ItemId.BloodMoon);}
             if(Has(p,ItemId.LivingArsenal)&&p.weapons[1]>=0)multiplier+=.7f*Stack(p,ItemId.LivingArsenal);
-            if(Has(p,ItemId.KineticSpool)&&p.itemCounters[I(ItemId.KineticSpool)]>0){p.itemCounters[I(ItemId.KineticSpool)]--;multiplier+=.8f*Stack(p,ItemId.KineticSpool);}
-            if(Has(p,ItemId.SpellLoom)&&p.itemCounters[I(ItemId.SpellLoom)]==7){p.itemCounters[I(ItemId.SpellLoom)]=0;multiplier+=2*Stack(p,ItemId.SpellLoom);}
+            if(Has(p,ItemId.KineticSpool)&&p.itemCounters[I(ItemId.KineticSpool)]>0){p.itemCounters[I(ItemId.KineticSpool)]--;multiplier+=.8f*Stack(p,ItemId.KineticSpool);Effect(7,p.position+Vector3.up,.3f,FeedbackStyle.Arcane);}
+            if(Has(p,ItemId.SpellLoom)&&p.itemCounters[I(ItemId.SpellLoom)]==7){p.itemCounters[I(ItemId.SpellLoom)]=0;multiplier+=2*Stack(p,ItemId.SpellLoom);Effect(7,p.position+Vector3.up,.6f,FeedbackStyle.Arcane);}
             if(Has(p,ItemId.BrokenMetronome)){int i=I(ItemId.BrokenMetronome);if(++p.itemCounters[i]%2==1)multiplier+=.6f*Stack(p,ItemId.BrokenMetronome);else p.shield=Mathf.Min(800,p.shield+12*Stack(p,ItemId.BrokenMetronome));}
             if(Has(p,ItemId.Alternator)&&p.alternatingSlot>=0&&p.alternatingSlot!=slot)
-            {int i=I(ItemId.Alternator);if(++p.itemCounters[i]>=4){p.itemCounters[i]=0;Burst(p,p.position,7,90*Stack(p,ItemId.Alternator)*DamageMultiplier(p));}}p.alternatingSlot=slot;
+            {int i=I(ItemId.Alternator);if(++p.itemCounters[i]>=4){p.itemCounters[i]=0;Burst(p,p.position,7,90*Stack(p,ItemId.Alternator)*DamageMultiplier(p),sourceItem:ItemId.Alternator);}}p.alternatingSlot=slot;
             if(Has(p,ItemId.StarMap)&&++p.itemCounters[I(ItemId.StarMap)]%8==0&&target!=null)Field(p,ItemId.StarMap,target.position,.8f,5,140*Stack(p,ItemId.StarMap)*DamageMultiplier(p));
             if(Has(p,ItemId.SplitSoul)&&target!=null)Field(p,ItemId.SplitSoul,p.position,.7f,0,GameData.Weapons[p.weapons[slot]].damage*DamageMultiplier(p)*.6f*Stack(p,ItemId.SplitSoul)*multiplier,target.id);
             return multiplier;
@@ -275,48 +279,48 @@ namespace Era
             if(Has(p,ItemId.AlchemyEngine)&&p.itemCounters[I(ItemId.AlchemyEngine)]>0)
             {int recipe=(p.itemCounters[I(ItemId.AlchemyEngine)]-1)%3;p.itemCounters[I(ItemId.AlchemyEngine)]=0;Afflict(e,p,recipe==0?Ailment.Burn:recipe==1?Ailment.Chill:Ailment.Poison,6,18*Stack(p,ItemId.AlchemyEngine),8);}
             if(Has(p,ItemId.FrostfireCovenant))
-            {int count=++p.itemCounters[I(ItemId.FrostfireCovenant)];Afflict(e,p,count%2==1?Ailment.Burn:Ailment.Chill,3,8*Stack(p,ItemId.FrostfireCovenant),5);if(count%6==0)Burst(p,e.position,3,35*Power(p,ItemId.FrostfireCovenant)*DamageMultiplier(p));}
+            {int count=++p.itemCounters[I(ItemId.FrostfireCovenant)];Afflict(e,p,count%2==1?Ailment.Burn:Ailment.Chill,3,8*Stack(p,ItemId.FrostfireCovenant),5);if(count%6==0)Burst(p,e.position,3,35*Power(p,ItemId.FrostfireCovenant)*DamageMultiplier(p),sourceItem:ItemId.FrostfireCovenant);}
             if(Has(p,ItemId.GlacialPrison)&&Layers(e,Ailment.Chill)>0)
             {var mark=e.ailments.Find(a=>a.kind==Ailment.Chill&&a.owner==p.id);if(mark!=null&&++mark.hits>=3){mark.hits=0;FreezeEnemy(e,1+Stack(p,ItemId.GlacialPrison));}}
             if(Has(p,ItemId.WinterSleep)&&e.frozen>0)
             {var sleep=e.ailments.Find(a=>a.kind==Ailment.Doom&&a.owner==p.id);if(sleep==null){Afflict(e,p,Ailment.Doom,60);sleep=e.ailments.Find(a=>a.kind==Ailment.Doom&&a.owner==p.id);}sleep.power+=damage*.5f*Stack(p,ItemId.WinterSleep);}
             if(Has(p,ItemId.SteamValve)&&Layers(e,Ailment.Chill)>0&&Layers(e,Ailment.Burn)>0&&!e.ailments.Exists(a=>a.kind==Ailment.Mark&&a.owner==-10))
-            {e.ailments.RemoveAll(a=>a.kind==Ailment.Burn||a.kind==Ailment.Chill);e.ailments.Add(new AfflictionState{kind=Ailment.Mark,owner=-10,time=3});Burst(p,e.position,3,35*Power(p,ItemId.SteamValve)*DamageMultiplier(p));}
+            {e.ailments.RemoveAll(a=>a.kind==Ailment.Burn||a.kind==Ailment.Chill);e.ailments.Add(new AfflictionState{kind=Ailment.Mark,owner=-10,time=3});Burst(p,e.position,3,35*Power(p,ItemId.SteamValve)*DamageMultiplier(p),sourceItem:ItemId.SteamValve);}
             if(Has(p,ItemId.ExecutionLedger)&&++p.itemCounters[I(ItemId.ExecutionLedger)]%5==0)Afflict(e,p,Ailment.Mark,8);
             if(Has(p,ItemId.ExecutionLedger)&&Layers(e,Ailment.Mark,p.id)>0&&e.hp/e.maxHp<.18f)
             {e.ailments.RemoveAll(a=>a.kind==Ailment.Mark&&a.owner==p.id);DamageEnemy(e,p,e.kind==EnemyKind.Warden?60*Stack(p,ItemId.ExecutionLedger):e.hp+1,false);}
             if(Has(p,ItemId.BloodCompass)&&Layers(e,Ailment.Bleed)>0&&Ready(p,ItemId.BloodCompass,.5f))Heal(p,3*Stack(p,ItemId.BloodCompass));
             if(Has(p,ItemId.EchoChamber))
-            {int i=I(ItemId.EchoChamber);p.itemCounters[i]=p.lastVictim==e.id?p.itemCounters[i]+1:1;if(p.itemCounters[i]>=3){p.itemCounters[i]=0;Burst(p,e.position,3,45*Power(p,ItemId.EchoChamber)*DamageMultiplier(p));}}
+            {int i=I(ItemId.EchoChamber);p.itemCounters[i]=p.lastVictim==e.id?p.itemCounters[i]+1:1;if(p.itemCounters[i]>=3){p.itemCounters[i]=0;Burst(p,e.position,3,45*Power(p,ItemId.EchoChamber)*DamageMultiplier(p),sourceItem:ItemId.EchoChamber);}}
             if(Has(p,ItemId.RedThread))
             {
                 int i=I(ItemId.RedThread);if(p.lastVictim!=e.id&&State.enemies.Exists(a=>a.id==p.lastVictim)){p.itemCounters[i]=p.lastVictim;p.itemValues[i]=e.id;p.itemTimers[i]=4;}
-                if(p.itemTimers[i]>0){int other=e.id==p.itemCounters[i]?(int)p.itemValues[i]:e.id==(int)p.itemValues[i]?p.itemCounters[i]:-1;var link=State.enemies.Find(a=>a.id==other);if(link!=null){WeaponEffect(10,e.position+Vector3.up,link.position+Vector3.up,1,WeaponKind.LightningStaff);DamageEnemy(link,p,damage*.2f*Power(p,ItemId.RedThread),false);}}
+                if(p.itemTimers[i]>0){int other=e.id==p.itemCounters[i]?(int)p.itemValues[i]:e.id==(int)p.itemValues[i]?p.itemCounters[i]:-1;var link=State.enemies.Find(a=>a.id==other);if(link!=null){WeaponEffect(10,e.position+Vector3.up,link.position+Vector3.up,1,WeaponKind.LightningStaff,FeedbackStyle.Blood);DamageEnemy(link,p,damage*.2f*Power(p,ItemId.RedThread),false);}}
             }
             p.lastVictim=e.id;
-            if(critical&&e.frozen>0&&Ready(p,ItemId.ShatterLens,3))Burst(p,e.position,4,45*Power(p,ItemId.ShatterLens)*DamageMultiplier(p));
+            if(critical&&e.frozen>0&&Ready(p,ItemId.ShatterLens,3))Burst(p,e.position,4,45*Power(p,ItemId.ShatterLens)*DamageMultiplier(p),sourceItem:ItemId.ShatterLens);
             if(critical&&Ready(p,ItemId.MirrorShard,.4f)){var next=FindItemTarget(e.position,15,e.id);if(next!=null){WeaponEffect(10,e.position+Vector3.up,next.position+Vector3.up,1,WeaponKind.Bow);DamageEnemy(next,p,damage*.5f*Stack(p,ItemId.MirrorShard),false);}}
             if(Has(p,ItemId.StormConductor)&&Layers(e,Ailment.Shock)>0&&Ready(p,ItemId.StormConductor,1.5f))ChainItem(p,e.position,e.id,2,damage*.25f*Power(p,ItemId.StormConductor),false);
             if(Has(p,ItemId.StormAmulet)&&++p.itemCounters[I(ItemId.StormAmulet)]%4==0)ChainItem(p,e.position,e.id,1,24*Stack(p,ItemId.StormAmulet)*DamageMultiplier(p),true);
         }
-        void ChainItem(PlayerState p,Vector3 origin,int except,int count,float damage,bool shock)
+        void ChainItem(PlayerState p,Vector3 origin,int except,int count,float damage,bool shock,FeedbackStyle visual=FeedbackStyle.Lightning)
         {
             var used=new HashSet<int>{except};
             for(int n=0;n<count;n++)
-            {var next=State.enemies.Find(e=>!used.Contains(e.id)&&Vector3.Distance(origin,e.position)<10);if(next==null)break;used.Add(next.id);if(shock)Afflict(next,p,Ailment.Shock,6);WeaponEffect(10,origin+Vector3.up,next.position+Vector3.up,1,WeaponKind.LightningStaff);DamageEnemy(next,p,damage,false);origin=next.position;}
+            {var next=State.enemies.Find(e=>!used.Contains(e.id)&&Vector3.Distance(origin,e.position)<10);if(next==null)break;used.Add(next.id);if(shock)Afflict(next,p,Ailment.Shock,6);WeaponEffect(10,origin+Vector3.up,next.position+Vector3.up,1,WeaponKind.LightningStaff,visual);DamageEnemy(next,p,damage,false);origin=next.position;}
         }
         void OnItemKill(PlayerState p,EnemyState e)
         {
             if(p==null)return;
             bool burning=Layers(e,Ailment.Burn)>0,poison=Layers(e,Ailment.Poison)>0;
             if(Ready(p,ItemId.SoulJar,3))Heal(p,6*Stack(p,ItemId.SoulJar));
-            if(Ready(p,ItemId.PowderKeg,2))Burst(p,e.position,3,35*Stack(p,ItemId.PowderKeg)*DamageMultiplier(p));
+            if(Ready(p,ItemId.PowderKeg,2))Burst(p,e.position,3,35*Stack(p,ItemId.PowderKeg)*DamageMultiplier(p),sourceItem:ItemId.PowderKeg);
             if(burning&&Has(p,ItemId.AshGarden))Field(p,ItemId.AshGarden,e.position,5,3,12*Stack(p,ItemId.AshGarden)*DamageMultiplier(p));
             if(burning&&Has(p,ItemId.SacrificialBrazier))Heal(p,10*Stack(p,ItemId.SacrificialBrazier));
             if(Has(p,ItemId.TemporalDebt))p.itemValues[I(ItemId.TemporalDebt)]=Mathf.Max(0,p.itemValues[I(ItemId.TemporalDebt)]-8*Stack(p,ItemId.TemporalDebt));
             if(Has(p,ItemId.BloodMoon))Heal(p,p.maxHp*.02f*Power(p,ItemId.BloodMoon));
             if(Has(p,ItemId.WarDrum)){int i=I(ItemId.WarDrum);p.itemCounters[i]=Mathf.Min(10,p.itemCounters[i]+1);p.itemTimers[i]=5;}
-            if(Has(p,ItemId.Necronomicon)&&++p.itemCounters[I(ItemId.Necronomicon)]%3==0)ChainItem(p,e.position,e.id,3,35*Stack(p,ItemId.Necronomicon)*DamageMultiplier(p),false);
+            if(Has(p,ItemId.Necronomicon)&&++p.itemCounters[I(ItemId.Necronomicon)]%3==0)ChainItem(p,e.position,e.id,3,35*Stack(p,ItemId.Necronomicon)*DamageMultiplier(p),false,FeedbackStyle.Summon);
             if(Has(p,ItemId.HuntingPack)&&++p.itemCounters[I(ItemId.HuntingPack)]%5==0)Field(p,ItemId.HuntingPack,e.position,8,1,20*Stack(p,ItemId.HuntingPack));
             if(Has(p,ItemId.GravePact)&&++p.itemCounters[I(ItemId.GravePact)]%6==0)for(int n=0;n<Stack(p,ItemId.GravePact);n++)Field(p,ItemId.GravePact,e.position,8,1,18);
             if(poison&&Has(p,ItemId.HiveMind))Field(p,ItemId.HiveMind,e.position,6,1,8*Stack(p,ItemId.HiveMind));
@@ -327,7 +331,7 @@ namespace Era
             if(Has(p,ItemId.WorldSeed)&&++p.itemCounters[I(ItemId.WorldSeed)]%25==0)
             {int growth=p.itemCounters[I(ItemId.WorldSeed)]/25;p.maxHp+=2*Stack(p,ItemId.WorldSeed);p.areaSize+=.02f*Stack(p,ItemId.WorldSeed);Field(p,ItemId.WorldSeed,e.position,6,4+growth*.2f,(12+growth*4)*Stack(p,ItemId.WorldSeed)*DamageMultiplier(p));}
             if(Has(p,ItemId.Ouroboros)&&++p.itemCounters[I(ItemId.Ouroboros)]%50==0)
-            {int cycles=p.itemCounters[I(ItemId.Ouroboros)]/50;Heal(p,p.maxHp);Burst(p,p.position,10+cycles*.5f,(160+cycles*40)*Stack(p,ItemId.Ouroboros)*DamageMultiplier(p),Ailment.Mark,8);}
+            {int cycles=p.itemCounters[I(ItemId.Ouroboros)]/50;Heal(p,p.maxHp);Burst(p,p.position,10+cycles*.5f,(160+cycles*40)*Stack(p,ItemId.Ouroboros)*DamageMultiplier(p),Ailment.Mark,8,sourceItem:ItemId.Ouroboros);}
             if(Has(p,ItemId.ArchitectReign))p.itemValues[I(ItemId.ArchitectReign)]+=.005f*Stack(p,ItemId.ArchitectReign);
             if(e.ailments.Count>0&&Has(p,ItemId.SingularityTestament)&&++p.itemCounters[I(ItemId.SingularityTestament)]%30==0)
             {p.itemValues[I(ItemId.SingularityTestament)]+=.5f*Stack(p,ItemId.SingularityTestament);Field(p,ItemId.BlackHole,e.position,2,7+p.itemValues[I(ItemId.SingularityTestament)],(100+30*p.itemCounters[I(ItemId.SingularityTestament)]/30)*DamageMultiplier(p));}
@@ -337,7 +341,7 @@ namespace Era
             if(pickup.kind==PickupKind.Gold)
             {
                 if(Has(p,ItemId.CrownOfGreed))
-                {int i=I(ItemId.CrownOfGreed);p.itemValues[i]+=pickup.value;if(p.itemValues[i]>=100){p.itemValues[i]-=100;Burst(p,p.position,7,60*Power(p,ItemId.CrownOfGreed)*DamageMultiplier(p));}}
+                {int i=I(ItemId.CrownOfGreed);p.itemValues[i]+=pickup.value;if(p.itemValues[i]>=100){p.itemValues[i]-=100;Burst(p,p.position,7,60*Power(p,ItemId.CrownOfGreed)*DamageMultiplier(p),sourceItem:ItemId.CrownOfGreed);}}
                 if(Ready(p,ItemId.MiserFuse,1))Field(p,ItemId.MiserFuse,p.position,6,4,55*Stack(p,ItemId.MiserFuse)*DamageMultiplier(p));
                 if(Has(p,ItemId.AlchemyEngine)){int i=I(ItemId.AlchemyEngine);p.itemValues[i]=(p.itemValues[i]+1)%3;p.itemCounters[i]=(int)p.itemValues[i]+1;}
             }
@@ -354,13 +358,13 @@ namespace Era
         {
             p.safeTime=0;
             if(Has(p,ItemId.EventHorizon))p.itemValues[I(ItemId.EventHorizon)]=Mathf.Min(80*Power(p,ItemId.EventHorizon),p.itemValues[I(ItemId.EventHorizon)]+damage*.5f);
-            if(Ready(p,ItemId.ThornMail,2))Burst(p,p.position,4,damage*.8f*Stack(p,ItemId.ThornMail));
-            if(Ready(p,ItemId.RetaliationSeal,8)){p.shield+=18*Stack(p,ItemId.RetaliationSeal);Burst(p,p.position,5,28*Stack(p,ItemId.RetaliationSeal)*DamageMultiplier(p));}
+            if(Ready(p,ItemId.ThornMail,2))Burst(p,p.position,4,damage*.8f*Stack(p,ItemId.ThornMail),sourceItem:ItemId.ThornMail);
+            if(Ready(p,ItemId.RetaliationSeal,8)){p.shield+=18*Stack(p,ItemId.RetaliationSeal);Burst(p,p.position,5,28*Stack(p,ItemId.RetaliationSeal)*DamageMultiplier(p),sourceItem:ItemId.RetaliationSeal);}
         }
         void ApplyHealthDamage(PlayerState p,float damage)
         {
             p.hp=Mathf.Max(0,p.hp-damage);if(p.hp>0)return;
-            if(Has(p,ItemId.PhoenixAsh)&&p.itemCounters[I(ItemId.PhoenixAsh)]==0){p.itemCounters[I(ItemId.PhoenixAsh)]=1;Burst(p,p.position,10,180*Stack(p,ItemId.PhoenixAsh)*DamageMultiplier(p),Ailment.Burn,4);}
+            if(Has(p,ItemId.PhoenixAsh)&&p.itemCounters[I(ItemId.PhoenixAsh)]==0){p.itemCounters[I(ItemId.PhoenixAsh)]=1;Burst(p,p.position,10,180*Stack(p,ItemId.PhoenixAsh)*DamageMultiplier(p),Ailment.Burn,4,sourceItem:ItemId.PhoenixAsh);}
             if(p.reviveCharges>0){p.reviveCharges--;p.hp=p.maxHp*.55f;p.damage+=.25f;p.invulnerability=3;Effect(3,p.position,4);return;}
             if(Has(p,ItemId.ImmortalContract)&&p.itemCounters[I(ItemId.ImmortalContract)]<Stack(p,ItemId.ImmortalContract))
             {p.itemCounters[I(ItemId.ImmortalContract)]++;p.maxHp=Mathf.Max(1,p.maxHp*.8f);p.hp=p.maxHp;p.damage+=.4f;p.invulnerability=3;Effect(3,p.position,5);return;}
@@ -421,7 +425,7 @@ namespace Era
                 case ItemId.GlassWorld:p.maxHp=p.hp=1;p.auraMaxHp=0;break;
                 case ItemId.DebtOfKing:if(p.items[item]==1)p.itemCounters[item]=State.openedChests;break;
             }
-            Effect(3,p.position,2);
+            Effect(7,p.position,1,FeedbackStyle.Pickup);
         }
     }
 }

@@ -5,16 +5,20 @@ $eraArchivePath = Join-Path $eraProject 'Releases\Era-Windows.zip'
 $eraBuildPath = Join-Path $eraProject 'Builds\Windows'
 $eraZip = [IO.Compression.ZipFile]::OpenRead($eraArchivePath)
 try {
-    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.19.0.md','VALIDATION-v0.19.md')) {
+    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.20.0.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
         $eraEntry = $eraZip.GetEntry($eraName)
         if ($null -eq $eraEntry -or $eraEntry.Length -le 0) { throw "Missing or empty ZIP entry: $eraName" }
     }
-    foreach ($eraName in @('Era.exe','Era_Data/Managed/Assembly-CSharp.dll')) {
-        $eraStream = $eraZip.GetEntry($eraName).Open()
+    $eraPlayerFiles = Get-ChildItem -LiteralPath $eraBuildPath -Recurse -File
+    foreach ($eraPlayerFile in $eraPlayerFiles) {
+        $eraName = $eraPlayerFile.FullName.Substring($eraBuildPath.Length+1).Replace('\','/')
+        $eraEntry = $eraZip.GetEntry($eraName)
+        if ($null -eq $eraEntry -or $eraEntry.Length -ne $eraPlayerFile.Length) { throw "Missing or truncated tested build file: $eraName" }
+        $eraStream = $eraEntry.Open()
         $eraSha = [Security.Cryptography.SHA256]::Create()
         try { $eraInsideHash = [BitConverter]::ToString($eraSha.ComputeHash($eraStream)).Replace('-','') }
         finally { $eraStream.Dispose(); $eraSha.Dispose() }
-        $eraPlayerHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath $eraName) -Algorithm SHA256).Hash
+        $eraPlayerHash = (Get-FileHash -LiteralPath $eraPlayerFile.FullName -Algorithm SHA256).Hash
         if ($eraInsideHash -ne $eraPlayerHash) { throw "ZIP differs from the tested Player: $eraName" }
     }
     $eraEntries = $eraZip.Entries.Count
@@ -22,4 +26,4 @@ try {
 } finally { $eraZip.Dispose() }
 $eraArchiveHash = (Get-FileHash -LiteralPath $eraArchivePath -Algorithm SHA256).Hash.ToLowerInvariant()
 if ((Get-Content -LiteralPath ($eraArchivePath + '.sha256') -Raw).Trim() -ne "$eraArchiveHash  Era-Windows.zip") { throw 'ZIP checksum differs from its companion file' }
-Write-Output "PASS Package: entries=$eraEntries; Player executable and managed assembly match; sha256=$eraArchiveHash"
+Write-Output "PASS Package: entries=$eraEntries; all $($eraPlayerFiles.Count) tested build files match; sha256=$eraArchiveHash"

@@ -4,15 +4,15 @@ namespace Era
     // The same capsule definition drives the host solver and Unity query colliders.
     public readonly struct ActorCapsule
     {
-        public readonly float radius,height;
-        public ActorCapsule(float radius,float height){this.radius=radius;this.height=Mathf.Max(height,radius*2);}
+        public readonly float radius,height;public readonly bool preventVault;
+        public ActorCapsule(float radius,float height,bool preventVault=false){this.radius=radius;this.height=Mathf.Max(height,radius*2);this.preventVault=preventVault;}
         public float Lower(Vector3 p)=>p.y+radius;
         public float Upper(Vector3 p)=>p.y+height-radius;
     }
     public static class ActorBodies
     {
         public const float Skin=.006f;
-        public static ActorCapsule Player(PlayerState p)=>new ActorCapsule(.4f,p.crouching?1.88f:2.23f);
+        public static ActorCapsule Player(PlayerState p)=>new ActorCapsule(.4f,p.crouching?1.88f:2.23f,p.airJumpsUsed==0);
         public static ActorCapsule Enemy(EnemyState e)
         {
             float radius=EnemyCatalog.Radius(e.kind)*.82f;
@@ -22,6 +22,9 @@ namespace Era
         }
         public static float PlanarRadius(ActorCapsule a,Vector3 p,ActorCapsule b,Vector3 q)
         {
+            // An ordinary jump never removes the horizontal enemy barrier. Dedicated air
+            // jumps retain their existing height-based traversal, but never gain head support.
+            if((a.preventVault&&p.y>=q.y-Skin)||(b.preventVault&&q.y>=p.y-Skin))return a.radius+b.radius;
             float gap=Mathf.Max(0,Mathf.Max(a.Lower(p)-b.Upper(q),b.Lower(q)-a.Upper(p))),r=a.radius+b.radius;
             return gap>=r?0:Mathf.Sqrt(Mathf.Max(0,r*r-gap*gap));
         }
@@ -60,14 +63,7 @@ namespace Era
         }
         public static float Support(WorldState state,PlayerState player,Vector3 position,float previousFeet,float tolerance=.04f)
         {
-            var a=Player(player);float ground=WorldMap.Ground(position);
-            foreach(var e in state.enemies)if(e.hp>0)
-            {
-                var b=Enemy(e);float planar=new Vector2(position.x-e.position.x,position.z-e.position.z).sqrMagnitude,r=a.radius+b.radius;
-                if(planar>=r*r)continue;float top=b.Upper(e.position)+Mathf.Sqrt(r*r-planar)-a.radius;
-                if(previousFeet>=top-tolerance)ground=Mathf.Max(ground,top+Skin);
-            }
-            return ground;
+            return WorldMap.Ground(position);
         }
         public static float Ceiling(WorldState state,PlayerState player,float nextFeet)
         {

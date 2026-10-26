@@ -1,7 +1,8 @@
 param(
-    [string]$Tag = 'v0.16.0',
+    [string]$Tag = 'v0.20.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.16.0.md'
+    [string]$NotesFile = 'Docs/RELEASE-v0.20.0.md',
+    [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'
 $eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -9,7 +10,14 @@ Push-Location $eraProject
 try {
     if ($Repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$' -or $Tag -notmatch '^v\d+\.\d+\.\d+$') { throw 'Invalid repository or version tag.' }
     # Website has its own Git repository and is published separately from the game.
-    if (git status --porcelain -- . ':!Website') { throw 'Commit all game project changes before publishing.' }
+    $eraScope = @('.',':!Website')
+    # Explicitly preserve user-owned work outside this release. These paths are not
+    # published as source: the remote tag still identifies only the committed tree.
+    foreach ($eraPreservedPath in $PreserveUncommittedPaths) {
+        if ([IO.Path]::IsPathRooted($eraPreservedPath) -or $eraPreservedPath -match '(^|[\\/])\.\.([\\/]|$)' -or $eraPreservedPath.StartsWith(':')) { throw 'Preserved paths must be literal repository-relative paths.' }
+        $eraScope += ':(exclude,literal)' + $eraPreservedPath
+    }
+    if (git status --porcelain -- @eraScope) { throw 'Commit all scoped game project changes before publishing.' }
     $eraCommit = git rev-parse "$Tag^{commit}"
     if ($LASTEXITCODE -ne 0) { throw 'Create and push the release tag first.' }
     $eraRemoteTag = git ls-remote "https://github.com/$Repository.git" "refs/tags/$Tag"

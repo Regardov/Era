@@ -25,8 +25,8 @@ namespace Era
             if(quantity>given)State.coins+=(quantity-given)*8;
             return slot;
         }
-        void WeaponEffect(int kind,Vector3 origin,Vector3 end,float radius,WeaponKind weapon)
-        {if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState{id=State.nextId++,kind=kind,position=origin,end=end,radius=radius,weapon=weapon,life=.4f});}
+        void WeaponEffect(int kind,Vector3 origin,Vector3 end,float radius,WeaponKind weapon,FeedbackStyle style=FeedbackStyle.None)
+        {if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState{id=State.nextId++,kind=kind,position=origin,end=end,radius=radius,weapon=weapon,life=.4f,style=style});}
         void RollChestReward(ChestState chest,PlayerState owner)
         {
             chest.rewardKind=RewardKind.Item;

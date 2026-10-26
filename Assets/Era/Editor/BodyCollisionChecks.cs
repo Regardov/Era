@@ -25,10 +25,19 @@ namespace Era.Editor
             var stay=p.position;Walk(sim,new InputFrame{z=1},3);Check(Vector3.Distance(stay,p.position)<.001f,"stable blocked contact without jitter");
             sim=New(EnemyKind.StoneGolem,Vector3.back*3,Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{z=1,dash=true},.5f);Check(p.position.z< -1.25f,"dash does not tunnel through a body");
             sim=New(EnemyKind.StoneGolem,Vector3.back*2,Vector3.zero);p=sim.State.Player(0);p.hitSlide=.3f;p.knockback=Vector3.forward*40;Walk(sim,new InputFrame(),.4f);Check(p.position.z< -1.25f,"knockback is swept against enemies");
-            sim=New(EnemyKind.Slime,Vector3.back*2,Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{z=1,jump=true,jumpHeld=true},1);Check(p.position.z>2,"jump can clear a genuinely low body");
+            sim=New(EnemyKind.Slime,Vector3.back*2,Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{z=1,jump=true,jumpHeld=true},1);Check(p.position.z<-.7f,"ordinary jump cannot vault even a low slime");
             sim=New(EnemyKind.Warden,Vector3.back*3,Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{z=1,jump=true,jumpHeld=true},1);Check(p.position.z< -1.5f,"jump cannot phase through a tall boss");
-            sim=New(EnemyKind.Slime,Vector3.up*3,Vector3.zero);p=sim.State.Player(0);p.grounded=false;p.verticalSpeed=-4;Walk(sim,new InputFrame(),.8f);Check(p.grounded&&p.position.y>1.1f,"falling lands on body instead of inside it");
+            sim=New(EnemyKind.Slime,Vector3.up*3,Vector3.zero);p=sim.State.Player(0);p.grounded=false;p.verticalSpeed=-4;Walk(sim,new InputFrame(),.8f);Check(p.grounded&&Mathf.Abs(p.position.y-WorldMap.Ground(p.position))<.01f,"enemy head never supplies ground support");
+            Check(!ActorBodies.Overlap(ActorBodies.Player(p),p.position,ActorBodies.Enemy(sim.State.enemies[0]),sim.State.enemies[0].position,.02f),"landing displaces crowd contact without becoming a platform");
+            sim=New(EnemyKind.Slime,new Vector3(0,3,-2),Vector3.zero);p=sim.State.Player(0);p.grounded=false;p.airJumpsUsed=1;p.extraJumps=2;p.verticalSpeed=3;Walk(sim,new InputFrame{z=1,jumpHeld=true},.45f);Check(p.position.z>1,"dedicated air-jump traversal remains available above a body");
+            foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))
+            {
+                sim=New(kind,Vector3.back*4,Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{z=1,jump=true,jumpHeld=true},.65f);
+                Check(p.position.z<-.50f,"no ordinary jump bypass for "+kind);
+            }
             sim=New(EnemyKind.Bat,Vector3.zero,Vector3.up*3);p=sim.State.Player(0);float ceiling=ActorBodies.Ceiling(sim.State,p,2);Check(ceiling>0&&ceiling<1,"ascending capsule contacts flying body above");
+            Check(ActorBodies.PlanarRadius(ActorBodies.Player(p),Vector3.zero,ActorBodies.Enemy(sim.State.enemies[0]),Vector3.up*5)==0,"anti-vault rule does not create an invisible wall below a high flyer");
+            Check(ActorBodies.PlanarRadius(ActorBodies.Enemy(sim.State.enemies[0]),Vector3.up*5,ActorBodies.Player(p),Vector3.zero)==0,"high flying body cannot push an unobstructed player below it");
             sim=New(EnemyKind.Bat,Vector3.back*8,Vector3.up*.7f);e=sim.State.enemies[0];e.frozen=0;e.attackStyle=4;e.recovery=.42f;
             Walk(sim,new InputFrame(),1f/30);Check(e.position.y>.7f&&e.position.y<1,"body settlement preserves the low dive impact");
             Walk(sim,new InputFrame(),.45f);Check(e.position.y>1.5f,"diving creature recovers to hover height");

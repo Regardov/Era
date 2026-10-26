@@ -36,7 +36,7 @@ namespace Era
                 player.hp=player.maxHp;player.invulnerability=3;player.auraDamageTimer=0;
                 player.knockback=Vector3.zero;player.hitSlide=0;
                 player.bursts.Clear();player.stillTime=0;player.itemCounters[I(ItemId.PhoenixAsh)]=0;
-                if(Has(player,ItemId.SevenfoldOath))Field(player,ItemId.EndlessRefrain,player.position,2,25,150*Stack(player,ItemId.SevenfoldOath)*player.itemCounters[I(ItemId.SevenfoldOath)]);
+                if(Has(player,ItemId.SevenfoldOath))Field(player,ItemId.EndlessRefrain,player.position,2,25,150*Stack(player,ItemId.SevenfoldOath)*player.itemCounters[I(ItemId.SevenfoldOath)],visual:FeedbackStyle.Holy);
             }
             RefreshAuras();return true;
         }
@@ -85,7 +85,7 @@ namespace Era
                     h.tick=.65f;h.triggered=true;
                     foreach(var p in State.players)if(!p.downed&&!p.eliminated&&Vector3.Distance(p.position,h.position)<h.radius&&p.position.y-WorldMap.Ground(p.position)<1.3f)
                     {DamagePlayer(p,h.damage);if(h.style==3)p.slowed=1.5f;}
-                    Effect(h.style==3?1:5,h.position,h.radius);
+                    Effect(h.style==3?1:5,h.position,h.radius,MechanicFeedback.Hazard(h.style));
                 }
                 if(h.life<=0)State.hazards.RemoveAt(i);
             }

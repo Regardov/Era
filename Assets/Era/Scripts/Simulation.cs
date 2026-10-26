@@ -185,7 +185,7 @@ namespace Era
             {
                 p.qCooldown=8;AreaDamage(p,8,45*DamageMultiplier(p),0);
                 foreach(var ally in State.players)if(!ally.downed&&!ally.eliminated&&Vector3.Distance(p.position,ally.position)<=8*p.areaSize)Heal(ally,20*p.healingPower/Mathf.Max(.01f,ally.healingPower));
-                Effect(3,p.position,8*p.areaSize);return;
+                Effect(3,p.position,8*p.areaSize,FeedbackStyle.Holy);return;
             }
             bool ember = p.hero == Hero.Ember;
             p.qCooldown = ember ? 8 : 10;
@@ -196,8 +196,8 @@ namespace Era
         {
             OnItemCast(p,1);
             CastPose(p,1);
-            if(p.hero==Hero.Lumen){p.auraSurge=6;p.eCooldown=18;RefreshAuras();Effect(3,p.position,AuraRadius(p));return;}
-            if (p.hero == Hero.Ember) { p.boost = 6; p.eCooldown = 18; Effect(0, p.position, 2.5f); }
+            if(p.hero==Hero.Lumen){p.auraSurge=6;p.eCooldown=18;RefreshAuras();Effect(3,p.position,AuraRadius(p),FeedbackStyle.Holy);return;}
+            if (p.hero == Hero.Ember) { p.boost = 6; p.eCooldown = 18; Effect(0, p.position, .7f,FeedbackStyle.Speed); }
             else
             {
                 p.eCooldown = 16;
@@ -221,7 +221,7 @@ namespace Era
             OnItemCast(p,2);
             CastPose(p,2);
             p.relicCooldown = GameData.RelicDuration(p.relic);
-            if (p.relic == Relic.StormCompass) { AreaDamage(p, 9, 90 * DamageMultiplier(p), 0); Effect(0, p.position, 9); }
+            if (p.relic == Relic.StormCompass) { AreaDamage(p, 9, 90 * DamageMultiplier(p), 0); Effect(0, p.position, 9,FeedbackStyle.Lightning); }
             else if (p.relic == Relic.Hourglass)
             { AreaDamage(p, 12, 0, 4); p.dashCooldown = 0; Effect(1, p.position, 12); }
             else
@@ -295,7 +295,7 @@ namespace Era
             }
             if(e.kind==EnemyKind.StoneGolem||e.kind==EnemyKind.CrystalGolem)damage*=.72f;
             float dealt=Mathf.Min(e.hp,damage);e.hp -= damage;e.hitSerial++;
-            AddHit(e.id,e.position+Vector3.up*1.4f,damage,critical,false);
+            AddHit(e.id,EnemyAim(e),damage,critical,false);
             if(owner!=null&&proc){if(weaponHit&&random.NextDouble()<Mathf.Clamp01(owner.lifeSteal))Heal(owner,GameData.LifestealHealth(owner.lifeSteal),true);OnItemHit(owner,e,dealt,critical,weaponHit);}
             if (e.hp > 0||!State.enemies.Contains(e)) return;
             State.enemies.Remove(e);
@@ -320,7 +320,7 @@ namespace Era
             damage*=1-Mathf.Clamp(p.armor,0,.75f);
             damage*=1-Mathf.Clamp(p.auraBonuses[5],0,.65f);
             damage*=1+.2f*Stack(p,ItemId.CrownOfGreed);
-            AddHit(p.id,p.position+Vector3.up*1.8f,damage,false,true);
+            AddHit(p.id,p.position+Vector3.up*1.8f,damage,false,true,false,Mathf.Min(p.shield,damage));
             float absorb = Mathf.Min(p.shield, damage); p.shield -= absorb; damage -= absorb;
             if(Has(p,ItemId.TemporalDebt)&&damage>0)
             {float delayed=damage*Mathf.Min(.85f,.5f+.1f*(Stack(p,ItemId.TemporalDebt)-1));if(p.itemValues[I(ItemId.TemporalDebt)]<=0)p.itemTimers[I(ItemId.TemporalDebt)]=3;p.itemValues[I(ItemId.TemporalDebt)]+=delayed;damage-=delayed;}
@@ -329,7 +329,7 @@ namespace Era
             if(p.downed)return;
             var push=source.HasValue?p.position-source.Value:-(Quaternion.Euler(0,p.yaw,0)*Vector3.forward);push.y=0;if(push.sqrMagnitude<.001f)push=Vector3.back;
             p.knockback=push.normalized*4;p.hitSlide=.24f;
-            if(p.grounded)Effect(2,p.position+Vector3.up*.05f,.9f);
+            if(p.grounded)Effect(2,p.position+Vector3.up*.05f,.9f,FeedbackStyle.Dust);
             Effect(5, p.position + Vector3.up, 0.7f);
         }
         void CollectPickups(float dt)
@@ -421,12 +421,12 @@ namespace Era
                 case 11:p.dodge=GameData.CombineEvasion(p.dodge,v);break;case 12:p.cooldownRate+=v;break;case 13:p.weaponRange+=v;break;case 14:p.areaSize+=v;break;
                 case 15:p.projectileCount=Mathf.Min(48,p.projectileCount+Mathf.RoundToInt(v));break;case 16:p.projectileSpeed+=v;break;
                 case 17:p.pickupRange+=v;break;case 18:p.luck+=v;break;case 19:p.xpGain+=v;break;case 20:p.goldGain+=v;break;
-            }Effect(3,p.position,2);
+            }Effect(7,p.position,1,FeedbackStyle.Pickup);
         }
         float DamageMultiplier(PlayerState p)
         {return p.damage*(1+p.auraBonuses[1]);}
-        void Effect(int kind, Vector3 position, float radius)
-        { if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState { id = State.nextId++, kind = kind, position = position, radius = radius }); }
+        void Effect(int kind, Vector3 position, float radius,FeedbackStyle style=FeedbackStyle.None,Vector3 end=default)
+        { if(State.effects.Count>=GameData.MaxEffects)State.effects.RemoveAt(0);State.effects.Add(new EffectState { id = State.nextId++, kind = kind, position = position, radius = radius,style=style,end=end }); }
         void GatherExperience()
         {
             int xp=0;for(int i=State.pickups.Count-1;i>=0;i--)if(State.pickups[i].kind==PickupKind.Experience)

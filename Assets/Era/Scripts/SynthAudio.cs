@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Era
 {
-    public sealed class SynthAudio : MonoBehaviour
+    public sealed partial class SynthAudio : MonoBehaviour
     {
         public static SynthAudio Instance {get;private set;}
         public bool MusicPlaying=>musicSources!=null&&((musicSources[0].isPlaying&&musicSources[0].volume>.001f)||(musicSources[1].isPlaying&&musicSources[1].volume>.001f));
@@ -38,6 +38,7 @@ namespace Era
                 Tone("Dash",300,720,.20f,.14f,0.5f),Tone("Coin",1250,1700,.15f,.14f),Tone("Chest",410,1040,.70f,.23f),
                 Tone("Level",530,1060,.85f,.19f),Tone("Menu",650,800,.065f,.10f),Tone("Hurt",140,65,.24f,.22f,.4f),Tone("Ready",660,990,.22f,.16f),Tone("Blessing",330,1320,1.3f,.23f)};
             step=Tone("Grass step",95,60,.08f,.055f,0.8f);
+            PrepareCombatAudio();
         }
         void Update()
         {
@@ -83,6 +84,6 @@ namespace Era
             source.PlayOneShot(clips[id],GameApp.Instance.Volume);
         }
         public void Footstep(){if(GameApp.Instance!=null)source.PlayOneShot(step,GameApp.Instance.Volume);}
-        void OnDestroy(){if(Instance==this)Instance=null;if(clips!=null)foreach(var clip in clips)Destroy(clip);if(step!=null)Destroy(step);}
+        void OnDestroy(){DisposeCombatAudio();if(Instance==this)Instance=null;if(clips!=null)foreach(var clip in clips)Destroy(clip);if(step!=null)Destroy(step);}
     }
 }

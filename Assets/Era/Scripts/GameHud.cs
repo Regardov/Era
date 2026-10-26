@@ -369,8 +369,9 @@ namespace Era
                 var point=Project(hit.position);if(point.z<=0||point.x<30||point.x>1570||point.y<50||point.y>790)continue;
                 drawn++;
                 float age=1-hit.life/.9f,x=point.x+((hit.id%5)-2)*12,y=point.y-HudMotion.EaseOut(age)*62;
-                string value=hit.evaded?I18n.P("Evade!","Уклонился!"):Mathf.Max(1,Mathf.RoundToInt(hit.damage)).ToString()+(hit.critical?"!":"");
-                Color c=hit.evaded?GameData.Mint:hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=HudMotion.Envelope(.9f-hit.life,.9f,.04f,.25f);
+                bool shieldHit=hit.player&&hit.absorbed>=hit.damage&&hit.damage>0;
+                string value=hit.evaded?I18n.P("Evade!","Уклонился!"):(shieldHit?"◇":"")+Mathf.Max(1,Mathf.RoundToInt(shieldHit?hit.absorbed:hit.damage-(hit.player?hit.absorbed:0))).ToString()+(hit.critical?"!":"");
+                Color c=hit.evaded?GameData.Mint:shieldHit?new Color(.4f,.78f,1):hit.player?new Color(1,.34f,.31f):hit.critical?new Color(1,.84f,.25f):Color.white;c.a=HudMotion.Envelope(.9f-hit.life,.9f,.04f,.25f);
                 int size=hit.critical?28:21;Text(value,x-61,y+2,124,39,size,new Color(.03f,.04f,.06f,c.a),true,TextAnchor.UpperCenter);Text(value,x-62,y,124,39,size,c,true,TextAnchor.UpperCenter);
             }
         }

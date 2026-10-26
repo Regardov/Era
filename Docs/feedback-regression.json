@@ -1,0 +1,74 @@
+[
+  {
+    "test": "Environment",
+    "ok": true,
+    "seconds": 16.62,
+    "output": "PASS Environment: transparentWater=True, depth=True, foliage=True, map=True, realmChange=True, streams=32, renderers=714"
+  },
+  {
+    "test": "Animation",
+    "ok": true,
+    "seconds": 12.61,
+    "output": "PASS Animation: enemies=90, projectiles=384, effects=320, pool=48, cleanup=True, paused=True"
+  },
+  {
+    "test": "Roguelike",
+    "ok": true,
+    "seconds": 14.05,
+    "output": "PASS Roguelike: items=129, newModels=12, catalogue=True, tooltip=True, combat=True, fps=19.5019569396973"
+  },
+  {
+    "test": "Balance",
+    "ok": true,
+    "seconds": 14.09,
+    "output": "PASS Balance: menuCatalogue=True, crouch=True, shield=True, evade=True, tooltip=True, chests=240"
+  },
+  {
+    "test": "Art",
+    "ok": true,
+    "seconds": 29.54,
+    "output": "PASS Models=True, shrine=True, crouch=True, extraJump=True, descriptions=True, crystals=True"
+  },
+  {
+    "test": "Solo",
+    "ok": true,
+    "seconds": 25.64,
+    "output": "PASS Solo: paused=True, resumed=True, attributes=True, rarityLoot=True, items=3, weapons=1"
+  },
+  {
+    "test": "Update",
+    "ok": true,
+    "seconds": 35.12,
+    "output": "PASS Update: waves=True, statue=True, elites=5, freeChest=True, resources=72, slide=True, humans=True, music=True"
+  },
+  {
+    "test": "Campaign",
+    "ok": true,
+    "seconds": 37.85,
+    "output": "PASS Campaign: realms=7, bosses=7, portals=6, jump=True, grass=True, skeletalLumen=True"
+  },
+  {
+    "test": "Music",
+    "ok": true,
+    "seconds": 34.97,
+    "output": "PASS Music: menu=True, realms=7, streaming=True, transitions=True, pause=True, mute=True, loop=True, return=True, rapid=True, sources=3"
+  },
+  {
+    "test": "Rig",
+    "ok": true,
+    "seconds": 21.87,
+    "output": "PASS Rig: samples=108, primaryError=2.38418579101562E-07, secondaryError=0.000335723714670166, colliders=True"
+  },
+  {
+    "test": "Characters",
+    "ok": true,
+    "seconds": 12.57,
+    "output": "PASS Characters: models=7, skins=True, clips=True, crouch=True"
+  },
+  {
+    "test": "Coop",
+    "ok": true,
+    "seconds": 45.87,
+    "output": "PASS C:\\Users\\User\\Documents\\ChatGPT\\Era\\Artifacts\\smoke-host.json : players=3, ready=True, jump=True, chests=1, gold=129, music=True\nPASS C:\\Users\\User\\Documents\\ChatGPT\\Era\\Artifacts\\smoke-client.json : players=3, ready=True, jump=True, chests=1, gold=129, music=True\nPASS C:\\Users\\User\\Documents\\ChatGPT\\Era\\Artifacts\\smoke-client2.json : players=3, ready=True, jump=True, chests=1, gold=129, music=True"
+  }
+]

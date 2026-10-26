@@ -74,7 +74,7 @@ namespace Era
                 int amount=e.kind==EnemyKind.Necromancer?3:2;
                 for(int n=0;n<amount&&State.enemies.Count<GameData.MaxEnemies;n++)
                 {var minion=SpawnEnemy(e.kind==EnemyKind.Necromancer?EnemyKind.Skeleton:EnemyKind.Slime);minion.summonGeneration=1;minion.position=WorldMap.Resolve(e.position,Quaternion.Euler(0,n*360f/amount,0)*Vector3.forward*2.5f,.5f);minion.position.y=WorldMap.Ground(minion.position);minion.spawnGrace=.7f;}
-                Effect(1,e.position,3);return;
+                Effect(12,e.position,3,FeedbackStyle.Summon);return;
             }
             float reach=EnemyCatalog.Reach(e.kind);
             Vector3 origin=e.position;

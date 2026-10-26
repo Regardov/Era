@@ -248,8 +248,8 @@ namespace Era
         public void CastActivate()
         {
             LastAnimationEvent = "CastActivate"; if (castEventSerial == castSerial) return; castEventSerial = castSerial; CastEventCount++; onCastActivate?.Invoke();
-            var p = GameApp.Instance?.State?.Player(owner);
-            if (p != null && actorRoot != null) PresentationFx.Emit(actorRoot.position + Vector3.up, GameData.HeroColor(p.hero), 1.1f, p.hero == Hero.Lumen ? FeedbackKind.Heal : p.hero == Hero.Echo ? FeedbackKind.Shield : FeedbackKind.Magic);
+            // Simulation effects already carry the actual Q/E/R mechanic to all peers.
+            // This marker drives animation callbacks without duplicating a generic burst.
         }
         public void TeleportDisappear() { LastAnimationEvent = "TeleportDisappear"; vanished = true; SetModelVisible(false); onTeleportDisappear?.Invoke(); }
         public void TeleportComplete() { LastAnimationEvent = "TeleportComplete"; vanished = false; SetModelVisible(true); onTeleportComplete?.Invoke(); }

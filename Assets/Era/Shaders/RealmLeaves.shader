@@ -13,13 +13,14 @@ Shader "Era/Realm Leaves"
             float3 p=mul(unity_ObjectToWorld,v.vertex).xyz;
             float weight=saturate(p.y*.12);
             float gust=sin(p.x*.31+p.z*.17+_Time.y*1.1)*.10;
-            float flutter=sin(p.x*2.8+p.z*2.1+_Time.y*3.4)*.045*v.texcoord.y;
+            float flutter=sin(p.x*2.8+p.z*2.1+_Time.y*3.4)*.025*saturate(v.texcoord.y);
             v.vertex.xz+=float2(gust+flutter,gust*.46-flutter*.3)*weight;
         }
         void surf(Input i,inout SurfaceOutputStandard o){
-            float grain=tex2D(_MainTex,i.uv_MainTex*1.7).r;
-            float vein=1-smoothstep(.008,.035,abs(i.uv_MainTex.x-.5));
-            float secondary=pow(saturate(cos((i.uv_MainTex.y-abs(i.uv_MainTex.x-.5f)*.75)*55)),16)*.045;
+            float shell=step(i.uv_MainTex.x,-.5);
+            float grain=tex2D(_MainTex,lerp(i.uv_MainTex*1.7,i.worldPos.xz*.35,shell)).r;
+            float vein=(1-smoothstep(.008,.035,abs(i.uv_MainTex.x-.5)))*(1-shell);
+            float secondary=pow(saturate(cos((i.uv_MainTex.y-abs(i.uv_MainTex.x-.5f)*.75)*55)),16)*.045*(1-shell);
             o.Normal=float3(0,0,i.facing>0?1:-1);
             o.Albedo=i.color.rgb*(.88+grain*.12+vein*.09+secondary);
             o.Emission=i.color.rgb*(i.facing>0?.055:.14);o.Smoothness=.18;o.Occlusion=.92;o.Alpha=1;

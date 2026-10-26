@@ -104,13 +104,13 @@ namespace Era
                         actor.weapon.GetComponent<WeaponPresentation>()?.BindOwner(p.id);
                     }
                 }
-                if(p.weaponCastSerial!=actor.weaponSerial){if(p.id==app.LocalId)SynthAudio.Instance?.Play(p.lastWeapon==(int)WeaponKind.Bow?0:1);actor.weaponSerial=p.weaponCastSerial;}
+                if(p.weaponCastSerial!=actor.weaponSerial){SynthAudio.Instance?.PlayAttack((WeaponKind)p.lastWeapon,p.position);actor.weaponSerial=p.weaponCastSerial;}
                 if(p.id==app.LocalId)
                 {
                     if(p.jumpSerial!=actor.jump)SynthAudio.Instance?.Play(4);
                     if(p.landSerial!=actor.land){SynthAudio.Instance?.Play(5);PresentationFx.Emit(p.position,GameData.Amber,.85f,FeedbackKind.Dust);}
-                    if(p.castSerial!=actor.cast)SynthAudio.Instance?.Play(p.castKind==1?3:1);
-                    if(p.hp<actor.hp){shake=Mathf.Max(shake,Mathf.Clamp01((actor.hp-p.hp)/p.maxHp)*.6f);SynthAudio.Instance?.Play(11);}
+
+                    if(p.hp<actor.hp){shake=Mathf.Max(shake,Mathf.Clamp01((actor.hp-p.hp)/p.maxHp)*.6f);}
                     if(!app.WorldPaused && p.grounded && p.velocity.sqrMagnitude>4 && (footstep-=Time.unscaledDeltaTime)<=0)
                     {footstep=0.29f;SynthAudio.Instance?.Footstep();}
                 }
@@ -127,7 +127,7 @@ namespace Era
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,e.position,blend);
                 if(e.kind>=EnemyKind.Skeleton||e.kind==EnemyKind.Brute)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,e.facing,0),blend);
                 if(e.kind==EnemyKind.Slime&&e.summonGeneration>0)actor.root.transform.localScale=Vector3.one*.6f;
-                if(e.hitSerial!=actor.hitSerial){if(!EnemyCatalog.EffectImmune(e.kind))actor.creature.Hit(app.LocalPlayer!=null?(e.position-app.LocalPlayer.position).normalized:-actor.root.transform.forward);actor.hitFlash=.13f;SynthAudio.Instance?.Play(2);}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
+                if(e.hitSerial!=actor.hitSerial){if(!EnemyCatalog.EffectImmune(e.kind))actor.creature.Hit(app.LocalPlayer!=null?(e.position-app.LocalPlayer.position).normalized:-actor.root.transform.forward);actor.hitFlash=.13f;}actor.hp=e.hp;actor.hitSerial=e.hitSerial;
                 bool flashed=actor.hitFlash>0;if(!app.WorldPaused)actor.hitFlash=Mathf.Max(0,actor.hitFlash-Time.unscaledDeltaTime);
                 if(flashed)for(int r=0;r<actor.renderers.Length;r++)for(int m=0;m<actor.colors[r].Length;m++){if(actor.hitFlash<=0){actor.renderers[r].SetPropertyBlock(null,m);continue;}hitBlock.Clear();hitBlock.SetColor("_Color",Color.Lerp(actor.colors[r][m],Color.white,Mathf.Clamp01(actor.hitFlash/.13f)*.55f*(.35f+.65f*PresentationMotion.Intensity)));actor.renderers[r].SetPropertyBlock(hitBlock,m);}
                 if(actor.telegraph==null&&e.spawnGrace>0){actor.telegraph=v.Ring("Enemy arrival warning",dynamicRoot,.75f,new Color(.91f,.32f,.15f),.045f).transform;actor.telegraph.position=e.position+Vector3.up*.06f;}
@@ -141,6 +141,7 @@ namespace Era
                 else if(actor.attackTelegraph!=null){Destroy(actor.attackTelegraph.gameObject);actor.attackTelegraph=null;}
                 float measured=PresentationMotion.Delta>0?Mathf.Min(e.speed,(e.position-actor.lastPosition).magnitude/PresentationMotion.Delta):0;
                 actor.body??=ActorBodyCollider.Attach(actor.root);actor.body.Present(e);
+                var status=actor.root.GetComponent<StatusPresentation>();if(status==null)status=actor.root.AddComponent<StatusPresentation>();status.Present(e);
                 actor.creature.Present(e,measured);actor.lastPosition=e.position;
             }
             var dead=new List<int>();foreach(var pair in actors)if(!seen.Contains(pair.Key))dead.Add(pair.Key);
@@ -186,16 +187,8 @@ namespace Era
         {
             seen.Clear();foreach(var f in state.itemFields)
             {
-                seen.Add(f.id);var item=(ItemId)f.item;bool spirit=item==ItemId.HuntingPack||item==ItemId.GravePact||item==ItemId.HiveMind;
-                if(!itemFields.TryGetValue(f.id,out var go))
-                {
-                    if(spirit)go=v.Facet("Summoned soul",dynamicRoot,Vector3.zero,new Vector3(.25f,.38f,.25f),item==ItemId.HiveMind?new Color(.6f,.8f,.15f):GameData.Mint,10,6);
-                    else if(item==ItemId.ArchitectReign){go=v.Group("Soul turret",dynamicRoot).gameObject;v.Facet("Turret pedestal",go.transform,Vector3.up*.5f,new Vector3(.4f,.55f,.4f),new Color(.37f,.4f,.38f));v.Facet("Turret crystal",go.transform,Vector3.up*1.2f,new Vector3(.2f,.35f,.2f),GameData.Mint);}
-                    else go=v.Ring("Item field / "+item,dynamicRoot,Mathf.Max(.4f,f.radius),GameData.Items[f.item].color,.045f);
-                    go.transform.position=f.position;itemFields[f.id]=go;
-                }
-                go.transform.position=Vector3.Lerp(go.transform.position,f.position+Vector3.up*(spirit?.6f+Mathf.Sin(state.elapsed*3+f.id)*.08f:.10f),1-Mathf.Exp(-18*PresentationMotion.Delta));
-                if(spirit){var forward=f.end-f.position;forward.y=0;if(forward.sqrMagnitude>.01f)go.transform.rotation=Quaternion.Slerp(go.transform.rotation,Quaternion.LookRotation(forward),1-Mathf.Exp(-10*PresentationMotion.Delta));}
+                seen.Add(f.id);if(!itemFields.TryGetValue(f.id,out var go)){go=new GameObject("Item mechanic / "+(ItemId)f.item);go.transform.SetParent(dynamicRoot,false);go.AddComponent<ItemFieldPresentation>();itemFields[f.id]=go;}
+                go.GetComponent<ItemFieldPresentation>().Present(f,state);
             }RemoveAbsent(itemFields);
         }
         void SyncProjectiles(WorldState state,float blend)
@@ -246,15 +239,9 @@ namespace Era
         {
             seen.Clear();foreach(var p in state.players)
             {
-                if(p.hero!=Hero.Lumen||p.downed||p.eliminated)continue;
-                for(int a=0;a<p.auraLevels.Length;a++)if(p.auraLevels[a]>0)
-                {
-                    int key=p.id*16+a;seen.Add(key);
-                    if(!auraRings.TryGetValue(key,out var ring)){ring=v.Ring("Lumen / "+GameData.AuraName(a),dynamicRoot,1,GameData.AuraColors[a],.025f);auraRings[key]=ring;}
-                    ring.transform.position=new Vector3(p.position.x,WorldMap.Ground(p.position)+.12f+a*.015f,p.position.z);
-                    ring.transform.localScale=Vector3.Lerp(ring.transform.localScale,Vector3.one*(Simulation.AuraRadius(p)-a*.13f),1-Mathf.Exp(-8*PresentationMotion.Delta));
-                    ring.GetComponent<LineRenderer>().widthMultiplier=.018f+Mathf.Min(p.auraLevels[a],10)*.0015f+(.5f+.5f*Mathf.Sin(state.elapsed*1.7f+a))*.008f*PresentationMotion.Intensity;
-                }
+                if(p.hero!=Hero.Lumen||p.downed||p.eliminated||Simulation.AuraRadius(p)<=0)continue;
+                seen.Add(p.id);if(!auraRings.TryGetValue(p.id,out var go)){go=new GameObject("Lumen support light");go.transform.SetParent(dynamicRoot,false);go.AddComponent<SupportAuraPresentation>();auraRings[p.id]=go;}
+                go.GetComponent<SupportAuraPresentation>().Present(p,state);
             }RemoveAbsent(auraRings);
         }
         void SyncPortal(WorldState state)
@@ -285,26 +272,30 @@ namespace Era
                     ring.AddComponent<HazardPresentation>();hazardRings[h.id]=ring;
                 }
                 ring.GetComponent<HazardPresentation>().Present(h);var lr=ring.GetComponent<LineRenderer>();lr.widthMultiplier=h.triggered?.20f:.06f+(.5f+.5f*Mathf.Sin(state.elapsed*12))*.025f;
-                Color color=h.triggered?CampaignData.Color(h.style):Color.Lerp(new Color(.95f,.2f,.12f),CampaignData.Color(h.style),.35f);lr.startColor=lr.endColor=color;
+                lr.enabled=!h.triggered;Color color=new Color(.95f,.28f,.12f,.62f);lr.startColor=lr.endColor=color;
             }RemoveAbsent(hazardRings);
         }
         void SyncEffects(WorldState state)
         {
-            seen.Clear();foreach(var e in state.effects){seen.Add(e.id);if(effectIds.Add(e.id)){spellEffects.Play(e);if(e.kind==2)SynthAudio.Instance?.Play(6);}}
+            seen.Clear();foreach(var e in state.effects){seen.Add(e.id);if(effectIds.Add(e.id)){spellEffects.Play(e);}}
             effectIds.RemoveWhere(id=>!seen.Contains(id));
         }
         void SyncHits(WorldState state)
         {
             seen.Clear();foreach(var h in state.hits)
             {
-                seen.Add(h.id);if(!hitIds.Add(h.id)||h.evaded)continue;
+                seen.Add(h.id);if(!hitIds.Add(h.id))continue;
+                if(h.evaded){PresentationFx.EmitStyle(h.position,FeedbackStyle.Speed,.25f);SynthAudio.Instance?.PlaySemantic(FeedbackStyle.Speed,h.position);continue;}
+                if(h.absorbed>0&&actors.TryGetValue(h.target,out var shielded)){shielded.root.GetComponent<AbilityPresentation>()?.ShieldImpact();PresentationFx.EmitStyle(h.position,FeedbackStyle.Shield,.35f);SynthAudio.Instance?.PlaySemantic(FeedbackStyle.Shield,h.position);}
+                if(h.player&&h.absorbed>=h.damage&&h.damage>0)continue;
                 Color color=h.player?new Color(.95f,.3f,.26f):h.critical?Color.white:GameData.Amber;
                 if(actors.TryGetValue(h.target,out var actor))
                 {
                     if(actor.creature!=null){var kind=actor.creature.kind;if(kind==EnemyKind.StoneGolem||kind==EnemyKind.Gargoyle)color=new Color(.65f,.66f,.58f);else if(kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime)color=GameData.Mint;else if(kind==EnemyKind.CrystalGolem)color=new Color(.55f,.65f,1);if(h.critical)actor.creature.FreezePose(.035f);}
                     else if(h.player)actor.hero?.skeletal?.FreezePose(.025f);
                 }
-                PresentationFx.Emit(h.position,color,h.critical?.9f:.35f,h.critical?FeedbackKind.Critical:FeedbackKind.Impact);
+                PresentationFx.Emit(h.position,color,h.critical?.25f:.20f,h.critical?FeedbackKind.Critical:FeedbackKind.Impact);
+                SynthAudio.Instance?.PlaySemantic(h.critical?FeedbackStyle.Critical:FeedbackStyle.Impact,h.position);
             }
             hitIds.RemoveWhere(id=>!seen.Contains(id));
         }
