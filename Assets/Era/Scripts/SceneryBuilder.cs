@@ -233,7 +233,7 @@ namespace Era
                 var forward=(direction+Vector3.up*Range(random,.15f,.7f)).normalized;
                 var side=Quaternion.AngleAxis(Range(random,-70,70),forward)*Vector3.Cross(forward,Vector3.up).normalized;
                 float size=Range(random,.30f,.55f)*(spread.x+spread.z);
-                if(needles)draft.Leaf(root,forward,side,size,size*.11f,tint*Range(random,.78f,1.18f));
+                if(needles)draft.Leaf(root,forward,side,size,size*.25f,tint*Range(random,.78f,1.18f));
                 else draft.Maple(root,forward,side,size,tint*Range(random,.78f,1.18f));
             }
         }
@@ -286,7 +286,6 @@ namespace Era
                 for(int band=0;band<7;band++)
                 {
                     float t=.27f+band*.103f,reach=(2.3f-band*.28f)*scale;var start=p+Vector3.up*height*t+lean*t*t;
-                    cell.leaves.Crown(start+Vector3.up*.3f*scale,new Vector3(reach,.86f*scale,reach),leaf*(.88f+band*.025f),band*71+(int)prop.angle);
                     for(int b=0;b<6;b++)
                     {
                         float a=angle+b*Mathf.PI/3+band*.72f;var radial=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));
@@ -295,16 +294,15 @@ namespace Era
                         for(int twig=0;twig<3;twig++)
                         {
                             var tip=Vector3.Lerp(start,end,.42f+twig*.25f)+Vector3.up*.15f*scale;
-                            if(twig==2)Spray(cell.leaves,tip,new Vector3(.50f,.30f,.50f)*scale*(1-band*.07f),leaf*(.84f+band*.035f),random,7,true);
+                            Spray(cell.leaves,tip,new Vector3(.66f,.40f,.66f)*scale*(1-band*.06f),leaf*(.84f+band*.035f),random,twig==2?22:10,true);
                         }
                     }
                 }
-                Spray(cell.leaves,previous,new Vector3(.25f,.5f,.25f)*scale,leaf,random,20,true);
+                Spray(cell.leaves,previous,new Vector3(.38f,.65f,.38f)*scale,leaf,random,45,true);
                 return;
             }
             int limbs=random.Next(8,12);
-            cell.leaves.Crown(p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.4f,1.3f,1.4f)*scale,leaf,(int)prop.angle);
-            Spray(cell.leaves,p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.65f,1.5f,1.65f)*scale,leaf,random,55,false);
+            Spray(cell.leaves,p+Vector3.up*height*.73f+lean*.5f,new Vector3(1.80f,1.6f,1.80f)*scale,leaf,random,120,false);
             for(int b=0;b<limbs;b++)
             {
                 float a=angle+b*2.399963f,t=.34f+b/(float)limbs*.48f,reach=Range(random,1.8f,2.9f)*scale*(1-(t-.34f)*.6f);
@@ -313,17 +311,16 @@ namespace Era
                 var tip=start+radial*reach+Vector3.up*height*Range(random,.15f,.25f);
                 float thickness=(.15f-b*.007f)*scale;
                 cell.bark.Branch(new[]{start,elbow,tip},new[]{thickness,thickness*.55f,.02f*scale},bark,8);
-                cell.leaves.Crown(tip+Vector3.up*.22f*scale,new Vector3(.80f,.65f,.78f)*scale,leaf*(.95f+t*.08f),b*97+(int)prop.angle);
-                Spray(cell.leaves,tip+Vector3.up*.22f*scale,new Vector3(1.25f,.98f,1.25f)*scale,leaf,random,30,false);
+                Spray(cell.leaves,tip+Vector3.up*.22f*scale,new Vector3(1.40f,1.12f,1.40f)*scale,leaf,random,55,false);
                 for(int fork=0;fork<4;fork++)
                 {
                     float turn=a+(fork-1.5f)*.70f;var twigStart=Vector3.Lerp(elbow,tip,.25f+fork*.18f);
                     var end=twigStart+new Vector3(Mathf.Cos(turn)*.8f,Range(random,.25f,.8f),Mathf.Sin(turn)*.8f)*scale;
                     cell.bark.Tube(twigStart,end,.035f*scale,.008f*scale,bark,5);
-                    if(fork%2==0)Spray(cell.leaves,end,new Vector3(.65f,.44f,.65f)*scale,leaf*(.94f+t*.15f),random,8,false);
+                    if(fork%2==0)Spray(cell.leaves,end,new Vector3(.74f,.56f,.74f)*scale,leaf*(.94f+t*.15f),random,14,false);
                 }
             }
-            cell.leaves.Crown(previous-Vector3.up*.35f*scale,new Vector3(1.1f,1.2f,1.08f)*scale,leaf*1.04f,719+(int)prop.angle);
+            Spray(cell.leaves,previous-Vector3.up*.35f*scale,new Vector3(1.25f,1.35f,1.25f)*scale,leaf*1.04f,random,90,false);
         }
     }
 }

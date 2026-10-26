@@ -183,13 +183,13 @@ namespace Era
             CastPose(p,0);
             if(p.hero==Hero.Lumen)
             {
-                p.qCooldown=8;AreaDamage(p,8,45*DamageMultiplier(p),0);
+                p.qCooldown=8;AreaDamage(p,8,GameData.QBaseDamage(p.hero)*DamageMultiplier(p),0);
                 foreach(var ally in State.players)if(!ally.downed&&!ally.eliminated&&Vector3.Distance(p.position,ally.position)<=8*p.areaSize)Heal(ally,20*p.healingPower/Mathf.Max(.01f,ally.healingPower));
                 Effect(3,p.position,8*p.areaSize,FeedbackStyle.Holy);return;
             }
             bool ember = p.hero == Hero.Ember;
             p.qCooldown = ember ? 8 : 10;
-            AreaDamage(p, ember ? 7 : 8, (ember ? 65 : 35) * DamageMultiplier(p), ember ? 0 : 3);
+            AreaDamage(p, ember ? 7 : 8, GameData.QBaseDamage(p.hero) * DamageMultiplier(p), ember ? 0 : 3);
             Effect(ember ? 0 : 1, p.position, ember ? 7 : 8);
         }
         void CastE(PlayerState p)

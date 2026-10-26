@@ -133,6 +133,7 @@ namespace Era
             Box(1030,106,516,700,Panel);Text(GameData.HeroName(hero),1054,128,468,45,33,Ink,true);
             Text(I18n.P("WEAPON","ОРУЖИЕ"),1054,195,468,23,12,Sage,true);Icon(GameData.Weapons[weapon].icon,1056,232,43);
             Text(GameData.Weapons[weapon].name,1113,232,405,30,22,Ink,true);Text(GameData.Weapons[weapon].description,1054,281,468,61,16,Muted);
+            Text(I18n.P("Base weapon damage: ","Базовый урон оружия: ")+GameData.WeaponBaseDamage(hero,(WeaponKind)weapon),1054,342,468,20,12,Sage,true);
             Text(I18n.P("PASSIVE ABILITY","ПАССИВНОЕ УМЕНИЕ"),1054,365,468,23,12,Sage,true);Text(GameData.PassiveDescription(hero),1054,400,468,90,17,Ink);
             AbilityInfo(GameData.QIcon(hero),GameData.Q(hero),GameData.QDescription(hero),1054,514,468);
             AbilityInfo(GameData.EIcon(hero),GameData.E(hero),GameData.EDescription(hero),1054,611,468);

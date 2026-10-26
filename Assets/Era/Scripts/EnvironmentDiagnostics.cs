@@ -6,7 +6,7 @@ namespace Era
     [DefaultExecutionOrder(90)]
     public sealed class EnvironmentDiagnostics:MonoBehaviour
     {
-        [Serializable]sealed class Report{public bool ok,transparentWater,depth,foliage,map,realmChange,cottages,leafPiles,threeAuras;public int streams,renderers,buildings;}
+        [Serializable]sealed class Report{public bool ok,transparentWater,depth,foliage,transparentFoliage,map,realmChange,cottages,leafPiles,threeAuras;public int streams,renderers,buildings;}
         readonly Report report=new Report();GameApp App=>GameApp.Instance;
         string folder;float started;int phase;Vector3 focus,offset;WorldProp tree;
         void Start()
@@ -17,18 +17,18 @@ namespace Era
             float z=-28;focus=new Vector3(WorldMap.RiverCenter(z,0),WorldMap.RiverWaterHeight(z,0),z);offset=new Vector3(9,6,-13);
             App.LocalPlayer.position=WorldMap.OnGround(focus.x-5,z-4);App.CameraYaw=-32;
         }
-        void Shot(string name)=>App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,name+"-v022.png"));
+        void Shot(string name)=>App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,name+"-v0221.png"));
         void Update()
         {
             float age=Time.realtimeSinceStartup-started;
             if(phase==0&&age>2)
             {
-                var environment=FindAnyObjectByType<WorldEnvironment>();report.transparentWater=true;report.foliage=true;report.renderers=environment.GetComponentsInChildren<Renderer>().Length;
+                var environment=FindAnyObjectByType<WorldEnvironment>();report.transparentWater=true;report.foliage=true;report.transparentFoliage=true;report.renderers=environment.GetComponentsInChildren<Renderer>().Length;
                 foreach(var renderer in environment.GetComponentsInChildren<MeshRenderer>())
                 {
                     var material=renderer.sharedMaterial;
                     if(material.shader.name=="Era/Stream Water"){report.streams++;report.transparentWater&=material.shader.isSupported&&material.renderQueue>=3000&&material.GetTag("RenderType",false)=="Transparent";}
-                    if(renderer.name.StartsWith("Living canopies")){var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;report.foliage&=material.shader.isSupported&&mesh.vertexCount>1000;}
+                    if(renderer.name.StartsWith("Living canopies")){var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;report.foliage&=material.shader.isSupported&&mesh.vertexCount>1000;report.transparentFoliage&=material.renderQueue>=3000&&material.GetTag("RenderType",false)=="Transparent"&&material.GetFloat("_Opacity")>.3f&&material.GetFloat("_Opacity")<.8f&&Array.TrueForAll(mesh.uv,q=>q.x>-.5f);}
                 }
                 report.depth=(App.View.Camera.depthTextureMode&DepthTextureMode.Depth)!=0;
                 report.map=RealmCartography.UV(Vector3.zero)==Vector2.one*.5f&&RealmCartography.UV(Vector3.forward*100).y>.5f;
@@ -77,7 +77,7 @@ namespace Era
             else if(phase==11&&age>22){Shot("three-aura-choices");phase++;}
             else if(phase==12&&age>23.5f)
             {
-                report.ok=report.transparentWater&&report.streams==32&&report.depth&&report.foliage&&report.map&&report.realmChange&&report.renderers<800&&report.cottages&&report.leafPiles&&report.threeAuras;
+                report.ok=report.transparentWater&&report.streams==32&&report.depth&&report.foliage&&report.transparentFoliage&&report.map&&report.realmChange&&report.renderers<800&&report.cottages&&report.leafPiles&&report.threeAuras;
                 File.WriteAllText(Path.Combine(folder,"smoke-environment.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_ENVIRONMENT "+JsonUtility.ToJson(report));enabled=false;Application.Quit(report.ok?0:2);
             }
             if(age>48)Application.Quit(3);

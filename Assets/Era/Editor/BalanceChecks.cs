@@ -12,7 +12,31 @@ namespace Era.Editor
         static void Step(Simulation s,float time){for(int n=0;n<Mathf.CeilToInt(time*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
         {
-            count=0;Economy();Healing();Evasion();Projectiles();Models();CurrentRules();return count;
+            count=0;Economy();Healing();Evasion();Projectiles();Models();CurrentRules();SofterMobsAndHeroDamage();return count;
+        }
+        static void SofterMobsAndHeroDamage()
+        {
+            float[] previousHp={44,110,32,44,42,35,125,80,260,150,65,75,230,135,24,100};
+            var s=New();foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))
+            {
+                var enemy=s.SpawnEnemy(kind);float expected=kind==EnemyKind.Warden?CampaignData.BossHealth(1):previousHp[(int)kind]*.92f;
+                Check(Mathf.Abs(enemy.maxHp-expected)<.001f,"actual spawned HP reduced eight percent except boss: "+kind);s.State.enemies.Clear();
+            }
+            foreach(Hero hero in Enum.GetValues(typeof(Hero)))
+            {
+                s=new Simulation(675);var p=s.AddPlayer(0,"Damage",hero);p.position=Vector3.zero;p.critChance=0;p.weapons=new[]{(int)WeaponKind.LightningStaff,-1};p.weaponLevels=new[]{1,0};s.State.resourceNodes.Clear();s.Start();s.State.spawnTimer=100000;
+                var e=new EnemyState{id=s.State.nextId++,kind=EnemyKind.Wisp,position=Vector3.forward*3,hp=10000,maxHp=10000,frozen=10000,spawnGrace=10000};s.State.enemies.Add(e);
+                s.Step(.01f,new Dictionary<int,InputFrame>());float expected=(hero==Hero.Lumen?24:36)*(hero==Hero.Echo?.9f:1);
+                Check(Mathf.Abs(10000-e.hp-expected)<.001f,"hero-specific flat weapon damage and Echo multiplier: "+hero);
+                p.weapons=new[]{-1,-1};e.hp=10000;s.Step(.01f,new Dictionary<int,InputFrame>{{0,new InputFrame{primary=true}}});
+                float q=(hero==Hero.Ember?77:hero==Hero.Echo?47*.9f:45);Check(Mathf.Abs(10000-e.hp-q)<.001f,"Q gains twelve base damage except Lumen: "+hero);
+                if(hero==Hero.Lumen)
+                {
+                    p.weapons=new[]{(int)WeaponKind.Aura,-1};p.weaponLevels=new[]{1,0};p.qCooldown=100;p.auraDamageTimer=0;e.hp=10000;
+                    for(int n=0;n<20;n++)s.Step(.05f,new Dictionary<int,InputFrame>());
+                    Check(Mathf.Abs(10000-e.hp-10)<.001f,"Lumen aura remains ten base DPS");
+                }
+            }
         }
         static void Economy()
         {

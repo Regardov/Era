@@ -30,7 +30,7 @@ namespace Era
                     foreach(var candidate in State.resourceNodes)if(!candidate.broken){float distance=Vector3.Distance(p.position,candidate.position);if(distance<nearest){nearest=distance;node=candidate;}}
                     if(node!=null)
                     {
-                        float resourceDamage=definition.damage*DamageMultiplier(p);p.weaponTimers[slot]=definition.cooldown/Mathf.Max(.1f,p.attackSpeed);WeaponPose(p,(WeaponKind)type,node.position);
+                        float resourceDamage=GameData.WeaponBaseDamage(p.hero,(WeaponKind)type)*DamageMultiplier(p);p.weaponTimers[slot]=definition.cooldown/Mathf.Max(.1f,p.attackSpeed);WeaponPose(p,(WeaponKind)type,node.position);
                         DamageResource(node,resourceDamage,p);WeaponEffect(10,p.position+Vector3.up,node.position+Vector3.up*.45f,nearest,(WeaponKind)type);
                     }
                     else p.weaponTimers[slot]=.12f;
@@ -40,7 +40,7 @@ namespace Era
                 if(type==(int)WeaponKind.Bow&&State.projectiles.Count+VolleyCount(p)>GameData.MaxProjectiles){p.weaponTimers[slot]=.05f;continue;}
                 float speed=p.attackSpeed*(1+p.auraBonuses[2])*(1+Mathf.Min(.6f,.03f*p.itemCounters[I(ItemId.WarDrum)]*Power(p,ItemId.WarDrum)))*(p.boost>0?2:1);
                 p.weaponTimers[slot]=definition.cooldown/Mathf.Max(.1f,(1+(level-1)*.06f)*speed);
-                float damage=definition.damage*DamageMultiplier(p)*(1+(level-1)*.22f)*OnItemVolley(p,slot,targets[0]);
+                float damage=GameData.WeaponBaseDamage(p.hero,(WeaponKind)type)*DamageMultiplier(p)*(1+(level-1)*.22f)*OnItemVolley(p,slot,targets[0]);
                 int count=VolleyCount(p);var shot=new WeaponBurstState{slot=slot,weapon=(WeaponKind)type,total=count,remaining=count,range=range,damage=damage,interval=ItemCatalog.BurstInterval(count)};
                 if(type==(int)WeaponKind.Spear||type==(int)WeaponKind.Sword||type==(int)WeaponKind.Axe)
                 {FireWeaponShot(p,shot);shot.remaining--;if(shot.remaining>0){shot.delay=shot.interval;p.bursts.Add(shot);}}

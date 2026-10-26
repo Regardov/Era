@@ -248,7 +248,7 @@ namespace Era
             if(Has(p,ItemId.Alternator)&&p.alternatingSlot>=0&&p.alternatingSlot!=slot)
             {int i=I(ItemId.Alternator);if(++p.itemCounters[i]>=4){p.itemCounters[i]=0;Burst(p,p.position,7,90*Stack(p,ItemId.Alternator)*DamageMultiplier(p),sourceItem:ItemId.Alternator);}}p.alternatingSlot=slot;
             if(Has(p,ItemId.StarMap)&&++p.itemCounters[I(ItemId.StarMap)]%8==0&&target!=null)Field(p,ItemId.StarMap,target.position,.8f,5,140*Stack(p,ItemId.StarMap)*DamageMultiplier(p));
-            if(Has(p,ItemId.SplitSoul)&&target!=null)Field(p,ItemId.SplitSoul,p.position,.7f,0,GameData.Weapons[p.weapons[slot]].damage*DamageMultiplier(p)*.6f*Stack(p,ItemId.SplitSoul)*multiplier,target.id);
+            if(Has(p,ItemId.SplitSoul)&&target!=null)Field(p,ItemId.SplitSoul,p.position,.7f,0,GameData.WeaponBaseDamage(p.hero,(WeaponKind)p.weapons[slot])*DamageMultiplier(p)*.6f*Stack(p,ItemId.SplitSoul)*multiplier,target.id);
             return multiplier;
         }
         int VolleyCount(PlayerState p)

@@ -300,6 +300,9 @@ namespace Era
         public const float ArenaRadius = 300;
         public const int ChestCount=240,ResourceNodeCount=72;
         public static WeaponKind StarterWeapon(Hero hero)=>hero==Hero.Lumen?WeaponKind.Aura:hero==Hero.Ember?WeaponKind.Bow:WeaponKind.LightningStaff;
+        public static float HeroBaseDamageBonus(Hero hero)=>hero==Hero.Lumen?0:12;
+        public static float WeaponBaseDamage(Hero hero,WeaponKind weapon)=>Weapons[(int)weapon].damage+HeroBaseDamageBonus(hero);
+        public static float QBaseDamage(Hero hero)=>(hero==Hero.Lumen?45:hero==Hero.Ember?65:35)+HeroBaseDamageBonus(hero);
         public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Growing light: +3% aura radius per level-up. Each level offers three random new auras or upgrades; up to five types.","Растущий свет: +3% к радиусу аур за каждое повышение уровня. На каждом уровне — три случайные новые ауры или улучшения; до пяти типов."):hero==Hero.Ember?I18n.P("Hunter's instinct: +3 percentage points of critical chance per level-up.","Инстинкт охотника: +3 процентных пункта к шансу крита за каждое повышение уровня."):I18n.P("Chain lightning: +10% weapon lightning ricochet per level-up. Each 100% guarantees one extra bounce; the remainder is the chance for another.","Цепная молния: +10% к рикошету молний оружия за каждое повышение уровня. Каждые 100% гарантируют ещё один переход; остаток — шанс следующего.");
         public static int LightningRicochetPercent(PlayerState p)=>p.hero==Hero.Echo?p.levelUps*10:0;
         public static int ChanceRicochets(int percent,double roll)=>Mathf.Max(0,percent)/100+(roll<(Mathf.Max(0,percent)%100)/100.0?1:0);
@@ -387,9 +390,7 @@ namespace Era
             ? "Deal 90 damage within 9 m. 24 s cooldown."
             : relic == Relic.Hourglass ? "Freeze enemies within 12 m for 4 s. Refresh dash. 30 s cooldown."
             : "Restore 50 health and gather all experience. 25 s cooldown.");
-        public static string QDescription(Hero hero) => hero==Hero.Lumen?I18n.P("45 damage within 8 m; heal nearby allies for 20. 8 s cooldown.","45 урона в радиусе 8 м; лечит союзников на 20 ХП. КД 8 с."):I18n.T(hero == Hero.Ember
-            ? "65 damage within 7 m. 8 s cooldown."
-            : "35 damage and a 3 s freeze within 8 m. 10 s cooldown.");
+        public static string QDescription(Hero hero) => hero==Hero.Lumen?I18n.P("45 damage within 8 m; heal nearby allies for 20. 8 s cooldown.","45 урона в радиусе 8 м; лечит союзников на 20 ХП. КД 8 с."):QBaseDamage(hero)+I18n.P(hero==Hero.Ember?" base damage within 7 m. 8 s cooldown.":" base damage and a 3 s freeze within 8 m. 10 s cooldown.",hero==Hero.Ember?" базового урона в радиусе 7 м. КД 8 с.":" базового урона и заморозка на 3 с в радиусе 8 м. КД 10 с.");
         public static string EDescription(Hero hero) => hero==Hero.Lumen?I18n.P("For 6 s, auras are 50% stronger and reach 4.6 m farther. 18 s cooldown.","На 6 с ауры сильнее на 50%, радиус больше на 4.6 м. КД 18 с."):I18n.T(hero == Hero.Ember
             ? "Double fire rate and +30% movement for 6 s. 18 s cooldown."
             : "Restore 35 health and give 25 shield to allies within 12 m. 16 s cooldown.");

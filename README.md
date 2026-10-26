@@ -1,10 +1,14 @@
-# ERA: Seven Realms — v0.22 (ветка разработки)
+# ERA: Seven Realms — v0.22.1 (ветка разработки)
+
+В v0.22.1 кроны стали пышными и полупрозрачными: вместо сплошных объёмов — больше отдельных листьев с непрозрачностью 58%. Здоровье обычных мобов уменьшено на 8%. Лучник и Эхо получили +12 к базовому урону оружия и Q до множителей; у Люмена прежний урон. [Проверки и кадры v0.22.1](Docs/VALIDATION-v0.22.1.md).
+
+![Пышная полупрозрачная листва v0.22.1](Docs/Images/branching-trees-v0221.png)
 
 В v0.22 добавлены пассивки за повышение уровня: **лучнику +3 п.п. шанса крита**, **Эхо +10% к рикошету молний оружия**, **Люмину +3% к радиусу аур**. У Эхо каждые полные 100% дают гарантированный переход, остаток — шанс следующего: 230% = 2 перехода + 30% на третий. У Люмина на каждом уровне после аксессуара появляется **три случайных варианта** новых аур или улучшений изученных; лимит остаётся пять типов. Бонусы начисляются сразу при получении уровня, независимо от завершения выбора. Базовые параметры героев сохранены.
 
 Видеокарты заменены **72 кучками осенних листьев**: золото или опыт выбираются случайно при разрушении с равными шансами; оттенок листьев не сообщает награду. По всем семи картам расставлены домики и руины, деревья получили резные листья с прожилками и более разнообразную осеннюю палитру. Строения учитываются в общей коллизии, размещении объектов и карте Tab.
 
-Сборка этой ветки: `Builds/Windows/Era.exe`; исходники открываются в Unity **2023.1.22f1**. Проверки и кадры: [v0.22](Docs/VALIDATION-v0.22.md). Ссылка ниже ведёт на ранее опубликованный v0.21.
+Сборка этой ветки: `Builds/Windows/Era.exe`; исходники открываются в Unity **2023.1.22f1**. Проверки и кадры: [v0.22.1](Docs/VALIDATION-v0.22.1.md). Ссылка ниже ведёт на ранее опубликованный v0.21.
 
 ![Домики и осенняя листва в Windows Player v0.22](Docs/Images/autumn-cottage-v022.png)
 
@@ -141,9 +145,9 @@ If a companion falls, approach within 3.5 m and hold F for 2.5 seconds. They hav
 
 **Weapons**: Crescent Axe cleaves an arc; Lightning Staff chains between enemies; Wildwood Bow fires arrows; Dawn Spear pierces in a line. Ember starts with a bow, Echo with a staff, Lumen with an Aura Conduit. At level 25 choose one different attack weapon. Book of Knowledge upgrades an equipped weapon up to level 5.
 
-**Ember**: +3 percentage points of critical chance per level-up. 100 health, Sunburst (Q: 65 base damage in 7 m, 8 s cooldown), Overdrive (E: double fire rate and +30% movement for 6 s, 18 s cooldown).
+**Ember**: +3 percentage points of critical chance per level-up. 100 health, Sunburst (Q: 77 base damage in 7 m, 8 s cooldown), Overdrive (E: double fire rate and +30% movement for 6 s, 18 s cooldown).
 
-**Echo**: +10% weapon lightning ricochet per level-up. Each full 100% guarantees an additional new target; the remainder rolls once for the next bounce. This adds to Ricochet Seed and keeps the existing 65% damage per transition. 115 health, 90% base damage, Frost Bloom (Q: 35 base damage and 3 s freeze in 8 m, 10 s cooldown), Resonance (E: restore 35 health and give 25 shield to both allies within 12 m, 16 s cooldown).
+**Echo**: +10% weapon lightning ricochet per level-up. Each full 100% guarantees an additional new target; the remainder rolls once for the next bounce. This adds to Ricochet Seed and keeps the existing 65% damage per transition. 115 health, 90% base damage, Frost Bloom (Q: 47 base damage and 3 s freeze in 8 m, 10 s cooldown), Resonance (E: restore 35 health and give 25 shield to both allies within 12 m, 16 s cooldown).
 
 **Lumen**: 110 HP, an animated bearded aura keeper in an ivory robe with earth-toned mantle. Initial aura radius is **12 / 1.3 ≈ 9.23 m**, growing by **3% of base radius per level-up**. This affects the aura weapon and allied aura range, while ability radii retain their own scaling. The conduit deals **10 base damage per second** to enemies in range in four pulses, scaling with damage/crit/item modifiers. Starts with **Fortune Aura**. Every level grants an accessory and **one choice from three random distinct aura cards: upgrade an owned aura OR add a new buff aura**. Keep up to **five different types**. Repeated choices add 20% of base buff per rank; after five types the three cards are randomly drawn from owned upgrades. Auras affect the bearer and living allies, scale with range/area/conduit level, disappear outside range or when Lumen falls/disconnects, and use the strongest overlapping source.
 
@@ -208,7 +212,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 16 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. It does not manually sample clips. See [v0.21 recovery validation](Docs/VALIDATION-v0.21.md).
 
-`Test-Update.ps1` checks the encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, breakable leaf piles, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Environment.ps1` checks water, foliage, buildings, leaf meshes and three aura cards with captures. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.22](Docs/VALIDATION-v0.22.md).
+`Test-Update.ps1` checks the encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, breakable leaf piles, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Environment.ps1` checks water, foliage, buildings, leaf meshes and three aura cards with captures. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.22.1](Docs/VALIDATION-v0.22.1.md).
 
 `Test-Campaign.ps1` uses **one game process** at 800×450, 20 FPS and two CPU cores. It exercises seven realms and six portals with three authoritative player states, preserves builds/revives allies, checks the skeletal Lumen, grass interaction uniforms and shaders, and captures every biome/boss/portal. It does not create three game instances. Useful arguments: `--solo`, `--host`, `--join`, `--capture-lumen`, `--capture-auras`, `--capture-milestone`, `--smoke-campaign`. Automated runs do not change preferences. Separate-computer LAN/firewall/input testing is still manual.
 
