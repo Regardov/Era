@@ -1,8 +1,10 @@
-# ERA: Seven Realms — v0.21
+# ERA: Seven Realms — v0.22
 
-**[Скачать готовую игру v0.21 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.21.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.21.0). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать готовую игру v0.22 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.22.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.22.0). Распакуйте архив целиком и запустите `Era.exe`.
 
-**В текущих исходниках после v0.21 переработано движение лучника:** перенос веса и работа плеч при беге, направленные шаги, стрельба поверх locomotion, повороты корпуса, инерция плаща и колчана. [Устройство, проверки и оставшиеся ограничения](Docs/ARCHER-MOTION.md). Эти изменения публикуются в исходниках; архив релиза v0.21 остаётся прежним, новый Release для этого задания не создаётся.
+**v0.22 — обновлённые анимации лучника в готовой Windows-игре:** перенос веса и работа плеч при беге, боковое и обратное движение, стрельба поверх locomotion, повороты корпуса, инерция плаща и колчана. Внешность и материалы сохранены; всего 22 клипа. **[Что нового](Docs/RELEASE-v0.22.0.md)** · **[Проверки Windows-сборки](Docs/VALIDATION-v0.22.md)** · **[Устройство анимаций и ограничения](Docs/ARCHER-MOTION.md)**.
+
+![Бег лучника с прицеливанием — v0.22](Docs/Images/archer-motion-run-aim.png)
 
 **v0.21 восстанавливает анимации обновлённого лучника в Windows-игре.** Исправлен прежний импортёр: редакторские `PreviewAnimationClip` заменены настоящими runtime-клипами с сохранением GUID. Модель, 54-костный Generic-риг и 16 авторских Actions восстановлены без повторного моделирования и создания движений. В собранном Player проверяются реальные движения костей, события и игровые снаряды. Автовыстрел больше не теряет release-позу при заклинании. Все изменения v0.20 сохранены.
 
@@ -76,7 +78,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.21 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.22 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
@@ -200,7 +202,7 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 
 `Test-Chests.ps1` launches one game at 800×450 / 20 FPS on two CPU cores. It checks rising team prices, both chest models, the lid animation, aura ranks/upgrade counts, the aura-choice screen, inventory and snapshot serialization. It saves four screenshots and `Artifacts/smoke-chests.json`. Generated world mesh libraries are stored as compact binary assets; code, prefabs and scenes use text serialization. No Git LFS setup is required.
 
-`Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 16 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. It does not manually sample clips. See [v0.21 recovery validation](Docs/VALIDATION-v0.21.md).
+`Test-Archer.ps1` checks the actual ArenaView-created archer in the Windows Player: real bone motion, all 22 clip references, weighted release playback after each shot, simultaneous cast/fire, arrows, and Echo/Lumen locomotion. `Test-ArcherMotion.ps1 -Fps 30` also checks 16 combined movement/aiming/turning scenarios (15 and 60 are supported). See [v0.22 validation](Docs/VALIDATION-v0.22.md).
 
 `Test-Update.ps1` checks the v0.11 encounter flow in one game process: continuous spawns, a minute horde, the statue, five elite guards, a free chest opened by an ally, both GPU drops, short knockback, battle music, faceted heroes and the stone perimeter. It also captures the character menu and fullscreen controls. `Test-Characters.ps1` loads all seven Blender prefabs and captures standing, running and crouching poses. Current validation: [v0.16](Docs/VALIDATION-v0.16.md).
 

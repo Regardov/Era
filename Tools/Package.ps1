@@ -14,7 +14,12 @@ foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
 $eraImageFolder = Join-Path $buildPath 'Images'
+foreach ($eraDocument in @('RELEASE-v0.22.0.md','VALIDATION-v0.22.md','ARCHER-MOTION.md','archer-runtime-v022.json','archer-motion-release-v022.json','campaign-smoke-v022.json')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
+}
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'archer-motion-*.json' | Copy-Item -Destination $buildPath -Force
 New-Item -ItemType Directory -Force -Path $eraImageFolder | Out-Null
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter 'archer-motion-*.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath $eraImageFolder -File -Filter '*.png' | Where-Object { $_.Name -match 'v01[23]\.png$' } | ForEach-Object { Remove-Item -LiteralPath $_.FullName }
 foreach ($eraImage in @('balance-menu-catalogue-v014.png','balance-item-tooltip-v014.png','balance-models-standing-v014.png','balance-models-crouching-v014.png','balance-stat-tooltip-v014.png','balance-shield-evade-v014.png','balance-boss-health-v014.png')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force

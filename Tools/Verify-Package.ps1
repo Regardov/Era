@@ -5,10 +5,14 @@ $eraArchivePath = Join-Path $eraProject 'Releases\Era-Windows.zip'
 $eraBuildPath = Join-Path $eraProject 'Builds\Windows'
 $eraZip = [IO.Compression.ZipFile]::OpenRead($eraArchivePath)
 try {
-    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.21.0.md','VALIDATION-v0.21.md','ARCHER-RECOVERY-v0.21.md','archer-runtime-v021.json','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
+    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','PLAY-RU.md','DOWNLOAD-RU.md','RELEASE-v0.22.0.md','VALIDATION-v0.22.md','ARCHER-MOTION.md','archer-runtime-v022.json','archer-motion-release-v022.json','campaign-smoke-v022.json','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
         $eraEntry = $eraZip.GetEntry($eraName)
         if ($null -eq $eraEntry -or $eraEntry.Length -le 0) { throw "Missing or empty ZIP entry: $eraName" }
     }
+    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('archer-runtime-v022.json').Open())
+    try { $eraRuntime = $eraRuntimeReader.ReadToEnd() | ConvertFrom-Json }
+    finally { $eraRuntimeReader.Dispose() }
+    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.22.0') { throw 'ZIP must contain validation from the tested 0.22.0 Player' }
     $eraPlayerFiles = Get-ChildItem -LiteralPath $eraBuildPath -Recurse -File
     foreach ($eraPlayerFile in $eraPlayerFiles) {
         $eraName = $eraPlayerFile.FullName.Substring($eraBuildPath.Length+1).Replace('\','/')

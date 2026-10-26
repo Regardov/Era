@@ -1,7 +1,7 @@
 param(
-    [string]$Tag = 'v0.21.0',
+    [string]$Tag = 'v0.22.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.21.0.md',
+    [string]$NotesFile = 'Docs/RELEASE-v0.22.0.md',
     [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'
