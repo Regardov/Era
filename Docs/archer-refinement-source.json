@@ -1,0 +1,99 @@
+{
+  "gaits": {
+    "Archer_Walk": {
+      "duration": 0.9333333333333333,
+      "supportDuty": 0.62,
+      "authoredSpeed": 0.8294930875576036,
+      "footHalfTravel": 0.24,
+      "lift": 0.045
+    },
+    "Archer_WalkLeft": {
+      "duration": 0.9333333333333333,
+      "supportDuty": 0.6888888888888889,
+      "authoredSpeed": 0.7465437788018433,
+      "footHalfTravel": 0.24,
+      "lift": 0.045
+    },
+    "Archer_WalkRight": {
+      "duration": 0.9333333333333333,
+      "supportDuty": 0.6888888888888889,
+      "authoredSpeed": 0.7465437788018433,
+      "footHalfTravel": 0.24,
+      "lift": 0.045
+    },
+    "Archer_WalkBack": {
+      "duration": 0.9333333333333333,
+      "supportDuty": 0.6888888888888889,
+      "authoredSpeed": 0.7465437788018433,
+      "footHalfTravel": 0.24,
+      "lift": 0.045
+    },
+    "Archer_Run": {
+      "duration": 0.6,
+      "supportDuty": 0.22,
+      "authoredSpeed": 5.6060606060606055,
+      "footHalfTravel": 0.37,
+      "lift": 0.155
+    },
+    "Archer_RunLeft": {
+      "duration": 0.6,
+      "supportDuty": 0.25,
+      "authoredSpeed": 4.933333333333333,
+      "footHalfTravel": 0.37,
+      "lift": 0.155
+    },
+    "Archer_RunRight": {
+      "duration": 0.6,
+      "supportDuty": 0.25,
+      "authoredSpeed": 4.933333333333333,
+      "footHalfTravel": 0.37,
+      "lift": 0.155
+    },
+    "Archer_RunBack": {
+      "duration": 0.6,
+      "supportDuty": 0.2682926829268293,
+      "authoredSpeed": 4.596969696969696,
+      "footHalfTravel": 0.37,
+      "lift": 0.155
+    }
+  },
+  "airActions": [
+    "Archer_JumpStart",
+    "Archer_Airborne",
+    "Archer_Fall",
+    "Archer_Land"
+  ],
+  "preservedOriginalActions": 14,
+  "unchangedBodyMeshes": [
+    "NockedArrow",
+    "Arm_L",
+    "Arm_R",
+    "Leg_L",
+    "Leg_R",
+    "Body_Head",
+    "Hair",
+    "Clothing_Tunic_Coat",
+    "Cloak",
+    "Scarf",
+    "Hood",
+    "Shoulder_Armor_L",
+    "Shoulder_Armor_R",
+    "Belt_Gear",
+    "Harness",
+    "Bow_String",
+    "Studio ground"
+  ],
+  "quiver": {
+    "oldAxisLength": 0.6760938393433981,
+    "newAxisLength": 0.64,
+    "oldBottomWidth": 0.08800002987138675,
+    "oldTopWidth": 0.15616008258360703,
+    "newBottomWidth": 0.11,
+    "newTopWidth": 0.24,
+    "angleDegrees": 19.332639408064754,
+    "arrowExtensionRelativeToMouthAdded": 0.04,
+    "backClearanceOffsetSourceMeters": 0.04
+  },
+  "maxIKClampMeters": 0.01490480448708742,
+  "bones": 54
+}

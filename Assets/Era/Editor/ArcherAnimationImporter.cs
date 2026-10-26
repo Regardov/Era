@@ -22,11 +22,11 @@ namespace Era.Editor
         public const string MaskPath = Folder + "/Archer_UpperBody.mask";
         public const float VisualScale = 2.23f / 1.8f;
         const string Marker = "Assets/Era/Generated/ArcherAnimation-v1.txt";
-        public static readonly string[] ClipNames = { "Archer_Idle", "Archer_Walk", "Archer_Run", "Archer_Aim", "Archer_BowDraw", "Archer_BowHold", "Archer_BowRelease", "Archer_ShootRecovery", "Archer_DodgeRoll", "Archer_Dash", "Archer_Hit", "Archer_Death", "Archer_Cast", "Archer_Interact", "Archer_TeleportOut", "Archer_TeleportIn", "Archer_WalkLeft", "Archer_WalkRight", "Archer_WalkBack", "Archer_RunLeft", "Archer_RunRight", "Archer_RunBack" };
+        public static readonly string[] ClipNames = { "Archer_Idle", "Archer_Walk", "Archer_Run", "Archer_Aim", "Archer_BowDraw", "Archer_BowHold", "Archer_BowRelease", "Archer_ShootRecovery", "Archer_DodgeRoll", "Archer_Dash", "Archer_Hit", "Archer_Death", "Archer_Cast", "Archer_Interact", "Archer_TeleportOut", "Archer_TeleportIn", "Archer_WalkLeft", "Archer_WalkRight", "Archer_WalkBack", "Archer_RunLeft", "Archer_RunRight", "Archer_RunBack", "Archer_JumpStart", "Archer_Airborne", "Archer_Fall", "Archer_Land" };
         [Serializable] public sealed class EventData { public string name; public float time = -1; public int frame = -1; }
         [Serializable] public sealed class ClipData { public string name; public float duration; public bool loop; public int frameStart, frameEnd; public EventData[] events; }
         [Serializable] public sealed class PaletteData { public string name; public float[] rgba; }
-        [Serializable] public sealed class Manifest { public int fps = 30; public float walkSpeed = .9f, runSpeed = 2.8f; public ClipData[] clips; public PaletteData[] blenderPaletteLinear; }
+        [Serializable] public sealed class Manifest { public int fps = 30; public float walkSpeed = .9f, runSpeed = 2.8f; public float walkSideScale=.9f,walkBackScale=.9f,runSideScale=.88f,runBackScale=.82f; public ClipData[] clips; public PaletteData[] blenderPaletteLinear; }
         static string Hash(string path) { using var sha = SHA256.Create(); return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path))).Replace("-", "").ToLowerInvariant(); }
         public static Manifest ReadManifest()
         {
@@ -41,7 +41,7 @@ namespace Era.Editor
         {
             if (!File.Exists(FbxPath) || !File.Exists(ManifestPath)) throw new FileNotFoundException("Archer FBX and manifest are required");
             var manifest = ReadManifest();
-            string signature = "archer-generic-v5-directional-motion / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
+            string signature = "archer-generic-v6-air-and-stride / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
             var current = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (File.Exists(Marker) && File.ReadAllText(Marker).Trim() == signature && current != null && current.GetComponent<HeroMotion>()?.archer != null && AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null) return;
             string guid = AssetDatabase.AssetPathToGUID(PrefabPath);
@@ -143,6 +143,7 @@ namespace Era.Editor
                 driver.leftThigh = Bone("Thigh.L"); driver.rightThigh = Bone("Thigh.R"); driver.leftShin = Bone("Shin.L"); driver.rightShin = Bone("Shin.R"); driver.leftFoot = Bone("Foot.L"); driver.rightFoot = Bone("Foot.R");
                 driver.weaponSocket = Bone("WeaponSocket"); driver.arrowNock = Bone("ArrowNock"); driver.arrowSpawn = Bone("ArrowSpawn");
                 driver.walkSpeed = manifest.walkSpeed * VisualScale; driver.runSpeed = manifest.runSpeed * VisualScale;
+                driver.walkSideScale=manifest.walkSideScale;driver.walkBackScale=manifest.walkBackScale;driver.runSideScale=manifest.runSideScale;driver.runBackScale=manifest.runBackScale;
                 driver.clips = manifest.clips.Select(c => new ArcherClipReference { name = c.name, clip = clips[c.name], loop = c.loop, duration = clips[c.name].length }).ToArray();
                 driver.modelRenderers = visual.GetComponentsInChildren<Renderer>(true);
                 foreach(var renderer in driver.modelRenderers)renderer.sharedMaterials=renderer.sharedMaterials.Select(material=>materials[material.name]).ToArray();
@@ -212,6 +213,8 @@ namespace Era.Editor
             controller.layers = Array.Empty<AnimatorControllerLayer>(); controller.parameters = Array.Empty<AnimatorControllerParameter>();
             controller.AddParameter("Speed", AnimatorControllerParameterType.Float); controller.AddParameter("LocomotionRate", AnimatorControllerParameterType.Float); controller.AddParameter("UpperRate", AnimatorControllerParameterType.Float);
             controller.AddParameter("MoveX",AnimatorControllerParameterType.Float);controller.AddParameter("MoveZ",AnimatorControllerParameterType.Float);
+            controller.AddParameter("IsGrounded",AnimatorControllerParameterType.Bool);controller.AddParameter("VerticalVelocity",AnimatorControllerParameterType.Float);
+            controller.AddParameter("LandingMove",AnimatorControllerParameterType.Float);
             var lower = new AnimatorStateMachine { name = "Base Layer" }; AssetDatabase.AddObjectToAsset(lower, controller);
             var upper = new AnimatorStateMachine { name = "UpperBody" }; AssetDatabase.AddObjectToAsset(upper, controller);
             controller.layers = new[] { new AnimatorControllerLayer { name = "Base Layer", stateMachine = lower, defaultWeight = 1 }, new AnimatorControllerLayer { name = "UpperBody", stateMachine = upper, defaultWeight = 0, avatarMask = mask, blendingMode = AnimatorLayerBlendingMode.Override } };
@@ -221,9 +224,10 @@ namespace Era.Editor
             {
                 float speed=(gait=="Walk"?manifest.walkSpeed:manifest.runSpeed)*VisualScale;
                 tree.AddChild(clips["Archer_"+gait],Vector2.up*speed);
-                tree.AddChild(clips["Archer_"+gait+"Left"],Vector2.left*speed*.55f);
-                tree.AddChild(clips["Archer_"+gait+"Right"],Vector2.right*speed*.55f);
-                tree.AddChild(clips["Archer_"+gait+"Back"],Vector2.down*speed*.68f);
+                float side=gait=="Walk"?manifest.walkSideScale:manifest.runSideScale,back=gait=="Walk"?manifest.walkBackScale:manifest.runBackScale;
+                tree.AddChild(clips["Archer_"+gait+"Left"],Vector2.left*speed*side);
+                tree.AddChild(clips["Archer_"+gait+"Right"],Vector2.right*speed*side);
+                tree.AddChild(clips["Archer_"+gait+"Back"],Vector2.down*speed*back);
             }
             var locomotion = lower.AddState("Locomotion", new Vector3(200, 40)); locomotion.motion = tree; locomotion.speedParameter = "LocomotionRate"; locomotion.speedParameterActive = true; lower.defaultState = locomotion;
             var empty = upper.AddState("Empty", new Vector3(200, 40)); upper.defaultState = empty;
@@ -233,6 +237,11 @@ namespace Era.Editor
                 if(name.StartsWith("Archer_Walk",StringComparison.Ordinal)||name.StartsWith("Archer_Run",StringComparison.Ordinal))continue;
                 bool bow = name == "Archer_Aim" || name.StartsWith("Archer_Bow", StringComparison.Ordinal) || name == "Archer_ShootRecovery";
                 var state = (bow ? upper : lower).AddState(name, new Vector3(bow ? 420 : 200, 130 + 70 * (bow ? upperIndex++ : baseIndex++))); state.motion = clips[name];
+                if(name=="Archer_Land")
+                {
+                    var landing=new BlendTree{name="Landing with continuing gait",blendType=BlendTreeType.Simple1D,blendParameter="LandingMove",useAutomaticThresholds=false};
+                    AssetDatabase.AddObjectToAsset(landing,controller);landing.AddChild(clips[name],0);landing.AddChild(tree,1);state.motion=landing;
+                }
                 if (bow) { state.speedParameter = "UpperRate"; state.speedParameterActive = true; }
             }
             EditorUtility.SetDirty(controller); return controller;

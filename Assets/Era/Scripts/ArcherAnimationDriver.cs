@@ -21,6 +21,7 @@ namespace Era
     public sealed class ArcherAnimationDriver : MonoBehaviour
     {
         public const string ModelRootName = "ArcherVisual";
+        public const int ExpectedClipCount=26;
         public Animator animator;
         public Transform actorRoot, pelvis, spine, chest, head;
         public Transform leftThigh, rightThigh, leftShin, rightShin, leftFoot, rightFoot;
@@ -29,7 +30,8 @@ namespace Era
         public Renderer[] nockedArrowRenderers = Array.Empty<Renderer>();
         public Renderer[] modelRenderers = Array.Empty<Renderer>();
         public ArcherClipReference[] clips = Array.Empty<ArcherClipReference>();
-        public float walkSpeed = .9f * (2.23f / 1.8f), runSpeed = 2.8f * (2.23f / 1.8f);
+        public float walkSpeed = .8294931f * (2.23f / 1.8f), runSpeed = 5.606061f * (2.23f / 1.8f);
+        public float walkSideScale=.9f,walkBackScale=.9f,runSideScale=.88f,runBackScale=.82f;
         public bool useDraftDeathAnimation;
         public UnityEvent onSpawnArrow = new UnityEvent();
         public UnityEvent onCastActivate = new UnityEvent();
@@ -48,10 +50,13 @@ namespace Era
         int owner = -1, attackSerial = -1, castSerial = -1, releaseEventSerial = int.MinValue, castEventSerial = int.MinValue, chestStamp, upperStartedFrame = -1;
         bool bound, dead, manualAim, manualDraw, bowVisible = true, arrowVisible, vanished, sampled, standing;
         PlayerState presented;
+        int jumpSerial=-1,landSerial=-1;
+        float takeoffRemaining,landingRemaining,previousVertical;
 
         public IReadOnlyList<ArcherClipReference> Clips => clips;
         public bool IsDead => dead;
         public bool IsHoldingBow => upperState == "Archer_BowHold";
+        public bool IsReleasing => upperState == "Archer_BowRelease";
         public Vector3 LastArrowOrigin { get; private set; }
         public Vector3 LastArrowDirection { get; private set; }
         public string LastAnimationEvent { get; private set; }
@@ -60,6 +65,9 @@ namespace Era
         public ArcherMotionRig Motion=>motion;
         public bool IsLocomotion=>fullState=="Locomotion";
         public bool IsAiming=>layerWeight>.05f;
+        public bool IsAirborne=>fullState=="Archer_JumpStart"||fullState=="Archer_Airborne"||fullState=="Archer_Fall";
+        public string AirState=>IsAirborne||fullState=="Archer_Land"?fullState:"Grounded";
+        public float LandingStrength{get;private set;}
 
         void Awake() { Bind(); Stand(); }
         void Bind()
@@ -85,6 +93,7 @@ namespace Era
             if (standing && !sampled) return;
             animator.enabled = true; animator.speed = 1; animator.SetFloat("Speed", 0); animator.SetFloat("LocomotionRate", 1); animator.SetFloat("UpperRate", 1);
             animator.SetFloat("MoveX",0);animator.SetFloat("MoveZ",0);localMotion=Vector2.zero;motion?.ResetMotion();
+            animator.SetBool("IsGrounded",true);animator.SetFloat("VerticalVelocity",0);takeoffRemaining=landingRemaining=0;
             animator.SetLayerWeight(1, 0); animator.Play("Base Layer.Locomotion", 0, 0); fullState = "Locomotion"; fullRemaining = 0; upperState = ""; upperRemaining = 0; sampled = false;
             SetArrowVisible(false);standing = true;
         }
@@ -94,9 +103,16 @@ namespace Era
             bool arriving = owner < 0;
             owner = p.id; presented = p; sampled = false;standing = false;
             var app = GameApp.Instance; bool paused = app != null && app.WorldPaused; animator.speed = paused ? 0 : 1; if (paused) return;
+            // The local simulation is already continuous. A second positional
+            // catch-up filter left its bow behind authoritative arrows and made
+            // planted feet chase the moving avatar. Remote interpolation stays
+            // in ArenaView; this changes only our local visual, never physics.
+            if(app!=null&&ReferenceEquals(p,app.LocalPlayer)&&actorRoot!=null)actorRoot.position=p.position;
             animator.enabled = true;
             float dt = PresentationMotion.Delta;
             float speed = Vector3.ProjectOnPlane(p.velocity, Vector3.up).magnitude;
+            animator.SetBool("IsGrounded",p.grounded);animator.SetFloat("VerticalVelocity",p.verticalSpeed);
+            animator.SetFloat("LandingMove",Mathf.Clamp01(speed/2)*.75f);
             smoothedSpeed = PresentationMotion.Damp(smoothedSpeed, p.grounded ? speed : 0, 12, dt);
             animator.SetFloat("Speed", smoothedSpeed);
             var local=actorRoot.InverseTransformDirection(Vector3.ProjectOnPlane(p.velocity,Vector3.up));
@@ -104,14 +120,13 @@ namespace Era
             // Outside the authored speed radius Unity's directional tree can
             // select only the nearest forward clip. Keep direction inside the
             // tree; cadence below carries the actual gameplay speed.
-            var blendMotion=Vector2.ClampMagnitude(localMotion,runSpeed*DirectionalScale(localMotion));
+            var blendMotion=Vector2.ClampMagnitude(localMotion,runSpeed*DirectionalScale(localMotion,true));
             animator.SetFloat("MoveX",blendMotion.x);animator.SetFloat("MoveZ",blendMotion.y);
             // Blend-tree thresholds already interpolate authored stride speeds.
             // Only rescale cadence outside the tree's walking/running range.
-            float authoredScale=DirectionalScale(new Vector2(local.x,local.z));
-            float walk=walkSpeed*authoredScale,run=runSpeed*authoredScale;
+            float walk=walkSpeed*DirectionalScale(new Vector2(local.x,local.z),false),run=runSpeed*DirectionalScale(new Vector2(local.x,local.z),true);
             float rate = speed < walk ? speed / Mathf.Max(.1f, walk) : speed > run ? speed / Mathf.Max(.1f, run) : 1;
-            animator.SetFloat("LocomotionRate", speed > .15f ? Mathf.Clamp(rate, .25f, 5.5f) : 1);
+            animator.SetFloat("LocomotionRate", speed > .15f ? Mathf.Clamp(rate, .25f, 2.2f) : 1);
             bool hasBow = p.lastWeapon == (int)WeaponKind.Bow || p.lastWeapon < 0 && Array.IndexOf(p.weapons, (int)WeaponKind.Bow) >= 0;
             SetBowVisible(hasBow);
             if (attackSerial < 0) { attackSerial = p.weaponCastSerial; castSerial = p.castSerial; chestStamp = ChestStamp(p.id); }
@@ -138,6 +153,7 @@ namespace Era
                 if (fullRemaining <= 0 && fullState != "Archer_Death" && fullState != "Archer_TeleportOut") ReturnToLocomotion();
             }
             if (p.chargingShrine >= 0 && fullRemaining <= 0) PlayFull("Archer_Cast", true);
+            UpdateAir(p,dt,arriving);
 
             float timer = BowTimer(p);
             float targetYaw = p.weaponAimYaw;
@@ -148,15 +164,21 @@ namespace Era
             attackSerial = p.weaponCastSerial;
             if (shot && !dead)
             {
+                aimYaw=p.weaponAimYaw;
                 if (timer > 0) shotInterval = timer;
                 // Release on the upper layer even during a cast/dash. The base
                 // action keeps running, including its gameplay/VFX markers.
                 BeginUpper("Archer_BowRelease", Mathf.Min(Duration("Archer_BowRelease"), Mathf.Clamp(shotInterval * .14f, .045f, .18f)));
-                // t=0 is the baked release marker. Dedupe the imported AnimationEvent
-                // against this immediate host-shot presentation; never create damage here.
+                // Present runs after the regular Animator evaluation. Sample only
+                // this shot's t=0 pose without advancing either layer's clock, so
+                // the visible bow is already released on the authoritative frame.
+                layerWeight=1;animator.SetLayerWeight(1,1);
+                animator.Play("UpperBody.Archer_BowRelease",1,0);animator.Update(0);
+                // Dedupe the imported marker against the host-shot presentation;
+                // no damage/projectile is created by the animation event.
                 SpawnArrow();
             }
-            bool canPrepare = fullRemaining <= 0 && fullState == "Locomotion";
+            bool canPrepare = fullRemaining <= 0 && (fullState == "Locomotion"||IsAirborne||fullState=="Archer_Land");
             bool preparing = canPrepare && hasBow && (manualAim || target && timer >= 0 && timer < .62f);
             {
                 if (upperState.Length == 0 && preparing) BeginUpper("Archer_Aim", manualAim ? Duration("Archer_Aim") : Mathf.Clamp(timer * .20f, .025f, .15f));
@@ -183,10 +205,39 @@ namespace Era
             layerWeight = PresentationMotion.Damp(layerWeight, weight, 24, dt); animator.SetLayerWeight(1, layerWeight);
             crouchBlend = PresentationMotion.Damp(crouchBlend, p.crouching && p.grounded ? 1 : 0, 14, dt);
         }
-        public static float DirectionalScale(Vector2 movement)
+        public float DirectionalScale(Vector2 movement,bool running)
         {
             float total=Mathf.Abs(movement.x)+Mathf.Abs(movement.y);
-            return total<.001f?1:(Mathf.Abs(movement.x)*.55f+Mathf.Abs(movement.y)*(movement.y>=0?1:.68f))/total;
+            float side=running?runSideScale:walkSideScale,back=running?runBackScale:walkBackScale;
+            return total<.001f?1:(Mathf.Abs(movement.x)*side+Mathf.Abs(movement.y)*(movement.y>=0?1:back))/total;
+        }
+        void UpdateAir(PlayerState p,float dt,bool arriving)
+        {
+            if(jumpSerial<0||arriving){jumpSerial=p.jumpSerial;landSerial=p.landSerial;previousVertical=p.verticalSpeed;}
+            bool allowed=fullState=="Locomotion"||IsAirborne||fullState=="Archer_Land";
+            bool tookOff=p.jumpSerial!=jumpSerial,landed=p.landSerial!=landSerial;
+            jumpSerial=p.jumpSerial;landSerial=p.landSerial;
+            if(!allowed){previousVertical=p.verticalSpeed;return;}
+            takeoffRemaining=Mathf.Max(0,takeoffRemaining-dt);landingRemaining=Mathf.Max(0,landingRemaining-dt);
+            if(tookOff&&!p.grounded){takeoffRemaining=.16f;landingRemaining=0;PlayAir("Archer_JumpStart");}
+            else if(!p.grounded)
+            {
+                if(takeoffRemaining<=0)PlayAir(p.verticalSpeed<-.25f?"Archer_Fall":"Archer_Airborne");
+            }
+            else if(landed||IsAirborne)
+            {
+                LandingStrength=Mathf.InverseLerp(3,15,-previousVertical);landingRemaining=Mathf.Lerp(.13f,.22f,LandingStrength);
+                takeoffRemaining=0;PlayAir("Archer_Land");
+            }
+            else if(fullState=="Archer_Land"&&landingRemaining<=0)ReturnToLocomotion();
+            previousVertical=p.verticalSpeed;
+        }
+        void PlayAir(string name)
+        {
+            if(fullState==name)return;fullState=name;fullRemaining=0;
+            animator.CrossFadeInFixedTime("Base Layer."+name,.055f,0,0);
+            // Keep the upper shooting layer: physics owns the jump arc and
+            // projectiles remain authoritative while airborne.
         }
         public float ResolveFacing(PlayerState p,float dt)
         {
@@ -238,10 +289,17 @@ namespace Era
         void LateUpdate()
         {
             if (sampled || presented == null || dead || GameApp.Instance?.WorldPaused == true || animator == null || !animator.enabled) return;
-            motion.Compose(this,presented,aimYaw,layerWeight,IsLocomotion,PresentationMotion.Delta);
+            motion.Compose(this,presented,aimYaw,layerWeight,IsLocomotion||fullState=="Archer_Land",PresentationMotion.Delta);
             // Maintain the game's existing crouch input with a floor-constrained
             // additive IK adjustment; authored clips remain the movement source.
             if (crouchBlend > .001f && fullState == "Locomotion") ApplyCrouch(crouchBlend);
+            if(releasePending)
+            {
+                releasePending=false;
+                LastArrowOrigin=arrowSpawn!=null?arrowSpawn.position:transform.position;
+                LastArrowDirection=arrowSpawn!=null?arrowSpawn.up:actorRoot!=null?Quaternion.Euler(0,aimYaw,0)*Vector3.forward:transform.forward;
+                onSpawnArrow?.Invoke();
+            }
         }
         public void ApplyCrouch(float blend)
         {
@@ -262,14 +320,13 @@ namespace Era
         { foreach (var r in modelRenderers) if (r != null) r.enabled = visible; SetBowVisible(bowVisible); SetArrowVisible(arrowVisible); }
 
         // Imported animation event receivers are on the Animator GameObject.
+        bool releasePending;
         public void SpawnArrow()
         {
             LastAnimationEvent = "SpawnArrow"; SetArrowVisible(false);
             if (releaseEventSerial == attackSerial) return;
-            releaseEventSerial = attackSerial; ArrowEventCount++;
-            LastArrowOrigin = arrowSpawn != null ? arrowSpawn.position : transform.position;
-            LastArrowDirection = arrowSpawn != null ? arrowSpawn.up : actorRoot != null ? Quaternion.Euler(0, aimYaw, 0) * Vector3.forward : transform.forward;
-            onSpawnArrow?.Invoke();
+            // Commit the socket after the post-Animator arm composition below.
+            releaseEventSerial = attackSerial;ArrowEventCount++;releasePending=true;
         }
         public void CastActivate()
         {

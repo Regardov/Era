@@ -47,7 +47,7 @@ namespace Era
                 var hero=archer.GetComponentInParent<HeroMotion>();var collider=hero.GetComponent<CapsuleCollider>();var rb=hero.GetComponent<Rigidbody>();
                 report.colliders&=collider!=null&&collider.enabled&&!collider.isTrigger&&rb!=null&&rb.isKinematic&&hero.GetComponent<CharacterController>()==null;
                 var bow=archer.Bone("BowRoot");var left=archer.Bone("Hand.L");
-                report.generic&=archer.animator!=null&&archer.animator.avatar.isValid&&!archer.animator.applyRootMotion&&archer.clips.Length==22&&Array.TrueForAll(archer.clips,c=>c.clip!=null&&!c.clip.empty)&&archer.arrowSpawn!=null&&archer.arrowNock!=null&&archer.weaponSocket!=null&&bow!=null&&left!=null&&bow.IsChildOf(left);
+                report.generic&=archer.animator!=null&&archer.animator.avatar.isValid&&!archer.animator.applyRootMotion&&archer.clips.Length==ArcherAnimationDriver.ExpectedClipCount&&Array.TrueForAll(archer.clips,c=>c.clip!=null&&!c.clip.empty)&&archer.arrowSpawn!=null&&archer.arrowNock!=null&&archer.weaponSocket!=null&&bow!=null&&left!=null&&bow.IsChildOf(left);
                 foreach(var skin in archer.GetComponentsInChildren<SkinnedMeshRenderer>())
                 {
                     skin.BakeMesh(baked);foreach(var vertex in baked.vertices)report.finite&=ActorMotionMath.Finite(vertex)&&hero.transform.InverseTransformPoint(skin.transform.TransformPoint(vertex)).magnitude<6;

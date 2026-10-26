@@ -35,6 +35,8 @@ namespace Era
         Transform leftClavicle,rightClavicle,leftUpper,rightUpper,leftElbow,rightElbow,leftHand,rightHand,quiver;
         Transform[] cape=new Transform[6];
         Spring body,cloth,quiverSpring;
+        struct FootContact {public bool active;public Vector3 anchor;public Quaternion rootRotation;}
+        FootContact leftContact,rightContact;
         Vector3 previousVelocity,previousPosition;
         float previousYaw,facing,aimOffset,turnRate,forwardAcceleration;
         bool initialized,applied,hasFacing;
@@ -45,6 +47,9 @@ namespace Era
         public float GripError{get;private set;}
         public float AimOffset=>aimOffset;
         public float AimError{get;private set;}
+        public float FootPlantError{get;private set;}
+        public bool LeftPlanted{get;private set;}
+        public bool RightPlanted{get;private set;}
 
         void Bind(ArcherAnimationDriver source)
         {
@@ -72,7 +77,7 @@ namespace Era
         }
         public void ResetMotion()
         {
-            Restore();body=cloth=quiverSpring=default;previousVelocity=Vector3.zero;hasFacing=false;aimOffset=0;turnRate=0;
+            Restore();body=cloth=quiverSpring=default;leftContact=rightContact=default;previousVelocity=Vector3.zero;hasFacing=false;aimOffset=0;turnRate=0;
         }
         public float Facing(ArcherAnimationDriver source,PlayerState p,float aimYaw,bool aiming,float dt)
         {
@@ -96,6 +101,44 @@ namespace Era
             var delta=goal-upper.position;
             return delta.magnitude>reach?delta.normalized*reach-delta:Vector3.zero;
         }
+        float Ground(PlayerState p,Vector3 point)
+        {
+            var state=GameApp.Instance?.State;
+            return state!=null?ActorBodies.Support(state,p,point,p.position.y+.18f):actor.actorRoot.position.y;
+        }
+        void PlantFoot(PlayerState p,Transform thigh,Transform shin,Transform foot,Vector3 original,Quaternion originalRotation,float phase,float duty,float speed,ref FootContact contact,out bool planted)
+        {
+            var root=actor.actorRoot;float offset=.105f*actor.transform.lossyScale.y;
+            float weight=0;
+            if(speed>.2f&&phase<duty)
+            {
+                if(!contact.active){contact.active=true;contact.anchor=original;contact.anchor.y=Ground(p,original)+offset;contact.rootRotation=root.rotation;}
+                weight=Mathf.SmoothStep(0,1,Mathf.Clamp01(Mathf.Min(phase/.035f,(duty-phase)/.045f)));
+                float reach=Vector3.Distance(thigh.position,shin.position)+Vector3.Distance(shin.position,foot.position);
+                if(Vector3.Distance(thigh.position,contact.anchor)>reach*.99f){contact.active=false;weight=0;}
+            }
+            else contact.active=false;
+            Vector3 goal=original;
+            // Modest terrain correction on support feet. Swing feet and all
+            // airborne poses retain their authored arc, with no ground pinning.
+            if(speed<=.2f||weight>0)
+            {
+                goal.y=Mathf.Clamp(Ground(p,goal)+offset,original.y-.16f,original.y+.16f);
+                goal=Vector3.Lerp(goal,contact.anchor,weight);
+            }
+            ArmPoseIK.Solve(thigh,shin,foot,goal,thigh.position+root.forward*.5f+root.right*(foot==actor.leftFoot?-.03f:.03f));
+            var rotation=originalRotation;
+            if(weight>0)rotation=Quaternion.Slerp(rotation,contact.rootRotation*Quaternion.Inverse(root.rotation)*originalRotation,weight);
+            if(speed<=.2f||weight>.5f)
+            {
+                float dx=(Ground(p,goal+root.right*.06f)-Ground(p,goal-root.right*.06f))/.12f;
+                float dz=(Ground(p,goal+root.forward*.08f)-Ground(p,goal-root.forward*.08f))/.16f;
+                var normal=(root.up-root.right*dx-root.forward*dz).normalized;
+                rotation=Quaternion.RotateTowards(Quaternion.identity,Quaternion.FromToRotation(root.up,normal),25)*rotation;
+            }
+            foot.rotation=rotation;planted=weight>.95f;
+            if(planted)FootPlantError=Mathf.Max(FootPlantError,Vector3.Distance(foot.position,contact.anchor));
+        }
         public void Compose(ArcherAnimationDriver source,PlayerState p,float aimYaw,float aimWeight,bool locomotion,float dt)
         {
             if(!enabled||dt<=0)return;Bind(source);dt=Mathf.Min(dt,.1f);
@@ -104,13 +147,14 @@ namespace Era
             applied=true;
             Transform root=actor.actorRoot;
             float yaw=root.eulerAngles.y;
-            if((root.position-previousPosition).sqrMagnitude>9){body=cloth=quiverSpring=default;previousVelocity=p.velocity;previousYaw=yaw;}
+            if((root.position-previousPosition).sqrMagnitude>9){body=cloth=quiverSpring=default;leftContact=rightContact=default;previousVelocity=p.velocity;previousYaw=yaw;}
             turnRate=PresentationMotion.Damp(turnRate,Mathf.Clamp(Mathf.DeltaAngle(previousYaw,yaw)/dt,-480,480),12,dt);
             var acceleration=root.InverseTransformDirection((p.velocity-previousVelocity)/dt);
             forwardAcceleration=PresentationMotion.Damp(forwardAcceleration,Mathf.Clamp(acceleration.z,-18,18),10,dt);
             previousVelocity=p.velocity;previousYaw=yaw;previousPosition=root.position;
             float speed=Vector3.ProjectOnPlane(p.velocity,Vector3.up).magnitude;
             float run=Mathf.Clamp01(speed/7.8f),weight=locomotion&&p.grounded&&!p.crouching?1:0;
+            float equipmentWeight=locomotion||actor.IsAirborne?1:0;
             float phase=actor.animator.GetCurrentAnimatorStateInfo(0).normalizedTime*2*Mathf.PI;
             float wave=Mathf.Sin(phase),step=Mathf.Sin(phase*2-.3f);
             var lean=body.Step(new Vector3(Mathf.Clamp(forwardAcceleration*.17f,-3,3),0,-Mathf.Clamp(turnRate*.022f,-turnLeanLimit,turnLeanLimit))*run*weight,3.5f,dt,turnLeanLimit+3)*bodyIntensity;
@@ -119,6 +163,8 @@ namespace Era
             var leftFootRotation=actor.leftFoot.rotation;var rightFootRotation=actor.rightFoot.rotation;
             var leftPosition=leftHand.position;var rightPosition=rightHand.position;
             var leftRotation=leftHand.rotation;var rightRotation=rightHand.rotation;
+            var muzzlePosition=actor.arrowSpawn!=null?actor.arrowSpawn.position:leftPosition;
+            var muzzleAxis=actor.arrowSpawn!=null?actor.arrowSpawn.up:root.forward;
             var headRotation=actor.head.rotation;var chestPosition=actor.chest.position;
             var leftPole=leftElbow.position;var rightPole=rightElbow.position;
             Rotate(actor.pelvis,lean*.15f);
@@ -140,11 +186,27 @@ namespace Era
                 // clavicles can move without dragging the bow around with them.
                 // Keep the draw forearm below the hood rim during the gait.
                 // Both hands move together, so string/nock spacing is intact.
-                var drift=(actor.chest.position-chestPosition)*.25f-root.up*.032f*aimWeight;
+                var drift=(actor.chest.position-chestPosition)*.25f+(-root.up*.055f+root.forward*.025f)*aimWeight;
                 var leftGoal=chestPosition+aim*(leftPosition-chestPosition)+drift;
                 var rightGoal=chestPosition+aim*(rightPosition-chestPosition)+drift;
                 var leftBend=chestPosition+aim*(leftPole-chestPosition);
                 var rightBend=chestPosition+aim*(rightPole-chestPosition);
+                var handAim=aim;
+                if(actor.IsReleasing&&actor.arrowSpawn!=null)
+                {
+                    // The base-layer spine still leans during a run/jump. Keep
+                    // both hands and the bow together while registering the
+                    // release marker to the deterministic gameplay profile.
+                    // Reach clamping below keeps the arms anatomical.
+                    var predictedMuzzle=leftGoal+aim*(muzzlePosition-leftPosition);
+                    var fireOrigin=ArcherShotProfile.Origin(root.position,aimYaw);
+                    var align=Quaternion.FromToRotation(aim*muzzleAxis,Quaternion.Euler(0,aimYaw,0)*Vector3.forward);
+                    leftGoal=fireOrigin+align*(leftGoal-predictedMuzzle);
+                    rightGoal=fireOrigin+align*(rightGoal-predictedMuzzle);
+                    leftBend=fireOrigin+align*(leftBend-predictedMuzzle);
+                    rightBend=fireOrigin+align*(rightBend-predictedMuzzle);
+                    handAim=align*aim;
+                }
                 // Translate both goals together into the reachable overlap.
                 // Clamping each hand separately would pull the nock away from
                 // the draw hand during a bank or a large aiming twist.
@@ -157,29 +219,36 @@ namespace Era
                 }
                 ArmPoseIK.Solve(leftUpper,leftElbow,leftHand,leftGoal,leftBend);
                 ArmPoseIK.Solve(rightUpper,rightElbow,rightHand,rightGoal,rightBend);
-                leftHand.rotation=aim*leftRotation;rightHand.rotation=aim*rightRotation;
+                leftHand.rotation=handAim*leftRotation;rightHand.rotation=handAim*rightRotation;
                 GripError=Mathf.Max(Vector3.Distance(leftHand.position,leftGoal),Vector3.Distance(rightHand.position,rightGoal));
                 actor.head.rotation=Quaternion.Slerp(actor.head.rotation,aim*headRotation,.85f);
                 AimError=Mathf.Abs(Mathf.DeltaAngle(yaw+aimOffset,aimYaw));
             }
             else {GripError=0;AimError=0;}
             // Preserve both authored ankle targets while the pelvis banks.
-            if(weight>0)
+            FootPlantError=0;LeftPlanted=RightPlanted=false;
+            if(weight>0&&(actor.animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Locomotion")||actor.animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Archer_Land")))
             {
-                ArmPoseIK.Solve(actor.leftThigh,actor.leftShin,actor.leftFoot,leftFoot,actor.leftThigh.position+root.forward);
-                ArmPoseIK.Solve(actor.rightThigh,actor.rightShin,actor.rightFoot,rightFoot,actor.rightThigh.position+root.forward);
-                actor.leftFoot.rotation=leftFootRotation;actor.rightFoot.rotation=rightFootRotation;
+                float gait=Mathf.InverseLerp(actor.walkSpeed,actor.runSpeed,speed);
+                var local=root.InverseTransformDirection(p.velocity);var direction=new Vector2(local.x,local.z);
+                float duty=Mathf.Lerp(.62f/actor.DirectionalScale(direction,false),.22f/actor.DirectionalScale(direction,true),gait);
+                float cycle=Mathf.Repeat(actor.animator.GetCurrentAnimatorStateInfo(0).normalizedTime,1);
+                PlantFoot(p,actor.leftThigh,actor.leftShin,actor.leftFoot,leftFoot,leftFootRotation,cycle,duty,speed,ref leftContact,out bool leftPlanted);
+                PlantFoot(p,actor.rightThigh,actor.rightShin,actor.rightFoot,rightFoot,rightFootRotation,Mathf.Repeat(cycle+.5f,1),duty,speed,ref rightContact,out bool rightPlanted);
+                LeftPlanted=leftPlanted;RightPlanted=rightPlanted;
             }
-            var clothTarget=new Vector3(3.5f*run+Mathf.Clamp(forwardAcceleration*.15f,-1.5f,2.8f),-turnRate*.008f,turnRate*.016f)*weight;
+            else leftContact=rightContact=default;
+            float air=actor.IsAirborne?Mathf.Clamp(p.verticalSpeed*.16f,-2.2f,2.2f):0;
+            var clothTarget=new Vector3(3.5f*run+Mathf.Clamp(forwardAcceleration*.15f,-1.5f,2.8f)+air,-turnRate*.008f,turnRate*.016f)*equipmentWeight;
             var fabric=cloth.Step(clothTarget,2.5f,dt,12)*clothIntensity;
             for(int i=0;i<3;i++)
             {
                 float offset=(i-1)*.8f;
-                float flutter=(.18f+run*1.1f)*Mathf.Sin(phase*1.1f+offset)*weight*clothIntensity;
+                float flutter=(.18f+run*1.1f)*Mathf.Sin(phase*1.1f+offset)*equipmentWeight*clothIntensity;
                 Rotate(cape[2*i],new Vector3(fabric.x+flutter,fabric.y*.4f,fabric.z*.55f));
                 Rotate(cape[2*i+1],new Vector3(fabric.x*1.45f+flutter*1.6f,fabric.y,fabric.z*(1.05f+offset*.08f)));
             }
-            var rigid=quiverSpring.Step(new Vector3(Mathf.Clamp(forwardAcceleration*.06f,-1,1),-turnRate*.005f,turnRate*.003f)*weight,5.5f,dt,quiverLimit);
+            var rigid=quiverSpring.Step(new Vector3(Mathf.Clamp(forwardAcceleration*.06f,-1,1)+air*.15f,-turnRate*.005f,turnRate*.003f)*equipmentWeight,5.5f,dt,quiverLimit);
             Rotate(quiver,rigid);
         }
     }

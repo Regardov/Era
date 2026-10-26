@@ -43,7 +43,7 @@ namespace Era.Editor
                     a.SampleClip(name,.10f);var delta=Vector3.ProjectOnPlane(a.leftFoot.position-start,Vector3.up);
                     Vector3 direction=side=="Left"?Vector3.left:side=="Right"?Vector3.right:side=="Back"?Vector3.back:Vector3.forward;
                     Check(Vector3.Dot(delta,direction)<-.025f,"stance travels opposite actual movement: "+name);
-                    float speed=(gait=="Walk"?a.walkSpeed:a.runSpeed)*(side=="Back"?.68f:side==""?1:.55f);
+                    float speed=(gait=="Walk"?a.walkSpeed:a.runSpeed)*(side=="Back"?(gait=="Walk"?a.walkBackScale:a.runBackScale):side==""?1:(gait=="Walk"?a.walkSideScale:a.runSideScale));
                     float residual=(delta+direction*speed*.09f).magnitude;
                     report.maxStanceResidualMeters=Mathf.Max(report.maxStanceResidualMeters,residual);
                     Check(residual<.065f,"stance support matches authored stride speed within heel/toe roll allowance: "+name+" residual="+residual);

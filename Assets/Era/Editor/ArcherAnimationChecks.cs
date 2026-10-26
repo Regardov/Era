@@ -58,7 +58,7 @@ namespace Era.Editor
             Check(!spineActive, "base spine motion survives the shooting layer");
             Check(driver.GetComponent<ArcherMotionRig>()!=null,"single post-Animator motion composer present");
             var data = ArcherAnimationImporter.ReadManifest();
-            Check(driver.clips.Length == 22, "sixteen existing and six derived directional clips assigned");
+            Check(driver.clips.Length == ArcherAnimationDriver.ExpectedClipCount, "existing clips, directional movement and four air clips assigned");
             foreach (var clipData in data.clips)
             {
                 var clip = driver.Clip(clipData.name); Check(clip != null && !clip.legacy && Mathf.Abs(clip.frameRate - 30) < .1f && clip.length > .06f, "nonempty 30fps Generic clip: " + clipData.name);

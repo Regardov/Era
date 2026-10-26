@@ -4,7 +4,7 @@ Run: blender --background --factory-startup --python Tools/Audit-ArcherContacts.
 No source scene is loaded, changed or saved. No extra packages are needed.
 Surface crossings are evidence of contact, not exact penetration depth.
 """
-import json
+import json, sys
 from collections import Counter
 from pathlib import Path
 from mathutils import Vector
@@ -12,6 +12,7 @@ from mathutils.bvhtree import BVHTree
 
 root = Path(__file__).resolve().parents[1]
 folder = root / 'Artifacts' / 'ArcherMotion-30'
+if '--poses' in sys.argv:folder=Path(sys.argv[sys.argv.index('--poses')+1]).resolve()
 pairs = [('Cloak', part) for part in ['Leg_L', 'Leg_R', 'Quiver_Case', 'Harness']]
 pairs += [('Bow_Wood', part) for part in ['Body_Head', 'Hood', 'Cloak', 'Clothing_Tunic_Coat', 'Leg_L', 'Leg_R']]
 pairs += [(part, 'Hood') for part in ['Arm_L', 'Arm_R']]
@@ -38,7 +39,13 @@ def penetration(vertices, triangles, indices, target):
                 _, _, _, distance = target.find_nearest(p)
                 depth = max(depth, distance)
     return depth
+valid_counts={}
+runtime_report=folder.parent/'refinement-runtime.json'
+if runtime_report.exists():valid_counts={p['name']:p['recordedFrames'] for p in json.loads(runtime_report.read_text(encoding='utf8'))['phases']}
 for path in sorted(folder.glob('*-surfaces.json')):
+    if valid_counts:
+        phase,index=path.stem.removesuffix('-surfaces').rsplit('-',1)
+        if int(index)>valid_counts.get(phase,0):continue
     surfaces = json.loads(path.read_text(encoding='utf-8'))['surfaces']
     trees = {}; geometry = {}
     for surface in surfaces:

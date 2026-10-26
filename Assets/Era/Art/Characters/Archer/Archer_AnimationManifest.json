@@ -1,8 +1,8 @@
 {
   "fps": 30,
   "rig": "Generic",
-  "walkSpeed": 0.9,
-  "runSpeed": 2.8,
+  "walkSpeed": 0.8294930875576036,
+  "runSpeed": 5.6060606060606055,
   "modelHeight": 1.8,
   "sourceSha256": "a0b37ea5543e1523201c6ed1e92aeffb6a7d593f46ab65c1ac85f1a91ab67025",
   "clips": [
@@ -17,21 +17,21 @@
     },
     {
       "name": "Archer_Walk",
-      "duration": 1.0,
+      "duration": 0.9333333333333333,
       "loop": true,
       "frameStart": 1,
-      "frameEnd": 31,
+      "frameEnd": 29,
       "events": [],
-      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
     },
     {
       "name": "Archer_Run",
-      "duration": 0.6666666666666666,
+      "duration": 0.6,
       "loop": true,
       "frameStart": 1,
-      "frameEnd": 21,
+      "frameEnd": 19,
       "events": [],
-      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
     },
     {
       "name": "Archer_Aim",
@@ -176,57 +176,93 @@
     },
     {
       "name": "Archer_WalkLeft",
-      "duration": 1.0,
+      "duration": 0.9333333333333333,
       "loop": true,
       "frameStart": 1,
-      "frameEnd": 31,
+      "frameEnd": 29,
       "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
     },
     {
       "name": "Archer_WalkRight",
-      "duration": 1.0,
+      "duration": 0.9333333333333333,
       "loop": true,
       "frameStart": 1,
-      "frameEnd": 31,
+      "frameEnd": 29,
       "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
     },
     {
       "name": "Archer_WalkBack",
+      "duration": 0.9333333333333333,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 29,
+      "events": [],
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
+    },
+    {
+      "name": "Archer_RunLeft",
+      "duration": 0.6,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [],
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
+    },
+    {
+      "name": "Archer_RunRight",
+      "duration": 0.6,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [],
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
+    },
+    {
+      "name": "Archer_RunBack",
+      "duration": 0.6,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [],
+      "status": "Reauthored contact/down/passing/up gait; validation in progress"
+    },
+    {
+      "name": "Archer_JumpStart",
+      "duration": 0.2,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 7,
+      "events": [],
+      "status": "New in-place air pose; validation in progress"
+    },
+    {
+      "name": "Archer_Airborne",
       "duration": 1.0,
       "loop": true,
       "frameStart": 1,
       "frameEnd": 31,
       "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+      "status": "New in-place air pose; validation in progress"
     },
     {
-      "name": "Archer_RunLeft",
-      "duration": 0.6666666666666666,
+      "name": "Archer_Fall",
+      "duration": 0.8,
       "loop": true,
       "frameStart": 1,
-      "frameEnd": 21,
+      "frameEnd": 25,
       "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+      "status": "New in-place air pose; validation in progress"
     },
     {
-      "name": "Archer_RunRight",
-      "duration": 0.6666666666666666,
-      "loop": true,
+      "name": "Archer_Land",
+      "duration": 0.26666666666666666,
+      "loop": false,
       "frameStart": 1,
-      "frameEnd": 21,
+      "frameEnd": 9,
       "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
-    },
-    {
-      "name": "Archer_RunBack",
-      "duration": 0.6666666666666666,
-      "loop": true,
-      "frameStart": 1,
-      "frameEnd": 21,
-      "events": [],
-      "status": "Derived directional stride; Unity import and 15/30/60 FPS motion suite validated"
+      "status": "New in-place air pose; validation in progress"
     }
   ],
   "arrowSpawn": {
@@ -257,7 +293,8 @@
     "Generic rig preserves bow/cloth bones; FK baked at 30 fps, no runtime Blender constraints.",
     "SpawnArrow is presentation-only; Unity Simulation owns projectile creation and damage.",
     "DodgeRoll and Death unfinished. Secondary actions are basic versions. See ArtSource README.",
-    "Run refined in the existing source; directional strides derived with ankle-path retargeting. Geometry and rest skeleton preserved."
+    "Run refined in the existing source; directional strides derived with ankle-path retargeting. Geometry and rest skeleton preserved.",
+    "Refinement: broad chamfered quiver, faceted bow, 8 reauthored gaits and 4 in-place air clips. Existing 14 other Actions preserved."
   ],
   "blenderPaletteLinear": [
     {
@@ -431,5 +468,9 @@
         1.0
       ]
     }
-  ]
+  ],
+  "walkSideScale": 0.9,
+  "walkBackScale": 0.9,
+  "runSideScale": 0.88,
+  "runBackScale": 0.82
 }
