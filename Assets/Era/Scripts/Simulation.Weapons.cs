@@ -65,7 +65,7 @@ namespace Era
             var target=targets.Find(e=>!shot.usedTargets.Contains(e.id));
             if(target==null){shot.usedTargets.Clear();target=targets[0];}
             shot.usedTargets.Add(target.id);WeaponPose(p,shot.weapon,target.position);
-            Vector3 origin=p.position+Vector3.up*1.35f,aim=(EnemyAim(target)-origin).normalized;
+            Vector3 origin=p.hero==Hero.Ember&&shot.weapon==WeaponKind.Bow?ArcherShotProfile.Origin(p.position,p.weaponAimYaw):p.position+Vector3.up*1.35f,aim=(EnemyAim(target)-origin).normalized;
             if(shot.weapon==WeaponKind.Bow)
             {
                 float flight=Vector3.Distance(origin,EnemyAim(target))/(34*p.projectileSpeed);

@@ -31,6 +31,7 @@ namespace Era.Editor
             {
                 string file=Input+name+".era-mesh.json";var data=JsonUtility.FromJson<Model>(File.ReadAllText(file));
                 string source=PrefabPath(name=="Wayfarer"?"Lumen":name=="DuskMage"?"Echo":name);
+                if(name=="Ember"&&AssetDatabase.LoadAssetAtPath<GameObject>(source)?.GetComponent<HeroMotion>()?.archer!=null)continue;
                 var root=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(source));root.name=name;
                 try
                 {

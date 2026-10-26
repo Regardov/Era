@@ -1,0 +1,380 @@
+{
+  "fps": 30,
+  "rig": "Generic",
+  "walkSpeed": 0.9,
+  "runSpeed": 2.8,
+  "modelHeight": 1.8,
+  "sourceSha256": "a0b37ea5543e1523201c6ed1e92aeffb6a7d593f46ab65c1ac85f1a91ab67025",
+  "clips": [
+    {
+      "name": "Archer_Idle",
+      "duration": 2.4,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 73,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_Walk",
+      "duration": 1.0,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 31,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_Run",
+      "duration": 0.6666666666666666,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 21,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_Aim",
+      "duration": 0.5,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 16,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_BowDraw",
+      "duration": 0.6,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_BowHold",
+      "duration": 1.2,
+      "loop": true,
+      "frameStart": 1,
+      "frameEnd": 37,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_BowRelease",
+      "duration": 0.3,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 10,
+      "events": [
+        {
+          "name": "SpawnArrow",
+          "frame": 1,
+          "time": 0.0
+        }
+      ],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_ShootRecovery",
+      "duration": 0.4,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 13,
+      "events": [],
+      "status": "core: visual preview and sampled tests; cloth contacts remain to review"
+    },
+    {
+      "name": "Archer_DodgeRoll",
+      "duration": 0.7,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 22,
+      "events": [],
+      "status": "unfinished: acrobatic roll"
+    },
+    {
+      "name": "Archer_Dash",
+      "duration": 0.4,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 13,
+      "events": [],
+      "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_Hit",
+      "duration": 0.3333333333333333,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 11,
+      "events": [],
+      "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_Death",
+      "duration": 1.5,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 46,
+      "events": [],
+      "status": "unfinished: body not settled on ground"
+    },
+    {
+      "name": "Archer_Cast",
+      "duration": 0.8,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 25,
+      "events": [
+        {
+          "name": "CastActivate",
+          "frame": 13,
+          "time": 0.4
+        }
+      ],
+      "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_Interact",
+      "duration": 0.6,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [],
+      "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_TeleportOut",
+      "duration": 0.8,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 25,
+      "events": [
+        {
+          "name": "TeleportDisappear",
+          "frame": 21,
+          "time": 0.6666666666666666
+        }
+      ],
+      "status": "basic: key pose inspected; further polish needed"
+    },
+    {
+      "name": "Archer_TeleportIn",
+      "duration": 0.6,
+      "loop": false,
+      "frameStart": 1,
+      "frameEnd": 19,
+      "events": [
+        {
+          "name": "TeleportComplete",
+          "frame": 18,
+          "time": 0.5666666666666667
+        }
+      ],
+      "status": "basic: key pose inspected; further polish needed"
+    }
+  ],
+  "arrowSpawn": {
+    "blenderPosition": [
+      -0.12911869585514069,
+      -0.715886652469635,
+      1.513490915298462
+    ],
+    "blenderForward": [
+      3.1229936325871677e-07,
+      -1.0,
+      -1.2580211432577926e-06
+    ],
+    "unityPositionUnscaled": [
+      0.12911869585514069,
+      1.513490915298462,
+      0.715886652469635
+    ],
+    "unityForward": [
+      -3.1229936325871677e-07,
+      -1.2580211432577926e-06,
+      1.0
+    ],
+    "coordinateNote": "FBX-to-Unity handedness verified against imported ArrowSpawn."
+  },
+  "unityVisualScale": 1.238888888888889,
+  "notes": [
+    "Generic rig preserves bow/cloth bones; FK baked at 30 fps, no runtime Blender constraints.",
+    "SpawnArrow is presentation-only; Unity Simulation owns projectile creation and damage.",
+    "DodgeRoll and Death unfinished. Secondary actions are basic versions. See ArtSource README."
+  ],
+  "blenderPaletteLinear": [
+    {
+      "name": "boot",
+      "rgba": [
+        0.04373503103852272,
+        0.03071344457566738,
+        0.022173885256052017,
+        1.0
+      ]
+    },
+    {
+      "name": "ear",
+      "rgba": [
+        0.5149176716804504,
+        0.2961382567882538,
+        0.1946178376674652,
+        1.0
+      ]
+    },
+    {
+      "name": "Garment muted brown",
+      "rgba": [
+        0.1384316086769104,
+        0.09530746936798096,
+        0.05951123684644699,
+        1.0
+      ]
+    },
+    {
+      "name": "hair",
+      "rgba": [
+        0.6795424818992615,
+        0.5972017645835876,
+        0.3277781009674072,
+        1.0
+      ]
+    },
+    {
+      "name": "hairLight",
+      "rgba": [
+        0.7454041838645935,
+        0.6583748459815979,
+        0.41788506507873535,
+        1.0
+      ]
+    },
+    {
+      "name": "hood",
+      "rgba": [
+        0.045186202973127365,
+        0.07618538290262222,
+        0.05126945674419403,
+        1.0
+      ]
+    },
+    {
+      "name": "hoodDark",
+      "rgba": [
+        0.03071344457566738,
+        0.05448027700185776,
+        0.03688944876194,
+        1.0
+      ]
+    },
+    {
+      "name": "hoodLight",
+      "rgba": [
+        0.11697066575288773,
+        0.16826939582824707,
+        0.08228270709514618,
+        1.0
+      ]
+    },
+    {
+      "name": "ink",
+      "rgba": [
+        0.016807375475764275,
+        0.03310476616024971,
+        0.022173885256052017,
+        1.0
+      ]
+    },
+    {
+      "name": "iris",
+      "rgba": [
+        0.024157632142305374,
+        0.18447498977184296,
+        0.08865558356046677,
+        1.0
+      ]
+    },
+    {
+      "name": "leather",
+      "rgba": [
+        0.19120168685913086,
+        0.109461709856987,
+        0.05612849071621895,
+        1.0
+      ]
+    },
+    {
+      "name": "linen",
+      "rgba": [
+        0.5520114302635193,
+        0.5149176716804504,
+        0.3762621283531189,
+        1.0
+      ]
+    },
+    {
+      "name": "Metal accent",
+      "rgba": [
+        0.3762621283531189,
+        0.33716362714767456,
+        0.23074005544185638,
+        1.0
+      ]
+    },
+    {
+      "name": "pants",
+      "rgba": [
+        0.02955683507025242,
+        0.039546236395835876,
+        0.027320891618728638,
+        1.0
+      ]
+    },
+    {
+      "name": "Scarf green gray",
+      "rgba": [
+        0.03560131415724754,
+        0.07421357184648514,
+        0.061246052384376526,
+        1.0
+      ]
+    },
+    {
+      "name": "skin",
+      "rgba": [
+        0.7011018991470337,
+        0.4564110338687897,
+        0.2961382567882538,
+        1.0
+      ]
+    },
+    {
+      "name": "tunic",
+      "rgba": [
+        0.09758734703063965,
+        0.14702726900577545,
+        0.07227185368537903,
+        1.0
+      ]
+    },
+    {
+      "name": "white",
+      "rgba": [
+        0.7230551242828369,
+        0.6938717365264893,
+        0.5711248517036438,
+        1.0
+      ]
+    },
+    {
+      "name": "wood",
+      "rgba": [
+        0.47353148460388184,
+        0.32314321398735046,
+        0.15292614698410034,
+        1.0
+      ]
+    }
+  ]
+}

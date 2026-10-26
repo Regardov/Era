@@ -208,7 +208,7 @@ namespace Era.Editor
                 if(IconLibrary.HasSuppliedItemArt(i)){supplied++;Check(cells.Add(texture.name+" / "+r),"each supplied item has its own cell: "+i);}
             }
             Check(supplied==120,"all 120 supplied pictures are mapped to distinct existing items");
-            foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);Check(model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses the smooth adult proportion rig: "+hero);}
+            foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);var archer=model.GetComponent<HeroMotion>()?.archer;Check(archer!=null?archer.animator.avatar.isValid&&archer.pelvis!=null&&archer.leftFoot!=null&&archer.rightFoot!=null:model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses a complete imported proportion rig: "+hero);}
             Check(MusicCatalog.Count==CampaignData.StageCount+1,"menu and all seven realms have separate scores");
             var musicPaths=new System.Collections.Generic.HashSet<string>();
             for(int music=0;music<MusicCatalog.Count;music++)
@@ -267,6 +267,13 @@ namespace Era.Editor
             foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Stalker","Creatures/Warden"})
             {
                 var model=Resources.Load<GameObject>(character);var skeletal=model.GetComponent<SkeletalActor>();
+                var archer=model.GetComponent<HeroMotion>()?.archer;
+                if(archer!=null)
+                {
+                    Check(archer.animator!=null&&archer.animator.runtimeAnimatorController!=null&&archer.clips.Length==16&&archer.GetComponentsInChildren<SkinnedMeshRenderer>().Length>0,"Generic archer has real animation clips: "+character);
+                    foreach(var renderer in archer.GetComponentsInChildren<SkinnedMeshRenderer>())Check(renderer.sharedMesh.vertexCount<60000&&renderer.sharedMesh.normals.Length==renderer.sharedMesh.vertexCount&&Array.TrueForAll(renderer.sharedMaterials,m=>m!=null&&m.shader!=null),"bounded Generic mesh retains authored palette and normals: "+renderer.name);
+                    continue;
+                }
                 Check(skeletal!=null&&skeletal.animationPlayer.GetClipCount()>=15&&model.GetComponentsInChildren<SkinnedMeshRenderer>().Length>=1,"skeletal actor retains real animation clips: "+character);
                 var skin=model.GetComponentInChildren<SkinnedMeshRenderer>();
                 bool faceted=character.StartsWith("Characters/")||character.EndsWith("Stalker")||character.EndsWith("Wisp");
@@ -302,8 +309,9 @@ namespace Era.Editor
             var animated=UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Characters/Ember"));
             try
             {
-                var skeletal=animated.GetComponent<SkeletalActor>();var clip=skeletal.animationPlayer.GetClip("Running_A");clip.SampleAnimation(animated,.05f);var left=skeletal.leftThigh.localRotation;clip.SampleAnimation(animated,.30f);
-                Check(Quaternion.Angle(left,skeletal.leftThigh.localRotation)>5,"imported running clip actually articulates skeleton joints");
+                var archer=animated.GetComponent<HeroMotion>()?.archer;
+                if(archer!=null){archer.SampleClip("Archer_Run",.05f);var left=archer.leftThigh.localRotation;archer.SampleClip("Archer_Run",.30f);Check(Quaternion.Angle(left,archer.leftThigh.localRotation)>5,"Generic running clip actually articulates skeleton joints");}
+                else{var skeletal=animated.GetComponent<SkeletalActor>();var clip=skeletal.animationPlayer.GetClip("Running_A");clip.SampleAnimation(animated,.05f);var left=skeletal.leftThigh.localRotation;clip.SampleAnimation(animated,.30f);Check(Quaternion.Angle(left,skeletal.leftThigh.localRotation)>5,"imported running clip actually articulates skeleton joints");}
             }
             finally{UnityEngine.Object.DestroyImmediate(animated);}
         }
@@ -372,11 +380,18 @@ namespace Era.Editor
             sim=New();p=Arm(sim,WeaponKind.LightningStaff);a=Target(sim,p,Vector3.forward*5);b=Target(sim,p,new Vector3(3,0,5));c=Target(sim,p,new Vector3(6,0,5));
             sim.Step(1f/30,new Dictionary<int,InputFrame>());Check(a.hp<500&&b.hp==500&&c.hp==500&&sim.State.effects.FindAll(e=>e.kind==10).Count==1,"staff hits one target without its ricochet item");
             sim=New();p=Arm(sim,WeaponKind.Bow);a=Target(sim,p,Vector3.forward*20);sim.Step(1f/30,new Dictionary<int,InputFrame>());
-            Check(sim.State.projectiles.Count==1&&a.hp==500,"bow launches a travelling arrow at long range");Step(sim,.65f);Check(a.hp<500,"arrow hits its distant target along swept segment");
+            Check(sim.State.projectiles.Count==1&&a.hp==500,"bow launches a travelling arrow at long range");
+            var arrow=sim.State.projectiles[0];var launchedFrom=arrow.position-arrow.direction*arrow.speed*p.projectileSpeed/30;
+            Check(Vector3.Distance(launchedFrom,ArcherShotProfile.Origin(p.position,p.weaponAimYaw))<.001f,"Ember arrow launches from the deterministic baked release socket profile");
+            Step(sim,.65f);Check(a.hp<500,"arrow hits its distant target along swept segment");
             Check(sim.GiveWeapon(p,WeaponKind.Axe)<0&&p.weapons[1]<0,"second weapon cannot be granted before level 25");
             sim.State.level=25;sim.GiveWeapon(p,WeaponKind.Axe);Check(p.weapons.Length==2&&p.weapons[0]==(int)WeaponKind.Bow&&p.weapons[1]==(int)WeaponKind.Axe&&sim.GiveWeapon(p,WeaponKind.Spear)<0,"two slots preserve the character weapon and reject a third weapon");
             int slot=Array.IndexOf(p.weapons,(int)WeaponKind.Axe);sim.GiveWeapon(p,WeaponKind.Axe);Check(p.weaponLevels[slot]==2&&p.weapons.Length==2,"duplicate weapon upgrades existing slot");
             int gold=sim.State.coins;sim.GiveWeapon(p,WeaponKind.Axe,20);Check(p.weaponLevels[slot]==5&&sim.State.coins==gold+17*8,"weapon level cap converts excess duplicates into gold");
+            var other=New();var echo=Arm(other,WeaponKind.Bow);echo.hero=Hero.Echo;Target(other,echo,Vector3.forward*20);other.Step(1f/30,new Dictionary<int,InputFrame>());
+            Check(other.State.projectiles.Count==1,"alternate hero still launches one authoritative bow projectile");
+            var echoArrow=other.State.projectiles[0];var otherOrigin=echoArrow.position-echoArrow.direction*echoArrow.speed*echo.projectileSpeed/30;
+            Check(Vector3.Distance(otherOrigin,echo.position+Vector3.up*1.35f)<.001f,"other heroes keep their existing weapon launch profile");
         }
         static void Combat()
         {

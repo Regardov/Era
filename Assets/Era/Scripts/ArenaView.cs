@@ -90,12 +90,19 @@ namespace Era
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,p.position,blend);
                 actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
                 if(actor.root.GetComponent<AbilityPresentation>()==null)actor.root.AddComponent<AbilityPresentation>().owner=p.id;
-                if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
+                if(actor.hero.archer!=null)actor.hero.archer.Present(p);else if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
                 if(actor.weaponKind!=p.lastWeapon&&p.lastWeapon>=0)
                 {
                     if(actor.weapon!=null){actor.weapon.SetActive(false);Destroy(actor.weapon);}var wand=actor.hero.rightElbow.Find("Wand");if(wand!=null)wand.gameObject.SetActive(false);
-                    actor.weapon=WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)p.lastWeapon);actor.weapon.transform.localPosition=actor.hero.skeletal!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}actor.weaponKind=p.lastWeapon;
-                    var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)p.lastWeapon;actor.weapon.GetComponent<WeaponPresentation>()?.BindOwner(p.id);
+                    actor.weapon=null;actor.weaponKind=p.lastWeapon;
+                    // The authored archer bow/string are already skinned and animated.
+                    // Legacy WeaponGrip would fight the baked Generic arm animation.
+                    if(actor.hero.archer==null||p.lastWeapon!=(int)WeaponKind.Bow)
+                    {
+                        actor.weapon=WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)p.lastWeapon);actor.weapon.transform.localPosition=actor.hero.skeletal!=null||actor.hero.archer!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}
+                        if(actor.hero.archer==null){var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)p.lastWeapon;}
+                        actor.weapon.GetComponent<WeaponPresentation>()?.BindOwner(p.id);
+                    }
                 }
                 if(p.weaponCastSerial!=actor.weaponSerial){if(p.id==app.LocalId)SynthAudio.Instance?.Play(p.lastWeapon==(int)WeaponKind.Bow?0:1);actor.weaponSerial=p.weaponCastSerial;}
                 if(p.id==app.LocalId)

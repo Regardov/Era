@@ -6,7 +6,7 @@ namespace Era
     [DefaultExecutionOrder(110)]
     public sealed class RigDiagnostics:MonoBehaviour
     {
-        [Serializable]sealed class Report {public bool ok,finite=true,colliders=true,profiles=true;public int errors,poseSamples,weapons=6;public float primaryError,secondaryError;public string worstGrip="";}
+        [Serializable]sealed class Report {public bool ok,finite=true,colliders=true,profiles=true,generic=true;public int errors,poseSamples,genericSamples,weapons=6;public float primaryError,secondaryError;public string worstGrip="";}
         GameApp App=>GameApp.Instance;readonly Report report=new Report();string folder;float started,phaseStart;int phase=-1;bool sampled;Mesh baked;FrameCapture capture;Font font;
         void Start()
         {
@@ -16,9 +16,10 @@ namespace Era
             var floor=GameObject.CreatePrimitive(PrimitiveType.Cube);floor.name="Rig inspection studio";floor.transform.position=Vector3.down*.08f;floor.transform.localScale=new Vector3(12,.1f,10);floor.GetComponent<Renderer>().material.color=new Color(.67f,.69f,.67f);
             var light=new GameObject("Rig inspection key").AddComponent<Light>();light.type=LightType.Directional;light.intensity=.9f;light.transform.rotation=Quaternion.Euler(28,-25,0);
             foreach(var p in App.State.players){p.weapons=new[]{-1,-1};p.invulnerability=999;p.shield=0;Array.Clear(p.auraLevels,0,p.auraLevels.Length);}started=phaseStart=Time.realtimeSinceStartup;baked=new Mesh();font=Font.CreateDynamicFontFromOSFont("Arial",16);capture=new FrameCapture(font);
+            gameObject.AddComponent<RigDiagnosticsPoseStage>().owner=this;
         }
         void Log(string m,string trace,LogType type){if(type==LogType.Error||type==LogType.Exception||type==LogType.Assert)report.errors++;}
-        void Update()
+        public void PrepareFrame()
         {
             float time=Time.realtimeSinceStartup;if(time-started<1)return;
             if(phase<0||time-phaseStart>.45f){phase++;phaseStart=time;sampled=false;if(phase>=36){Finish();return;}if(phase%6==4)foreach(var p in App.State.players)p.weaponCastSerial++;if(phase%6==5)foreach(var p in App.State.players)p.landSerial++;}
@@ -40,6 +41,18 @@ namespace Era
                 var collider=grip.actor.GetComponent<CapsuleCollider>();var rb=grip.actor.GetComponent<Rigidbody>();report.colliders&=collider!=null&&collider.enabled&&!collider.isTrigger&&rb!=null&&rb.isKinematic&&grip.actor.GetComponent<CharacterController>()==null;
                 var skin=grip.actor.GetComponentInChildren<SkinnedMeshRenderer>();skin.BakeMesh(baked);foreach(var v in baked.vertices)report.finite&=ActorMotionMath.Finite(v)&&v.magnitude<6;
             }
+            foreach(var archer in FindObjectsByType<ArcherAnimationDriver>(FindObjectsSortMode.None))
+            {
+                report.poseSamples++;report.genericSamples++;
+                var hero=archer.GetComponentInParent<HeroMotion>();var collider=hero.GetComponent<CapsuleCollider>();var rb=hero.GetComponent<Rigidbody>();
+                report.colliders&=collider!=null&&collider.enabled&&!collider.isTrigger&&rb!=null&&rb.isKinematic&&hero.GetComponent<CharacterController>()==null;
+                var bow=archer.Bone("BowRoot");var left=archer.Bone("Hand.L");
+                report.generic&=archer.animator!=null&&archer.animator.avatar.isValid&&!archer.animator.applyRootMotion&&archer.clips.Length==16&&archer.arrowSpawn!=null&&archer.arrowNock!=null&&archer.weaponSocket!=null&&bow!=null&&left!=null&&bow.IsChildOf(left);
+                foreach(var skin in archer.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    skin.BakeMesh(baked);foreach(var vertex in baked.vertices)report.finite&=ActorMotionMath.Finite(vertex)&&hero.transform.InverseTransformPoint(skin.transform.TransformPoint(vertex)).magnitude<6;
+                }
+            }
             if(phase%6==4)
             {
                 capture.Save(Path.Combine(folder,"grip-"+(WeaponKind)(phase/6)+"-v019.png"),camera,()=>{});
@@ -47,7 +60,15 @@ namespace Era
                 capture.Save(Path.Combine(folder,"grip-"+(WeaponKind)(phase/6)+"-side-v019.png"),camera,()=>{});
             }
         }
-        void Finish(){report.ok=report.errors==0&&report.finite&&report.colliders&&report.profiles&&report.poseSamples>=108&&report.primaryError<.003f&&report.secondaryError<.03f;File.WriteAllText(Path.Combine(folder,"smoke-rig.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_RIG "+JsonUtility.ToJson(report));Application.Quit(report.ok?0:2);enabled=false;}
+        void Finish(){report.ok=report.errors==0&&report.finite&&report.colliders&&report.profiles&&report.generic&&report.poseSamples>=108&&report.primaryError<.003f&&report.secondaryError<.03f;File.WriteAllText(Path.Combine(folder,"smoke-rig.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_RIG "+JsonUtility.ToJson(report));Application.Quit(report.ok?0:2);enabled=false;}
         void OnDestroy(){Application.logMessageReceived-=Log;if(baked!=null)Destroy(baked);capture?.Dispose();if(font!=null)Destroy(font);}
+    }
+    // Set test states after Simulation (-100), before ArenaView/Animator (0).
+    // Capture remains late (110), after actual IK and Generic pose evaluation.
+    [DefaultExecutionOrder(-40)]
+    public sealed class RigDiagnosticsPoseStage:MonoBehaviour
+    {
+        public RigDiagnostics owner;
+        void Update(){if(owner!=null&&owner.enabled)owner.PrepareFrame();}
     }
 }

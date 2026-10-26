@@ -10,6 +10,16 @@ namespace Era
         [SerializeField]Hero heroType;
         public Hero Hero=>heroType;
         public SkeletalActor skeletal;
+        public ArcherAnimationDriver archer;
+        public void BindArcher(ArcherAnimationDriver actor)
+        {
+            heroType=Hero.Ember;archer=actor;skeletal=null;
+            rig=actor.transform;hips=actor.pelvis;spine=actor.spine;head=actor.head;
+            leftArm=actor.Bone("UpperArm.L");rightArm=actor.Bone("UpperArm.R");
+            leftElbow=actor.Bone("Hand.L");rightElbow=actor.Bone("Hand.R");
+            leftThigh=actor.leftThigh;rightThigh=actor.rightThigh;leftKnee=actor.leftShin;rightKnee=actor.rightShin;
+            cape=actor.Bone("CloakRoot")??spine;
+        }
         public void BindImported(Hero hero,SkeletalActor actor)
         {
             heroType=hero;skeletal=actor;rig=actor.Bone("Rig");hips=actor.hips;spine=actor.spine;head=actor.Bone("head");leftArm=actor.Bone("upperarm.l");rightArm=actor.Bone("upperarm.r");leftElbow=actor.Bone("handslot.l");rightElbow=actor.rightHand;
@@ -85,6 +95,7 @@ namespace Era
         }
         public void Pose(Vector3 velocity,bool grounded,float vertical,float cast,bool downed,bool dashing)
         {
+            if(archer!=null){archer.Stand();return;}
             if(skeletal!=null){skeletal.Stand();return;}
             if(GameApp.Instance?.WorldPaused==true)return;
             float time=GameApp.Instance?.InRun==true?GameApp.Instance.State.elapsed:Time.unscaledTime;

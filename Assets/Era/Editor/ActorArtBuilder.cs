@@ -17,6 +17,7 @@ namespace Era.Editor
             {
                 string path="Assets/Era/Resources/Characters/"+hero+".prefab";
                 var source=AssetDatabase.LoadAssetAtPath<GameObject>(hero==Hero.Lumen?"Assets/Era/Resources/Characters/Echo.prefab":path);
+                if(hero==Hero.Ember&&source.GetComponent<HeroMotion>()?.archer!=null)continue;
                 var instance=Object.Instantiate(source);instance.name=hero.ToString();
                 try
                 {

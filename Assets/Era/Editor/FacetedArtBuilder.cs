@@ -76,6 +76,7 @@ namespace Era.Editor
             var material=new Material(Shader.Find("Era/Faceted Realm")){name="Earth, linen and leather / faceted palette"};AssetDatabase.AddObjectToAsset(material,library);
             foreach(string name in new[]{"Ember","Echo","Lumen","Stalker","Wisp"})
             {
+                if(name=="Ember"&&AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Era/Resources/Characters/Ember.prefab")?.GetComponent<HeroMotion>()?.archer!=null)continue;
                 bool hero=name=="Ember"||name=="Echo"||name=="Lumen";
                 // Restore the pre-smoothing rigs as the starting point for all new silhouettes.
                 string source="Assets/Era/Art/KayKit/HumanTemplates/"+(hero?name:"Echo")+".prefab";

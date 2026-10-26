@@ -107,6 +107,16 @@ namespace Era.Editor
                 var root=UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Characters/"+hero));
                 try
                 {
+                    var archer=root.GetComponent<HeroMotion>()?.archer;
+                    if(archer!=null)
+                    {
+                        Check(archer.animator!=null&&archer.animator.avatar.isValid&&archer.pelvis!=null,"Generic bind skeleton saved for "+hero);
+                        archer.SampleClip("Archer_Idle",0);var bones=archer.GetComponentsInChildren<Transform>(true);var positions=new Vector3[bones.Length];for(int i=0;i<bones.Length;i++)positions[i]=bones[i].localPosition;
+                        archer.ApplyCrouch(1);bool genericConnected=true;for(int i=0;i<bones.Length;i++)if(bones[i]!=archer.pelvis)genericConnected&=Vector3.Distance(bones[i].localPosition,positions[i])<.0001f;
+                        Check(genericConnected,"Generic crouch preserves child bind offsets including head and neck: "+hero);
+                        var skins=archer.GetComponentsInChildren<SkinnedMeshRenderer>();Check(skins.Length>0&&Array.TrueForAll(skins,skin=>skin.bones.Length==skin.sharedMesh.bindposes.Length&&Array.TrueForAll(skin.bones,bone=>bone!=null)),"Generic costume binds to connected real skeleton bones: "+hero);
+                        continue;
+                    }
                     var rig=root.GetComponent<HumanRigShape>();Check(rig.shapedLocalPositions!=null&&rig.shapedLocalPositions.Length==rig.bones.Length,"connected bind positions saved for "+hero);
                     var skeleton=root.GetComponent<SkeletalActor>();skeleton.animationPlayer.enabled=false;
                     for(int i=0;i<rig.bones.Length;i++)rig.bones[i].localPosition=rig.originalLocalPositions[i];

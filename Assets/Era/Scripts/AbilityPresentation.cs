@@ -22,7 +22,7 @@ namespace Era
             channel.startColor=channel.endColor=color;channel.transform.localPosition=Vector3.up*.15f;channel.transform.localScale=Vector3.one*(1+Mathf.Sin(clock*2.4f)*.035f);channel.widthMultiplier=.025f+chargeBlend*.02f;
             color=new Color(.35f,.72f,1,shieldBlend*.45f*intensity);shield.startColor=shield.endColor=color;shield.transform.localPosition=Vector3.up*1.1f;shield.transform.localRotation=Quaternion.Euler(70,clock*18,15);shield.transform.localScale=Vector3.one*(.78f+.06f*Mathf.Sin(clock*1.8f));
             if(cast<0)cast=p.castSerial;
-            if(cast!=p.castSerial){cast=p.castSerial;PresentationFx.Emit(p.position+Vector3.up,GameData.HeroColor(p.hero),1.1f,p.hero==Hero.Lumen?FeedbackKind.Heal:p.hero==Hero.Echo?FeedbackKind.Shield:FeedbackKind.Magic);}
+            if(cast!=p.castSerial){cast=p.castSerial;if(GetComponent<HeroMotion>()?.archer==null)PresentationFx.Emit(p.position+Vector3.up,GameData.HeroColor(p.hero),1.1f,p.hero==Hero.Lumen?FeedbackKind.Heal:p.hero==Hero.Echo?FeedbackKind.Shield:FeedbackKind.Magic);}
             if(previousHp>=0&&p.hp>previousHp+.1f)PresentationFx.Emit(p.position,GameData.Mint,.7f,FeedbackKind.Heal);previousHp=p.hp;
             if(p.dashTime>0&&(dashTick-=dt)<=0){dashTick=.075f;PresentationFx.Emit(previous+Vector3.up*.25f,GameData.HeroColor(p.hero),.32f,FeedbackKind.Dust,(previous-transform.position).normalized);}previous=transform.position;
         }
