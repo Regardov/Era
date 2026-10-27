@@ -20,6 +20,8 @@ namespace Era
     [DisallowMultipleComponent]
     public sealed class ArcherAnimationDriver : MonoBehaviour
     {
+        public const int BodyActionLayer=1,BowLayer=2;
+        string bodyActionState="";float bodyActionRemaining,bodyActionWeight;
         public const string ModelRootName = "ArcherVisual";
         public const int ExpectedClipCount=26;
         public Animator animator;
@@ -94,7 +96,8 @@ namespace Era
             animator.enabled = true; animator.speed = 1; animator.SetFloat("Speed", 0); animator.SetFloat("LocomotionRate", 1); animator.SetFloat("UpperRate", 1);
             animator.SetFloat("MoveX",0);animator.SetFloat("MoveZ",0);localMotion=Vector2.zero;motion?.ResetMotion();
             animator.SetBool("IsGrounded",true);animator.SetFloat("VerticalVelocity",0);takeoffRemaining=landingRemaining=0;
-            animator.SetLayerWeight(1, 0); animator.Play("Base Layer.Locomotion", 0, 0); fullState = "Locomotion"; fullRemaining = 0; upperState = ""; upperRemaining = 0; sampled = false;
+            animator.SetLayerWeight(ArcherAnimationDriver.BowLayer, 0); animator.Play("Base Layer.Locomotion", 0, 0); fullState = "Locomotion"; fullRemaining = 0; upperState = ""; upperRemaining = 0; sampled = false;
+            ClearBodyAction(true);
             SetArrowVisible(false);standing = true;
         }
         public void Present(PlayerState p)
@@ -138,21 +141,25 @@ namespace Era
                 lastHp = p.hp; attackSerial = p.weaponCastSerial; castSerial = p.castSerial; return;
             }
             if (dead) { dead = false; vanished = false; SetModelVisible(true); PlayFull("Archer_TeleportIn", true); }
-            if (lastHp >= 0 && p.hp < lastHp && fullState != "Archer_Dash" && fullState != "Archer_DodgeRoll") { ClearUpper(false); PlayFull("Archer_Hit", true); }
+            if (lastHp >= 0 && p.hp < lastHp && fullState != "Archer_Dash" && fullState != "Archer_DodgeRoll") BeginBodyAction("Archer_Hit");
             lastHp = p.hp;
             if (p.dashTime > 0 && previousDash <= 0) { ClearUpper(false); PlayFull("Archer_Dash", true); }
             previousDash = p.dashTime;
-            if (p.castSerial != castSerial) { ClearUpper(false); PlayFull("Archer_Cast", true); }
+            if (p.castSerial != castSerial) BeginBodyAction("Archer_Cast");
             castSerial = p.castSerial;
             int stamp = ChestStamp(p.id);
-            if (stamp > chestStamp && fullRemaining <= 0) { ClearUpper(false); PlayFull("Archer_Interact", true); }
+            if (stamp > chestStamp && fullRemaining <= 0) BeginBodyAction("Archer_Interact");
             chestStamp = stamp;
             if (fullRemaining > 0)
             {
                 fullRemaining = Mathf.Max(0, fullRemaining - dt);
                 if (fullRemaining <= 0 && fullState != "Archer_Death" && fullState != "Archer_TeleportOut") ReturnToLocomotion();
             }
-            if (p.chargingShrine >= 0 && fullRemaining <= 0) PlayFull("Archer_Cast", true);
+            bodyActionRemaining=Mathf.Max(0,bodyActionRemaining-dt);
+            if(bodyActionRemaining<=0)bodyActionState="";
+            if(p.chargingShrine>=0&&fullRemaining<=0&&bodyActionState.Length==0)BeginBodyAction("Archer_Cast");
+            bodyActionWeight=PresentationMotion.Damp(bodyActionWeight,bodyActionState.Length>0?1:0,20,dt);
+            animator.SetLayerWeight(BodyActionLayer,bodyActionWeight);
             UpdateAir(p,dt,arriving);
 
             float timer = BowTimer(p);
@@ -172,8 +179,8 @@ namespace Era
                 // Present runs after the regular Animator evaluation. Sample only
                 // this shot's t=0 pose without advancing either layer's clock, so
                 // the visible bow is already released on the authoritative frame.
-                layerWeight=1;animator.SetLayerWeight(1,1);
-                animator.Play("UpperBody.Archer_BowRelease",1,0);animator.Update(0);
+                layerWeight=1;animator.SetLayerWeight(ArcherAnimationDriver.BowLayer,1);
+                animator.Play("UpperBody.Archer_BowRelease",ArcherAnimationDriver.BowLayer,0);animator.Update(0);
                 // Dedupe the imported marker against the host-shot presentation;
                 // no damage/projectile is created by the animation event.
                 SpawnArrow();
@@ -202,7 +209,7 @@ namespace Era
                 if (!hasBow) ClearUpper(false);
             }
             float weight = upperState.Length > 0 ? 1 : 0;
-            layerWeight = PresentationMotion.Damp(layerWeight, weight, 24, dt); animator.SetLayerWeight(1, layerWeight);
+            layerWeight = PresentationMotion.Damp(layerWeight, weight, 24, dt); animator.SetLayerWeight(ArcherAnimationDriver.BowLayer, layerWeight);
             crouchBlend = PresentationMotion.Damp(crouchBlend, p.crouching && p.grounded ? 1 : 0, 14, dt);
         }
         public float DirectionalScale(Vector2 movement,bool running)
@@ -266,20 +273,32 @@ namespace Era
         {
             if (Clip(name) == null || animator == null) return;
             upperState = name; upperStartedFrame = Time.frameCount; upperRemaining = Mathf.Max(.033f, seconds); animator.SetFloat("UpperRate", Mathf.Clamp(Duration(name)*(name=="Archer_ShootRecovery"?.4f:1) / upperRemaining, .3f, 12));
-            animator.CrossFadeInFixedTime("UpperBody." + name, .045f, 1, 0);
+            animator.CrossFadeInFixedTime("UpperBody." + name, .045f, ArcherAnimationDriver.BowLayer, 0);
             SetArrowVisible(name == "Archer_Aim" || name == "Archer_BowDraw" || name == "Archer_BowHold");
         }
         void ClearUpper(bool immediate)
         {
             upperState = ""; upperRemaining = 0; SetArrowVisible(false);
-            if (animator != null && immediate) { layerWeight = 0; animator.SetLayerWeight(1, 0); }
+            if (animator != null && immediate) { layerWeight = 0; animator.SetLayerWeight(ArcherAnimationDriver.BowLayer, 0); }
         }
         void PlayFull(string name, bool recover)
         {
             if (Clip(name) == null || animator == null) return;
+            ClearBodyAction(true);
             fullState = name; fullRemaining = recover ? Duration(name) : 0; ClearUpper(true); animator.CrossFadeInFixedTime("Base Layer." + name, .055f, 0, 0);
         }
         void ReturnToLocomotion() { fullState = "Locomotion"; fullRemaining = 0; animator.CrossFadeInFixedTime("Base Layer.Locomotion", .10f, 0, 0); }
+        void BeginBodyAction(string name)
+        {
+            if(dead||Clip(name)==null)return;
+            bodyActionState=name;bodyActionRemaining=Duration(name);animator.SetFloat("ActionRate",1);
+            animator.CrossFadeInFixedTime("BodyActions."+name,.045f,BodyActionLayer,0);
+        }
+        void ClearBodyAction(bool immediate)
+        {
+            bodyActionState="";bodyActionRemaining=0;
+            if(immediate&&animator!=null){bodyActionWeight=0;animator.SetLayerWeight(BodyActionLayer,0);}
+        }
         public void SetAiming(bool enabled, float worldYaw, bool holdDraw = true) { manualAim = enabled; manualDraw = enabled && holdDraw; aimYaw = worldYaw; if (!enabled) ClearUpper(false); }
         public void PlayDodgeRoll() { if (!dead) { Bind(); PlayFull("Archer_DodgeRoll", true); } }
         public void PlayInteraction() { if (!dead) { Bind(); PlayFull("Archer_Interact", true); } }

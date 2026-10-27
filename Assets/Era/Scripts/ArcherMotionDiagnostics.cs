@@ -99,7 +99,7 @@ namespace Era
         {
             if(!enabled||actor==null||current==null||phase>=names.Length)return;
             float age=Time.realtimeSinceStartup-phaseStart;current.frames++;report.frames++;
-            foreach(int layer in new[]{0,1})if(layer==0||actor.animator.GetLayerWeight(layer)>.1f)foreach(var clip in actor.animator.GetCurrentAnimatorClipInfo(layer).Concat(actor.animator.GetNextAnimatorClipInfo(layer)))if(clip.clip!=null&&clip.weight>.1f)observed.Add(clip.clip.name);
+            foreach(int layer in Enumerable.Range(0,actor.animator.layerCount))if(layer==0||actor.animator.GetLayerWeight(layer)>.1f)foreach(var clip in actor.animator.GetCurrentAnimatorClipInfo(layer).Concat(actor.animator.GetNextAnimatorClipInfo(layer)))if(clip.clip!=null&&clip.weight>.1f)observed.Add(clip.clip.name);
             if(age>.45f&&!measuring){measuring=true;for(int i=0;i<bones.Length;i++)initial[i]=bones[i].localRotation;initialNormalized=actor.animator.GetCurrentAnimatorStateInfo(0).normalizedTime;}
             if(measuring)
             {

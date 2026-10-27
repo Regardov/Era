@@ -13,7 +13,7 @@ namespace Era
     {
         [Serializable] public sealed class Phase
         {
-            public string name;public int frames,airFrames,shots,airShots,recordedFrames;
+            public string name;public int frames,airFrames,shots,airShots,recordedFrames,castFrames,castWithLocomotionFrames;
             public float maxSpeed,maxRate,cyclesPerSecond,maxPlantError,maxGripError,maxQuiverDrift,maxAirThighMotion,maxShotOriginGap,maxShotRootLag,maxShotDirectionError;
             public bool groundedPinInAir,runInAir;public string[] clips,states;
         }
@@ -22,19 +22,21 @@ namespace Era
             public bool ok,finite=true;public int errors,requestedFps;public string version;public Phase[] phases;
             public int jumps,landings,shots,events;public string[] failures;
         }
-        readonly string[] names={"Idle","SlowWalk","Normal","Run","Diagonal","Reverse","Turn","IdleJump","RunJump","JumpShoot","DoubleJump","Fall","BackView","RunShoot","BowDraw","Stop"};
-        readonly float[] durations={1.2f,2,2,2.6f,2,2,2,1.8f,2.1f,2.8f,2.4f,1.8f,2,2.7f,2.1f,1.5f};
+        string[] names={"Idle","SlowWalk","Normal","Run","Diagonal","Reverse","Turn","IdleJump","RunJump","JumpShoot","DoubleJump","Fall","BackView","RunShoot","BowDraw","Stop"};
+        float[] durations={1.2f,2,2,2.6f,2,2,2,1.8f,2.1f,2.8f,2.4f,1.8f,2,2.7f,2.1f,1.5f};
         readonly List<Phase> phases=new List<Phase>();readonly HashSet<string> clips=new HashSet<string>(),states=new HashSet<string>();
         readonly List<string> failures=new List<string>();readonly Report report=new Report();
         GameApp App=>GameApp.Instance;ArcherAnimationDriver actor;Phase current;EnemyState target;
         int phase=-1,lastShot,startJump,startLand,frameIndex,lastStateHash;float start,phaseStart,nextFrame,airTime,lastNormalized;
-        bool entered,jumpSent,extraSent,record,airReference;Quaternion firstAirThigh;Vector3 mount;
+        bool entered,jumpSent,extraSent,record,airReference,actionSent;Quaternion firstAirThigh;Vector3 mount;
         string folder;Mesh baked;Transform platform;Light key;Texture2D frame;Font font;FrameCapture capture;
         void Start()
         {
             var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,"--capture-folder");folder=i>=0?args[i+1]:Path.GetFullPath("Artifacts/ArcherRefinement");Directory.CreateDirectory(folder);
             i=Array.IndexOf(args,"--refinement-fps");report.requestedFps=i>=0?int.Parse(args[i+1]):30;record=Array.IndexOf(args,"--refinement-record")>=0;
             Application.targetFrameRate=report.requestedFps;QualitySettings.vSyncCount=0;report.version=Application.version;
+            if(Array.IndexOf(args,"--master-quality")>=0)
+            {names=names.Concat(new[]{"RunCast","RunCastShoot","TurnShoot","AirAim","IdleTurn","HitMove"}).ToArray();durations=durations.Concat(new[]{2.2f,2.6f,2.6f,2.2f,2f,2.2f}).ToArray();}
             Application.logMessageReceived+=Log;App.SelectedHero=Hero.Ember;App.Solo();App.State.multiplayer=true;
             App.State.enemies.Clear();App.State.resourceNodes.Clear();App.State.spawnTimer=100000;
             App.LocalPlayer.position=WorldMap.OnGround(0,0);App.LocalPlayer.weapons=new[]{-1,-1};App.LocalPlayer.lastWeapon=(int)WeaponKind.Bow;App.LocalPlayer.invulnerability=999;
@@ -66,9 +68,10 @@ namespace Era
             float age=now-phaseStart;
             if(!entered)
             {
-                entered=true;App.State.enemies.Clear();target=null;p.weapons=new[]{-1,-1};actor.SetAiming(false,0);p.extraJumps=current.name=="DoubleJump"?1:0;
+                entered=true;actionSent=false;App.State.enemies.Clear();target=null;p.weapons=new[]{-1,-1};actor.SetAiming(false,0);p.extraJumps=current.name=="DoubleJump"?1:0;p.qCooldown=0;
+                if(current.name=="AirAim")actor.SetAiming(true,30);
                 if(current.name=="Reverse"||current.name=="BowDraw")actor.SetAiming(true,0);
-                if(current.name=="RunShoot"||current.name=="JumpShoot")
+                if(current.name=="RunShoot"||current.name=="JumpShoot"||current.name=="RunCastShoot"||current.name=="TurnShoot")
                 {
                     p.weapons=new[]{(int)WeaponKind.Bow,-1};p.weaponTimers[0]=.25f;
                     target=App.Simulation.SpawnEnemy(EnemyKind.Skeleton);target.hp=target.maxHp=100000;target.frozen=1000;target.speed=0;target.spawnGrace=0;
@@ -81,17 +84,26 @@ namespace Era
                 case "SlowWalk":input.z=.10f;break;
                 case "Normal":input.z=.5f;break;
                 case "Run":case "RunJump":case "RunShoot":input.z=1;break;
+                case "RunCast":case "RunCastShoot":case "HitMove":input.z=1;break;
                 case "Diagonal":input.x=input.z=.7071f;break;
                 case "Reverse":input.z=-1;break;
                 case "Turn":input.x=Mathf.Sin(age*Mathf.PI);input.z=Mathf.Cos(age*Mathf.PI);break;
+                case "TurnShoot":input.x=Mathf.Sin(age*Mathf.PI*.6f);input.z=Mathf.Cos(age*Mathf.PI*.6f);break;
+                case "IdleTurn":input.yaw=age*100;break;
+                case "AirAim":input.z=.5f;break;
                 case "JumpShoot":case "DoubleJump":input.z=.6f;break;
                 case "BackView":input.z=.4f;break;
             }
-            if(current.name.Contains("Jump"))
+            if(current.name.Contains("Jump")||current.name=="AirAim")
             {
                 if(age>.18f&&!jumpSent){input.jump=true;jumpSent=true;}
                 input.jumpHeld=age<.7f;
                 if(current.name=="DoubleJump"&&age>.5f&&!extraSent){input.jump=true;extraSent=true;}
+            }
+            if(age>.25f&&!actionSent)
+            {
+                if(current.name=="RunCast"||current.name=="RunCastShoot"){input.primary=true;actionSent=true;}
+                if(current.name=="HitMove"){p.hp-=5;actionSent=true;}
             }
             if(target!=null){target.position=p.position+Vector3.forward*6;target.frozen=1000;target.hp=target.maxHp;target.speed=0;}
         }
@@ -110,8 +122,13 @@ namespace Era
             current.maxPlantError=Mathf.Max(current.maxPlantError,actor.Motion.FootPlantError);current.maxGripError=Mathf.Max(current.maxGripError,actor.Motion.GripError);
             current.maxQuiverDrift=Mathf.Max(current.maxQuiverDrift,Vector3.Distance(mount,actor.Bone("QuiverAttach").localPosition));
             states.Add(actor.AirState);
-            foreach(int layer in new[]{0,1})if(layer==0||actor.animator.GetLayerWeight(layer)>.1f)
+            bool casting=false;
+            for(int layer=0;layer<actor.animator.layerCount;layer++)if(layer==0||actor.animator.GetLayerWeight(layer)>.1f)
+            {
                 foreach(var info in actor.animator.GetCurrentAnimatorClipInfo(layer).Concat(actor.animator.GetNextAnimatorClipInfo(layer)))if(info.clip!=null&&info.weight>.08f)clips.Add(info.clip.name);
+                casting|=actor.animator.GetCurrentAnimatorClipInfo(layer).Any(c=>c.clip!=null&&c.weight>.2f&&c.clip.name=="Archer_Cast");
+            }
+            if(casting&&speed>2){current.castFrames++;if(actor.animator.GetCurrentAnimatorClipInfo(0).Any(c=>c.clip!=null&&c.weight>.2f&&(c.clip.name.StartsWith("Archer_Run")||c.clip.name.StartsWith("Archer_Walk"))))current.castWithLocomotionFrames++;}
             if(!p.grounded)
             {
                 current.airFrames++;airTime+=Time.unscaledDeltaTime;current.groundedPinInAir|=actor.Motion.LeftPlanted||actor.Motion.RightPlanted;

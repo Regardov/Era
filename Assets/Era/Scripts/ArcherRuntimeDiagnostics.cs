@@ -92,7 +92,7 @@ namespace Era
             if(!enabled||actor==null||current==null||phase>=phaseNames.Length)return;
             float age=Time.realtimeSinceStartup-phaseStart;
             current.frames++;current.animatorEnabled|=actor.animator.enabled;current.avatarValid|=actor.animator.avatar!=null&&actor.animator.avatar.isValid;
-            foreach(int layer in new[]{0,1})foreach(var clip in actor.animator.GetCurrentAnimatorClipInfo(layer).Concat(actor.animator.GetNextAnimatorClipInfo(layer)))if(clip.clip!=null&&clip.weight>.04f){observed.Add(clip.clip.name);phaseObserved.Add(clip.clip.name);}
+            foreach(int layer in Enumerable.Range(0,actor.animator.layerCount))foreach(var clip in actor.animator.GetCurrentAnimatorClipInfo(layer).Concat(actor.animator.GetNextAnimatorClipInfo(layer)))if(clip.clip!=null&&clip.weight>.04f){observed.Add(clip.clip.name);phaseObserved.Add(clip.clip.name);}
             if(age>.25f&&!motionStarted)
             {
                 motionStarted=true;initialThigh=actor.leftThigh.localRotation;initialHand=actor.actorRoot.InverseTransformPoint(actor.Bone("Hand.R").position);
@@ -110,7 +110,7 @@ namespace Era
             report.arrowEvents=Mathf.Max(report.arrowEvents,actor.ArrowEventCount);report.arrowVisibleDuringDraw|=actor.nockedArrowRenderers.Any(x=>x.enabled)&&current.name=="AutoFire";
             // ArenaView requests presentation in LateUpdate, after Animator evaluation.
             // Require the actual weighted release clip on a subsequent evaluated frame.
-            bool evaluatedRelease=actor.animator.GetCurrentAnimatorClipInfo(1).Concat(actor.animator.GetNextAnimatorClipInfo(1)).Any(c=>c.clip!=null&&c.clip.name=="Archer_BowRelease"&&c.weight>.04f)&&actor.animator.GetLayerWeight(1)>.1f;
+            bool evaluatedRelease=actor.animator.GetCurrentAnimatorClipInfo(ArcherAnimationDriver.BowLayer).Concat(actor.animator.GetNextAnimatorClipInfo(ArcherAnimationDriver.BowLayer)).Any(c=>c.clip!=null&&c.clip.name=="Archer_BowRelease"&&c.weight>.04f)&&actor.animator.GetLayerWeight(ArcherAnimationDriver.BowLayer)>.1f;
             for(int i=pendingShots.Count-1;i>=0;i--)
             {
                 var pending=pendingShots[i];

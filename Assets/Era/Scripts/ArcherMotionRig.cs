@@ -40,6 +40,9 @@ namespace Era
         Vector3 previousVelocity,previousPosition;
         float previousYaw,facing,aimOffset,turnRate,forwardAcceleration;
         bool initialized,applied,hasFacing;
+        Vector3 hoodCenter,hoodRadii;bool hoodBound;float elbowAvoidance;
+        Vector3[] drawHandPoints=Array.Empty<Vector3>();float wristRoll;
+        public float ArmClearancePenalty{get;private set;}
         public float TurnRate=>turnRate;
         public float BodyLean=>body.value.z;
         public float CloakDeflection=>cloth.value.magnitude;
@@ -64,6 +67,19 @@ namespace Era
                 leftUpper,leftElbow,leftHand,rightUpper,rightElbow,rightHand,actor.leftThigh,actor.leftShin,actor.leftFoot,
                 actor.rightThigh,actor.rightShin,actor.rightFoot,cape[0],cape[1],cape[2],cape[3],cape[4],cape[5],quiver};
             positions=new Vector3[changed.Length];rotations=new Quaternion[changed.Length];initialized=true;
+            foreach(var skin in actor.GetComponentsInChildren<SkinnedMeshRenderer>(true))if(skin.name=="Hood"&&actor.head!=null)
+            {
+                var mesh=new Mesh();skin.BakeMesh(mesh,true);var bounds=new Bounds();bool first=true;
+                foreach(var v in mesh.vertices){var p=actor.head.InverseTransformPoint(skin.transform.TransformPoint(v));if(first){bounds=new Bounds(p,Vector3.zero);first=false;}else bounds.Encapsulate(p);}
+                hoodCenter=bounds.center;hoodRadii=bounds.extents+Vector3.one*(.025f/Mathf.Max(.01f,actor.head.lossyScale.x));hoodBound=!first;
+                if(Application.isPlaying)Destroy(mesh);else DestroyImmediate(mesh);break;
+            }
+            foreach(var skin in actor.GetComponentsInChildren<SkinnedMeshRenderer>(true))if(skin.name=="Arm_R")
+            {
+                var mesh=new Mesh();skin.BakeMesh(mesh,true);var points=new System.Collections.Generic.List<Vector3>();
+                foreach(var v in mesh.vertices){var delta=skin.transform.TransformPoint(v)-rightHand.position;if(delta.magnitude<.17f)points.Add(Quaternion.Inverse(rightHand.rotation)*delta);}
+                drawHandPoints=points.ToArray();if(Application.isPlaying)Destroy(mesh);else DestroyImmediate(mesh);break;
+            }
         }
         void Update()
         {
@@ -100,6 +116,49 @@ namespace Era
             float reach=Vector3.Distance(upper.position,elbow.position)+Vector3.Distance(elbow.position,hand.position)-.001f;
             var delta=goal-upper.position;
             return delta.magnitude>reach?delta.normalized*reach-delta:Vector3.zero;
+        }
+        Vector3 ElbowPosition(Vector3 goal,Vector3 pole)
+        {
+            var origin=rightUpper.position;float a=Vector3.Distance(origin,rightElbow.position),b=Vector3.Distance(rightElbow.position,rightHand.position);
+            var delta=goal-origin;float d=Mathf.Clamp(delta.magnitude,Mathf.Abs(a-b)+.0001f,a+b-.0001f);var axis=delta.normalized;
+            var bend=Vector3.ProjectOnPlane(pole-origin,axis).normalized;float along=(a*a-b*b+d*d)/(2*d);
+            return origin+axis*along+bend*Mathf.Sqrt(Mathf.Max(0,a*a-along*along));
+        }
+        float ForearmCost(Vector3 elbow,Vector3 wrist)
+        {
+            float cost=0;
+            for(int i=0;i<5;i++)
+            {
+                float t=i*.225f;
+                var p=actor.head.InverseTransformPoint(Vector3.Lerp(elbow,wrist,t))-hoodCenter;
+                p=new Vector3(p.x/Mathf.Max(.01f,hoodRadii.x),p.y/Mathf.Max(.01f,hoodRadii.y),p.z/Mathf.Max(.01f,hoodRadii.z));
+                float overlap=Mathf.Max(0,1-p.magnitude);cost+=overlap*overlap;
+            }
+            return cost;
+        }
+        float HandCost(Vector3 wrist,Quaternion orientation)
+        {
+            float cost=0;
+            foreach(var offset in drawHandPoints)
+            {
+                var p=actor.head.InverseTransformPoint(wrist+orientation*offset)-hoodCenter;
+                p=new Vector3(p.x/Mathf.Max(.01f,hoodRadii.x),p.y/Mathf.Max(.01f,hoodRadii.y),p.z/Mathf.Max(.01f,hoodRadii.z));
+                float overlap=Mathf.Max(0,1-p.magnitude);cost+=overlap*overlap;
+            }
+            return cost/Mathf.Max(1,drawHandPoints.Length);
+        }
+        Vector3 ClearDrawElbow(Vector3 goal,Vector3 pole,float dt)
+        {
+            if(!hoodBound)return pole;var axis=(goal-rightUpper.position).normalized;float best=0,bestScore=float.MaxValue;
+            for(int angle=-60;angle<=60;angle+=5)
+            {
+                var candidate=rightUpper.position+Quaternion.AngleAxis(angle,axis)*(pole-rightUpper.position);
+                float score=ForearmCost(ElbowPosition(goal,candidate),goal)+Mathf.Abs(angle)*.000002f;
+                if(score<bestScore){bestScore=score;best=angle;}
+            }
+            elbowAvoidance=PresentationMotion.Damp(elbowAvoidance,best,24,dt);
+            var result=rightUpper.position+Quaternion.AngleAxis(elbowAvoidance,axis)*(pole-rightUpper.position);
+            ArmClearancePenalty=ForearmCost(ElbowPosition(goal,result),goal);return result;
         }
         float Ground(PlayerState p,Vector3 point)
         {
@@ -165,6 +224,7 @@ namespace Era
             var leftRotation=leftHand.rotation;var rightRotation=rightHand.rotation;
             var muzzlePosition=actor.arrowSpawn!=null?actor.arrowSpawn.position:leftPosition;
             var muzzleAxis=actor.arrowSpawn!=null?actor.arrowSpawn.up:root.forward;
+            var nockPosition=actor.arrowNock!=null?actor.arrowNock.position:rightPosition;
             var headRotation=actor.head.rotation;var chestPosition=actor.chest.position;
             var leftPole=leftElbow.position;var rightPole=rightElbow.position;
             Rotate(actor.pelvis,lean*.15f);
@@ -192,6 +252,7 @@ namespace Era
                 var leftBend=chestPosition+aim*(leftPole-chestPosition);
                 var rightBend=chestPosition+aim*(rightPole-chestPosition);
                 var handAim=aim;
+                var drawOrientation=aim*rightRotation;
                 if(actor.IsReleasing&&actor.arrowSpawn!=null)
                 {
                     // The base-layer spine still leans during a run/jump. Keep
@@ -206,20 +267,40 @@ namespace Era
                     leftBend=fireOrigin+align*(leftBend-predictedMuzzle);
                     rightBend=fireOrigin+align*(rightBend-predictedMuzzle);
                     handAim=align*aim;
+                    drawOrientation=handAim*rightRotation;
+                }
+                if(hoodBound&&!actor.IsReleasing&&actor.arrowNock!=null)
+                {
+                    // Roll the wrist about the actual finger/nock contact,
+                    // rather than pulling the fingers away from the string.
+                    var grip=Quaternion.Inverse(rightRotation)*(nockPosition-rightPosition);
+                    var nock=leftGoal+handAim*(nockPosition-leftPosition);float best=0,score=float.MaxValue;
+                    for(int angle=-30;angle<=30;angle+=5)
+                    {
+                        var candidate=Quaternion.AngleAxis(angle,handAim*muzzleAxis)*handAim*rightRotation;
+                        float cost=HandCost(nock-candidate*grip,candidate)+Mathf.Abs(angle)*.000002f;
+                        if(cost<score){score=cost;best=angle;}
+                    }
+                    wristRoll=PresentationMotion.Damp(wristRoll,best,24,dt);
+                    drawOrientation=Quaternion.AngleAxis(wristRoll,handAim*muzzleAxis)*handAim*rightRotation;
+                    rightGoal=nock-drawOrientation*grip;
                 }
                 // Translate both goals together into the reachable overlap.
                 // Clamping each hand separately would pull the nock away from
                 // the draw hand during a bank or a large aiming twist.
-                for(int i=0;i<8;i++)
+                for(int i=0;i<(actor.IsReleasing?1:8);i++)
                 {
                     var correction=ReachCorrection(leftUpper,leftElbow,leftHand,leftGoal);
-                    leftGoal+=correction;rightGoal+=correction;
+                    leftGoal+=correction;if(!actor.IsReleasing)rightGoal+=correction;
                     correction=ReachCorrection(rightUpper,rightElbow,rightHand,rightGoal);
-                    leftGoal+=correction;rightGoal+=correction;
+                    if(!actor.IsReleasing)leftGoal+=correction;rightGoal+=correction;
                 }
+                // Once released the draw hand is free of the nock; its reach
+                // clamp must not drag the bow away from the firing origin.
+                rightBend=ClearDrawElbow(rightGoal,rightBend,dt);
                 ArmPoseIK.Solve(leftUpper,leftElbow,leftHand,leftGoal,leftBend);
                 ArmPoseIK.Solve(rightUpper,rightElbow,rightHand,rightGoal,rightBend);
-                leftHand.rotation=handAim*leftRotation;rightHand.rotation=handAim*rightRotation;
+                leftHand.rotation=handAim*leftRotation;rightHand.rotation=drawOrientation;
                 GripError=Mathf.Max(Vector3.Distance(leftHand.position,leftGoal),Vector3.Distance(rightHand.position,rightGoal));
                 actor.head.rotation=Quaternion.Slerp(actor.head.rotation,aim*headRotation,.85f);
                 AimError=Mathf.Abs(Mathf.DeltaAngle(yaw+aimOffset,aimYaw));

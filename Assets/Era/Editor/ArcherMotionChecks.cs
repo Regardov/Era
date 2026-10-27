@@ -90,8 +90,8 @@ namespace Era.Editor
                     {
                         a.animator.enabled=true;a.animator.Rebind();a.animator.SetFloat("Speed",a.runSpeed);a.animator.SetFloat("LocomotionRate",1);
                         if(a.animator.parameters.Any(p=>p.name=="MoveZ"))a.animator.SetFloat("MoveZ",a.runSpeed);
-                        a.animator.Play("Base Layer.Locomotion",0,frame/24f);a.animator.Play("UpperBody.Archer_BowHold",1,.25f);
-                        a.animator.SetLayerWeight(1,hold);a.animator.Update(0);
+                        a.animator.Play("Base Layer.Locomotion",0,frame/24f);a.animator.Play("UpperBody.Archer_BowHold",ArcherAnimationDriver.BowLayer,.25f);
+                        a.animator.SetLayerWeight(ArcherAnimationDriver.BowLayer,hold);a.animator.Update(0);
                         for(int i=0;i<names.Length;i++)
                         {
                             var q=a.Bone(names[i]).localRotation;if(frame==0)first[i]=q;
@@ -100,7 +100,7 @@ namespace Era.Editor
                         }
                     }
                 }
-                var controller=(UnityEditor.Animations.AnimatorController)a.animator.runtimeAnimatorController;var mask=controller.layers[1].avatarMask;
+                var controller=(UnityEditor.Animations.AnimatorController)a.animator.runtimeAnimatorController;var mask=controller.layers[ArcherAnimationDriver.BowLayer].avatarMask;
                 var report=new AuditReport{rotations=values,upperMask=Enumerable.Range(0,mask.transformCount).Where(i=>mask.GetTransformActive(i)).Select(mask.GetTransformPath).ToArray()};
                 Directory.CreateDirectory("Artifacts");File.WriteAllText("Artifacts/archer-layer-audit.json",JsonUtility.ToJson(report,true));
                 Debug.Log("ERA_ARCHER_LAYER_AUDIT "+JsonUtility.ToJson(report));

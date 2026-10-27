@@ -20,6 +20,7 @@ namespace Era.Editor
         public const string PrefabPath = "Assets/Era/Resources/Characters/Ember.prefab";
         public const string ControllerPath = Folder + "/Archer.controller";
         public const string MaskPath = Folder + "/Archer_UpperBody.mask";
+        public const string ActionMaskPath = Folder + "/Archer_BodyActions.mask";
         public const float VisualScale = 2.23f / 1.8f;
         const string Marker = "Assets/Era/Generated/ArcherAnimation-v1.txt";
         public static readonly string[] ClipNames = { "Archer_Idle", "Archer_Walk", "Archer_Run", "Archer_Aim", "Archer_BowDraw", "Archer_BowHold", "Archer_BowRelease", "Archer_ShootRecovery", "Archer_DodgeRoll", "Archer_Dash", "Archer_Hit", "Archer_Death", "Archer_Cast", "Archer_Interact", "Archer_TeleportOut", "Archer_TeleportIn", "Archer_WalkLeft", "Archer_WalkRight", "Archer_WalkBack", "Archer_RunLeft", "Archer_RunRight", "Archer_RunBack", "Archer_JumpStart", "Archer_Airborne", "Archer_Fall", "Archer_Land" };
@@ -41,7 +42,7 @@ namespace Era.Editor
         {
             if (!File.Exists(FbxPath) || !File.Exists(ManifestPath)) throw new FileNotFoundException("Archer FBX and manifest are required");
             var manifest = ReadManifest();
-            string signature = "archer-generic-v6-air-and-stride / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
+            string signature = "archer-generic-v7-body-actions / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
             var current = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (File.Exists(Marker) && File.ReadAllText(Marker).Trim() == signature && current != null && current.GetComponent<HeroMotion>()?.archer != null && AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null) return;
             string guid = AssetDatabase.AssetPathToGUID(PrefabPath);
@@ -109,7 +110,7 @@ namespace Era.Editor
                 EditorUtility.SetDirty(clip); clips.Add(data.name, clip);
             }
             var mask = MakeMask(model);
-            var controller = MakeController(clips, mask, manifest);
+            var controller = MakeController(clips, mask, MakeActionMask(model), manifest);
             if (current.GetComponent<HeroMotion>()?.archer == null)
             {
                 Directory.CreateDirectory(Folder + "/Source"); AssetDatabase.Refresh();
@@ -205,7 +206,21 @@ namespace Era.Editor
             }
             EditorUtility.SetDirty(mask); return mask;
         }
-        static AnimatorController MakeController(Dictionary<string, AnimationClip> clips, AvatarMask mask, Manifest manifest)
+        static AvatarMask MakeActionMask(GameObject model)
+        {
+            var mask=AssetDatabase.LoadAssetAtPath<AvatarMask>(ActionMaskPath);
+            if(mask==null){mask=new AvatarMask();AssetDatabase.CreateAsset(mask,ActionMaskPath);}
+            mask.name="Archer torso actions, locomotion feet excluded";
+            var transforms=model.GetComponentsInChildren<Transform>(true);mask.transformCount=transforms.Length;
+            for(int i=0;i<transforms.Length;i++)
+            {
+                string path=AnimationUtility.CalculateTransformPath(transforms[i],model.transform);mask.SetTransformPath(i,path);var parts=path.Split('/');
+                bool secondary=parts.Any(p=>p.StartsWith("Cape",StringComparison.Ordinal)||p=="QuiverAttach"||p=="BowRoot");
+                mask.SetTransformActive(i,parts.Contains("Spine")&&!secondary);
+            }
+            EditorUtility.SetDirty(mask);return mask;
+        }
+        static AnimatorController MakeController(Dictionary<string, AnimationClip> clips, AvatarMask mask, AvatarMask actionMask, Manifest manifest)
         {
             var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
             if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
@@ -215,9 +230,14 @@ namespace Era.Editor
             controller.AddParameter("MoveX",AnimatorControllerParameterType.Float);controller.AddParameter("MoveZ",AnimatorControllerParameterType.Float);
             controller.AddParameter("IsGrounded",AnimatorControllerParameterType.Bool);controller.AddParameter("VerticalVelocity",AnimatorControllerParameterType.Float);
             controller.AddParameter("LandingMove",AnimatorControllerParameterType.Float);
+            controller.AddParameter("ActionRate",AnimatorControllerParameterType.Float);
             var lower = new AnimatorStateMachine { name = "Base Layer" }; AssetDatabase.AddObjectToAsset(lower, controller);
             var upper = new AnimatorStateMachine { name = "UpperBody" }; AssetDatabase.AddObjectToAsset(upper, controller);
-            controller.layers = new[] { new AnimatorControllerLayer { name = "Base Layer", stateMachine = lower, defaultWeight = 1 }, new AnimatorControllerLayer { name = "UpperBody", stateMachine = upper, defaultWeight = 0, avatarMask = mask, blendingMode = AnimatorLayerBlendingMode.Override } };
+            var actions=new AnimatorStateMachine{name="BodyActions"};AssetDatabase.AddObjectToAsset(actions,controller);
+            controller.layers = new[] { new AnimatorControllerLayer { name = "Base Layer", stateMachine = lower, defaultWeight = 1 },new AnimatorControllerLayer{name="BodyActions",stateMachine=actions,defaultWeight=0,avatarMask=actionMask,blendingMode=AnimatorLayerBlendingMode.Override}, new AnimatorControllerLayer { name = "UpperBody", stateMachine = upper, defaultWeight = 0, avatarMask = mask, blendingMode = AnimatorLayerBlendingMode.Override } };
+            actions.defaultState=actions.AddState("Empty");
+            foreach(string name in new[]{"Archer_Cast","Archer_Hit","Archer_Interact"})
+            {var action=actions.AddState(name);action.motion=clips[name];action.speedParameter="ActionRate";action.speedParameterActive=true;}
             var tree = new BlendTree { name = "Archer directional velocity", blendType = BlendTreeType.FreeformDirectional2D, blendParameter = "MoveX",blendParameterY="MoveZ", useAutomaticThresholds = false }; AssetDatabase.AddObjectToAsset(tree, controller);
             tree.AddChild(clips["Archer_Idle"],Vector2.zero);
             foreach(string gait in new[]{"Walk","Run"})

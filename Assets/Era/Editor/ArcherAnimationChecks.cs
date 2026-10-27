@@ -43,9 +43,9 @@ namespace Era.Editor
             Check(driver.weaponSocket != null && driver.arrowNock != null && driver.arrowSpawn != null && hero.rightElbow == driver.Bone("Hand.R"), "projectile sockets and independent right-hand weapon grip rebound");
             foreach (string bone in new[] { "Root", "Pelvis", "Spine", "Chest", "Neck", "Head", "UpperArm.L", "Forearm.L", "Hand.L", "UpperArm.R", "Forearm.R", "Hand.R", "Thigh.L", "Shin.L", "Foot.L", "Toe.L", "Thigh.R", "Shin.R", "Foot.R", "Toe.R", "BowRoot" }) Check(driver.Bone(bone) != null, "shared animation bone: " + bone);
             var controller = driver.animator.runtimeAnimatorController as AnimatorController;
-            Check(controller != null && controller.layers.Length == 2, "locomotion plus masked upper-body controller");
+            Check(controller != null && controller.layers.Length == 3, "locomotion plus masked upper-body controller");
             foreach (string param in new[] { "Speed", "MoveX", "MoveZ", "LocomotionRate", "UpperRate" }) Check(controller.parameters.Any(p => p.name == param), "controller parameter: " + param);
-            var mask = controller.layers[1].avatarMask;
+            var mask = controller.layers[ArcherAnimationDriver.BowLayer].avatarMask;
             Check(mask != null && mask.transformCount > 20, "upper-body transform mask exists");
             bool spineActive = false;
             for (int i = 0; i < mask.transformCount; i++)
@@ -115,9 +115,9 @@ namespace Era.Editor
                 Check(Quaternion.Angle(left, actor.leftThigh.localRotation) > 10, "running clip articulates actual thigh joint");
                 actor.animator.enabled = true; actor.animator.Rebind(); actor.animator.SetFloat("Speed", actor.runSpeed); actor.animator.SetFloat("LocomotionRate", 1); actor.animator.SetFloat("UpperRate", 1);
                 actor.animator.SetFloat("MoveX",0);actor.animator.SetFloat("MoveZ",actor.runSpeed);
-                actor.animator.Play("Base Layer.Locomotion", 0, .25f); actor.animator.SetLayerWeight(1, 0); actor.animator.Update(0);
+                actor.animator.Play("Base Layer.Locomotion", 0, .25f); actor.animator.SetLayerWeight(ArcherAnimationDriver.BowLayer, 0); actor.animator.Update(0);
                 var runThigh = actor.leftThigh.localRotation; var runHand = actor.Bone("Hand.R").position;
-                actor.animator.Play("UpperBody.Archer_BowHold", 1, .25f); actor.animator.SetLayerWeight(1, 1); actor.animator.Update(0);
+                actor.animator.Play("UpperBody.Archer_BowHold", ArcherAnimationDriver.BowLayer, .25f); actor.animator.SetLayerWeight(ArcherAnimationDriver.BowLayer, 1); actor.animator.Update(0);
                 Check(Quaternion.Angle(runThigh, actor.leftThigh.localRotation) < .1f, "real Animator upper mask preserves running legs");
                 Check(Vector3.Distance(runHand, actor.Bone("Hand.R").position) > .1f, "real Animator upper mask actually poses the draw hand");
                 actor.SampleClip("Archer_BowRelease", 0);
@@ -133,8 +133,8 @@ namespace Era.Editor
                 actor.animator.enabled=true;actor.Stand();
                 var shotState=new PlayerState{id=0,hp=100,maxHp=100,grounded=true,lastWeapon=(int)WeaponKind.Bow,weapons=new[]{(int)WeaponKind.Bow,-1},weaponTimers=new[]{.1f,0},weaponCastSerial=10};
                 actor.Present(shotState);actor.Stand();shotState.castSerial++;shotState.weaponCastSerial++;actor.Present(shotState);
-                actor.animator.SetLayerWeight(1,1);actor.animator.Update(0);
-                Check(actor.animator.GetCurrentAnimatorStateInfo(1).IsName("UpperBody.Archer_BowRelease")||actor.animator.GetNextAnimatorStateInfo(1).IsName("UpperBody.Archer_BowRelease"),"cast plus auto-fire still requests the bow release on the upper layer");
+                actor.animator.SetLayerWeight(ArcherAnimationDriver.BowLayer,1);actor.animator.Update(0);
+                Check(actor.animator.GetCurrentAnimatorStateInfo(ArcherAnimationDriver.BowLayer).IsName("UpperBody.Archer_BowRelease")||actor.animator.GetNextAnimatorStateInfo(ArcherAnimationDriver.BowLayer).IsName("UpperBody.Archer_BowRelease"),"cast plus auto-fire still requests the bow release on the upper layer");
             }
             finally { Object.DestroyImmediate(baked); Object.DestroyImmediate(instance); }
             return assertions - before;
