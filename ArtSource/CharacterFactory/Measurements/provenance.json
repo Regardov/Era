@@ -1,0 +1,49 @@
+{
+  "reference_commit": "0e7942def8a3e2178e9fe5d342935062609e3df6",
+  "source_sha256": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "scripts": [
+    {
+      "path": "ArtSource/Characters/Archer/RefineEquipmentAndAir.py",
+      "sha256": "7604ec315af5327549864db53de994734e08f7bae2d45dfa45f9ce0c1f77799d"
+    },
+    {
+      "path": "ArtSource/Characters/Archer/RefineMotion.py",
+      "sha256": "351a27b2aa171a668a74cfebd984fc9c73245f4f0170d3f70b01dfa2e504d425"
+    },
+    {
+      "path": "ArtSource/Characters/Archer/PolishAnimation.py",
+      "sha256": "429991bea0d1ad2659471cd0270d3bf1f7865427bd2a1f7bdadd6e7ddeed5000"
+    },
+    {
+      "path": "Tools/Audit-ArcherContacts.py",
+      "sha256": "e798137c288ca7d3f6bc62b79f244ff3388ac42d5b03e3beee9173a4f5a21f58"
+    }
+  ],
+  "historical_reviewed_files": [
+    {
+      "archive_name": "correct_v16.py",
+      "sha256": "712de278d0f835d06a87713b875e8c1c2ee795ac9d6e57674939989f66b68ea7",
+      "required_to_run_factory": false
+    },
+    {
+      "archive_name": "finalize_v17.py",
+      "sha256": "41a7c71467875f2c1bd5eb342c623f65055f70260626a29a731f9a291aa8e5ef",
+      "required_to_run_factory": false
+    },
+    {
+      "archive_name": "anim_prepare_geometry.py",
+      "sha256": "8a43a18d2a5350cceed36af98d07a90d0d9aeb6efe8034dcfc5d3c2f451a094d",
+      "required_to_run_factory": false
+    },
+    {
+      "archive_name": "anim_audit_source.py",
+      "sha256": "97e709919bd2f6f3f6e8dd337cdc9409fe5695ca8f62d4dc9399ec25f3248ea5",
+      "required_to_run_factory": false
+    },
+    {
+      "archive_name": "v18_clean_bow_render.py",
+      "sha256": "a3bdf935304a96963897a3076f680d6d674469155dde361709d533335092f01a",
+      "required_to_run_factory": false
+    }
+  ]
+}

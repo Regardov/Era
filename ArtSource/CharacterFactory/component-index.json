@@ -1,0 +1,463 @@
+{
+  "source_sha256": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "base_coverage": "Clothed construction base: no unseen anatomical torso/limbs were invented.",
+  "partition_preserves_all_source_faces_and_materials": true,
+  "components": [
+    {
+      "asset": "CF_Body_Neck",
+      "host": "Body_Head",
+      "parts": [
+        "Neck hidden under collar"
+      ],
+      "role": "base_body",
+      "archer_specific": false,
+      "vertices": 16,
+      "faces": 10
+    },
+    {
+      "asset": "CF_Head_Elf",
+      "host": "Body_Head",
+      "parts": [
+        "Head and connected ears",
+        "Eye opening L",
+        "Iris clipped L",
+        "Pupil clipped L",
+        "Brow L",
+        "Eye opening R",
+        "Iris clipped R",
+        "Pupil clipped R",
+        "Brow R",
+        "Mouth mark"
+      ],
+      "role": "head",
+      "archer_specific": true,
+      "vertices": 146,
+      "faces": 90
+    },
+    {
+      "asset": "CF_Body_ClothedTorso",
+      "host": "Clothing_Tunic_Coat",
+      "parts": [
+        "Tunic bodice"
+      ],
+      "role": "clothed_body_proxy",
+      "archer_specific": false,
+      "vertices": 48,
+      "faces": 42
+    },
+    {
+      "asset": "CF_Arms_Sleeved_L",
+      "host": "Arm_L",
+      "parts": [
+        "Linen sleeve L",
+        "Green sleeve lower tier L",
+        "Green sleeve L",
+        "Linen lower sleeve L"
+      ],
+      "role": "clothed_arms",
+      "archer_specific": false,
+      "vertices": 60,
+      "faces": 44
+    },
+    {
+      "asset": "CF_Gloves_L",
+      "host": "Arm_L",
+      "parts": [
+        "Glove L",
+        "Glove folded fingertips L",
+        "Thumb L",
+        "Glove knuckle shell L"
+      ],
+      "role": "gloves",
+      "archer_specific": false,
+      "vertices": 52,
+      "faces": 41
+    },
+    {
+      "asset": "CF_Bracers_L",
+      "host": "Arm_L",
+      "parts": [
+        "Bracer L",
+        "Bracer band L0.31",
+        "Bracer band L0.7"
+      ],
+      "role": "bracers",
+      "archer_specific": false,
+      "vertices": 42,
+      "faces": 30
+    },
+    {
+      "asset": "CF_Legs_Trousers_L",
+      "host": "Leg_L",
+      "parts": [
+        "Trouser leg L"
+      ],
+      "role": "clothed_legs",
+      "archer_specific": false,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Boots_L",
+      "host": "Leg_L",
+      "parts": [
+        "Boot shaft L",
+        "Boot foot L",
+        "Ankle band L"
+      ],
+      "role": "boots",
+      "archer_specific": false,
+      "vertices": 97,
+      "faces": 86
+    },
+    {
+      "asset": "CF_KneeArmor_L",
+      "host": "Leg_L",
+      "parts": [
+        "Knee lower fold L",
+        "Knee cuff L",
+        "Knee front overlap L"
+      ],
+      "role": "knee_armor",
+      "archer_specific": false,
+      "vertices": 43,
+      "faces": 35
+    },
+    {
+      "asset": "CF_ShoulderArmor_L",
+      "host": "Shoulder_Armor_L",
+      "parts": [
+        "Shoulder plate L",
+        "Shoulder articulated layer L"
+      ],
+      "role": "shoulder_armor",
+      "archer_specific": false,
+      "vertices": 24,
+      "faces": 24
+    },
+    {
+      "asset": "CF_Arms_Sleeved_R",
+      "host": "Arm_R",
+      "parts": [
+        "Linen sleeve R",
+        "Green sleeve lower tier R",
+        "Green sleeve R",
+        "Linen lower sleeve R"
+      ],
+      "role": "clothed_arms",
+      "archer_specific": false,
+      "vertices": 60,
+      "faces": 44
+    },
+    {
+      "asset": "CF_Gloves_R",
+      "host": "Arm_R",
+      "parts": [
+        "Glove R",
+        "Glove folded fingertips R",
+        "Thumb R",
+        "Glove knuckle shell R"
+      ],
+      "role": "gloves",
+      "archer_specific": false,
+      "vertices": 52,
+      "faces": 41
+    },
+    {
+      "asset": "CF_Bracers_R",
+      "host": "Arm_R",
+      "parts": [
+        "Bracer R",
+        "Bracer band R0.31",
+        "Bracer band R0.7"
+      ],
+      "role": "bracers",
+      "archer_specific": false,
+      "vertices": 42,
+      "faces": 30
+    },
+    {
+      "asset": "CF_Legs_Trousers_R",
+      "host": "Leg_R",
+      "parts": [
+        "Trouser leg R"
+      ],
+      "role": "clothed_legs",
+      "archer_specific": false,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Boots_R",
+      "host": "Leg_R",
+      "parts": [
+        "Boot shaft R",
+        "Boot foot R",
+        "Ankle band R"
+      ],
+      "role": "boots",
+      "archer_specific": false,
+      "vertices": 97,
+      "faces": 86
+    },
+    {
+      "asset": "CF_KneeArmor_R",
+      "host": "Leg_R",
+      "parts": [
+        "Knee lower fold R",
+        "Knee cuff R",
+        "Knee front overlap R"
+      ],
+      "role": "knee_armor",
+      "archer_specific": false,
+      "vertices": 43,
+      "faces": 35
+    },
+    {
+      "asset": "CF_ShoulderArmor_R",
+      "host": "Shoulder_Armor_R",
+      "parts": [
+        "Shoulder plate R",
+        "Shoulder articulated layer R"
+      ],
+      "role": "shoulder_armor",
+      "archer_specific": false,
+      "vertices": 24,
+      "faces": 24
+    },
+    {
+      "asset": "CF_ChestYoke",
+      "host": "Clothing_Tunic_Coat",
+      "parts": [
+        "Chest layered yoke"
+      ],
+      "role": "clothing",
+      "archer_specific": false,
+      "vertices": 13,
+      "faces": 13
+    },
+    {
+      "asset": "CF_LayeredPanels",
+      "host": "Clothing_Tunic_Coat",
+      "parts": [
+        "Front coat panel L",
+        "Side leather skirt L",
+        "Front coat panel R",
+        "Side leather skirt R",
+        "Central green tabard",
+        "Coat hem L",
+        "Side hem L",
+        "Coat hem R",
+        "Side hem R",
+        "Tabard border -1",
+        "Tabard border 1"
+      ],
+      "role": "clothing",
+      "archer_specific": false,
+      "vertices": 170,
+      "faces": 160
+    },
+    {
+      "asset": "CF_Hair_Elf",
+      "host": "Hair",
+      "parts": [
+        "Hair scalp",
+        "Fringe main diagonal",
+        "Fringe left frame",
+        "Fringe right frame",
+        "Side hair left",
+        "Side hair right",
+        "Fringe asymmetric temple accent"
+      ],
+      "role": "hair",
+      "archer_specific": true,
+      "vertices": 96,
+      "faces": 78
+    },
+    {
+      "asset": "CF_Hood_Archer",
+      "host": "Hood",
+      "parts": [
+        "Angular hood"
+      ],
+      "role": "hood",
+      "archer_specific": true,
+      "vertices": 52,
+      "faces": 63
+    },
+    {
+      "asset": "CF_Scarf",
+      "host": "Scarf",
+      "parts": [
+        "Folded collar",
+        "Front scarf fold"
+      ],
+      "role": "scarf",
+      "archer_specific": false,
+      "vertices": 70,
+      "faces": 72
+    },
+    {
+      "asset": "CF_Cloak_Pointed",
+      "host": "Cloak",
+      "parts": [
+        "Pointed cape"
+      ],
+      "role": "cloak",
+      "archer_specific": true,
+      "vertices": 40,
+      "faces": 46
+    },
+    {
+      "asset": "CF_BeltAndPouches",
+      "host": "Belt_Gear",
+      "parts": [
+        "Waist belt",
+        "Buckle",
+        "Buckle inset",
+        "Lower diagonal belt",
+        "Belt pouch L",
+        "Pouch flap L",
+        "Belt pouch R",
+        "Pouch flap R",
+        "Pouch belt loop L",
+        "Pouch belt loop R"
+      ],
+      "role": "belts",
+      "archer_specific": false,
+      "vertices": 212,
+      "faces": 203
+    },
+    {
+      "asset": "CF_Bow_Wood",
+      "host": "Bow_Wood",
+      "parts": [
+        "Bow wood",
+        "Bow grip",
+        "Bow grip binding 0",
+        "Bow grip binding 1"
+      ],
+      "role": "weapon",
+      "archer_specific": true,
+      "vertices": 138,
+      "faces": 122
+    },
+    {
+      "asset": "CF_Bow_String",
+      "host": "Bow_String",
+      "parts": [
+        "Bow string"
+      ],
+      "role": "weapon",
+      "archer_specific": true,
+      "vertices": 12,
+      "faces": 10
+    },
+    {
+      "asset": "CF_Quiver",
+      "host": "Quiver_Case",
+      "parts": [
+        "Quiver",
+        "Quiver lip",
+        "Quiver flap"
+      ],
+      "role": "quiver",
+      "archer_specific": true,
+      "vertices": 82,
+      "faces": 73
+    },
+    {
+      "asset": "CF_Harness",
+      "host": "Harness",
+      "parts": [
+        "Main chest strap",
+        "Secondary chest strap",
+        "Harness clasp"
+      ],
+      "role": "straps",
+      "archer_specific": false,
+      "vertices": 228,
+      "faces": 224
+    },
+    {
+      "asset": "CF_QuiverSupport",
+      "host": "Harness",
+      "parts": [
+        "Quiver shoulder support"
+      ],
+      "role": "quiver_attachment",
+      "archer_specific": true,
+      "vertices": 60,
+      "faces": 56
+    },
+    {
+      "asset": "CF_Arrow_01",
+      "host": "Arrow_01",
+      "parts": [
+        "Arrow shaft 0",
+        "Arrow feather 0"
+      ],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Arrow_02",
+      "host": "Arrow_02",
+      "parts": [
+        "Arrow shaft 1",
+        "Arrow feather 1"
+      ],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Arrow_03",
+      "host": "Arrow_03",
+      "parts": [
+        "Arrow shaft 2",
+        "Arrow feather 2"
+      ],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Arrow_04",
+      "host": "Arrow_04",
+      "parts": [
+        "Arrow shaft 3",
+        "Arrow feather 3"
+      ],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_Arrow_05",
+      "host": "Arrow_05",
+      "parts": [
+        "Arrow shaft 4",
+        "Arrow feather 4"
+      ],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    },
+    {
+      "asset": "CF_NockedArrow",
+      "host": "NockedArrow",
+      "parts": [],
+      "role": "arrow",
+      "archer_specific": true,
+      "vertices": 24,
+      "faces": 18
+    }
+  ]
+}

@@ -1,0 +1,773 @@
+{
+  "ok": true,
+  "blender": "5.2.3 LTS",
+  "source_sha256_before": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "source_sha256_after": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "library_unchanged": true,
+  "compatible_after_width_edit": {
+    "schema": "ERA_Humanoid54_v1",
+    "compatible": true,
+    "missing": [],
+    "extra": [],
+    "errors": []
+  },
+  "actions_unchanged": true,
+  "changed_rest_rejects_action_reuse": true,
+  "reference_edit_guard": true,
+  "independent_clone_data": true,
+  "intersection_positive_control": {
+    "a": "CF_Body_ClothedTorso",
+    "b": "QA_IntentionalIntersection",
+    "face_pairs": 19,
+    "sample_pairs": [
+      [
+        34,
+        41
+      ],
+      [
+        33,
+        41
+      ],
+      [
+        35,
+        41
+      ],
+      [
+        32,
+        24
+      ],
+      [
+        41,
+        38
+      ],
+      [
+        41,
+        39
+      ],
+      [
+        41,
+        37
+      ],
+      [
+        19,
+        20
+      ],
+      [
+        16,
+        8
+      ],
+      [
+        20,
+        28
+      ],
+      [
+        1,
+        40
+      ],
+      [
+        2,
+        40
+      ],
+      [
+        40,
+        7
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        8,
+        15
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        3,
+        40
+      ],
+      [
+        40,
+        5
+      ],
+      [
+        40,
+        6
+      ]
+    ],
+    "allow_reason": null,
+    "requires_review": true
+  },
+  "actions_sampled": {
+    "Archer_WalkRight": {
+      "max_sample_angle_degrees": 336.7237088737497,
+      "max_sample_position_m": 1.1021823994370553e-18
+    },
+    "Archer_WalkLeft": {
+      "max_sample_angle_degrees": 334.26295564033416,
+      "max_sample_position_m": 1.1021823994370553e-18
+    },
+    "Archer_WalkBack": {
+      "max_sample_angle_degrees": 31.313545249962473,
+      "max_sample_position_m": 1.1021823994370553e-18
+    },
+    "Archer_Walk": {
+      "max_sample_angle_degrees": 344.187876202523,
+      "max_sample_position_m": 1.1021823994370553e-18
+    },
+    "Archer_TeleportOut": {
+      "max_sample_angle_degrees": 340.7710877306025,
+      "max_sample_position_m": 0.1981119144931028
+    },
+    "Archer_TeleportIn": {
+      "max_sample_angle_degrees": 18.492402498540194,
+      "max_sample_position_m": 0.14420671949623304
+    },
+    "Archer_ShootRecovery": {
+      "max_sample_angle_degrees": 39.99996127033125,
+      "max_sample_position_m": 0.46244742960196583
+    },
+    "Archer_RunRight": {
+      "max_sample_angle_degrees": 321.120360280909,
+      "max_sample_position_m": 0.0045849359465790955
+    },
+    "Archer_RunLeft": {
+      "max_sample_angle_degrees": 319.36593056994286,
+      "max_sample_position_m": 0.0045849359465790955
+    },
+    "Archer_RunBack": {
+      "max_sample_angle_degrees": 65.62800241366175,
+      "max_sample_position_m": 0.0045849359465790955
+    },
+    "Archer_Run": {
+      "max_sample_angle_degrees": 16.121023997961586,
+      "max_sample_position_m": 0.0045849359465790955
+    },
+    "Archer_Land": {
+      "max_sample_angle_degrees": 14.793703091269256,
+      "max_sample_position_m": 0.07499998907248137
+    },
+    "Archer_JumpStart": {
+      "max_sample_angle_degrees": 17.207505604330102,
+      "max_sample_position_m": 0.012581676020779385
+    },
+    "Archer_Interact": {
+      "max_sample_angle_degrees": 6.707375111659928,
+      "max_sample_position_m": 0.10617408270360089
+    },
+    "Archer_Idle": {
+      "max_sample_angle_degrees": 0.0,
+      "max_sample_position_m": 3.673940263493071e-19
+    },
+    "Archer_Hit": {
+      "max_sample_angle_degrees": 4.060173508715522,
+      "max_sample_position_m": 0.0050456262921835145
+    },
+    "Archer_Fall": {
+      "max_sample_angle_degrees": 0.0,
+      "max_sample_position_m": 0.0
+    },
+    "Archer_DodgeRoll": {
+      "max_sample_angle_degrees": 272.7144271424351,
+      "max_sample_position_m": 0.7568082058360175
+    },
+    "Archer_Death": {
+      "max_sample_angle_degrees": 285.31003363236897,
+      "max_sample_position_m": 0.5467627288481479
+    },
+    "Archer_Dash": {
+      "max_sample_angle_degrees": 26.368741007872533,
+      "max_sample_position_m": 0.06988029254147496
+    },
+    "Archer_Cast": {
+      "max_sample_angle_degrees": 25.623461501492006,
+      "max_sample_position_m": 0.13424926382931435
+    },
+    "Archer_BowRelease": {
+      "max_sample_angle_degrees": 0.10467831195095843,
+      "max_sample_position_m": 0.24370081769713395
+    },
+    "Archer_BowHold": {
+      "max_sample_angle_degrees": 0.0,
+      "max_sample_position_m": 0.0
+    },
+    "Archer_BowDraw": {
+      "max_sample_angle_degrees": 0.0,
+      "max_sample_position_m": 0.1220639193172004
+    },
+    "Archer_Airborne": {
+      "max_sample_angle_degrees": 0.0,
+      "max_sample_position_m": 0.0
+    },
+    "Archer_Aim": {
+      "max_sample_angle_degrees": 320.7444539897482,
+      "max_sample_position_m": 0.5731734023038895
+    }
+  },
+  "base_checks": {
+    "meshes": [
+      {
+        "object": "CF_Body_Neck",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Head_Elf",
+        "islands": 10,
+        "boundary_edges": 53,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Body_ClothedTorso",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Arms_Sleeved_L",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Gloves_L",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Bracers_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Legs_Trousers_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Boots_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Arms_Sleeved_R",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Gloves_R",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Bracers_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Legs_Trousers_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Boots_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      }
+    ],
+    "weights": [
+      {
+        "object": "CF_Body_Neck",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Head_Elf",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Body_ClothedTorso",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Arms_Sleeved_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Gloves_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Bracers_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Legs_Trousers_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Boots_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Arms_Sleeved_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Gloves_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Bracers_R",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Legs_Trousers_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Boots_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      }
+    ]
+  },
+  "test_checks": {
+    "meshes": [
+      {
+        "object": "CF_Body_Neck",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Head_Elf",
+        "islands": 10,
+        "boundary_edges": 53,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Body_ClothedTorso",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Arms_Sleeved_L",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Gloves_L",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Bracers_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Legs_Trousers_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Boots_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Arms_Sleeved_R",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Gloves_R",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Bracers_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Legs_Trousers_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_Boots_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "Factory_Test_Panel",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "CF_ShoulderArmor_L",
+        "islands": 2,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "Factory_Test_Strap",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "Factory_Test_Loft",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      }
+    ],
+    "weights": [
+      {
+        "object": "CF_Body_Neck",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Head_Elf",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Body_ClothedTorso",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Arms_Sleeved_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Gloves_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Bracers_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Legs_Trousers_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Boots_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Arms_Sleeved_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Gloves_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Bracers_R",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Legs_Trousers_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_Boots_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "Factory_Test_Panel",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "CF_ShoulderArmor_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "Factory_Test_Strap",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "Factory_Test_Loft",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      }
+    ]
+  },
+  "surface_contacts": [
+    {
+      "a": "CF_Body_ClothedTorso",
+      "b": "Factory_Test_Strap",
+      "face_pairs": 0,
+      "sample_pairs": [],
+      "allow_reason": null,
+      "requires_review": false
+    },
+    {
+      "a": "CF_Body_ClothedTorso",
+      "b": "Factory_Test_Panel",
+      "face_pairs": 0,
+      "sample_pairs": [],
+      "allow_reason": null,
+      "requires_review": false
+    }
+  ],
+  "test_changes": [
+    "Coordinated waist width/depth edit",
+    "Independent cloth/leather material copies",
+    "Thin panel on Pelvis",
+    "Appended existing shoulder plate",
+    "Surface-fitted Chest strap",
+    "Faceted collar swatch"
+  ],
+  "export": "Artifacts\\CharacterFactory\\FactorySmoke.fbx",
+  "renders_before": [
+    "Factory-base-front.png",
+    "Factory-base-side.png"
+  ],
+  "renders_after": [
+    "Factory-test-front.png",
+    "Factory-test-side.png",
+    "Factory-test-back.png",
+    "Factory-test-perspective.png"
+  ],
+  "limits": [
+    "Clothed base is not a complete naked body",
+    "Contact test is sampled surface intersection only",
+    "Blender sample checks do not prove Unity runtime deformation quality"
+  ]
+}
