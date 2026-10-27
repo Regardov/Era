@@ -42,7 +42,7 @@ namespace Era.Editor
         {
             if (!File.Exists(FbxPath) || !File.Exists(ManifestPath)) throw new FileNotFoundException("Archer FBX and manifest are required");
             var manifest = ReadManifest();
-            string signature = "archer-generic-v7-body-actions / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
+            string signature = "archer-generic-v8-approved-actions / " + Hash(FbxPath) + " / " + Hash(ManifestPath);
             var current = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
             if (File.Exists(Marker) && File.ReadAllText(Marker).Trim() == signature && current != null && current.GetComponent<HeroMotion>()?.archer != null && AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath) != null) return;
             string guid = AssetDatabase.AssetPathToGUID(PrefabPath);
@@ -145,6 +145,7 @@ namespace Era.Editor
                 driver.weaponSocket = Bone("WeaponSocket"); driver.arrowNock = Bone("ArrowNock"); driver.arrowSpawn = Bone("ArrowSpawn");
                 driver.walkSpeed = manifest.walkSpeed * VisualScale; driver.runSpeed = manifest.runSpeed * VisualScale;
                 driver.walkSideScale=manifest.walkSideScale;driver.walkBackScale=manifest.walkBackScale;driver.runSideScale=manifest.runSideScale;driver.runBackScale=manifest.runBackScale;
+                driver.useDraftDeathAnimation=true;
                 driver.clips = manifest.clips.Select(c => new ArcherClipReference { name = c.name, clip = clips[c.name], loop = c.loop, duration = clips[c.name].length }).ToArray();
                 driver.modelRenderers = visual.GetComponentsInChildren<Renderer>(true);
                 foreach(var renderer in driver.modelRenderers)renderer.sharedMaterials=renderer.sharedMaterials.Select(material=>materials[material.name]).ToArray();

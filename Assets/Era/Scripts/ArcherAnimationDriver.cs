@@ -34,7 +34,9 @@ namespace Era
         public ArcherClipReference[] clips = Array.Empty<ArcherClipReference>();
         public float walkSpeed = .8294931f * (2.23f / 1.8f), runSpeed = 5.606061f * (2.23f / 1.8f);
         public float walkSideScale=.9f,walkBackScale=.9f,runSideScale=.88f,runBackScale=.82f;
-        public bool useDraftDeathAnimation;
+        // Kept under the old serialized name for compatibility; the approved
+        // authored collapse is enabled by the importer after quality validation.
+        public bool useDraftDeathAnimation=true;
         public UnityEvent onSpawnArrow = new UnityEvent();
         public UnityEvent onCastActivate = new UnityEvent();
         public UnityEvent onTeleportDisappear = new UnityEvent();
@@ -145,6 +147,7 @@ namespace Era
             if (lastHp >= 0 && p.hp < lastHp && fullState != "Archer_Dash" && fullState != "Archer_DodgeRoll") BeginBodyAction("Archer_Hit");
             lastHp = p.hp;
             if (p.dashTime > 0 && previousDash <= 0) { ClearUpper(false); PlayFull("Archer_Dash", true); }
+            if(p.dashTime<=0&&previousDash>0&&fullState=="Archer_Dash")ReturnToLocomotion();
             previousDash = p.dashTime;
             if (p.castSerial != castSerial) BeginBodyAction("Archer_Cast");
             castSerial = p.castSerial;

@@ -15,14 +15,14 @@ namespace Era
         [Serializable] public sealed class PhaseResult
         {
             public string name; public int frames; public float thighDegrees,handMeters,pelvisMeters,nockMeters,normalizedAdvance;
-            public bool animatorEnabled,avatarValid; public int shots,releaseStates; public string[] observedClips;
+            public bool animatorEnabled,avatarValid; public int shots,releaseStates,recordedFrames; public string[] observedClips;
         }
         [Serializable] public sealed class OtherResult { public string hero; public float walkDegrees,runDegrees; }
         [Serializable] public sealed class Report
         {
             public bool ok,finite=true; public int errors,shots,arrowEvents,shotsWithoutRelease; public string version; public int sourceBones,skins;
             public PhaseResult[] phases; public ClipResult[] clips; public OtherResult[] others;
-            public bool arrowVisibleDuringDraw,projectileObserved,draftDeathEnabledOnlyForTest;
+            public bool arrowVisibleDuringDraw,projectileObserved,draftDeathEnabledOnlyForTest,authoredDeathEnabledByDefault;
         }
         readonly string[] phaseNames={"Idle","Walk","Run","AutoFire","CastFire","Hold","Hit","Dash","Cast","Interact","TeleportOut","TeleportIn","DodgeRoll","Death"};
         readonly float[] durations={2.8f,1.8f,1.6f,3.5f,1.3f,1.8f,.65f,.7f,1f,.8f,.85f,.8f,.85f,1.8f};
@@ -36,9 +36,11 @@ namespace Era
         string folder; int phase=-1,seenArrowEvents; float started,phaseStart; bool entered,shot,motionStarted; PhaseResult current;
         Quaternion initialThigh; Vector3 initialHand,initialPelvis,initialNock; float initialNormalized;
         EnemyState target;
+        bool recordActions,studio;Texture2D videoFrame;Transform studioFloor;int videoPhase=-1,videoIndex;float nextVideoFrame;
         void Start()
         {
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--capture-folder");folder=at>=0?args[at+1]:Path.GetFullPath(Path.Combine(Application.dataPath,"..","Artifacts"));Directory.CreateDirectory(folder);
+            recordActions=Array.IndexOf(args,"--quality-record-actions")>=0;if(recordActions)videoFrame=new Texture2D(640,720,TextureFormat.RGB24,false);
             Application.logMessageReceived+=Log;App.SelectedHero=Hero.Ember;App.Solo();App.State.multiplayer=true;
             App.Simulation.AddPlayer(1,"Echo",Hero.Echo);App.Simulation.AddPlayer(2,"Lumen",Hero.Lumen);
             App.State.enemies.Clear();App.State.resourceNodes.Clear();App.State.spawnTimer=100000;App.CameraYaw=0;
@@ -65,7 +67,7 @@ namespace Era
             foreach(var ally in App.State.players.Where(x=>x.id!=p.id)){ally.pendingLevels=0;ally.invulnerability=999;ally.grounded=true;ally.position=WorldMap.OnGround((ally.id==1?-1:1)*2.6f,0);ally.velocity=p.velocity;ally.yaw=0;}
             if(!entered)
             {
-                entered=true;actor.SetAiming(false,0);p.downed=false;p.hp=p.maxHp;actor.useDraftDeathAnimation=false;
+                entered=true;actor.SetAiming(false,0);p.downed=false;p.hp=p.maxHp;report.authoredDeathEnabledByDefault=actor.useDraftDeathAnimation;
                 initialThigh=actor.leftThigh.localRotation;initialHand=actor.Bone("Hand.R").localPosition;initialPelvis=actor.pelvis.localPosition;initialNock=actor.arrowNock.position;
                 initialNormalized=actor.animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 switch(current.name)
@@ -80,7 +82,7 @@ namespace Era
                     case "TeleportOut":actor.PlayTeleportOut();break;
                     case "TeleportIn":actor.PlayTeleportIn();break;
                     case "DodgeRoll":actor.PlayDodgeRoll();break;
-                    case "Death":actor.useDraftDeathAnimation=true;report.draftDeathEnabledOnlyForTest=true;p.downed=true;break;
+                    case "Death":p.downed=true;break;
                 }
             }
             if(current.name!="AutoFire"&&current.name!="CastFire")App.State.enemies.Clear();else if(target!=null){target.hp=target.maxHp;target.frozen=1000;target.speed=0;target.position=p.position+Vector3.forward*6;}
@@ -132,17 +134,44 @@ namespace Era
             }
             if(current.frames%6==0)foreach(var skin in actor.GetComponentsInChildren<SkinnedMeshRenderer>(true)){skin.BakeMesh(baked);report.finite&=baked.vertices.All(v=>ActorMotionMath.Finite(v)&&v.magnitude<8);}
             var cam=App.View.Camera;cam.orthographic=true;cam.orthographicSize=1.85f;cam.transform.position=actor.actorRoot.position+new Vector3(4,2.1f,7);cam.transform.LookAt(actor.actorRoot.position+Vector3.up*1.2f);cam.GetComponent<StillwaterLens>().enabled=false;
+            if(recordActions)
+            {
+                if(!studio)
+                {
+                    studio=true;foreach(var t in actor.actorRoot.GetComponentsInChildren<Transform>(true))t.gameObject.layer=25;
+                    var floor=GameObject.CreatePrimitive(PrimitiveType.Cube);floor.layer=25;studioFloor=floor.transform;studioFloor.localScale=new Vector3(20,.06f,20);Destroy(floor.GetComponent<Collider>());floor.GetComponent<Renderer>().material.color=new Color(.40f,.42f,.43f);
+                    var key=new GameObject("Action review key").AddComponent<Light>();key.type=LightType.Directional;key.intensity=.8f;key.transform.rotation=Quaternion.Euler(32,-25,0);
+                    RenderSettings.fog=false;RenderSettings.ambientLight=new Color(.55f,.55f,.55f);
+                }
+                cam.cullingMask=1<<25;cam.clearFlags=CameraClearFlags.SolidColor;cam.backgroundColor=new Color(.22f,.25f,.26f);studioFloor.position=WorldMap.OnGround(actor.actorRoot.position.x,actor.actorRoot.position.z)+Vector3.down*.045f;
+                if(videoPhase!=phase){videoPhase=phase;videoIndex=0;nextVideoFrame=0;}
+                if(age>=nextVideoFrame)
+                {
+                    string path=Path.Combine(folder,"Frames",current.name);Directory.CreateDirectory(path);
+                    var rt=RenderTexture.GetTemporary(640,720,24);var previous=RenderTexture.active;var old=cam.targetTexture;
+                    try{cam.targetTexture=rt;cam.Render();RenderTexture.active=rt;videoFrame.ReadPixels(new Rect(0,0,640,720),0,0);videoFrame.Apply();File.WriteAllBytes(Path.Combine(path,(videoIndex++).ToString("D4")+".png"),videoFrame.EncodeToPNG());current.recordedFrames++;}
+                    finally{cam.targetTexture=old;RenderTexture.active=previous;RenderTexture.ReleaseTemporary(rt);}
+                    nextVideoFrame+=.05f;
+                }
+            }
             if(!shot&&age>durations[phase]*.58f){shot=true;capture.Save(Path.Combine(folder,"archer-"+current.name+"-v021.png"),cam,()=>{});}
+        }
+        bool Assigned(string name)
+        {
+            if(name=="Archer_Idle"||name.StartsWith("Archer_Walk")||name.StartsWith("Archer_Run"))return true;
+            for(int layer=0;layer<actor.animator.layerCount;layer++)
+                if(actor.animator.HasState(layer,Animator.StringToHash(actor.animator.GetLayerName(layer)+"."+name)))return true;
+            return false;
         }
         void Finish()
         {
             if(!enabled)return;enabled=false;report.shotsWithoutRelease+=pendingShots.Sum(p=>p.count);report.version=Application.version;report.phases=results.ToArray();report.others=other.Values.ToArray();
-            if(actor!=null){report.sourceBones=actor.Bone("Root").GetComponentsInChildren<Transform>(true).Length;report.skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Length;report.clips=actor.clips.Select(c=>new ClipResult{name=c.name,exists=c.clip!=null,imported=c.clip!=null&&!c.clip.empty&&!c.clip.legacy,assigned=actor.animator.HasState(c.name.StartsWith("Archer_Bow")||c.name=="Archer_Aim"||c.name=="Archer_ShootRecovery"?1:0,Animator.StringToHash((c.name.StartsWith("Archer_Bow")||c.name=="Archer_Aim"||c.name=="Archer_ShootRecovery"?"UpperBody.":"Base Layer.")+c.name))||c.name=="Archer_Idle"||c.name.StartsWith("Archer_Walk")||c.name.StartsWith("Archer_Run"),runtimeObserved=observed.Contains(c.name),seconds=c.clip==null?0:c.clip.length}).ToArray();}
+            if(actor!=null){report.sourceBones=actor.Bone("Root").GetComponentsInChildren<Transform>(true).Length;report.skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Length;report.clips=actor.clips.Select(c=>new ClipResult{name=c.name,exists=c.clip!=null,imported=c.clip!=null&&!c.clip.empty&&!c.clip.legacy,assigned=Assigned(c.name),runtimeObserved=observed.Contains(c.name),seconds=c.clip==null?0:c.clip.length}).ToArray();}
             PhaseResult Phase(string n)=>results.FirstOrDefault(x=>x.name==n);
             report.ok=actor!=null&&report.errors==0&&report.finite&&Phase("Idle")?.pelvisMeters>.0005f&&Phase("Walk")?.thighDegrees>8&&Phase("Walk")?.normalizedAdvance>.2f&&Phase("Run")?.thighDegrees>15&&Phase("Run")?.normalizedAdvance>.2f&&Phase("AutoFire")?.handMeters>.05f&&Phase("CastFire")?.shots>0&&report.shotsWithoutRelease==0&&report.shots>=2&&report.arrowEvents>=2&&report.projectileObserved&&report.arrowVisibleDuringDraw&&report.clips.All(c=>c.exists&&c.imported&&c.assigned)&&report.clips.Take(8).All(c=>c.runtimeObserved)&&report.others.All(x=>x.walkDegrees>5&&x.runDegrees>8);
             File.WriteAllText(Path.Combine(folder,"archer-runtime.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_ARCHER_RUNTIME "+JsonUtility.ToJson(report));Application.Quit(report.ok?0:2);
         }
-        void OnDestroy(){Application.logMessageReceived-=Log;if(baked!=null)Destroy(baked);capture?.Dispose();if(font!=null)Destroy(font);}
+        void OnDestroy(){Application.logMessageReceived-=Log;if(baked!=null)Destroy(baked);if(videoFrame!=null)Destroy(videoFrame);capture?.Dispose();if(font!=null)Destroy(font);}
     }
     [DefaultExecutionOrder(-40)] public sealed class ArcherRuntimePoseStage:MonoBehaviour { public ArcherRuntimeDiagnostics owner;void Update(){if(owner!=null&&owner.enabled)owner.PrepareFrame();} }
 }

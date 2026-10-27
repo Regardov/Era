@@ -14,3 +14,16 @@ for label in ['Before','After']:
   for p in files[1:]:strip.elements.append(p.name)
   strip.frame_final_duration=len(files);s.frame_start=1;s.frame_end=len(files);s.render.filepath=str(dest/f'{label}-{name}.mp4')
   bpy.ops.render.render(animation=True);print('QUALITY_VIDEO',s.render.filepath)
+
+# Runtime actions use the same GameApp actor/controller as the gameplay checks.
+folder=root/'Artifacts/AnimationQuality/Actions'
+if (folder/'archer-runtime.json').exists():
+ report=json.loads((folder/'archer-runtime.json').read_text(encoding='utf8'));assert report['ok']
+ counts={p['name']:p['recordedFrames'] for p in report['phases']}
+ for name in ['Hit','Dash','Cast','Interact','Death']:
+  for strip in list(editor.strips):editor.strips.remove(strip)
+  files=[folder/'Frames'/name/f'{i:04}.png' for i in range(counts[name])];assert files and all(p.exists() for p in files)
+  strip=editor.strips.new_image(name=name,filepath=str(files[0]),channel=1,frame_start=1)
+  for p in files[1:]:strip.elements.append(p.name)
+  strip.frame_final_duration=len(files);s.frame_start=1;s.frame_end=len(files);s.render.filepath=str(dest/f'After-{name}.mp4')
+  bpy.ops.render.render(animation=True);print('QUALITY_VIDEO',s.render.filepath)

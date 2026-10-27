@@ -41,6 +41,7 @@ namespace Era.Editor
             Check(!driver.animator.applyRootMotion && driver.animator.cullingMode == AnimatorCullingMode.AlwaysAnimate, "simulation remains the only actor movement source");
             Check(Mathf.Abs(driver.transform.localScale.x - ArcherAnimationImporter.VisualScale) < .0001f, "visual has explicit human-scale conversion");
             Check(driver.weaponSocket != null && driver.arrowNock != null && driver.arrowSpawn != null && hero.rightElbow == driver.Bone("Hand.R"), "projectile sockets and independent right-hand weapon grip rebound");
+            Check(driver.useDraftDeathAnimation,"approved grounded death is enabled in the actual prefab");
             foreach (string bone in new[] { "Root", "Pelvis", "Spine", "Chest", "Neck", "Head", "UpperArm.L", "Forearm.L", "Hand.L", "UpperArm.R", "Forearm.R", "Hand.R", "Thigh.L", "Shin.L", "Foot.L", "Toe.L", "Thigh.R", "Shin.R", "Foot.R", "Toe.R", "BowRoot" }) Check(driver.Bone(bone) != null, "shared animation bone: " + bone);
             var controller = driver.animator.runtimeAnimatorController as AnimatorController;
             Check(controller != null && controller.layers.Length == 3, "locomotion plus masked upper-body controller");
@@ -125,6 +126,8 @@ namespace Era.Editor
                 Debug.Log("ERA_ARCHER_MUZZLE " + muzzle.ToString("F8") + " direction=" + actor.arrowSpawn.up.ToString("F8") + " expected=" + ArcherShotProfile.OriginOffset.ToString("F8"));
                 Check(Vector3.Distance(muzzle, ArcherShotProfile.OriginOffset) < .035f, "authoritative projectile origin matches the baked release socket");
                 Check(Vector3.Dot(actor.arrowSpawn.up, instance.transform.forward) > .995f, "exported socket +Y points along the firing axis");
+                actor.SampleClip("Archer_Death",actor.Duration("Archer_Death"));
+                Check(instance.transform.InverseTransformPoint(actor.pelvis.position).y<.60f&&instance.transform.InverseTransformPoint(actor.head.position).y<.65f,"death settles the pelvis and head close to the ground");
                 actor.SampleClip("Archer_Idle", 0); var idleFoot = new[] { actor.leftFoot.position, actor.rightFoot.position };
                 actor.ApplyCrouch(1);
                 Check(Vector3.Distance(idleFoot[0], actor.leftFoot.position) < .025f && Vector3.Distance(idleFoot[1], actor.rightFoot.position) < .025f, "existing crouch input preserves planted ankles");
