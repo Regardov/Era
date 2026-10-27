@@ -1,0 +1,3711 @@
+{
+    "unity": "2023.1.22f1",
+    "baseCommit": "a40e3bd",
+    "models": [
+        {
+            "prefab": "Assets/Era/Resources/Characters/Library/DuskMage.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- DuskMage(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Characters/Ember.prefab",
+            "system": "Generic Animator + post-pose IK",
+            "controller": "Assets/Era/Art/Characters/Archer/Archer.controller",
+            "rootBone": "Root",
+            "hierarchy": [
+                "Root <- Archer_Rig",
+                "Pelvis <- Root",
+                "Spine <- Pelvis",
+                "Chest <- Spine",
+                "Neck <- Chest",
+                "Head <- Neck",
+                "Clavicle.L <- Chest",
+                "UpperArm.L <- Clavicle.L",
+                "Forearm.L <- UpperArm.L",
+                "Hand.L <- Forearm.L",
+                "Fingers.L <- Hand.L",
+                "BowRoot <- Hand.L",
+                "BowUpper1 <- BowRoot",
+                "BowUpper2 <- BowUpper1",
+                "StringTipUpper <- BowUpper2",
+                "BowLower1 <- BowRoot",
+                "BowLower2 <- BowLower1",
+                "StringTipLower <- BowLower2",
+                "ArrowNock <- BowRoot",
+                "ArrowHeld <- ArrowNock",
+                "ArrowSpawn <- ArrowNock",
+                "WeaponSocket <- Hand.L",
+                "ShoulderPad.L <- Clavicle.L",
+                "Clavicle.R <- Chest",
+                "UpperArm.R <- Clavicle.R",
+                "Forearm.R <- UpperArm.R",
+                "Hand.R <- Forearm.R",
+                "Fingers.R <- Hand.R",
+                "ShoulderPad.R <- Clavicle.R",
+                "Cape1.L <- Chest",
+                "Cape2.L <- Cape1.L",
+                "Cape1.C <- Chest",
+                "Cape2.C <- Cape1.C",
+                "Cape1.R <- Chest",
+                "Cape2.R <- Cape1.R",
+                "QuiverAttach <- Chest",
+                "Thigh.L <- Pelvis",
+                "Shin.L <- Thigh.L",
+                "Foot.L <- Shin.L",
+                "Toe.L <- Foot.L",
+                "KneePad.L <- Thigh.L",
+                "PanelFront1.L <- Pelvis",
+                "PanelFront2.L <- PanelFront1.L",
+                "PanelSide.L <- Pelvis",
+                "Thigh.R <- Pelvis",
+                "Shin.R <- Thigh.R",
+                "Foot.R <- Shin.R",
+                "Toe.R <- Foot.R",
+                "KneePad.R <- Thigh.R",
+                "PanelFront1.R <- Pelvis",
+                "PanelFront2.R <- PanelFront1.R",
+                "PanelSide.R <- Pelvis",
+                "Tabard1 <- Pelvis",
+                "Tabard2 <- Tabard1"
+            ],
+            "layers": [
+                "Base Layer / Override",
+                "UpperBody / Override"
+            ],
+            "masks": [
+                "Assets/Era/Art/Characters/Archer/Archer_UpperBody.mask"
+            ],
+            "skins": 23,
+            "bones": 54,
+            "blendTrees": 12,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "Archer_Aim",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Aim.anim",
+                    "guid": "467be7eaef213f3469c83f9fb25ffe6c",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.5,
+                    "pelvisRange": 0.011999964714050293,
+                    "spineAngle": 14.02867603302002,
+                    "shoulderAngle": 104.81375885009766,
+                    "footTravel": 0.00003795427983277477,
+                    "loopFootGap": 2.2067628435706866e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Airborne",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Airborne.anim",
+                    "guid": "c533a22efe52e6d438c7f5bd84de8ea8",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0,
+                    "pelvisRange": 0.005967140197753906,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.01482611894607544,
+                    "loopFootGap": 5.123052915223525e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_BowDraw",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_BowDraw.anim",
+                    "guid": "21421fd3b38391340ac4cac990954916",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_BowHold",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_BowHold.anim",
+                    "guid": "287601d7fc70cdb49865fac3e32c3ab7",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.2000000476837159,
+                    "pelvisRange": 0.0059999823570251469,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.8242396116256714,
+                    "footTravel": 8.052682574088976e-7,
+                    "loopFootGap": 9.541398782175747e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_BowRelease",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_BowRelease.anim",
+                    "guid": "444a378eb5f825f40b7e85418814bbe0",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.30000001192092898,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [
+                        "SpawnArrow @ 0,000"
+                    ],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Cast",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Cast.anim",
+                    "guid": "b4bdae7ff88e8024bb9183e9f9581ddb",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.8000000715255737,
+                    "pelvisRange": 0.02499997615814209,
+                    "spineAngle": 3.191136360168457,
+                    "shoulderAngle": 1.2220357656478882,
+                    "footTravel": 4.159166167028161e-7,
+                    "loopFootGap": 3.777267920668237e-7,
+                    "events": [
+                        "CastActivate @ 0,400"
+                    ],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Dash",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Dash.anim",
+                    "guid": "313d638e50208d14f8af9ffa194febd2",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.40000003576278689,
+                    "pelvisRange": 0.10111876577138901,
+                    "spineAngle": 9.899944305419922,
+                    "shoulderAngle": 14.522082328796387,
+                    "footTravel": 0.17878252267837525,
+                    "loopFootGap": 0.000008343969966517761,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Death",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Death.anim",
+                    "guid": "56443436d873cb648b3c7cfa74e41236",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.5000001192092896,
+                    "pelvisRange": 0.5418516397476196,
+                    "spineAngle": 9.84716510772705,
+                    "shoulderAngle": 88.1496353149414,
+                    "footTravel": 0.853996992111206,
+                    "loopFootGap": 0.8391246199607849,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_DodgeRoll",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_DodgeRoll.anim",
+                    "guid": "f75df0b65a8c47d45958b399b96b6086",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.7000000476837158,
+                    "pelvisRange": 0.47596272826194765,
+                    "spineAngle": 21.6746826171875,
+                    "shoulderAngle": 36.41176986694336,
+                    "footTravel": 0.9280509948730469,
+                    "loopFootGap": 0.000015703568351455033,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Fall",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Fall.anim",
+                    "guid": "024513e7bff9a674ba2ca73f344d7856",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.8000000715255737,
+                    "pelvisRange": 0.003999948501586914,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.009910836815834046,
+                    "loopFootGap": 4.5320112462832187e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Hit",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Hit.anim",
+                    "guid": "e586c5634e3a6da47944742b811e3307",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.3333333432674408,
+                    "pelvisRange": 0.04794533550739288,
+                    "spineAngle": 5.920703887939453,
+                    "shoulderAngle": 0.9261879920959473,
+                    "footTravel": 0.0028158233035355808,
+                    "loopFootGap": 1.522477361959318e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Idle",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Idle.anim",
+                    "guid": "8bd085f4c6d2c5842a2454c95347d221",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 2.4000000953674318,
+                    "pelvisRange": 0.008485310710966587,
+                    "spineAngle": 1.3596751689910889,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0015992776025086642,
+                    "loopFootGap": 8.024520781191313e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Interact",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Interact.anim",
+                    "guid": "c7456841a13e4f04aaeb3dd7f89bb82d",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.04000002145767212,
+                    "spineAngle": 5.400027751922607,
+                    "shoulderAngle": 0.30131572484970095,
+                    "footTravel": 0.00040769841871224344,
+                    "loopFootGap": 3.039252476355614e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_JumpStart",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_JumpStart.anim",
+                    "guid": "a09727f3ae06dea4a9b50900068b486c",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.20000001788139344,
+                    "pelvisRange": 0.0452536940574646,
+                    "spineAngle": 3.999955654144287,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.16105200350284577,
+                    "loopFootGap": 0.16105200350284577,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Land",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Land.anim",
+                    "guid": "ea9e90ec33457df479f72eb991a4654e",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.2666666805744171,
+                    "pelvisRange": 0.07499998807907105,
+                    "spineAngle": 4.999969959259033,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0000034123029308830157,
+                    "loopFootGap": 0.0000034123029308830157,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Run",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Run.anim",
+                    "guid": "63657ac3b59c2f740a0b0062c27ce41f",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.03112989291548729,
+                    "spineAngle": 3.9417977333068849,
+                    "shoulderAngle": 2.39721941947937,
+                    "footTravel": 0.926031768321991,
+                    "loopFootGap": 0.0000071617714638705369,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_RunBack",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_RunBack.anim",
+                    "guid": "da7324d5edb01004698bdc161568e7c1",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.03112989291548729,
+                    "spineAngle": 3.9417977333068849,
+                    "shoulderAngle": 2.39721941947937,
+                    "footTravel": 0.8530564904212952,
+                    "loopFootGap": 0.000008677389814693015,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_RunLeft",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_RunLeft.anim",
+                    "guid": "79208ace9de35c94fa48ade80e53dd52",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.03112989291548729,
+                    "spineAngle": 3.9417977333068849,
+                    "shoulderAngle": 2.39721941947937,
+                    "footTravel": 0.8793073296546936,
+                    "loopFootGap": 0.000007425971489283256,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_RunRight",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_RunRight.anim",
+                    "guid": "5c7e293dbccdf8d44b7e381a80f9a330",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.03112989291548729,
+                    "spineAngle": 3.9417977333068849,
+                    "shoulderAngle": 2.39721941947937,
+                    "footTravel": 0.8785655498504639,
+                    "loopFootGap": 0.000008474778951494955,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_ShootRecovery",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_ShootRecovery.anim",
+                    "guid": "085415fef495a7a4ca0e30c212eeb374",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.40000003576278689,
+                    "pelvisRange": 0.011999964714050293,
+                    "spineAngle": 14.02867603302002,
+                    "shoulderAngle": 104.7903060913086,
+                    "footTravel": 8.722572033548204e-7,
+                    "loopFootGap": 2.4572977963543965e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_TeleportIn",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_TeleportIn.anim",
+                    "guid": "fe291e5990f6af147b38a7a5704e769d",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.12999963760375977,
+                    "spineAngle": 5.400027751922607,
+                    "shoulderAngle": 1.342294454574585,
+                    "footTravel": 0.00037452607648447156,
+                    "loopFootGap": 2.2822202083716548e-7,
+                    "events": [
+                        "TeleportComplete @ 0,567"
+                    ],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_TeleportOut",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_TeleportOut.anim",
+                    "guid": "0f19e0fdca29294408d831de39296ccd",
+                    "legacy": false,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.8000000715255737,
+                    "pelvisRange": 0.11999654769897461,
+                    "spineAngle": 3.599881887435913,
+                    "shoulderAngle": 1.0856924057006837,
+                    "footTravel": 0.048436131328344348,
+                    "loopFootGap": 0.04843595251441002,
+                    "events": [
+                        "TeleportDisappear @ 0,667"
+                    ],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_Walk",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_Walk.anim",
+                    "guid": "9dadffe155b3db641b03e90e35db83e0",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.9333333969116211,
+                    "pelvisRange": 0.01790139451622963,
+                    "spineAngle": 3.9785659313201906,
+                    "shoulderAngle": 1.2335107326507569,
+                    "footTravel": 0.47945287823677065,
+                    "loopFootGap": 0.0000033572616757737707,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_WalkBack",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_WalkBack.anim",
+                    "guid": "3b9748fc09dfd9d4b9d4fc34a7278689",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.9333333969116211,
+                    "pelvisRange": 0.01790139451622963,
+                    "spineAngle": 3.9785659313201906,
+                    "shoulderAngle": 1.2335107326507569,
+                    "footTravel": 0.5355471968650818,
+                    "loopFootGap": 0.000006770589607185684,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_WalkLeft",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_WalkLeft.anim",
+                    "guid": "65f43d311e43cad44a7003a6b0569266",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.9333333969116211,
+                    "pelvisRange": 0.01790139451622963,
+                    "spineAngle": 3.9785659313201906,
+                    "shoulderAngle": 1.2335107326507569,
+                    "footTravel": 0.533724844455719,
+                    "loopFootGap": 0.000005456197413877817,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                },
+                {
+                    "name": "Archer_WalkRight",
+                    "path": "Assets/Era/Art/Characters/Archer/Animations/Archer_WalkRight.anim",
+                    "guid": "3f5d740c09e8ec54a849bcfd1d8c1335",
+                    "legacy": false,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.9333333969116211,
+                    "pelvisRange": 0.01790139451622963,
+                    "spineAngle": 3.9785659313201906,
+                    "shoulderAngle": 1.2335107326507569,
+                    "footTravel": 0.5355471968650818,
+                    "loopFootGap": 0.000007041276603558799,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 550
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Characters/Library/Wayfarer.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- Wayfarer(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Creatures/Stalker.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- Stalker(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Characters/Echo.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- Echo(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Characters/Lumen.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- Lumen(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Creatures/Wisp.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "hips",
+            "hierarchy": [
+                "Rig <- Wisp(Clone)",
+                "root <- Rig",
+                "hips <- root",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root",
+                "spine <- hips",
+                "upperleg.l <- hips",
+                "upperleg.r <- hips",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "chest <- spine",
+                "lowerleg.l <- upperleg.l",
+                "lowerleg.r <- upperleg.r",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "upperarm.l <- chest",
+                "upperarm.r <- chest",
+                "head <- chest",
+                "foot.l <- lowerleg.l",
+                "foot.r <- lowerleg.r",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "lowerarm.l <- upperarm.l",
+                "lowerarm.r <- upperarm.r",
+                "toes.l <- foot.l",
+                "toes.r <- foot.r",
+                "wrist.l <- lowerarm.l",
+                "wrist.r <- lowerarm.r",
+                "hand.l <- wrist.l",
+                "hand.r <- wrist.r",
+                "handslot.l <- hand.l",
+                "handslot.r <- hand.r"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 1,
+            "bones": 42,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982404202222824,
+                    "loopFootGap": 3.4142850324769827e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 7.450580596923828e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.0000017519006405564142,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003659059075289406,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451766848564148,
+                    "loopFootGap": 3.2850218190105809e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478189408779145,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478189408779145,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 1.4901161193847657e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.4751397259260558e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.306509246518544e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.322026990801533e-8,
+                    "loopFootGap": 3.332000986233652e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Mage.asset",
+                    "guid": "01632e44ba2944a4fb37c3de66efd44a",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        },
+        {
+            "prefab": "Assets/Era/Resources/Creatures/Warden.prefab",
+            "system": "Legacy Animation + SkeletalActor",
+            "controller": "Legacy: Animation.CrossFade + AddMixingTransform(spine)",
+            "rootBone": "root",
+            "hierarchy": [
+                "root <- Rig",
+                "hips <- root",
+                "spine <- hips",
+                "chest <- spine",
+                "upperarm.l <- chest",
+                "lowerarm.l <- upperarm.l",
+                "wrist.l <- lowerarm.l",
+                "hand.l <- wrist.l",
+                "handslot.l <- hand.l",
+                "upperarm.r <- chest",
+                "lowerarm.r <- upperarm.r",
+                "wrist.r <- lowerarm.r",
+                "hand.r <- wrist.r",
+                "handslot.r <- hand.r",
+                "head <- chest",
+                "upperleg.l <- hips",
+                "lowerleg.l <- upperleg.l",
+                "foot.l <- lowerleg.l",
+                "toes.l <- foot.l",
+                "upperleg.r <- hips",
+                "lowerleg.r <- upperleg.r",
+                "foot.r <- lowerleg.r",
+                "toes.r <- foot.r",
+                "kneeIK.l <- root",
+                "control-toe-roll.l <- root",
+                "control-heel-roll.l <- control-toe-roll.l",
+                "control-foot-roll.l <- control-heel-roll.l",
+                "heelIK.l <- control-foot-roll.l",
+                "IK-foot.l <- control-foot-roll.l",
+                "IK-toe.l <- control-heel-roll.l",
+                "kneeIK.r <- root",
+                "control-toe-roll.r <- root",
+                "control-heel-roll.r <- control-toe-roll.r",
+                "control-foot-roll.r <- control-heel-roll.r",
+                "heelIK.r <- control-foot-roll.r",
+                "IK-foot.r <- control-foot-roll.r",
+                "IK-toe.r <- control-heel-roll.r",
+                "elbowIK.l <- root",
+                "handIK.l <- root",
+                "elbowIK.r <- root",
+                "handIK.r <- root"
+            ],
+            "layers": [
+                "0 Base",
+                "1 upper actions"
+            ],
+            "masks": [
+                "Runtime spine subtree"
+            ],
+            "skins": 8,
+            "bones": 41,
+            "blendTrees": 0,
+            "rootMotion": false,
+            "clips": [
+                {
+                    "name": "1H_Melee_Attack_Chop",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.11116768419742584,
+                    "spineAngle": 15.229626655578614,
+                    "shoulderAngle": 37.05020523071289,
+                    "footTravel": 0.05982402339577675,
+                    "loopFootGap": 4.214684778958144e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "1H_Melee_Attack_Stab",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.13138224184513093,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 25.628141403198243,
+                    "footTravel": 0.05422524735331535,
+                    "loopFootGap": 8.688795105626923e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Aiming",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.600000023841858,
+                    "pelvisRange": 0.011499017477035523,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 73.72035217285156,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "2H_Ranged_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.016427265480160714,
+                    "spineAngle": 26.77254867553711,
+                    "shoulderAngle": 74.17854309082031,
+                    "footTravel": 0.15201714634895326,
+                    "loopFootGap": 0.15201714634895326,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.5137568116188049,
+                    "spineAngle": 11.741984367370606,
+                    "shoulderAngle": 86.38545989990235,
+                    "footTravel": 0.24526672065258027,
+                    "loopFootGap": 0.22772027552127839,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Death_A_Pose",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.0,
+                    "pelvisRange": 0.0,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 0.0,
+                    "footTravel": 0.0,
+                    "loopFootGap": 0.0,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 290
+                },
+                {
+                    "name": "Dodge_Forward",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.4000000059604645,
+                    "pelvisRange": 0.12401661276817322,
+                    "spineAngle": 6.657451629638672,
+                    "shoulderAngle": 35.195228576660159,
+                    "footTravel": 0.17689065635204316,
+                    "loopFootGap": 0.17689065635204316,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Hit_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.14994163811206819,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 29.464128494262697,
+                    "footTravel": 0.04919545352458954,
+                    "loopFootGap": 2.0336126738129679e-7,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.02404382824897766,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 3.602490186691284,
+                    "footTravel": 0.000001749173520693148,
+                    "loopFootGap": 3.0719530030864919e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Interact",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.0275932215154171,
+                    "spineAngle": 23.836427688598634,
+                    "shoulderAngle": 18.929378509521486,
+                    "footTravel": 0.00003658247442217544,
+                    "loopFootGap": 2.2351741790771486e-8,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Idle",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.06508338451385498,
+                    "spineAngle": 16.39787483215332,
+                    "shoulderAngle": 8.976415634155274,
+                    "footTravel": 0.10451765358448029,
+                    "loopFootGap": 2.98395519848782e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Land",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.2523976266384125,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 61.1183967590332,
+                    "footTravel": 0.18478186428546906,
+                    "loopFootGap": 0.18478186428546906,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Jump_Start",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.6000000238418579,
+                    "pelvisRange": 0.1956939399242401,
+                    "spineAngle": 6.198787689208984,
+                    "shoulderAngle": 43.31229782104492,
+                    "footTravel": 0.18478190898895265,
+                    "loopFootGap": 0.18478186428546906,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "PickUp",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": false,
+                    "seconds": 1.2999999523162842,
+                    "pelvisRange": 0.1030096635222435,
+                    "spineAngle": 26.968799591064454,
+                    "shoulderAngle": 20.005168914794923,
+                    "footTravel": 0.00012872250226791948,
+                    "loopFootGap": 7.450580596923828e-9,
+                    "events": [],
+                    "findings": [
+                        "Not directly selected by the current actor scripts; retain, do not invent gameplay",
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Running_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.800000011920929,
+                    "pelvisRange": 0.10262000560760498,
+                    "spineAngle": 29.999980926513673,
+                    "shoulderAngle": 37.782840728759769,
+                    "footTravel": 0.6102669835090637,
+                    "loopFootGap": 8.601468834967818e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 407
+                },
+                {
+                    "name": "Spellcast_Raise",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 2.0999999046325685,
+                    "pelvisRange": 0.00764986127614975,
+                    "spineAngle": 25.12770652770996,
+                    "shoulderAngle": 45.50550842285156,
+                    "footTravel": 0.08931896835565567,
+                    "loopFootGap": 1.497548112183722e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcast_Shoot",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 0.9333333373069763,
+                    "pelvisRange": 0.060162611305713657,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 15.049973487854004,
+                    "footTravel": 0.10523556917905808,
+                    "loopFootGap": 7.326235618165811e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Spellcasting",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 0.6666666865348816,
+                    "pelvisRange": 0.027948297560214998,
+                    "spineAngle": 0.0,
+                    "shoulderAngle": 6.171694755554199,
+                    "footTravel": 6.664001972467304e-8,
+                    "loopFootGap": 4.214684778958144e-8,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 326
+                },
+                {
+                    "name": "Unarmed_Melee_Attack_Punch_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": false,
+                    "reachable": true,
+                    "seconds": 1.4666666984558106,
+                    "pelvisRange": 0.2322593778371811,
+                    "spineAngle": 39.503849029541019,
+                    "shoulderAngle": 94.51475524902344,
+                    "footTravel": 0.04585173726081848,
+                    "loopFootGap": 1.0848209086589122e-7,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                },
+                {
+                    "name": "Walking_A",
+                    "path": "Assets/Era/Art/KayKit/Native/Skeleton_Mage.asset",
+                    "guid": "0b2ba59c01ac7354c9f3767c01141aec",
+                    "legacy": true,
+                    "loop": true,
+                    "reachable": true,
+                    "seconds": 1.0666667222976685,
+                    "pelvisRange": 0.019618213176727296,
+                    "spineAngle": 9.999970436096192,
+                    "shoulderAngle": 69.61487579345703,
+                    "footTravel": 0.3427271544933319,
+                    "loopFootGap": 0.00000649090543447528,
+                    "events": [],
+                    "findings": [
+                        "Image review required; sampled transforms alone do not prove artistic quality"
+                    ],
+                    "curves": 410
+                }
+            ]
+        }
+    ]
+}
