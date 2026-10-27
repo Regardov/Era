@@ -43,11 +43,16 @@ namespace Era
         }
         public static Texture2D ItemAtlas=>Resources.Load<Texture2D>("UI/item-sheet-1");
         public static bool HasSuppliedItemArt(int item)=>Cell(item,out _,out _);
-        public static Texture2D ItemTexture(int item)=>Cell(item,out int sheet,out _)?Resources.Load<Texture2D>("UI/item-sheet-"+(sheet+1)):Get(GameData.Items[item].icon);
+        static readonly Texture2D[] ItemTextures=new Texture2D[ItemCatalog.Count];
+        public static Texture2D ItemTexture(int item)
+        {
+            if(item<0||item>=ItemCatalog.Count)return null;
+            if(ItemTextures[item]==null)ItemTextures[item]=Resources.Load<Texture2D>("Items/v025/"+(ItemId)item);
+            return ItemTextures[item];
+        }
         public static Rect ItemPixels(int item)
         {
-            if(!Cell(item,out int sheet,out int cell)){var texture=ItemTexture(item);return new Rect(0,0,texture.width,texture.height);}
-            return new Rect(X[sheet][cell%5],941-Y[sheet][cell/5]-Sizes[sheet],Sizes[sheet],Sizes[sheet]);
+            var texture=ItemTexture(item);return texture==null?Rect.zero:new Rect(0,0,texture.width,texture.height);
         }
         public static Rect ItemUV(int item){var rect=ItemPixels(item);var texture=ItemTexture(item);return new Rect(rect.x/texture.width,rect.y/texture.height,rect.width/texture.width,rect.height/texture.height);}
         static readonly Sprite[] ItemSprites=new Sprite[ItemCatalog.Count];

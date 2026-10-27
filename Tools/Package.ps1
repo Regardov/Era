@@ -14,6 +14,9 @@ foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
 $eraImageFolder = Join-Path $buildPath 'Images'
+foreach ($eraDocument in @('ITEMS-v0.25.md','RELEASE-v0.25.0.md','VALIDATION-v0.25.md','item-art-runtime-v025.json','item-art-validation-v025.json')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
+}
 foreach ($eraDocument in @('ITEMS-v0.24.md','RELEASE-v0.24.0.md','VALIDATION-v0.24.md','balance-runtime-v024.json','loot-balance-validation-v024.json')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
 }
@@ -38,6 +41,7 @@ Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter 
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v023.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0231.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v024.png' | Copy-Item -Destination $eraImageFolder -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v025.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0221.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v022.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'feedback-*.json' | Copy-Item -Destination $buildPath -Force
@@ -67,4 +71,5 @@ Compress-Archive -Path (Join-Path $buildPath '*') -DestinationPath $archive -For
 $eraHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 [IO.File]::WriteAllText($archive + '.sha256', "$eraHash  Era-Windows.zip`n", [Text.UTF8Encoding]::new($false))
 Write-Output "Ready to share: $archive"
+& (Join-Path $PSScriptRoot 'Package-ItemArtwork.ps1')
 & (Join-Path $PSScriptRoot 'Verify-Package.ps1')

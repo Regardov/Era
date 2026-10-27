@@ -236,12 +236,12 @@ namespace Era
                     if(drop.kind==RewardKind.Weapon){var model=WeaponVisuals.Create(v,go.transform,(WeaponKind)drop.content);model.transform.localScale=Vector3.one*.65f;}
                     else
                     {
-                        var picture=new GameObject("Item picture");picture.transform.SetParent(go.transform,false);
-                        var renderer=picture.AddComponent<SpriteRenderer>();renderer.sprite=IconLibrary.ItemSprite(drop.content);renderer.color=Color.white;
+                        go.AddComponent<LootPresentation>().Initialize(drop);
                     }
                     Color color=drop.kind==RewardKind.Weapon?GameData.Weapons[drop.content].color:GameData.Items[drop.content].color;
-                    v.Ring("Reward halo",go.transform,.50f,color,.025f).transform.localPosition=Vector3.down*.38f;loot[drop.id]=go;
+                    if(drop.kind==RewardKind.Weapon)v.Ring("Reward halo",go.transform,.50f,color,.025f).transform.localPosition=Vector3.down*.38f;loot[drop.id]=go;
                 }
+                var presentation=go.GetComponent<LootPresentation>();if(presentation!=null){presentation.Present(drop,Camera);continue;}
                 go.transform.position=drop.position+Vector3.up*(drop.collecting?0:Mathf.Sin(state.elapsed*2.2f+drop.id)*.055f);
                 go.transform.localScale=Vector3.one*(drop.collecting?Mathf.Lerp(1,.2f,PresentationMotion.Ease(drop.collectTime/.35f)):Mathf.Lerp(.1f,1,PresentationMotion.Out(drop.age/.22f)));
                 var pictureTransform=go.transform.Find("Item picture");if(pictureTransform!=null)pictureTransform.rotation=Camera.transform.rotation;

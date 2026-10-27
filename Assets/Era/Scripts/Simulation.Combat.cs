@@ -33,8 +33,10 @@ namespace Era
             chest.rewardRarity=RollRarity(owner,chest.tier);
             var pool=new List<int>();for(int i=0;i<GameData.Items.Length;i++)if(ItemCatalog.IsAvailable(i)&&(int)GameData.Items[i].rarity==chest.rewardRarity)pool.Add(i);
             chest.reward=pool[random.Next(pool.Count)];
-            var floor=WorldMap.Resolve(chest.position,Vector3.forward*1.7f,.3f);floor.y=WorldMap.Ground(floor);
-            State.loot.Add(new LootState{id=State.nextId++,owner=-1,content=chest.reward,kind=chest.rewardKind,quantity=1,origin=floor,position=floor+Vector3.up*.55f});
+            var towardOpener=owner.position-chest.position;towardOpener.y=0;
+            if(towardOpener.sqrMagnitude<.01f)towardOpener=-(Quaternion.Euler(0,owner.yaw,0)*Vector3.forward);
+            var floor=WorldMap.Resolve(chest.position,towardOpener.normalized*1.7f,.3f);floor.y=WorldMap.Ground(floor);
+            State.loot.Add(new LootState{id=State.nextId++,owner=-1,content=chest.reward,kind=chest.rewardKind,quantity=1,origin=floor,position=floor+Vector3.up*.55f,launchOrigin=chest.position+Vector3.up*.9f,fromChest=true});
         }
         public bool TryCollectLoot(PlayerState player)
         {
@@ -46,7 +48,8 @@ namespace Era
                 if(!drop.collecting&&d<range){range=d;closest=drop;}
             }
             if(closest==null)return false;
-            closest.owner=player.id;closest.collecting=true;closest.collectTime=0;closest.collectOrigin=closest.position;return true;
+            closest.collectOrigin=LootMotion.Evaluate(closest).position;closest.position=closest.collectOrigin;
+            closest.owner=player.id;closest.collecting=true;closest.collectTime=0;return true;
         }
         void TickLoot(float dt)
         {

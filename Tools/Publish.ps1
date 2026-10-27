@@ -1,7 +1,7 @@
 param(
-    [string]$Tag = 'v0.24.0',
+    [string]$Tag = 'v0.25.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.24.0.md',
+    [string]$NotesFile = 'Docs/RELEASE-v0.25.0.md',
     [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'
@@ -39,12 +39,20 @@ try {
     $eraBody = @{ tag_name=$Tag; target_commitish=$eraCommit; name="ERA: Seven Realms $Tag — Windows"; body=$eraNotes; draft=$true; prerelease=$false } | ConvertTo-Json
     $eraRelease = Invoke-RestMethod -Method Post -Uri "$eraApi/releases" -Headers $eraHeaders -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($eraBody))
     $eraUploaded = @()
-    foreach ($eraFile in @($eraArchive,$eraChecksum)) {
+    $eraPublishFiles=@($eraArchive,$eraChecksum)
+    $eraArtworkArchive=Join-Path $eraProject "Releases\Era-Item-Artwork-$Tag.zip"
+    if(Test-Path -LiteralPath $eraArtworkArchive){
+        $eraArtworkHash=(Get-FileHash -LiteralPath $eraArtworkArchive -Algorithm SHA256).Hash.ToLowerInvariant()
+        if((Get-Content -LiteralPath ($eraArtworkArchive+'.sha256') -Raw).Trim() -ne ($eraArtworkHash+'  '+[IO.Path]::GetFileName($eraArtworkArchive))){throw 'Artwork checksum does not match'}
+        $eraPublishFiles+=@($eraArtworkArchive,($eraArtworkArchive+'.sha256'))
+    }
+    foreach ($eraFile in $eraPublishFiles) {
         $eraItem = Get-Item -LiteralPath $eraFile
         $eraUploadUri = $eraRelease.upload_url.Split('{')[0] + '?name=' + [Uri]::EscapeDataString($eraItem.Name)
         $eraAsset = Invoke-RestMethod -Method Post -Uri $eraUploadUri -Headers $eraHeaders -ContentType 'application/octet-stream' -InFile $eraFile -TimeoutSec 600
         if ($eraAsset.size -ne $eraItem.Length -or $eraAsset.state -ne 'uploaded') { throw "Incomplete upload: $($eraItem.Name). The release is still a draft." }
-        if ($eraFile -eq $eraArchive -and $eraAsset.digest -and $eraAsset.digest -ne "sha256:$eraHash") { throw 'GitHub archive digest differs; the release is still a draft.' }
+        $eraUploadedHash=(Get-FileHash -LiteralPath $eraFile -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($eraAsset.digest -and $eraAsset.digest -ne ("sha256:"+$eraUploadedHash)) { throw 'GitHub asset digest differs; the release is still a draft.' }
         $eraUploaded += $eraAsset | Select-Object id,name,size,digest,browser_download_url
         Write-Output "Uploaded $($eraAsset.name) ($($eraAsset.size) bytes)"
     }

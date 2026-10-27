@@ -443,7 +443,7 @@ namespace Era
             for(int n=cataloguePage*size;n<items.Count&&n<(cataloguePage+1)*size;n++)
             {
                 int item=items[n],cell=n-cataloguePage*size;float x=490+cell%5*207,y=195+cell/5*98;var d=GameData.Items[item];
-                Box(x,y,195,88,Soft);Flat(x+2,y+2,3,84,d.color);ItemIcon(item,x+10,y+11,39);Text(d.name,x+57,y+10,128,49,14,d.color,true);Text(p==null?GameData.RarityName((int)d.rarity):"×"+p.items[item],x+57,y+63,124,18,10,Muted);ItemHover(item,new Rect(x,y,195,88));
+                Box(x,y,195,88,Soft);Flat(x+2,y+2,3,84,d.color);ItemIcon(item,x+8,y+9,54);Text(d.name,x+69,y+10,118,49,14,d.color,true);Text(p==null?GameData.RarityName((int)d.rarity):"×"+p.items[item],x+69,y+63,118,18,10,Muted);ItemHover(item,new Rect(x,y,195,88));
             }
             if(Button("‹",490,806,65,34))cataloguePage=Mathf.Max(0,cataloguePage-1);
             Text((cataloguePage+1)+" / "+pages+" · "+items.Count+I18n.P(" items"," предметов"),580,812,835,24,14,Muted,false,TextAnchor.UpperCenter);

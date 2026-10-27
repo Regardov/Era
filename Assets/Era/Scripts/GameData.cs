@@ -148,9 +148,9 @@ namespace Era
     {
         public int id, owner, content, quantity = 1;
         public RewardKind kind;
-        public Vector3 origin, position, collectOrigin;
+        public Vector3 origin, position, collectOrigin, launchOrigin;
         public float age, collectTime;
-        public bool collecting;
+        public bool collecting, fromChest;
     }
 
     [Serializable]
@@ -295,7 +295,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 16;
+        public const int Protocol = 17;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=30,ResourceNodeCount=72;
@@ -315,8 +315,8 @@ namespace Era
         public static readonly Color Mint = new Color(0.57f, 0.78f, 0.70f);
         public const int WeaponSlots = 2, MaxWeaponLevel = 5, SecondWeaponLevel = 25, MaxAuras = 5;
         public static readonly Color[] RarityColors={new Color(.10f,.60f,1),new Color(.10f,.88f,.31f),new Color(.76f,.08f,1),new Color(1,.73f,.06f),new Color(1,.22f,.40f)};
-        public static readonly string[] RarityNamesEn={"RARE","UNCOMMON","EPIC","LEGENDARY","MYTHIC"};
-        public static readonly string[] RarityNamesRu={"РЕДКОЕ","НЕОБЫЧНОЕ","ЭПИЧЕСКОЕ","ЛЕГЕНДАРНОЕ","МИФИЧЕСКОЕ"};
+        public static readonly string[] RarityNamesEn={"SUPER RARE","RARE","EPIC","LEGENDARY","MYTHIC"};
+        public static readonly string[] RarityNamesRu={"СВЕРХРЕДКОЕ","РЕДКОЕ","ЭПИЧЕСКОЕ","ЛЕГЕНДАРНОЕ","МИФИЧЕСКОЕ"};
         public static Color RarityColor(ItemRarity rarity)=>RarityColors[(int)rarity];
         public static string RarityName(int rarity)=>I18n.P(RarityNamesEn[Mathf.Clamp(rarity,0,4)],RarityNamesRu[Mathf.Clamp(rarity,0,4)]);
         public static readonly string[] BlessingIcons={"jump","bell","coil","dawn","heart","shield","hourglass","lantern"};
