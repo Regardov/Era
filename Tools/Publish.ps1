@@ -1,7 +1,7 @@
 param(
-    [string]$Tag = 'v0.23.0',
+    [string]$Tag = 'v0.23.1',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.23.0.md',
+    [string]$NotesFile = 'Docs/RELEASE-v0.23.1.md',
     [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'
@@ -26,7 +26,7 @@ try {
     $eraChecksum = $eraArchive + '.sha256'
     $eraHash = (Get-FileHash -LiteralPath $eraArchive -Algorithm SHA256).Hash.ToLowerInvariant()
     if ((Get-Content -LiteralPath $eraChecksum -Raw).Trim() -ne "$eraHash  Era-Windows.zip") { throw 'Repackage the game: checksum does not match.' }
-    $eraNotes = Get-Content -LiteralPath $NotesFile -Raw
+    $eraNotes = Get-Content -LiteralPath $NotesFile -Raw -Encoding UTF8
     # Reuse Git Credential Manager in memory. Never write credentials to the project or logs.
     $eraCredentials = "protocol=https`nhost=github.com`n`n" | git credential fill
     if ($LASTEXITCODE -ne 0) { throw 'Sign in to GitHub with Git Credential Manager first.' }

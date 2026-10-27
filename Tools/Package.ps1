@@ -33,6 +33,7 @@ foreach ($eraHero in @('ember','echo','lumen')) {
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v019.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v021.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v023.png' | Copy-Item -Destination $eraImageFolder -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0231.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0221.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v022.png' | Copy-Item -Destination $eraImageFolder -Force
 Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'feedback-*.json' | Copy-Item -Destination $buildPath -Force
@@ -45,6 +46,12 @@ if (Test-Path -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md')) {
     New-Item -ItemType Directory -Force -Path $licenseFolder | Out-Null
     Get-ChildItem -LiteralPath (Join-Path $projectPath 'Assets\Era\Art\KayKit') -Filter 'LICENSE-*.txt' | Copy-Item -Destination $licenseFolder -Force
 }
+foreach ($eraDocument in @('RELEASE-v0.23.1.md','VALIDATION-v0.23.1.md','archer-runtime-v0231.json','archer-quality-v0231.json','campaign-smoke-v0231.json','release-validation-v0231.json','ANIMATION-QUALITY-AUDIT.md','ARCHER-REFINEMENT.md')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
+}
+$eraQualityFolder = Join-Path $buildPath 'AnimationQuality'
+New-Item -ItemType Directory -Force -Path $eraQualityFolder | Out-Null
+Copy-Item -Path (Join-Path $projectPath 'Docs\AnimationQuality\*') -Destination $eraQualityFolder -Recurse -Force
 New-Item -ItemType Directory -Force -Path (Join-Path $projectPath 'Releases') | Out-Null
 $archive = Join-Path $projectPath 'Releases\Era-Windows.zip'
 Compress-Archive -Path (Join-Path $buildPath '*') -DestinationPath $archive -Force

@@ -1,0 +1,519 @@
+{
+    "ok": true,
+    "finite": true,
+    "errors": 0,
+    "shots": 6,
+    "arrowEvents": 6,
+    "shotsWithoutRelease": 0,
+    "version": "0.23.1",
+    "sourceBones": 54,
+    "skins": 23,
+    "phases": [
+        {
+            "name": "Idle",
+            "frames": 56,
+            "thighDegrees": 2.1929306983947756,
+            "handMeters": 0.009946420788764954,
+            "pelvisMeters": 0.004795873537659645,
+            "nockMeters": 0.00812613032758236,
+            "normalizedAdvance": 1.0537452697753907,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 56,
+            "observedClips": [
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Walk",
+            "frames": 37,
+            "thighDegrees": 25.255056381225587,
+            "handMeters": 0.25723350048065188,
+            "pelvisMeters": 0.017597485333681108,
+            "nockMeters": 0.019307322800159456,
+            "normalizedAdvance": 1.6582504510879517,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 37,
+            "observedClips": [
+                "Archer_Idle",
+                "Archer_Walk"
+            ]
+        },
+        {
+            "name": "Run",
+            "frames": 32,
+            "thighDegrees": 61.41037368774414,
+            "handMeters": 0.2925284802913666,
+            "pelvisMeters": 0.029414240270853044,
+            "nockMeters": 0.03515324741601944,
+            "normalizedAdvance": 2.4740474224090578,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 32,
+            "observedClips": [
+                "Archer_Run",
+                "Archer_Walk"
+            ]
+        },
+        {
+            "name": "AutoFire",
+            "frames": 70,
+            "thighDegrees": 4.6010541915893559,
+            "handMeters": 0.438616544008255,
+            "pelvisMeters": 0.011900831013917923,
+            "nockMeters": 0.4156472682952881,
+            "normalizedAdvance": 1.3396458625793458,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 4,
+            "releaseStates": 4,
+            "recordedFrames": 70,
+            "observedClips": [
+                "Archer_Aim",
+                "Archer_BowDraw",
+                "Archer_BowRelease",
+                "Archer_Idle",
+                "Archer_Run",
+                "Archer_ShootRecovery",
+                "Archer_Walk"
+            ]
+        },
+        {
+            "name": "CastFire",
+            "frames": 26,
+            "thighDegrees": 2.812504529953003,
+            "handMeters": 0.4655691385269165,
+            "pelvisMeters": 0.006412127520889044,
+            "nockMeters": 0.4605501592159271,
+            "normalizedAdvance": 0.4176645278930664,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 2,
+            "releaseStates": 2,
+            "recordedFrames": 26,
+            "observedClips": [
+                "Archer_Aim",
+                "Archer_BowDraw",
+                "Archer_BowRelease",
+                "Archer_Cast",
+                "Archer_Idle",
+                "Archer_ShootRecovery"
+            ]
+        },
+        {
+            "name": "Hold",
+            "frames": 36,
+            "thighDegrees": 3.4153172969818117,
+            "handMeters": 0.5992059111595154,
+            "pelvisMeters": 0.00843414943665266,
+            "nockMeters": 0.5169781446456909,
+            "normalizedAdvance": 0.6249914169311523,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 36,
+            "observedClips": [
+                "Archer_Aim",
+                "Archer_BowDraw",
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Hit",
+            "frames": 14,
+            "thighDegrees": 1.9183995723724366,
+            "handMeters": 0.008452440612018109,
+            "pelvisMeters": 0.003939836286008358,
+            "nockMeters": 0.0203357245773077,
+            "normalizedAdvance": 0.16666412353515626,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 14,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Hit",
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Dash",
+            "frames": 15,
+            "thighDegrees": 27.963415145874025,
+            "handMeters": 0.08710550516843796,
+            "pelvisMeters": 0.05974787473678589,
+            "nockMeters": 0.11728080362081528,
+            "normalizedAdvance": 0.375,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 15,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Dash",
+                "Archer_Hit",
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Cast",
+            "frames": 20,
+            "thighDegrees": 2.1940011978149416,
+            "handMeters": 0.06515299528837204,
+            "pelvisMeters": 0.005342329852283001,
+            "nockMeters": 0.018261363729834558,
+            "normalizedAdvance": 0.2916669249534607,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 20,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Hit",
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Interact",
+            "frames": 17,
+            "thighDegrees": 1.6061638593673707,
+            "handMeters": 0.13507869839668275,
+            "pelvisMeters": 0.0021213283762335779,
+            "nockMeters": 0.02293398417532444,
+            "normalizedAdvance": 0.5833336114883423,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 17,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Idle",
+                "Archer_Interact"
+            ]
+        },
+        {
+            "name": "TeleportOut",
+            "frames": 18,
+            "thighDegrees": 17.53711700439453,
+            "handMeters": 0.4839493930339813,
+            "pelvisMeters": 0.10637527704238892,
+            "nockMeters": 0.10229966044425965,
+            "normalizedAdvance": 0.7500007152557373,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 18,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Idle",
+                "Archer_TeleportOut"
+            ]
+        },
+        {
+            "name": "TeleportIn",
+            "frames": 17,
+            "thighDegrees": 20.424528121948243,
+            "handMeters": 0.16054455935955048,
+            "pelvisMeters": 0.08256296068429947,
+            "nockMeters": 0.06952325999736786,
+            "normalizedAdvance": 0.5833335518836975,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 17,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Idle",
+                "Archer_TeleportIn",
+                "Archer_TeleportOut"
+            ]
+        },
+        {
+            "name": "DodgeRoll",
+            "frames": 17,
+            "thighDegrees": 77.42375183105469,
+            "handMeters": 1.073749303817749,
+            "pelvisMeters": 0.4603675603866577,
+            "nockMeters": 0.8024318814277649,
+            "normalizedAdvance": 0.642857551574707,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 17,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_DodgeRoll",
+                "Archer_Idle"
+            ]
+        },
+        {
+            "name": "Death",
+            "frames": 36,
+            "thighDegrees": 49.08989715576172,
+            "handMeters": 0.7857175469398499,
+            "pelvisMeters": 0.6698054075241089,
+            "nockMeters": 0.882379949092865,
+            "normalizedAdvance": 1.0000007152557374,
+            "animatorEnabled": true,
+            "avatarValid": true,
+            "shots": 0,
+            "releaseStates": 0,
+            "recordedFrames": 36,
+            "observedClips": [
+                "Archer_BowHold",
+                "Archer_Cast",
+                "Archer_Death",
+                "Archer_Idle"
+            ]
+        }
+    ],
+    "clips": [
+        {
+            "name": "Archer_Idle",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 2.4000000953674318
+        },
+        {
+            "name": "Archer_Walk",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.9333333969116211
+        },
+        {
+            "name": "Archer_Run",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_Aim",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.5
+        },
+        {
+            "name": "Archer_BowDraw",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_BowHold",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 1.2000000476837159
+        },
+        {
+            "name": "Archer_BowRelease",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.30000001192092898
+        },
+        {
+            "name": "Archer_ShootRecovery",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.40000003576278689
+        },
+        {
+            "name": "Archer_DodgeRoll",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.7000000476837158
+        },
+        {
+            "name": "Archer_Dash",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.40000003576278689
+        },
+        {
+            "name": "Archer_Hit",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.3333333432674408
+        },
+        {
+            "name": "Archer_Death",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 1.5000001192092896
+        },
+        {
+            "name": "Archer_Cast",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.8000000715255737
+        },
+        {
+            "name": "Archer_Interact",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_TeleportOut",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.8000000715255737
+        },
+        {
+            "name": "Archer_TeleportIn",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": true,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_WalkLeft",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.9333333969116211
+        },
+        {
+            "name": "Archer_WalkRight",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.9333333969116211
+        },
+        {
+            "name": "Archer_WalkBack",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.9333333969116211
+        },
+        {
+            "name": "Archer_RunLeft",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_RunRight",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_RunBack",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.6000000238418579
+        },
+        {
+            "name": "Archer_JumpStart",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.20000001788139344
+        },
+        {
+            "name": "Archer_Airborne",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 1.0
+        },
+        {
+            "name": "Archer_Fall",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.8000000715255737
+        },
+        {
+            "name": "Archer_Land",
+            "exists": true,
+            "imported": true,
+            "assigned": true,
+            "runtimeObserved": false,
+            "seconds": 0.2666666805744171
+        }
+    ],
+    "others": [
+        {
+            "hero": "Echo",
+            "walkDegrees": 66.06883239746094,
+            "runDegrees": 59.82538986206055
+        },
+        {
+            "hero": "Lumen",
+            "walkDegrees": 66.06883239746094,
+            "runDegrees": 59.82538986206055
+        }
+    ],
+    "arrowVisibleDuringDraw": true,
+    "projectileObserved": true,
+    "draftDeathEnabledOnlyForTest": false,
+    "authoredDeathEnabledByDefault": true
+}
