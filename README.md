@@ -1,10 +1,14 @@
-# ERA: Seven Realms — v0.23.1
+# ERA: Seven Realms — v0.23.2
 
-**[Скачать последнюю игру v0.23.1 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.23.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.23.1). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать последнюю игру v0.23.2 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.23.2/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.23.2). Распакуйте архив целиком и запустите `Era.exe`.
+
+**v0.23.2 — исправлены постоянные рывки камеры при движении лучника.** Цель камеры теперь плавно интерполируется между шагами симуляции 30 Гц. Камера больше не поворачивается рывками вслед за дискретной координатой модели; положение лучника и точка выпуска стрелы сохранены. Модель, анимационные клипы, баланс и механики v0.23.1 сохранены. Пробная новая модель Люмина в игру не добавлялась.
+
+[Изменения v0.23.2](Docs/RELEASE-v0.23.2.md) · [Проверки камеры и сборки](Docs/VALIDATION-v0.23.2.md). Для кооператива используйте v0.23.2 на всех ПК.
 
 **v0.23.1 — обновлённые анимации в готовой Windows-игре.** У лучника 26 клипов, отдельные фазы прыжка/падения/приземления, бег с кастом и стрельбой, уточнённые Idle и действия, включённое падение при смерти. Нижние секции плаща двигаются с запаздыванием; у врагов сглажен переход замах → удар, стрела летит без декоративного покачивания. Сохранены все пассивки, ауры, окружение, баланс, семь миров и кооператив v0.23.
 
-[Изменения v0.23.1](Docs/RELEASE-v0.23.1.md) · [Проверки сборки](Docs/VALIDATION-v0.23.1.md) · [Анимационный аудит и оставшиеся ограничения](Docs/ANIMATION-QUALITY-AUDIT.md) · [Видео до/после](Docs/AnimationQuality/Video). Для запуска достаточно распаковать архив целиком; Unity и Blender не требуются. На всех ПК кооператива используйте v0.23.1.
+[Изменения v0.23.1](Docs/RELEASE-v0.23.1.md) · [Проверки сборки](Docs/VALIDATION-v0.23.1.md) · [Анимационный аудит и оставшиеся ограничения](Docs/ANIMATION-QUALITY-AUDIT.md) · [Видео до/после](Docs/AnimationQuality/Video). Для запуска достаточно распаковать архив целиком; Unity и Blender не требуются.
 
 В исходниках также доступна [ERA Character Factory](ERA_CHARACTER_WORKFLOW.md): библиотека компонентов Blender, измеренный Style Guide и инструменты для будущих персонажей.
 
@@ -30,7 +34,7 @@
 
 Видеокарты заменены **72 кучками осенних листьев**: золото или опыт выбираются случайно при разрушении с равными шансами; оттенок листьев не сообщает награду. По всем семи картам расставлены домики и руины, деревья получили резные листья с прожилками и более разнообразную осеннюю палитру. Строения учитываются в общей коллизии, размещении объектов и карте Tab.
 
-Локальная сборка: `Builds/Windows/Era.exe`; исходники открываются в Unity **2023.1.22f1**. Итоговые проверки: [v0.23.1](Docs/VALIDATION-v0.23.1.md).
+Локальная сборка: `Builds/Windows/Era.exe`; исходники открываются в Unity **2023.1.22f1**. Итоговые проверки: [v0.23.2](Docs/VALIDATION-v0.23.2.md).
 
 ![Домики и осенняя листва в Windows Player v0.22](Docs/Images/autumn-cottage-v022.png)
 
@@ -107,7 +111,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 
 ## Co-op for 2–3 players
 
-1. Run the same v0.21 game version on all computers in the same **LAN or VPN**.
+1. Run the same v0.23.2 game version on all computers in the same **LAN or VPN**.
 2. Choose **Play co-op · 2–3 players**. One player creates a lobby.
 3. One or two friends choose **Join a lobby**, enter the host IP, choose heroes and connect.
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.

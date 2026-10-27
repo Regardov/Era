@@ -1,0 +1,193 @@
+{
+  "description": "Before: original 0.23.1 camera used the archer root as its focus, so rootSpeedErrorRms/maxRootLag describe that same focus. After: final 0.23.2 measures the separate CameraFollowTarget via targetSpeedErrorRms/maxTargetLag. Final character root and release IK remain unchanged. Both scenarios use ordinary gameplay input and the ordinary follow camera, with no damage or mouse motion.",
+  "before": {
+    "version": "0.23.1",
+    "hero": "Ember",
+    "requestedFps": 60,
+    "errors": 0,
+    "ok": false,
+    "finite": true,
+    "ordinaryFollowCamera": true,
+    "phases": [
+      {
+        "direction": "Forward",
+        "frames": 72,
+        "stalledFrames": 36,
+        "rootSpeedErrorRms": 0.9941984415054321,
+        "cameraAngularAccelerationRms": 428.66546630859375,
+        "maxRootLag": 0.0,
+        "maxFrameTime": 0.31959599256515503
+      },
+      {
+        "direction": "Backward",
+        "frames": 84,
+        "stalledFrames": 40,
+        "rootSpeedErrorRms": 0.9843336343765259,
+        "cameraAngularAccelerationRms": 263.7264709472656,
+        "maxRootLag": 0.0,
+        "maxFrameTime": 0.10759029537439346
+      },
+      {
+        "direction": "Left",
+        "frames": 85,
+        "stalledFrames": 42,
+        "rootSpeedErrorRms": 0.9939271807670593,
+        "cameraAngularAccelerationRms": 423.0950012207031,
+        "maxRootLag": 0.0,
+        "maxFrameTime": 0.09515350311994553
+      },
+      {
+        "direction": "Right",
+        "frames": 85,
+        "stalledFrames": 42,
+        "rootSpeedErrorRms": 0.9903342723846436,
+        "cameraAngularAccelerationRms": 434.6501770019531,
+        "maxRootLag": 0.0,
+        "maxFrameTime": 0.09320930391550064
+      }
+    ]
+  },
+  "after": [
+    {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 60,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.9119479475193657E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.2592592239379883,
+          "maxFrameTime": 0.01730009913444519
+        },
+        {
+          "direction": "Backward",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.2412368707591668E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.13383793830871582,
+          "maxFrameTime": 0.016945302486419678
+        },
+        {
+          "direction": "Left",
+          "frames": 83,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.2022545635991264E-06,
+          "cameraAngularAccelerationRms": 83.10208892822266,
+          "maxTargetLag": 0.17833900451660156,
+          "maxFrameTime": 0.13453400135040283
+        },
+        {
+          "direction": "Right",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.32537922784104E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.19549274444580078,
+          "maxFrameTime": 0.01734449341893196
+        }
+      ]
+    },
+    {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 30,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.2058222864652635E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.0984872579574585,
+          "maxFrameTime": 0.039080698043107986
+        },
+        {
+          "direction": "Backward",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.4411510846912279E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.1348717212677002,
+          "maxFrameTime": 0.03360540047287941
+        },
+        {
+          "direction": "Left",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.4668879657619982E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.08644556999206543,
+          "maxFrameTime": 0.03333380073308945
+        },
+        {
+          "direction": "Right",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.3911723044657265E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.15055537223815918,
+          "maxFrameTime": 0.03396160155534744
+        }
+      ]
+    },
+    {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 15,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 22,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 6.228095799087896E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.16521906852722168,
+          "maxFrameTime": 0.06683920323848724
+        },
+        {
+          "direction": "Backward",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 5.142426289239665E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.23908138275146484,
+          "maxFrameTime": 0.06928040087223053
+        },
+        {
+          "direction": "Left",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 5.76282502606773E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.18843507766723633,
+          "maxFrameTime": 0.06736209988594055
+        },
+        {
+          "direction": "Right",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 6.681363515781413E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.1224362850189209,
+          "maxFrameTime": 0.06749779731035233
+        }
+      ]
+    }
+  ]
+}

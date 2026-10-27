@@ -50,6 +50,11 @@ foreach ($eraDocument in @('RELEASE-v0.23.1.md','VALIDATION-v0.23.1.md','archer-
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
 }
 $eraQualityFolder = Join-Path $buildPath 'AnimationQuality'
+foreach ($eraDocument in @('RELEASE-v0.23.2.md','VALIDATION-v0.23.2.md','camera-motion-v0232.json','archer-runtime-v0232.json','archer-refinement-v0232.json','campaign-smoke-v0232.json','release-validation-v0232.json','coop-first-v0232.json')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
+}
+Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\CameraMotion-v0232') -Destination $buildPath -Recurse -Force
+Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0232.png' | Copy-Item -Destination $eraImageFolder -Force
 New-Item -ItemType Directory -Force -Path $eraQualityFolder | Out-Null
 Copy-Item -Path (Join-Path $projectPath 'Docs\AnimationQuality\*') -Destination $eraQualityFolder -Recurse -Force
 New-Item -ItemType Directory -Force -Path (Join-Path $projectPath 'Releases') | Out-Null

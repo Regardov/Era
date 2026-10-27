@@ -35,6 +35,21 @@ namespace Era
         readonly Dictionary<int,int> peerPlayers=new Dictionary<int,int>();
         InputFrame local=new InputFrame();
         float accumulator,networkTimer,lastSnapshot;
+        const float SimulationStep=1f/30;
+        PlayerState visualSamplePlayer;
+        Vector3 visualPrevious,visualCurrent;
+        int visualSampleStage;
+
+        // Follow the host simulation one fixed tick behind. The remainder is a
+        // render-time fraction, not a second simulation or a velocity prediction.
+        // Teleports, new sessions and externally driven diagnostic poses snap.
+        public Vector3 LocalCameraPosition(PlayerState player)
+        {
+            if(!IsHost||!ReferenceEquals(player,visualSamplePlayer)||State.stageSerial!=visualSampleStage||
+                player.position!=visualCurrent||(visualCurrent-visualPrevious).sqrMagnitude>9)
+                return player.position;
+            return Vector3.Lerp(visualPrevious,visualCurrent,Mathf.Clamp01(accumulator/SimulationStep));
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot(){if(Instance==null)new GameObject("ERA / Game systems").AddComponent<GameApp>();}
@@ -59,6 +74,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
+            if(Automated&&Array.IndexOf(args,"--smoke-camera-motion")>=0){gameObject.AddComponent<CameraMotionDiagnostics>();return;}
             if(Automated){if(Array.IndexOf(args,"--smoke-ensemble")>=0)gameObject.AddComponent<EnsembleAnimationDiagnostics>();else if(Array.IndexOf(args,"--smoke-archer-refinement")>=0)gameObject.AddComponent<ArcherRefinementDiagnostics>();else if(Array.IndexOf(args,"--smoke-archer-motion")>=0)gameObject.AddComponent<ArcherMotionDiagnostics>();else if(Array.IndexOf(args,"--smoke-archer")>=0)gameObject.AddComponent<ArcherRuntimeDiagnostics>();else if(Array.IndexOf(args,"--smoke-feedback")>=0)gameObject.AddComponent<FeedbackDiagnostics>();else if(Array.IndexOf(args,"--smoke-music")>=0)gameObject.AddComponent<MusicDiagnostics>();else if(Array.IndexOf(args,"--smoke-environment")>=0)gameObject.AddComponent<EnvironmentDiagnostics>();else if(Array.IndexOf(args,"--smoke-rig")>=0)gameObject.AddComponent<RigDiagnostics>();else if(Array.IndexOf(args,"--smoke-animation")>=0)gameObject.AddComponent<AnimationDiagnostics>();else if(Array.IndexOf(args,"--smoke-characters")>=0)gameObject.AddComponent<CharacterDiagnostics>();else if(Array.IndexOf(args,"--smoke-meadow")>=0)gameObject.AddComponent<MeadowDiagnostics>();else if(Array.IndexOf(args,"--smoke-balance")>=0)gameObject.AddComponent<BalanceDiagnostics>();else if(Array.IndexOf(args,"--smoke-roguelike")>=0)gameObject.AddComponent<RoguelikeDiagnostics>();else if(Array.IndexOf(args,"--smoke-update")>=0)gameObject.AddComponent<UpdateDiagnostics>();else if(Array.IndexOf(args,"--smoke-chests")>=0)gameObject.AddComponent<ChestDiagnostics>();else if(Array.IndexOf(args,"--smoke-campaign")>=0)gameObject.AddComponent<CampaignDiagnostics>();else if(Array.IndexOf(args,"--smoke-art")>=0)gameObject.AddComponent<ArtDiagnostics>();else if(Array.IndexOf(args,"--smoke-solo")>=0)gameObject.AddComponent<SoloDiagnostics>();else gameObject.AddComponent<RuntimeDiagnostics>();return;}
             if(Array.IndexOf(args,"--solo")>=0)Solo();
             else if(Array.IndexOf(args,"--host")>=0)Host();
@@ -111,6 +127,7 @@ namespace Era
         public void ReturnToMenu(){ResetSession();Status="";Page=MenuPage.Home;}
         void ResetSession()
         {
+            visualSamplePlayer=null;
             transport?.Dispose();transport=null;State=null;Simulation=null;Online=Connecting=IsHost=Paused=Inventory=false;
             inputs.Clear();peerPlayers.Clear();local=new InputFrame();accumulator=networkTimer=0;View?.ClearActors();Time.timeScale=1;
             Cursor.lockState=CursorLockMode.None;Cursor.visible=true;
@@ -128,8 +145,14 @@ namespace Era
             if(IsHost && Simulation!=null && !(Paused&&!Online))
             {
                 accumulator+=Mathf.Min(Time.unscaledDeltaTime,0.15f);inputs[0]=local;
-                while(accumulator>=1f/30)
-                {Simulation.Step(1f/30,inputs);foreach(var frame in inputs.Values)frame.ConsumeEdges();accumulator-=1f/30;}
+                while(accumulator>=SimulationStep)
+                {
+                    var player=LocalPlayer;var before=player!=null?player.position:Vector3.zero;int stage=State.stageSerial;
+                    Simulation.Step(SimulationStep,inputs);
+                    visualSamplePlayer=ReferenceEquals(player,LocalPlayer)&&stage==State.stageSerial?player:null;
+                    visualPrevious=before;visualCurrent=LocalPlayer!=null?LocalPlayer.position:Vector3.zero;visualSampleStage=State.stageSerial;
+                    foreach(var frame in inputs.Values)frame.ConsumeEdges();accumulator-=SimulationStep;
+                }
             }
             networkTimer+=Time.unscaledDeltaTime;
             if(Online && transport!=null && networkTimer>=1f/20)

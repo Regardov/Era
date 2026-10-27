@@ -1,0 +1,1350 @@
+{
+  "version": "0.23.2",
+  "unity": "2023.1.22f1",
+  "validatedUtc": "2026-10-27T10:58:10.8605293Z",
+  "sourceBaseCommit": "61a968403e02d8d7ffbf49899b1263247c6893b4",
+  "managedSha256": "4a4ca408412611c876e50b66b22b6cabee1da7c0ba85f5cc485e203fa3f5eb31",
+  "gameDataSha256": "2f595b40741ef1accd6952755a4b860db98f1d3b841edd6ec625976077c212ec",
+  "exeSha256": "3539c252fb098fe448ef782c2485ec866b368968ccdf2521c80427baf2dc3ef2",
+  "assertions": 46971,
+  "playerBuildBytes": 732690093,
+  "tests": {
+    "Camera60": {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 60,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.9119479475193657E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.2592592239379883,
+          "maxFrameTime": 0.01730009913444519
+        },
+        {
+          "direction": "Backward",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.2412368707591668E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.13383793830871582,
+          "maxFrameTime": 0.016945302486419678
+        },
+        {
+          "direction": "Left",
+          "frames": 83,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.2022545635991264E-06,
+          "cameraAngularAccelerationRms": 83.10208892822266,
+          "maxTargetLag": 0.17833900451660156,
+          "maxFrameTime": 0.13453400135040283
+        },
+        {
+          "direction": "Right",
+          "frames": 90,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 2.32537922784104E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.19549274444580078,
+          "maxFrameTime": 0.01734449341893196
+        }
+      ]
+    },
+    "Camera30": {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 30,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.2058222864652635E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.0984872579574585,
+          "maxFrameTime": 0.039080698043107986
+        },
+        {
+          "direction": "Backward",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.4411510846912279E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.1348717212677002,
+          "maxFrameTime": 0.03360540047287941
+        },
+        {
+          "direction": "Left",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.4668879657619982E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.08644556999206543,
+          "maxFrameTime": 0.03333380073308945
+        },
+        {
+          "direction": "Right",
+          "frames": 45,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 1.3911723044657265E-06,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.15055537223815918,
+          "maxFrameTime": 0.03396160155534744
+        }
+      ]
+    },
+    "Camera15": {
+      "version": "0.23.2",
+      "hero": "Ember",
+      "requestedFps": 15,
+      "errors": 0,
+      "ok": true,
+      "finite": true,
+      "ordinaryFollowCamera": true,
+      "phases": [
+        {
+          "direction": "Forward",
+          "frames": 22,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 6.228095799087896E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.16521906852722168,
+          "maxFrameTime": 0.06683920323848724
+        },
+        {
+          "direction": "Backward",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 5.142426289239665E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.23908138275146484,
+          "maxFrameTime": 0.06928040087223053
+        },
+        {
+          "direction": "Left",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 5.76282502606773E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.18843507766723633,
+          "maxFrameTime": 0.06736209988594055
+        },
+        {
+          "direction": "Right",
+          "frames": 23,
+          "stalledFrames": 0,
+          "targetSpeedErrorRms": 6.681363515781413E-07,
+          "cameraAngularAccelerationRms": 0.0,
+          "maxTargetLag": 0.1224362850189209,
+          "maxFrameTime": 0.06749779731035233
+        }
+      ]
+    },
+    "ArcherRefinement": {
+      "ok": true,
+      "finite": true,
+      "errors": 0,
+      "requestedFps": 30,
+      "version": "0.23.2",
+      "phases": [
+        {
+          "name": "Idle",
+          "frames": 36,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.0,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 4.056292084442248E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 0.0,
+          "maxQuiverDeflection": 0.0,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Idle"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "SlowWalk",
+          "frames": 60,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.780000627040863,
+          "maxRate": 0.7590140104293823,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0005121997091919184,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 8.634962682663172E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 0.5799211263656616,
+          "maxQuiverDeflection": 0.1850496381521225,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Idle",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Normal",
+          "frames": 60,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 3.90000319480896,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 8.34598040455603E-07,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 8.976635399449151E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 1.8624029159545898,
+          "maxQuiverDeflection": 0.1913444995880127,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Idle",
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Run",
+          "frames": 75,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.80000638961792,
+          "maxRate": 1.1230647563934326,
+          "cyclesPerSecond": 1.8717808723449707,
+          "maxPlantError": 1.9189549220754998E-06,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 1.043613337969873E-06,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.5845041275024414,
+          "maxQuiverDeflection": 0.18504971265792847,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Diagonal",
+          "frames": 60,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.799954891204834,
+          "maxRate": 1.1787431240081787,
+          "cyclesPerSecond": 1.871763825416565,
+          "maxPlantError": 3.932099843950709E-06,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 9.607493893781793E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 4.3273162841796875,
+          "maxQuiverDeflection": 1.2825274467468262,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Run",
+            "Archer_RunRight"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Reverse",
+          "frames": 60,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.800063610076904,
+          "maxRate": 1.361485481262207,
+          "cyclesPerSecond": 2.15022611618042,
+          "maxPlantError": 1.9073486328125E-06,
+          "maxGripError": 4.291534423828125E-06,
+          "maxQuiverDrift": 9.947013950295513E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 6.409032821655273,
+          "maxQuiverDeflection": 1.9825465679168701,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowHold",
+            "Archer_Run",
+            "Archer_RunBack",
+            "Archer_RunLeft",
+            "Archer_RunRight",
+            "Archer_Walk",
+            "Archer_WalkBack",
+            "Archer_WalkRight"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Turn",
+          "frames": 60,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.800062656402588,
+          "maxRate": 1.292758822441101,
+          "cyclesPerSecond": 1.9009743928909302,
+          "maxPlantError": 1.9405865714361425E-06,
+          "maxGripError": 1.1920928955078125E-06,
+          "maxQuiverDrift": 1.1342515335854841E-06,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 6.713499546051025,
+          "maxQuiverDeflection": 2.261512517929077,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_BowHold",
+            "Archer_Run",
+            "Archer_RunBack",
+            "Archer_RunLeft",
+            "Archer_RunRight",
+            "Archer_Walk",
+            "Archer_WalkBack",
+            "Archer_WalkLeft",
+            "Archer_WalkRight"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "IdleJump",
+          "frames": 48,
+          "airFrames": 18,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.0,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 9.534414289191773E-07,
+          "maxAirThighMotion": 0.23738813400268555,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 4.5181756019592285,
+          "maxQuiverDeflection": 0.9392421245574951,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_Idle",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Grounded"
+          ]
+        },
+        {
+          "name": "RunJump",
+          "frames": 63,
+          "airFrames": 21,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.800063610076904,
+          "maxRate": 1.1230729818344116,
+          "cyclesPerSecond": 1.9354833364486694,
+          "maxPlantError": 1.6689300537109375E-06,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 1.1940470585614094E-06,
+          "maxAirThighMotion": 0.22381167113780975,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 4.56849479675293,
+          "maxQuiverDeflection": 0.22933779656887054,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_Idle",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Grounded"
+          ]
+        },
+        {
+          "name": "JumpShoot",
+          "frames": 84,
+          "airFrames": 23,
+          "shots": 4,
+          "airShots": 1,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 4.679946422576904,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 3.996623490820639E-06,
+          "maxGripError": 0.00017129076877608895,
+          "maxQuiverDrift": 8.98528924153652E-07,
+          "maxAirThighMotion": 0.22381167113780975,
+          "maxShotOriginGap": 0.057961687445640564,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.288991928100586,
+          "maxQuiverDeflection": 0.23312881588935852,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Aim",
+            "Archer_Airborne",
+            "Archer_BowDraw",
+            "Archer_BowHold",
+            "Archer_BowRelease",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Archer_Run",
+            "Archer_ShootRecovery",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Grounded"
+          ]
+        },
+        {
+          "name": "DoubleJump",
+          "frames": 72,
+          "airFrames": 34,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 4.679946422576904,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 8.23493792267982E-06,
+          "maxGripError": 3.84438408218557E-06,
+          "maxQuiverDrift": 8.801781632428174E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.298323392868042,
+          "maxQuiverDeflection": 0.3213914632797241,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Airborne",
+            "Archer_BowDraw",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Archer_Run",
+            "Archer_ShootRecovery",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Archer_Airborne",
+            "Archer_Fall",
+            "Archer_JumpStart",
+            "Archer_Land",
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Fall",
+          "frames": 54,
+          "airFrames": 8,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.0,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 6.224691446732322E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 1.7708728313446045,
+          "maxQuiverDeflection": 0.2921108901500702,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Fall",
+            "Archer_Idle",
+            "Archer_Land",
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Archer_Fall",
+            "Archer_Land",
+            "Grounded"
+          ]
+        },
+        {
+          "name": "BackView",
+          "frames": 57,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 3.1198880672454834,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 4.649162292480469E-06,
+          "maxGripError": 0.0,
+          "maxQuiverDrift": 8.735945016269397E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 1.503838062286377,
+          "maxQuiverDeflection": 0.1850496381521225,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Idle",
+            "Archer_Run",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "RunShoot",
+          "frames": 81,
+          "airFrames": 0,
+          "shots": 4,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 7.799834728240967,
+          "maxRate": 1.123039960861206,
+          "cyclesPerSecond": 1.8717399835586548,
+          "maxPlantError": 7.630325853824615E-06,
+          "maxGripError": 8.327602699864656E-06,
+          "maxQuiverDrift": 1.0291514627169818E-06,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.1314072161912918,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.5690178871154785,
+          "maxQuiverDeflection": 0.18504899740219116,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowRelease",
+            "Archer_Run",
+            "Archer_ShootRecovery",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "BowDraw",
+          "frames": 63,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.0,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0,
+          "maxGripError": 7.79728088673437E-06,
+          "maxQuiverDrift": 1.1879880048581981E-06,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.0842971801757812,
+          "maxQuiverDeflection": 0.18505032360553741,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowHold",
+            "Archer_BowRelease",
+            "Archer_Idle",
+            "Archer_Run",
+            "Archer_ShootRecovery",
+            "Archer_Walk"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        },
+        {
+          "name": "Stop",
+          "frames": 45,
+          "airFrames": 0,
+          "shots": 0,
+          "airShots": 0,
+          "recordedFrames": 0,
+          "castFrames": 0,
+          "castWithLocomotionFrames": 0,
+          "maxSpeed": 0.0,
+          "maxRate": 1.0,
+          "cyclesPerSecond": 0.0,
+          "maxPlantError": 0.0,
+          "maxGripError": 2.384185791015625E-06,
+          "maxQuiverDrift": 3.772672698687529E-07,
+          "maxAirThighMotion": 0.0,
+          "maxShotOriginGap": 0.0,
+          "maxShotRootLag": 0.0,
+          "maxShotDirectionError": 0.0,
+          "maxCloakDeflection": 3.7094072258270216E-09,
+          "maxQuiverDeflection": 3.8811731606358535E-10,
+          "groundedPinInAir": false,
+          "runInAir": false,
+          "clips": [
+            "Archer_BowHold",
+            "Archer_Idle"
+          ],
+          "states": [
+            "Grounded"
+          ]
+        }
+      ],
+      "jumps": 5,
+      "landings": 5,
+      "shots": 8,
+      "events": 8,
+      "failures": []
+    },
+    "ArcherActions": {
+      "ok": true,
+      "finite": true,
+      "errors": 0,
+      "shots": 6,
+      "arrowEvents": 6,
+      "shotsWithoutRelease": 0,
+      "version": "0.23.2",
+      "sourceBones": 54,
+      "skins": 23,
+      "phases": [
+        {
+          "name": "Idle",
+          "frames": 56,
+          "thighDegrees": 2.191145420074463,
+          "handMeters": 0.009941649623215199,
+          "pelvisMeters": 0.004793447908014059,
+          "nockMeters": 0.008122346363961697,
+          "normalizedAdvance": 1.057248830795288,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Walk",
+          "frames": 36,
+          "thighDegrees": 26.18785858154297,
+          "handMeters": 0.25683316588401794,
+          "pelvisMeters": 0.01756351999938488,
+          "nockMeters": 0.019200993701815605,
+          "normalizedAdvance": 1.627811074256897,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Idle",
+            "Archer_Walk"
+          ]
+        },
+        {
+          "name": "Run",
+          "frames": 32,
+          "thighDegrees": 56.89574432373047,
+          "handMeters": 0.3214406967163086,
+          "pelvisMeters": 0.029199639335274696,
+          "nockMeters": 0.03597145527601242,
+          "normalizedAdvance": 2.4738152027130127,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Run",
+            "Archer_Walk"
+          ]
+        },
+        {
+          "name": "AutoFire",
+          "frames": 70,
+          "thighDegrees": 4.173882961273193,
+          "handMeters": 0.438963383436203,
+          "pelvisMeters": 0.01195821538567543,
+          "nockMeters": 0.4160134792327881,
+          "normalizedAdvance": 1.3530120849609375,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 4,
+          "releaseStates": 4,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowRelease",
+            "Archer_Idle",
+            "Archer_Run",
+            "Archer_ShootRecovery",
+            "Archer_Walk"
+          ]
+        },
+        {
+          "name": "CastFire",
+          "frames": 26,
+          "thighDegrees": 2.7599692344665527,
+          "handMeters": 0.4751129448413849,
+          "pelvisMeters": 0.006130460184067488,
+          "nockMeters": 0.459916353225708,
+          "normalizedAdvance": 0.4241151809692383,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 2,
+          "releaseStates": 2,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowRelease",
+            "Archer_Cast",
+            "Archer_Idle",
+            "Archer_ShootRecovery"
+          ]
+        },
+        {
+          "name": "Hold",
+          "frames": 36,
+          "thighDegrees": 3.4070558547973633,
+          "handMeters": 0.5991194844245911,
+          "pelvisMeters": 0.008408037945628166,
+          "nockMeters": 0.5170463919639587,
+          "normalizedAdvance": 0.6365079879760742,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_Aim",
+            "Archer_BowDraw",
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Hit",
+          "frames": 13,
+          "thighDegrees": 1.7755862474441528,
+          "handMeters": 0.008159748278558254,
+          "pelvisMeters": 0.003685161704197526,
+          "nockMeters": 0.02012700028717518,
+          "normalizedAdvance": 0.15453338623046875,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Hit",
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Dash",
+          "frames": 14,
+          "thighDegrees": 27.9630184173584,
+          "handMeters": 0.08704075962305069,
+          "pelvisMeters": 0.05956646427512169,
+          "nockMeters": 0.11728066951036453,
+          "normalizedAdvance": 0.3750007152557373,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Dash",
+            "Archer_Hit",
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Cast",
+          "frames": 20,
+          "thighDegrees": 2.090602159500122,
+          "handMeters": 0.06411714851856232,
+          "pelvisMeters": 0.005120506044477224,
+          "nockMeters": 0.01762128248810768,
+          "normalizedAdvance": 0.2930798828601837,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Hit",
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Interact",
+          "frames": 16,
+          "thighDegrees": 1.4456101655960083,
+          "handMeters": 0.1342434138059616,
+          "pelvisMeters": 0.0016220113029703498,
+          "nockMeters": 0.022933993488550186,
+          "normalizedAdvance": 0.5955795049667358,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Idle",
+            "Archer_Interact"
+          ]
+        },
+        {
+          "name": "TeleportOut",
+          "frames": 17,
+          "thighDegrees": 17.9450626373291,
+          "handMeters": 0.4839492738246918,
+          "pelvisMeters": 0.10637533664703369,
+          "nockMeters": 0.10229963809251785,
+          "normalizedAdvance": 0.7071912288665771,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Idle",
+            "Archer_TeleportOut"
+          ]
+        },
+        {
+          "name": "TeleportIn",
+          "frames": 16,
+          "thighDegrees": 20.26266860961914,
+          "handMeters": 0.16048917174339294,
+          "pelvisMeters": 0.08220423758029938,
+          "nockMeters": 0.06947344541549683,
+          "normalizedAdvance": 0.6210771799087524,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Idle",
+            "Archer_TeleportIn",
+            "Archer_TeleportOut"
+          ]
+        },
+        {
+          "name": "DodgeRoll",
+          "frames": 17,
+          "thighDegrees": 77.5494384765625,
+          "handMeters": 1.073748230934143,
+          "pelvisMeters": 0.4603671133518219,
+          "nockMeters": 0.8024306893348694,
+          "normalizedAdvance": 0.6694962978363037,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_DodgeRoll",
+            "Archer_Idle"
+          ]
+        },
+        {
+          "name": "Death",
+          "frames": 36,
+          "thighDegrees": 36.41159439086914,
+          "handMeters": 0.7022298574447632,
+          "pelvisMeters": 0.6049770712852478,
+          "nockMeters": 0.7845795750617981,
+          "normalizedAdvance": 0.9805909395217896,
+          "animatorEnabled": true,
+          "avatarValid": true,
+          "shots": 0,
+          "releaseStates": 0,
+          "recordedFrames": 0,
+          "observedClips": [
+            "Archer_BowHold",
+            "Archer_Cast",
+            "Archer_Death",
+            "Archer_Idle"
+          ]
+        }
+      ],
+      "clips": [
+        {
+          "name": "Archer_Idle",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 2.4000000953674316
+        },
+        {
+          "name": "Archer_Walk",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.9333333969116211
+        },
+        {
+          "name": "Archer_Run",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_Aim",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.5
+        },
+        {
+          "name": "Archer_BowDraw",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_BowHold",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 1.2000000476837158
+        },
+        {
+          "name": "Archer_BowRelease",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.30000001192092896
+        },
+        {
+          "name": "Archer_ShootRecovery",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.40000003576278687
+        },
+        {
+          "name": "Archer_DodgeRoll",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.7000000476837158
+        },
+        {
+          "name": "Archer_Dash",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.40000003576278687
+        },
+        {
+          "name": "Archer_Hit",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.3333333432674408
+        },
+        {
+          "name": "Archer_Death",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 1.5000001192092896
+        },
+        {
+          "name": "Archer_Cast",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.8000000715255737
+        },
+        {
+          "name": "Archer_Interact",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_TeleportOut",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.8000000715255737
+        },
+        {
+          "name": "Archer_TeleportIn",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": true,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_WalkLeft",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.9333333969116211
+        },
+        {
+          "name": "Archer_WalkRight",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.9333333969116211
+        },
+        {
+          "name": "Archer_WalkBack",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.9333333969116211
+        },
+        {
+          "name": "Archer_RunLeft",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_RunRight",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_RunBack",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.6000000238418579
+        },
+        {
+          "name": "Archer_JumpStart",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.20000001788139343
+        },
+        {
+          "name": "Archer_Airborne",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 1.0
+        },
+        {
+          "name": "Archer_Fall",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.8000000715255737
+        },
+        {
+          "name": "Archer_Land",
+          "exists": true,
+          "imported": true,
+          "assigned": true,
+          "runtimeObserved": false,
+          "seconds": 0.2666666805744171
+        }
+      ],
+      "others": [
+        {
+          "hero": "Echo",
+          "walkDegrees": 66.41543579101562,
+          "runDegrees": 60.07349395751953
+        },
+        {
+          "hero": "Lumen",
+          "walkDegrees": 66.41543579101562,
+          "runDegrees": 60.07349395751953
+        }
+      ],
+      "arrowVisibleDuringDraw": true,
+      "projectileObserved": true,
+      "draftDeathEnabledOnlyForTest": false,
+      "authoredDeathEnabledByDefault": true
+    },
+    "Campaign": {
+      "ok": true,
+      "jump": true,
+      "grass": true,
+      "lumenModel": true,
+      "keptBuilds": true,
+      "shaders": true,
+      "realms": 7,
+      "bosses": 7,
+      "portals": 6
+    },
+    "Solo": {
+      "ok": true,
+      "paused": true,
+      "resumed": true,
+      "bilingual": true,
+      "animatedLoot": true,
+      "rarityLoot": true,
+      "attributeRolls": true,
+      "weaponCount": 1,
+      "itemCount": 3
+    },
+    "CoopHost": {
+      "ok": true,
+      "connected": true,
+      "ready": true,
+      "jump": true,
+      "actions": true,
+      "music": true,
+      "noLevelPause": true,
+      "crouch": true,
+      "blessing": true,
+      "reward": true,
+      "auras": true,
+      "secondWeapons": true,
+      "difficulty": true,
+      "players": 3,
+      "localId": 0,
+      "level": 26,
+      "kills": 60,
+      "items": 0,
+      "chests": 1,
+      "gold": 248,
+      "weapons": 2,
+      "hostWeapons": 2
+    },
+    "CoopClient": {
+      "ok": true,
+      "connected": true,
+      "ready": true,
+      "jump": true,
+      "actions": true,
+      "music": true,
+      "noLevelPause": true,
+      "crouch": true,
+      "blessing": true,
+      "reward": true,
+      "auras": true,
+      "secondWeapons": true,
+      "difficulty": true,
+      "players": 3,
+      "localId": 1,
+      "level": 26,
+      "kills": 60,
+      "items": 1,
+      "chests": 1,
+      "gold": 248,
+      "weapons": 2,
+      "hostWeapons": 2
+    },
+    "CoopClient2": {
+      "ok": true,
+      "connected": true,
+      "ready": true,
+      "jump": true,
+      "actions": true,
+      "music": true,
+      "noLevelPause": true,
+      "crouch": true,
+      "blessing": true,
+      "reward": true,
+      "auras": true,
+      "secondWeapons": true,
+      "difficulty": true,
+      "players": 3,
+      "localId": 2,
+      "level": 26,
+      "kills": 60,
+      "items": 0,
+      "chests": 1,
+      "gold": 248,
+      "weapons": 2,
+      "hostWeapons": 2
+    }
+  },
+  "earlierFailedCoopAttempt": "coop-first-v0232.json; blessing=false in first concurrent run, repeat of unchanged Player passed. Cause not established; same symptom is documented for 0.23.1."
+}

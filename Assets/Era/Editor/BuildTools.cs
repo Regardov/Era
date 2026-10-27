@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.23.1";
+            PlayerSettings.bundleVersion = "0.23.2";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
