@@ -23,6 +23,7 @@ namespace Era
         public bool GroundedPose=>!dead&&!downed&&!airborne&&(heroPose||locomotion=="Idle");
         public float WindupBlend=>charge;
         public float RecoveryBlend=>attackRecovery;
+        public float MovementSpeed=>smoothedSpeed;
         public bool PoseFrozen=>frozen||freezeTime>0;
         public Transform Bone(string name){foreach(var t in GetComponentsInChildren<Transform>(true))if(t.name==name)return t;return null;}
         public void Bind(){hips=Bone("hips");spine=Bone("spine");leftThigh=Bone("upperleg.l");rightThigh=Bone("upperleg.r");leftKnee=Bone("lowerleg.l");rightKnee=Bone("lowerleg.r");rightHand=Bone("handslot.r");}
@@ -46,7 +47,8 @@ namespace Era
             if(locomotion!=name)
             {
                 // Keep the footfall phase when changing walk/run; one-shot states restart once.
-                float phase=locomotion.Length>0&&animationPlayer[locomotion]!=null?animationPlayer[locomotion].normalizedTime%1:0;
+                bool previousGait=locomotion.Contains("Walking")||locomotion.Contains("Running");
+                float phase=previousGait&&animationPlayer[locomotion]!=null?animationPlayer[locomotion].normalizedTime%1:0;
                 state.normalizedTime=name.Contains("Walking")||name.Contains("Running")?phase:0;
                 animationPlayer.CrossFade(name,fade,PlayMode.StopSameLayer);locomotion=name;
             }
@@ -146,6 +148,11 @@ namespace Era
             CorpseFade.Begin(gameObject,enemyBound?profile.death:ActorDeathStyle.Collapse,null,null,true);
             enabled=false;
         }
+        void Update()
+        {
+            // Re-enable before Unity evaluates Animation, not a frame later in LateUpdate.
+            if(animationPlayer!=null&&!dead)animationPlayer.enabled=!PoseFrozen&&GameApp.Instance?.WorldPaused!=true;
+        }
         void LateUpdate()
         {
             if(animationPlayer==null||dead)return;
@@ -181,7 +188,8 @@ namespace Era
             else
             {
                 bool boss=enemyKind==EnemyKind.Warden;
-                float weight=boss?1.15f:profile.weight,prep=charge,release=attackRecovery;
+                ActorMotionMath.AttackPose(previousWindup,windupDuration,attackRecovery,out float prep,out float release);
+                float weight=boss?1.15f:profile.weight;
                 float side=boss&&(bossStage==2||bossStage==6)?1:boss&&bossStage==5?-1:0;
                 float raising=boss&&(bossStage==3||bossStage==7)||attackStyle==2?1:0;
                 spine.localRotation*=Quaternion.Euler(-prep*(18+weight*7)+release*(21+weight*8),-prep*side*24+release*side*30,Mathf.Sin(poseClock*profile.cadence)*profile.sway*runPose);

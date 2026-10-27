@@ -15,7 +15,7 @@ namespace Era
         Transform leftFoot,rightFoot,pelvis;
         Vector3[] targets;
         Quaternion leftSole,rightSole;
-        bool solesBound;
+        bool solesBound,positionsReset;
         public static Vector3 Shape(Vector3 point,bool head=false,bool halo=false)
         {
             float y=head?1.85f+(point.y-1.3f)*.32f:point.y<.6f?point.y*1.8f:point.y<1.3f?1.08f+(point.y-.6f)*1.1f:1.85f+(point.y-1.3f)*.32f;
@@ -36,12 +36,17 @@ namespace Era
         }
         void Update()
         {
+            positionsReset=false;
             if(bones==null||GameApp.Instance?.WorldPaused==true||GetComponent<SkeletalActor>()?.PoseFrozen==true)return;
             for(int i=0;i<bones.Length;i++)bones[i].localPosition=originalLocalPositions[i];
+            positionsReset=true;
         }
         void LateUpdate()
         {
-            if(bones==null||GameApp.Instance?.WorldPaused==true||GetComponent<SkeletalActor>()?.PoseFrozen==true)return;
+            // Apply exactly once to a fresh animation pose. Freeze may begin/end between
+            // Update and LateUpdate; reapplying to an already shaped hip doubles its offset.
+            if(bones==null||!positionsReset)return;
+            positionsReset=false;
             ApplyPose();
             var actor=GetComponent<SkeletalActor>();
             if(plantFeet&&actor?.GroundedPose==true){PlantFeet();ApplyCrouch(actor.CrouchBlend);}

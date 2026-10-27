@@ -5,7 +5,8 @@ namespace Era
     public sealed class ItemFieldPresentation:MonoBehaviour
     {
         ItemId item;FeedbackStyle style;Transform core;bool vortex;Renderer[] renderers;
-        float age,next,lastTick;bool initialized,armed;
+        float age,next,lastTick;bool initialized,armed,facingBound;
+        Transform[] wings;Quaternion[] wingRotations;
         readonly MaterialPropertyBlock block=new MaterialPropertyBlock();
         GameObject Part(string name,Mesh mesh,Vector3 at,Vector3 scale,Color color)
         {
@@ -41,9 +42,11 @@ namespace Era
                 bool insect=item==ItemId.HiveMind,wolf=item==ItemId.HuntingPack;Color color=insect?new Color(.38f,.62f,.14f,.9f):new Color(.38f,.76f,.70f,.72f);
                 core=Part(wolf?"Spectral wolf":insect?"Venom drone":"Revenant",insect?FeedbackGeometry.Orb:wolf?FeedbackGeometry.SpectralWolf:FeedbackGeometry.SpectralSpirit,insect?Vector3.up*.55f:Vector3.zero,insect?new Vector3(.48f,.65f,.45f):Vector3.one,color).transform;
                 if(insect)Part("Head",FeedbackGeometry.Orb,new Vector3(0,.78f,0),Vector3.one*.34f,color);
+                if(insect){wings=new Transform[2];wingRotations=new Quaternion[2];}
                 for(int i=0;i<(insect?2:0);i++)
                 {
                     float side=i%2==0?-1:1;var limb=Part(insect?"Venom drone wing":"Spirit limb",FeedbackGeometry.Shard,new Vector3(side*.25f,insect?.65f:.35f,(i/2-.5f)*.4f),insect?new Vector3(.8f,.06f,.26f):new Vector3(.1f,.35f,.1f),color);limb.transform.localRotation=Quaternion.Euler(0,0,side*18);
+                    wings[i]=limb.transform;wingRotations[i]=limb.transform.localRotation;
                 }
                 SynthAudio.Instance?.PlaySemantic(FeedbackStyle.Summon,field.position);
             }
@@ -65,7 +68,12 @@ namespace Era
             else if(item==ItemId.MiserFuse||item==ItemId.PacifistEngine)
             {if(field.armed&&!armed){armed=true;SynthAudio.Instance?.PlaySemantic(FeedbackStyle.Shield,field.position);}if(armed&&next<=0){next=.7f;PresentationFx.EmitStyle(field.position+Vector3.up*.25f,FeedbackStyle.Gold,.12f);}}
             else if(item==ItemId.HuntingPack||item==ItemId.GravePact||item==ItemId.HiveMind)
-            {var target=state.enemies.Find(e=>e.id==field.target);var goal=target?.position??state.Player(field.owner)?.position??field.position;var direction=goal-field.position;direction.y=0;if(direction.sqrMagnitude>.01f)transform.rotation=Quaternion.LookRotation(direction);core.localPosition=Vector3.up*((item==ItemId.HiveMind?.55f:.08f)+Mathf.Sin(age*5)*.06f);}
+            {
+                var target=state.enemies.Find(e=>e.id==field.target);var goal=target?.position??state.Player(field.owner)?.position??field.position;var direction=goal-field.position;direction.y=0;
+                if(direction.sqrMagnitude>.01f){var facing=Quaternion.LookRotation(direction);transform.rotation=facingBound?Quaternion.Slerp(transform.rotation,facing,1-Mathf.Exp(-12*dt)):facing;facingBound=true;}
+                core.localPosition=Vector3.up*((item==ItemId.HiveMind?.55f:.08f)+Mathf.Sin(age*5)*.06f);
+                if(wings!=null)for(int i=0;i<wings.Length;i++)wings[i].localRotation=wingRotations[i]*Quaternion.Euler(0,0,(i==0?-1:1)*Mathf.Sin(age*28)*24);
+            }
             else if(item==ItemId.Overgrowth||item==ItemId.WorldSeed){core.localScale=Vector3.one*Mathf.Clamp01(age*4);}
             else if((item==ItemId.DashFlint||item==ItemId.AshGarden)&&field.tick>lastTick+.15f)
                 PresentationFx.EmitStyle(field.position,FeedbackStyle.Fire,field.radius);

@@ -119,7 +119,8 @@ namespace Era
             moveBlend=ActorMotionMath.Damp(moveBlend,desired,10,dt);
             bool flying=EnemyCatalog.Flying(kind),gel=kind==EnemyKind.Slime||kind==EnemyKind.AcidSlime;
             motionPhase+=dt*profile.cadence*(flying?1:Mathf.Lerp(.12f,1,moveBlend));
-            float step=Mathf.Sin(motionPhase),breath=Mathf.Sin(idleTime*profile.breath),prep=AttackPreparation,strike=recoveryBlend;
+            ActorMotionMath.AttackPose(remaining,windupMax,recoveryBlend,out float prep,out float strike);
+            float step=Mathf.Sin(motionPhase),breath=Mathf.Sin(idleTime*profile.breath);
             float impact=ActorMotionMath.Ease(hit),weight=profile.weight;
             if(enemy.spawnGrace>0)spawnMax=Mathf.Max(spawnMax,enemy.spawnGrace);
             float arrival=spawnMax>0?1-ActorMotionMath.Ease(1-enemy.spawnGrace/spawnMax):0;

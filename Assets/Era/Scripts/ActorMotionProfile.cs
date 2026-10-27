@@ -42,6 +42,15 @@ namespace Era
         public static float Anticipation(float remaining,float duration)=>remaining<=0?0:Ease(1-Mathf.Clamp01(remaining/Mathf.Max(.01f,duration)));
         // Resolve starts at the fully extended pose, then settles without a second damage cue.
         public static float Recovery(float remaining,float duration)=>Ease(Mathf.Clamp01(remaining/Mathf.Max(.01f,duration)));
+        // Finish the visible stroke at the existing simulation contact time.
+        // Previously the full anticipation pose jumped straight to recovery on that frame.
+        public static void AttackPose(float remaining,float duration,float recovery,out float preparation,out float strike)
+        {
+            float progress=1-Mathf.Clamp01(remaining/Mathf.Max(.01f,duration));
+            float active=remaining>0?Ease(Mathf.InverseLerp(.65f,1,progress)):0;
+            preparation=Anticipation(remaining,duration)*(1-active);
+            strike=remaining>0?active:recovery;
+        }
         public static bool Finite(Vector3 value)=>!float.IsNaN(value.x)&&!float.IsNaN(value.y)&&!float.IsNaN(value.z)&&!float.IsInfinity(value.x)&&!float.IsInfinity(value.y)&&!float.IsInfinity(value.z);
     }
 }
