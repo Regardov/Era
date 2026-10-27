@@ -112,7 +112,7 @@ namespace Era
                     if(Vector3.Distance(returned,catchPoint)<.65f)
                     {
                         int i=I(ItemId.MobiusQuiver);owner.itemCounters[i]++;
-                        if(owner.itemCounters[i]>=3){owner.itemCounters[i]-=3;for(int slot=0;slot<owner.weaponTimers.Length;slot++)owner.weaponTimers[slot]=Mathf.Max(0,owner.weaponTimers[slot]-.15f*Stack(owner,ItemId.MobiusQuiver));}
+                        if(owner.itemCounters[i]>=3){owner.itemCounters[i]-=3;for(int slot=0;slot<owner.weaponTimers.Length;slot++)owner.weaponTimers[slot]=Mathf.Max(0,owner.weaponTimers[slot]-Mathf.Min(.75f,.25f*Power(owner,ItemId.MobiusQuiver)));}
                         State.projectiles.Remove(b);
                     }
                     continue;

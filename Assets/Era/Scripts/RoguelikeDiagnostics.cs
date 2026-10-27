@@ -21,7 +21,7 @@ namespace Era
                 App.Solo();var p=App.LocalPlayer;p.weapons=new[]{-1,-1};p.invulnerability=1000;App.State.spawnTimer=10000;App.State.resourceNodes.Clear();p.position=WorldMap.OnGround(0,-8);
                 int n=0;foreach(EnemyKind kind in Enum.GetValues(typeof(EnemyKind)))if(kind>=EnemyKind.Skeleton)
                 {var e=App.Simulation.SpawnEnemy(kind);e.position=WorldMap.OnGround(-9+n%6*3.6f,2+n/6*5);if(EnemyCatalog.Flying(kind))e.position.y+=1.8f;e.hp=e.maxHp=100000;e.frozen=1000;n++;}
-                report.creatures=n;report.items=GameData.Items.Length;report.models=n==12;report.catalogue=report.items==ItemCatalog.Count;lineup=true;phase++;
+                report.creatures=n;report.items=0;for(int i=0;i<GameData.Items.Length;i++)if(ItemCatalog.IsAvailable(i))report.items++;report.models=n==12;report.catalogue=report.items==ItemCatalog.ActiveCount;lineup=true;phase++;
             }
             else if(phase==1&&age>3.5f){App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,"roguelike-creatures-v012.png"));phase++;}
             else if(phase==2&&age>4.5f){lineup=false;App.GetComponent<GameHud>().CaptureItemCatalogue(Path.Combine(folder,"roguelike-catalogue-v012.png"),0);phase++;}

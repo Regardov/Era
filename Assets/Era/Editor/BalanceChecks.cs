@@ -42,7 +42,7 @@ namespace Era.Editor
         {
             int[] expected={25,42,70,117,195,325,542};for(int n=0;n<expected.Length;n++)Check(GameData.ChestPrice(25,n)==expected[n],"recursive screenshot price with upward rounding "+n);
             Check(GameData.ChestPrice(25,int.MaxValue)==int.MaxValue,"geometric prices saturate without integer overflow");
-            var s=New();Check(s.State.chests.Count==240,"four times as many ordinary-world chests");
+            var s=New();Check(s.State.chests.Count==30,"thirty ordinary-world chests");
             var p=s.State.Player(0);s.State.coins=10000;p.position=s.State.chests[0].position;s.TryOpenChest(p);
             Check(s.State.chestsOpenedInStage==1&&s.State.openedChests==1&&s.State.chests[1].cost==20,"opening updates the shared realm progression");
             var boss=s.SpawnEnemy(EnemyKind.Warden);s.DamageEnemy(boss,p,99999999);p.position=s.State.portal.position;s.TryUsePortal(p);
@@ -79,15 +79,15 @@ namespace Era.Editor
         static void CurrentRules()
         {
             var cases=new (ItemId item,Func<PlayerState,float> stat,float delta)[]{
-                (ItemId.SharpBlade,p=>p.damage,.075f),(ItemId.StoutHeart,p=>p.maxHp,10),
+                (ItemId.SharpBlade,p=>p.damage,.10f),(ItemId.StoutHeart,p=>p.maxHp,10),
                 (ItemId.Hourglass,p=>p.cooldownRate,.055f),(ItemId.GoldenCoin,p=>p.goldGain,.1f),
-                (ItemId.BeginnersLuck,p=>p.luck,7.5f),(ItemId.SmallPotion,p=>p.healingPower,.09f),
-                (ItemId.SpikedGloves,p=>p.critChance,.06f),(ItemId.TrueSight,p=>p.critDamage,.15f),
-                (ItemId.Magnet,p=>p.pickupRange,.75f),(ItemId.CopperSpring,p=>p.attackSpeed,.075f),
+                (ItemId.BeginnersLuck,p=>p.luck,7.5f),(ItemId.SmallPotion,p=>p.healingPower,.15f),
+                (ItemId.SpikedGloves,p=>p.critChance,.06f),(ItemId.TrueSight,p=>p.critDamage,.20f),
+                (ItemId.Magnet,p=>p.pickupRange,.75f),(ItemId.CopperSpring,p=>p.attackSpeed,.10f),
                 (ItemId.ChalkCircle,p=>p.areaSize,.09f),(ItemId.WindFletching,p=>p.projectileSpeed,.125f),
                 (ItemId.ScholarSeal,p=>p.xpGain,.09f),(ItemId.LeadPendulum,p=>p.projectileSpeed,.06f),
                 (ItemId.BloodGlass,p=>p.critDamage,.06f),(ItemId.MerchantScale,p=>p.goldGain,.06f)};
-            foreach(var test in cases){var check=New();var player=check.State.Player(0);float before=test.stat(player);check.ApplyItem(player,(int)test.item);Check(Mathf.Abs(test.stat(player)-before-test.delta)<.0001f,"halved percentage buff: "+test.item);}
+            foreach(var test in cases){var check=New();var player=check.State.Player(0);float before=test.stat(player);check.ApplyItem(player,(int)test.item);Check(Mathf.Abs(test.stat(player)-before-test.delta)<.0001f,"current percentage buff: "+test.item);}
             var s=New();var p=s.State.Player(0);s.ApplyItem(p,(int)ItemId.SwiftBoots);s.ApplyItem(p,(int)ItemId.SteelShield);
             Check(Mathf.Approximately(p.moveSpeed,1.1f)&&p.shield==35,"ten percent and flat bonuses stay unchanged");
             float crit=p.critDamage;s.ApplyAccessory(p,3,(int)ItemRarity.Uncommon);

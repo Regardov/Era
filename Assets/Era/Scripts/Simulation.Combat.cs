@@ -31,7 +31,7 @@ namespace Era
         {
             chest.rewardKind=RewardKind.Item;
             chest.rewardRarity=RollRarity(owner,chest.tier);
-            var pool=new List<int>();for(int i=0;i<GameData.Items.Length;i++)if((int)GameData.Items[i].rarity==chest.rewardRarity)pool.Add(i);
+            var pool=new List<int>();for(int i=0;i<GameData.Items.Length;i++)if(ItemCatalog.IsAvailable(i)&&(int)GameData.Items[i].rarity==chest.rewardRarity)pool.Add(i);
             chest.reward=pool[random.Next(pool.Count)];
             var floor=WorldMap.Resolve(chest.position,Vector3.forward*1.7f,.3f);floor.y=WorldMap.Ground(floor);
             State.loot.Add(new LootState{id=State.nextId++,owner=-1,content=chest.reward,kind=chest.rewardKind,quantity=1,origin=floor,position=floor+Vector3.up*.55f});

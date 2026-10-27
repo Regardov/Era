@@ -66,7 +66,7 @@ namespace Era
             else if(phase==7&&age>7)
             {
                 // Actual acquisition + timers exercise saw, fire field, roots, vortex, meteor and summons.
-                foreach(var item in new[]{ItemId.OrbitalSaw,ItemId.ChaosPortal,ItemId.DashFlint,ItemId.HuntingPack,ItemId.Overgrowth,ItemId.TimeMaster,ItemId.SpellLoom,ItemId.KineticSpool})sim.ApplyItem(p,(int)item);
+                foreach(var item in new[]{ItemId.OrbitalSaw,ItemId.ChaosPortal,ItemId.Thunderstep,ItemId.HuntingPack,ItemId.Overgrowth,ItemId.TimeMaster,ItemId.SpellLoom,ItemId.KineticSpool})sim.ApplyItem(p,(int)item);
                 p.dashCooldown=0;sim.Step(1f/30,new Dictionary<int,InputFrame>{{0,new InputFrame{dash=true,x=-1}}});
                 p.weapons[0]=(int)WeaponKind.Bow;p.weaponLevels[0]=1;p.weaponTimers[0]=0;
                 for(int i=0;i<5;i++){var e=sim.SpawnEnemy(EnemyKind.Skeleton);e.position=p.position+Vector3.forward*6;sim.DamageEnemy(e,p,1000000);}

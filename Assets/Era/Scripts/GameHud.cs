@@ -110,7 +110,7 @@ namespace Era
             Text(I18n.P("Slay the horde. Forge your build.\nClaim the blessings of the old gods.","Сражайся с ордой. Собери свой билд.\nПолучи благословения древних богов."),94,400,460,72,21,Muted);
             if(Button("Play solo",92,510,494,62,true))App.BeginSelection(SessionMode.Solo);
             if(Button(I18n.P("Play co-op · 2–3 players","Кооператив · 2–3 игрока"),92,590,494,62))App.Page=MenuPage.Connection;
-            if(Button(I18n.P("Item catalogue · 129","Каталог предметов · 129"),92,670,494,48)){App.Page=MenuPage.Catalogue;ownedOnly=false;cataloguePage=0;}
+            if(Button(I18n.P("Item catalogue · ","Каталог предметов · ")+ItemCatalog.ActiveCount,92,670,494,48)){App.Page=MenuPage.Catalogue;ownedOnly=false;cataloguePage=0;}
             if(Button("Settings",92,736,238,48))App.Page=MenuPage.Settings;
             if(Button("Quit",348,736,238,48))Application.Quit();
             Text(I18n.P("A 3D survivor for 1–3 wanderers","3D-выживание для 1–3 игроков"),94,808,490,26,14,Muted);
@@ -438,7 +438,7 @@ namespace Era
         {
             Text(I18n.P("Hover an item for effects, stacking and synergies","Наведите курсор: эффект, повторы и синергии"),490,107,1038,27,16,Muted);
             if(Button(ownedOnly?I18n.P("Owned only","Только собранные"):I18n.P("All items","Все предметы"),490,143,230,34,false,p!=null)){ownedOnly=!ownedOnly;cataloguePage=0;}
-            var items=new List<int>();foreach(int rarity in ItemCatalog.RarityOrder)for(int n=0;n<GameData.Items.Length;n++)if((int)GameData.Items[n].rarity==rarity&&(!ownedOnly||p==null||p.items[n]>0))items.Add(n);
+            var items=new List<int>();foreach(int rarity in ItemCatalog.RarityOrder)for(int n=0;n<GameData.Items.Length;n++)if(ItemCatalog.IsAvailable(n)&&(int)GameData.Items[n].rarity==rarity&&(!ownedOnly||p==null||p.items[n]>0))items.Add(n);
             const int size=30;int pages=Mathf.Max(1,(items.Count+size-1)/size);cataloguePage=Mathf.Clamp(cataloguePage,0,pages-1);
             for(int n=cataloguePage*size;n<items.Count&&n<(cataloguePage+1)*size;n++)
             {
@@ -453,7 +453,7 @@ namespace Era
         {
             Flat(0,0,1600,900,new Color(.04f,.07f,.09f,.95f));Box(34,38,1532,824,Panel);
             Text(I18n.P("ITEM CATALOGUE","КАТАЛОГ ПРЕДМЕТОВ"),70,64,1000,36,28,Ink,true);
-            Text(I18n.P("All 129 run items","Все 129 предметов забега"),70,154,350,66,25,Sage,true);
+            Text(I18n.P("Run items · ","Предметы забега · ")+ItemCatalog.ActiveCount,70,154,350,66,25,Sage,true);
             Text(I18n.P("Hover any card to read its effect, stacking and build interactions.","Наведите курсор на карточку: эффект, повторные подборы и взаимодействия для билдов."),70,252,350,110,20,Muted);
             for(int n=0;n<5;n++){int r=ItemCatalog.RarityOrder[n];Flat(70,410+n*48,5,30,GameData.RarityColors[r]);Text(GameData.RarityName(r),91,414+n*48,320,27,18,GameData.RarityColors[r],true);}
             if(Button(I18n.P("Back to menu","Назад в меню"),70,788,350,52))App.Page=MenuPage.Home;
@@ -476,7 +476,7 @@ namespace Era
             int shown=0;for(int at=itemPage*10;at<owned.Count&&shown<10;at++){int item=owned[at],col=shown%5,row=shown/5;float x=70+col*72,y=692+row*65;Flat(x-2,y-2,58,58,GameData.Items[item].color);Flat(x,y,54,54,Soft);ItemIcon(item,x,y,54);Text("×"+p.items[item],x+33,y+39,23,15,11,Ink,true,TextAnchor.UpperRight);ItemHover(item,new Rect(x-2,y-2,58,58));shown++;}
             if(shown==0)Text(I18n.P("Open a chest to find your first item.","Откройте сундук, чтобы найти первый предмет."),70,710,360,42,13,Muted);
             if(owned.Count>10){if(Button("‹",70,820,45,27))itemPage=Mathf.Max(0,itemPage-1);Text((itemPage+1)+" / "+((owned.Count+9)/10),130,824,230,21,12,Muted,false,TextAnchor.UpperCenter);if(Button("›",385,820,45,27))itemPage=Mathf.Min((owned.Count-1)/10,itemPage+1);}
-            if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · 129","Каталог · 129 предметов"),1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
+            if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · ","Каталог · ")+ItemCatalog.ActiveCount,1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
             if(catalogue){ItemCatalogue(p);return;}
             Text(I18n.P("ATTRIBUTES","АТРИБУТЫ"),490,99,1040,25,15,Sage,true);
             for(int attribute=0;attribute<GameData.Attributes.Length;attribute++)AttributeTile(p,attribute,490+(attribute%5)*207,140+(attribute/5)*132,194,121);

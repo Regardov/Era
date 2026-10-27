@@ -295,10 +295,11 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 15;
+        public const int Protocol = 16;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
-        public const int ChestCount=240,ResourceNodeCount=72;
+        public const int ChestCount=30,ResourceNodeCount=72;
+        public const float BaseMoveSpeed=8.268f; // Six percent faster than 7.8 m/s.
         public static WeaponKind StarterWeapon(Hero hero)=>hero==Hero.Lumen?WeaponKind.Aura:hero==Hero.Ember?WeaponKind.Bow:WeaponKind.LightningStaff;
         public static float HeroBaseDamageBonus(Hero hero)=>hero==Hero.Lumen?0:12;
         public static float WeaponBaseDamage(Hero hero,WeaponKind weapon)=>Weapons[(int)weapon].damage+HeroBaseDamageBonus(hero);

@@ -7,7 +7,7 @@ namespace Era
     {
         void DefeatBoss(EnemyState boss)
         {
-            foreach(var p in State.players)if(Has(p,ItemId.SevenfoldOath)){int n=Stack(p,ItemId.SevenfoldOath);p.projectileCount=Mathf.Min(48,p.projectileCount+n);p.damage+=.15f*n;p.itemCounters[I(ItemId.SevenfoldOath)]++;}
+            foreach(var p in State.players)if(Has(p,ItemId.SevenfoldOath)){int n=Stack(p,ItemId.SevenfoldOath);p.projectileCount=Mathf.Min(48,p.projectileCount+n);p.damage+=.10f*Power(p,ItemId.SevenfoldOath);p.itemCounters[I(ItemId.SevenfoldOath)]++;}
             State.bossSpawned=true;
             State.hazards.Clear();
             State.coins+=60+State.stage*20;State.earnedCoins+=60+State.stage*20;

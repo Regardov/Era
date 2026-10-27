@@ -6,7 +6,7 @@ namespace Era
     [DefaultExecutionOrder(90)]
     public sealed class BalanceDiagnostics:MonoBehaviour
     {
-        [Serializable] public sealed class Report{public bool ok,menuCatalogue,stand,crouch,shield,evade,tooltip,bossHealth;public int chests;}
+        [Serializable] public sealed class Report{public bool ok,menuCatalogue,stand,crouch,shield,evade,tooltip,bossHealth;public int chests,activeItems,rareItems;public string version;}
         GameApp App=>GameApp.Instance;string folder;float started;int phase;bool portraits;Vector3 origin;Report report=new Report();
         void Start()
         {
@@ -19,7 +19,9 @@ namespace Era
             if(phase==0&&age>1.5f){App.Page=MenuPage.Catalogue;Shot("balance-menu-catalogue-v014.png");phase++;}
             else if(phase==1&&age>2.5f)
             {
-                report.menuCatalogue=App.Page==MenuPage.Catalogue&&GameData.Items.Length==ItemCatalog.Count&&File.Exists(Path.Combine(folder,"balance-menu-catalogue-v014.png"));
+                report.version=Application.version;
+                for(int i=0;i<GameData.Items.Length;i++)if(ItemCatalog.IsAvailable(i)){report.activeItems++;if(GameData.Items[i].rarity==ItemRarity.Rare)report.rareItems++;}
+                report.menuCatalogue=App.Page==MenuPage.Catalogue&&report.activeItems==ItemCatalog.ActiveCount&&report.rareItems==10&&File.Exists(Path.Combine(folder,"balance-menu-catalogue-v014.png"));
                 App.GetComponent<GameHud>().CaptureItemCatalogue(Path.Combine(folder,"balance-item-tooltip-v014.png"),1,(int)ItemId.RicochetSeed);phase++;
             }
             else if(phase==2&&age>3.5f)
@@ -46,7 +48,7 @@ namespace Era
             }
             else if(phase==9&&age>10.5f)
             {
-                report.ok=report.menuCatalogue&&report.stand&&report.crouch&&report.shield&&report.evade&&report.tooltip&&report.bossHealth&&report.chests==240;
+                report.ok=report.menuCatalogue&&report.stand&&report.crouch&&report.shield&&report.evade&&report.tooltip&&report.bossHealth&&report.chests==GameData.ChestCount;
                 File.WriteAllText(Path.Combine(folder,"smoke-balance.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_BALANCE "+JsonUtility.ToJson(report));Application.Quit(report.ok?0:2);phase++;
             }
             if(portraits)foreach(var p in App.State.players){p.position=origin+Vector3.right*((p.id-1)*1.8f);p.position.y=WorldMap.Ground(p.position);if(p.id!=App.LocalId)p.crouching=App.LocalInput.crouch;}

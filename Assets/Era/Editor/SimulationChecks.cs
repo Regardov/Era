@@ -30,7 +30,7 @@ namespace Era.Editor
         {
             assertions = 0;
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
-            TuningAndRandomStarts();assertions+=PassiveAutumnChecks.Run();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
+            TuningAndRandomStarts();assertions+=PassiveAutumnChecks.Run();assertions+=LootBalanceChecks.Run();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
             assertions+=ArcherAnimationChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember"));assertions+=ArcherMotionChecks.RunPrefab(Resources.Load<GameObject>("Characters/Ember")).assertions;
             File.WriteAllText("Artifacts/editor-checks.json", "{\"ok\":true,\"assertions\":" + assertions + "}");
@@ -42,7 +42,7 @@ namespace Era.Editor
             Vector3 start = p.position;
             Step(sim, 1, new Dictionary<int, InputFrame> { [0] = new InputFrame { x = 999, z = 999 } });
             float travelled = Vector3.Distance(start, p.position);
-            Check(travelled < 7.9f && travelled > 7.6f, "normalized input speed");
+            Check(Mathf.Abs(travelled-8.268f)<.1f, "normalized input at the new six-percent-faster speed");
             p.position=WorldMap.OnGround(GameData.ArenaRadius-1,0);
             Step(sim, 1, new Dictionary<int, InputFrame> { [0] = new InputFrame { x = 1 } });
             Check(new Vector2(p.position.x, p.position.z).magnitude <= GameData.ArenaRadius + 0.01f, "arena bounds");
@@ -430,7 +430,7 @@ namespace Era.Editor
             Check(!sim.ChooseItem(a, 6), "invalid upgrade rejected");
             Check(sim.ChooseItem(a, 0) && a.pendingLevels == 0 && b.pendingLevels == 1, "upgrades are individual");
             float hp=a.maxHp;sim.ApplyItem(a,2);Check(a.maxHp>hp,"stout heart increases maximum health");
-            float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.075f)<.001f,"sharp blade stacks damage");
+            float damage = a.damage; sim.ApplyItem(a,0);Check(Mathf.Abs(a.damage-damage-.10f)<.001f,"sharp blade stacks damage");
             for(int i=0;i<60;i++)sim.ApplyItem(a,9);Check(a.projectileCount==48,"projectile count has a safe cap");
             hp=a.maxHp;sim.ApplyAttribute(a,4,3);Check(Mathf.Abs(a.maxHp-hp-40)<.001f,"legendary health attribute grants forty maximum health");
             float crit=a.critChance;sim.ApplyAttribute(a,2,2);Check(Mathf.Abs(a.critChance-crit-.15f)<.001f,"epic critical chance grants fifteen percent");

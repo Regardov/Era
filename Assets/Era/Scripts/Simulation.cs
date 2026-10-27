@@ -143,7 +143,7 @@ namespace Era
                 OnItemDash(p,p.position);
             }
             if (p.dashTime > 0) { p.position=MovePlayerBody(p,p.dashDirection*24*dt); p.dashTime -= dt; }
-            else p.position=MovePlayerBody(p,move*(7.8f*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt);
+            else p.position=MovePlayerBody(p,move*(GameData.BaseMoveSpeed*p.moveSpeed*(1+p.auraBonuses[4])*reality*(p.boost>0?1.3f:1)*(p.crouching?.43f:1)*(p.slowed>0?.6f:1)*(p.hitSlide>0?.2f:1))*dt);
             if(p.hitSlide>0){p.position=MovePlayerBody(p,p.knockback*dt);p.knockback*=Mathf.Exp(-11*dt);p.hitSlide=Mathf.Max(0,p.hitSlide-dt);}
             float ground=ActorBodies.Support(State,p,p.position,p.position.y);
             if(p.grounded){if(ground-p.position.y>=-.14f&&ground-p.position.y<.5f)p.position.y=ground;else if(p.position.y>ground+.14f){p.grounded=false;p.verticalSpeed=Mathf.Min(0,p.verticalSpeed);}}
@@ -289,7 +289,8 @@ namespace Era
             bool critical=false;
             if(owner!=null&&proc)
             {
-                critical=Has(owner,ItemId.FateLoom)?++owner.itemCounters[I(ItemId.FateLoom)]%Mathf.Max(2,5-Stack(owner,ItemId.FateLoom))==0:random.NextDouble()<owner.critChance;
+                bool guaranteed=Has(owner,ItemId.FateLoom)&&++owner.itemCounters[I(ItemId.FateLoom)]%Mathf.Max(2,5-Stack(owner,ItemId.FateLoom))==0;
+                critical=guaranteed||random.NextDouble()<owner.critChance;
                 if(critical)damage*=owner.critDamage;
                 damage*=ItemHitMultiplier(owner,e);
             }

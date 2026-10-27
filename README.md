@@ -1,10 +1,12 @@
-# ERA: Seven Realms — v0.23.2
+# ERA: Seven Realms — v0.24
 
-**[Скачать последнюю игру v0.23.2 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.23.2/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.23.2). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать последнюю игру v0.24 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.24.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.24.0). Распакуйте архив целиком и запустите `Era.exe`.
+
+**Новое v0.24:** из редкого тира исключены 13 из 23 предметов; осталось 10 полезных вариантов. В каталоге и выпадении **116 предметов**. Перебалансированы 28 эффектов/описаний всех тиров: слабые находки усилены, чрезмерные повторы ограничены. В каждом мире **30 сундуков** (24 обычных + 6 лунных; бесплатная награда стражей отдельно), базовая скорость всех героев **+6%**. [Изменения](Docs/RELEASE-v0.24.0.md) · [Актуальный каталог](Docs/ITEMS-v0.24.md) · [Проверки](Docs/VALIDATION-v0.24.md).
 
 **v0.23.2 — исправлены постоянные рывки камеры при движении лучника.** Цель камеры теперь плавно интерполируется между шагами симуляции 30 Гц. Камера больше не поворачивается рывками вслед за дискретной координатой модели; положение лучника и точка выпуска стрелы сохранены. Модель, анимационные клипы, баланс и механики v0.23.1 сохранены. Пробная новая модель Люмина в игру не добавлялась.
 
-[Изменения v0.23.2](Docs/RELEASE-v0.23.2.md) · [Проверки камеры и сборки](Docs/VALIDATION-v0.23.2.md). Для кооператива используйте v0.23.2 на всех ПК.
+[Изменения v0.23.2](Docs/RELEASE-v0.23.2.md) · [Проверки камеры и сборки](Docs/VALIDATION-v0.23.2.md). Для кооператива используйте v0.24 на всех ПК.
 
 **v0.23.1 — обновлённые анимации в готовой Windows-игре.** У лучника 26 клипов, отдельные фазы прыжка/падения/приземления, бег с кастом и стрельбой, уточнённые Idle и действия, включённое падение при смерти. Нижние секции плаща двигаются с запаздыванием; у врагов сглажен переход замах → удар, стрела летит без декоративного покачивания. Сохранены все пассивки, ауры, окружение, баланс, семь миров и кооператив v0.23.
 
@@ -75,11 +77,11 @@
 
 Новое в v0.15: **120 иконок из предоставленных изображений**, ручьи, пригорки, кусты, крупные деревья и трава из изогнутых травинок. Панель уровня вдвое тоньше, полоса босса выше. Каждый дополнительный игрок даёт **×2 спавн / ОЗ / урон** (трое — ×4). После босса орда продолжает идти ещё вдвое чаще, а ОЗ и урон врагов растут на **10% каждые 10 секунд** до перехода в следующий мир.
 
-У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **129 предметов**. Максимальные ОЗ обычных мобов растут **×1,5 за каждый новый мир**; у боссов новая шкала v0.23. Цены 240 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
+У необычных предметов и аксессуаров **процентные бонусы выше 10% уменьшены вдвое**. «Вампирский клык» удалён: в каталоге главного меню и Tab теперь **116 предметов**. Максимальные ОЗ обычных мобов растут **×1,5 за каждый новый мир**; у боссов новая шкала v0.23. Цены 30 сундуков на мир продолжают расти по ×5/3 на протяжении всего забега и не сбрасываются при переходе.
 
 Золото сразу поступает в общий кошелёк; опыт подбирается кристаллами. Прицел убран. Полоса босса показывает текущие и максимальные ОЗ; босс имеет иммунитет к статусам и контролю, сохраняя уязвимость к прямому урону.
 
-**[Изменения v0.15](Docs/RELEASE-v0.15.0.md)** · **[Каталог предметов](Docs/ITEMS-v0.14.md)** · **[Проверки](Docs/VALIDATION-v0.15.md)**.
+**[Изменения v0.15](Docs/RELEASE-v0.15.0.md)** · **[Каталог предметов](Docs/ITEMS-v0.24.md)** · **[Проверки](Docs/VALIDATION-v0.15.md)**.
 
 ![Ручей, трава и поднятая полоса босса](Docs/Images/raised-boss-hud-v015.png)
 
@@ -119,7 +121,7 @@ To share the game, send **`Releases/Era-Windows.zip`** or the **whole `Builds/Wi
 4. Wait for the whole party, then **every connected player presses `I'm ready`**. A three-second countdown begins. A party of two can also start.
 5. Selecting **Not ready yet** cancels the countdown. Character changes are available while unready; a player disconnecting also cancels the countdown.
 
-The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 15 carries passive level gains and is incompatible with older builds. All three players need the same build.
+The port is **TCP 7777**. Allow the game on your private network if Windows Firewall asks. Use `127.0.0.1` for copies on the same PC; use the host's actual LAN/VPN IP for different computers. There is no split screen, Steam lobby, Relay, host migration or automatic NAT traversal. Joining a run already in progress is not supported. Protocol 16 carries the curated item pool and new balance and is incompatible with older builds. All three players need the same build.
 
 ## Controls
 
@@ -146,9 +148,9 @@ There are exactly **two weapon slots**: the hero's starting weapon and a second 
 
 Explore seven large rolling realms. Height, obstacles, chest/shrine positions and spawn ground all use the same deterministic stage-specific terrain function on host and guests. The arrival clearing is flat; hills and ridges surround it. Trees have tapered branching trunks, roots and layered crowns; rocks use fractured 512px albedo/normal maps and moss on top. Grass covers the realm in chunked meshes and bends away from the feet of all three players, then rises when they move or jump away. Distant grass is culled at 85 m. Press Tab for the map, treasure, enemies and party.
 
-There are **240 chests per realm**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
+There are **30 chests per realm**, **30 starting shared gold**, and shared XP. The **level and XP bar are top-center**, above the two weapon slots. Health and both teammates appear on the left. Every successful hit displays damage; critical hits use larger gold numbers. Enemies flash and react to hits. Tab shows the map, items, accessory stacks, rarity odds and all **21 stats**.
 
-Press **F** near a chest. In the first realm ordinary chests start at **12–20 gold**; **Moon chests start at 35** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **129 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
+Press **F** near a chest. In the first realm ordinary chests start at **10–18 gold**; **Moon chests start at 30** and have better rarity odds. A chest can only be opened once. Its actual item immediately appears on the floor and remains there until **any living player approaches within 2.5 m and presses F**. The first claim wins; a collector falling or disconnecting releases the item. Chests contain **116 items** in five rarity tiers and never unlock extra weapons. Luck improves rarity rolls.
 
 Every level offers three **accessories** from a pool covering **21 stats**: damage, attack speed, critical chance/damage, max HP, healing, regeneration, shield, armor, lifesteal, movement, evasion, recharge speed, range, area, projectile count/speed, pickup range, luck, XP and gold gain. Examples: **Precision Ring**, **Life Amulet**, **Merchant's Purse**. Rarity sets the bonus: legendary Life Amulet gives +40 max HP; epic Precision Ring gives +15% crit chance. Accessories stack for the run. The level-25 weapon choice is additional to that level's accessory and remains queued correctly after multi-level XP gains.
 
@@ -193,7 +195,7 @@ Lumen's **Q** deals 45 damage in 8 m and heals allies for 20 (8 s cooldown). **E
 
 **R relics**: Storm Compass (90 base damage in 9 m / 24 s), Hourglass (4 s freeze in 12 m and refresh dash / 30 s), Home Shard (heal 50 and gather all XP / 25 s).
 
-**129 stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. The 30 remaining original item pictures preserve their supplied atlas cells; new items use centered transparent **128×128 icons**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at 48; two Double Shots mean three projectiles.
+**116 stacking chest items** cover stats, regeneration, lifesteal, projectiles and special powers. The 30 remaining original item pictures preserve their supplied atlas cells; new items use centered transparent **128×128 icons**, shared by floor loot, cards, rewards and inventory. Projectile count is capped at 48; two Double Shots mean three projectiles.
 
 ## Blessing shrines and crouch
 
@@ -259,4 +261,4 @@ If Unity is already open, use `.\Tools\Build-Isolated.ps1` to build a source sna
 - `ArtSource/Music/compose_soundtrack.py`, `MusicCatalog.cs`, `SynthAudio.cs`: original soundtrack, realm selection, streaming transitions and effects.
 - `Assets/Era/Generated/`: saved map meshes/materials. `Assets/Era/Editor/`: bake/build/check tools.
 
-This is a prototype: seven realms/bosses, three heroes, five attack weapon types plus an aura conduit, 129 chest items, 21 accessories/stats, eight auras, three relics and eight blessings. Online matchmaking, gamepads and persistent meta-progression are not implemented. All heroes use CC0 skeletal clips with authored overlays and original decoration. The host remains authoritative; TCP snapshots suit LAN/VPN, with no local prediction for high latency.
+This is a prototype: seven realms/bosses, three heroes, five attack weapon types plus an aura conduit, 116 chest items, 21 accessories/stats, eight auras, three relics and eight blessings. Online matchmaking, gamepads and persistent meta-progression are not implemented. All heroes use CC0 skeletal clips with authored overlays and original decoration. The host remains authoritative; TCP snapshots suit LAN/VPN, with no local prediction for high latency.
