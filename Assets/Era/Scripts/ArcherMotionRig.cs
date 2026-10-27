@@ -34,7 +34,7 @@ namespace Era
         Vector3[] positions;Quaternion[] rotations;
         Transform leftClavicle,rightClavicle,leftUpper,rightUpper,leftElbow,rightElbow,leftHand,rightHand,quiver;
         Transform[] cape=new Transform[6];
-        Spring body,cloth,quiverSpring;
+        Spring body,cloth,clothTip,quiverSpring;
         struct FootContact {public bool active;public Vector3 anchor;public Quaternion rootRotation;}
         FootContact leftContact,rightContact;
         Vector3 previousVelocity,previousPosition;
@@ -93,7 +93,7 @@ namespace Era
         }
         public void ResetMotion()
         {
-            Restore();body=cloth=quiverSpring=default;leftContact=rightContact=default;previousVelocity=Vector3.zero;hasFacing=false;aimOffset=0;turnRate=0;
+            Restore();body=cloth=clothTip=quiverSpring=default;leftContact=rightContact=default;previousVelocity=Vector3.zero;hasFacing=false;aimOffset=0;turnRate=0;
         }
         public float Facing(ArcherAnimationDriver source,PlayerState p,float aimYaw,bool aiming,float dt)
         {
@@ -206,7 +206,7 @@ namespace Era
             applied=true;
             Transform root=actor.actorRoot;
             float yaw=root.eulerAngles.y;
-            if((root.position-previousPosition).sqrMagnitude>9){body=cloth=quiverSpring=default;leftContact=rightContact=default;previousVelocity=p.velocity;previousYaw=yaw;}
+            if((root.position-previousPosition).sqrMagnitude>9){body=cloth=clothTip=quiverSpring=default;leftContact=rightContact=default;previousVelocity=p.velocity;previousYaw=yaw;}
             turnRate=PresentationMotion.Damp(turnRate,Mathf.Clamp(Mathf.DeltaAngle(previousYaw,yaw)/dt,-480,480),12,dt);
             var acceleration=root.InverseTransformDirection((p.velocity-previousVelocity)/dt);
             forwardAcceleration=PresentationMotion.Damp(forwardAcceleration,Mathf.Clamp(acceleration.z,-18,18),10,dt);
@@ -216,6 +216,7 @@ namespace Era
             float equipmentWeight=locomotion||actor.IsAirborne?1:0;
             float phase=actor.animator.GetCurrentAnimatorStateInfo(0).normalizedTime*2*Mathf.PI;
             float wave=Mathf.Sin(phase),step=Mathf.Sin(phase*2-.3f);
+            float overridden=Mathf.Max(aimWeight,actor.BodyActionWeight);
             var lean=body.Step(new Vector3(Mathf.Clamp(forwardAcceleration*.17f,-3,3),0,-Mathf.Clamp(turnRate*.022f,-turnLeanLimit,turnLeanLimit))*run*weight,3.5f,dt,turnLeanLimit+3)*bodyIntensity;
 
             var leftFoot=actor.leftFoot.position;var rightFoot=actor.rightFoot.position;
@@ -231,9 +232,9 @@ namespace Era
             Rotate(actor.spine,lean*.65f);
             // Spine remains on the base layer; recover the small chest/shoulder
             // part of the gait that the shooting override would otherwise erase.
-            Rotate(actor.chest,lean*.2f+new Vector3(-1.8f*step,-3.2f*wave,1.1f*wave)*run*aimWeight*weight*bodyIntensity);
-            Rotate(leftClavicle,new Vector3(.8f*step,0,1.5f*wave)*run*aimWeight*weight*bodyIntensity);
-            Rotate(rightClavicle,new Vector3(-.8f*step,0,-1.5f*wave)*run*aimWeight*weight*bodyIntensity);
+            Rotate(actor.chest,lean*.2f+new Vector3(-1.8f*step,-3.2f*wave,1.1f*wave)*run*overridden*weight*bodyIntensity);
+            Rotate(leftClavicle,new Vector3(.8f*step,0,1.5f*wave)*run*overridden*weight*bodyIntensity);
+            Rotate(rightClavicle,new Vector3(-.8f*step,0,-1.5f*wave)*run*overridden*weight*bodyIntensity);
             float target=Mathf.Clamp(Mathf.DeltaAngle(yaw,aimYaw),-upperAimLimit,upperAimLimit)*aimWeight;
             aimOffset=PresentationMotion.Damp(aimOffset,target,20,dt);
             Rotate(actor.pelvis,new Vector3(0,aimOffset*.08f,0));
@@ -322,12 +323,13 @@ namespace Era
             float air=actor.IsAirborne?Mathf.Clamp(p.verticalSpeed*.16f,-2.2f,2.2f):0;
             var clothTarget=new Vector3(3.5f*run+Mathf.Clamp(forwardAcceleration*.15f,-1.5f,2.8f)+air,-turnRate*.008f,turnRate*.016f)*equipmentWeight;
             var fabric=cloth.Step(clothTarget,2.5f,dt,12)*clothIntensity;
+            var tipFabric=clothTip.Step(fabric*1.35f,2,dt,15);
             for(int i=0;i<3;i++)
             {
                 float offset=(i-1)*.8f;
                 float flutter=(.18f+run*1.1f)*Mathf.Sin(phase*1.1f+offset)*equipmentWeight*clothIntensity;
                 Rotate(cape[2*i],new Vector3(fabric.x+flutter,fabric.y*.4f,fabric.z*.55f));
-                Rotate(cape[2*i+1],new Vector3(fabric.x*1.45f+flutter*1.6f,fabric.y,fabric.z*(1.05f+offset*.08f)));
+                Rotate(cape[2*i+1],new Vector3(tipFabric.x+flutter*1.6f,tipFabric.y,tipFabric.z*(.8f+offset*.06f)));
             }
             var rigid=quiverSpring.Step(new Vector3(Mathf.Clamp(forwardAcceleration*.06f,-1,1)+air*.15f,-turnRate*.005f,turnRate*.003f)*equipmentWeight,5.5f,dt,quiverLimit);
             Rotate(quiver,rigid);

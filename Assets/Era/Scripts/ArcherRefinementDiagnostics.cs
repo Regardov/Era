@@ -14,7 +14,7 @@ namespace Era
         [Serializable] public sealed class Phase
         {
             public string name;public int frames,airFrames,shots,airShots,recordedFrames,castFrames,castWithLocomotionFrames;
-            public float maxSpeed,maxRate,cyclesPerSecond,maxPlantError,maxGripError,maxQuiverDrift,maxAirThighMotion,maxShotOriginGap,maxShotRootLag,maxShotDirectionError;
+            public float maxSpeed,maxRate,cyclesPerSecond,maxPlantError,maxGripError,maxQuiverDrift,maxAirThighMotion,maxShotOriginGap,maxShotRootLag,maxShotDirectionError,maxCloakDeflection,maxQuiverDeflection;
             public bool groundedPinInAir,runInAir;public string[] clips,states;
         }
         [Serializable] public sealed class Report
@@ -121,6 +121,7 @@ namespace Era
             lastNormalized=stateInfo.normalizedTime;lastStateHash=stateInfo.fullPathHash;
             current.maxPlantError=Mathf.Max(current.maxPlantError,actor.Motion.FootPlantError);current.maxGripError=Mathf.Max(current.maxGripError,actor.Motion.GripError);
             current.maxQuiverDrift=Mathf.Max(current.maxQuiverDrift,Vector3.Distance(mount,actor.Bone("QuiverAttach").localPosition));
+            current.maxCloakDeflection=Mathf.Max(current.maxCloakDeflection,actor.Motion.CloakDeflection);current.maxQuiverDeflection=Mathf.Max(current.maxQuiverDeflection,actor.Motion.QuiverDeflection);
             states.Add(actor.AirState);
             bool casting=false;
             for(int layer=0;layer<actor.animator.layerCount;layer++)if(layer==0||actor.animator.GetLayerWeight(layer)>.1f)
@@ -135,7 +136,7 @@ namespace Era
                 if(airTime>.22f)
                 {
                     current.runInAir|=actor.animator.GetCurrentAnimatorClipInfo(0).Any(c=>c.clip!=null&&(c.clip.name.StartsWith("Archer_Run")||c.clip.name.StartsWith("Archer_Walk"))&&c.weight>.12f);
-                    if(actor.AirState=="Archer_Airborne"&&!actor.animator.IsInTransition(0))
+                    if(actor.AirState=="Archer_Airborne"&&stateInfo.IsName("Base Layer.Archer_Airborne")&&!actor.animator.IsInTransition(0))
                     {
                         if(!airReference){firstAirThigh=actor.leftThigh.localRotation;airReference=true;}
                         current.maxAirThighMotion=Mathf.Max(current.maxAirThighMotion,Quaternion.Angle(firstAirThigh,actor.leftThigh.localRotation));
@@ -154,8 +155,9 @@ namespace Era
             bool world=current.name=="RunShoot"||current.name=="JumpShoot";
             var cam=App.View.Camera;cam.GetComponent<StillwaterLens>().enabled=false;cam.cullingMask=world?-1:1<<25;cam.clearFlags=world?CameraClearFlags.Skybox:CameraClearFlags.SolidColor;cam.backgroundColor=new Color(.22f,.25f,.26f);
             platform.gameObject.SetActive(!world);platform.position=WorldMap.OnGround(p.position.x,p.position.z)+Vector3.down*.045f;key.enabled=!world;
-            float ground=WorldMap.Ground(p.position);var pivot=new Vector3(p.position.x,ground+(current.name.Contains("Jump")||current.name=="Fall"?2.1f:1.2f),p.position.z);
-            cam.orthographic=true;cam.orthographicSize=current.name.Contains("Jump")||current.name=="Fall"?2.7f:1.55f;
+            bool airView=current.name.Contains("Jump")||current.name=="Fall"||current.name=="AirAim";
+            float ground=WorldMap.Ground(p.position);var pivot=new Vector3(p.position.x,ground+(airView?2.1f:1.2f),p.position.z);
+            cam.orthographic=true;cam.orthographicSize=airView?2.7f:1.55f;
             var offset=current.name=="BackView"?new Vector3(-3,1.1f,-6):new Vector3(4,1.1f,6);cam.transform.position=pivot+offset;cam.transform.LookAt(pivot);
             if(record&&age>=nextFrame)
             {

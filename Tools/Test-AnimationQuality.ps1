@@ -19,5 +19,7 @@ try{
         if(-not $Baseline -and ($eraPhase.castFrames -lt 2 -or $eraPhase.castWithLocomotionFrames -lt $eraPhase.castFrames*.8)){throw "Cast replaces locomotion: $eraName"}
         Write-Output "$eraName castFrames=$($eraPhase.castFrames) movingLegFrames=$($eraPhase.castWithLocomotionFrames)"
     }
+    $eraAir=$eraResult.phases|Where-Object name -EQ 'AirAim'
+    if(-not $Baseline -and ($eraAir.airFrames -lt 4 -or $eraAir.runInAir -or $eraAir.groundedPinInAir)){throw 'Air aim loses its airborne base pose'}
     Write-Output "PASS Quality $eraLabel / $Fps FPS; shots=$($eraResult.shots), releases=$($eraResult.events)"
 }finally{if(-not $eraProcess.HasExited){Stop-Process -Id $eraProcess.Id}}

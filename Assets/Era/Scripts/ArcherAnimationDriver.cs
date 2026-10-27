@@ -59,6 +59,7 @@ namespace Era
         public bool IsDead => dead;
         public bool IsHoldingBow => upperState == "Archer_BowHold";
         public bool IsReleasing => upperState == "Archer_BowRelease";
+        public float BodyActionWeight=>bodyActionWeight;
         public Vector3 LastArrowOrigin { get; private set; }
         public Vector3 LastArrowDirection { get; private set; }
         public string LastAnimationEvent { get; private set; }
