@@ -1,0 +1,189 @@
+{
+  "reference": "Reference.png",
+  "source_archer_sha256": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "core_rest_matrix_max_error": 0.0,
+  "base_bones": 54,
+  "total_bones": 86,
+  "palette_srgb": {
+    "ivory": "D8CEAF",
+    "sand": "C4B38D",
+    "fold": "B29C73",
+    "light": "E6DCC3",
+    "honey": "C5A063",
+    "amber": "B57D3F",
+    "ochre": "967044",
+    "bronze": "A47B48",
+    "leather": "6F4D34",
+    "leatherEdge": "8D6540",
+    "brown": "4C352A",
+    "charcoal": "24272A",
+    "inner": "30302C",
+    "hair": "292927",
+    "hairPlane": "3B3731",
+    "skin": "D1A080",
+    "skinShade": "B68062",
+    "eye": "362C27",
+    "sole": "272725"
+  },
+  "coat": [
+    {
+      "label": "Front.L",
+      "x": 0.135,
+      "y": -0.142,
+      "back": false
+    },
+    {
+      "label": "Front.R",
+      "x": -0.135,
+      "y": -0.142,
+      "back": false
+    },
+    {
+      "label": "Side.L",
+      "x": 0.243,
+      "y": 0.005,
+      "back": false
+    },
+    {
+      "label": "Side.R",
+      "x": -0.243,
+      "y": 0.005,
+      "back": false
+    },
+    {
+      "label": "Back.L",
+      "x": 0.15,
+      "y": 0.145,
+      "back": true
+    },
+    {
+      "label": "Back.R",
+      "x": -0.15,
+      "y": 0.145,
+      "back": true
+    }
+  ],
+  "fingers": [
+    {
+      "side": "L",
+      "vertices": 116,
+      "bones": [
+        "Digit_Index1.L",
+        "Digit_Index2.L",
+        "Digit_Middle1.L",
+        "Digit_Middle2.L",
+        "Digit_Ring1.L",
+        "Digit_Ring2.L",
+        "Digit_Little1.L",
+        "Digit_Little2.L",
+        "Digit_Thumb1.L",
+        "Digit_Thumb2.L"
+      ],
+      "construction": "Palm, all four fingers and thumb share the same boundary vertices; no separate floating fingers."
+    },
+    {
+      "side": "R",
+      "vertices": 116,
+      "bones": [
+        "Digit_Index1.R",
+        "Digit_Index2.R",
+        "Digit_Middle1.R",
+        "Digit_Middle2.R",
+        "Digit_Ring1.R",
+        "Digit_Ring2.R",
+        "Digit_Little1.R",
+        "Digit_Little2.R",
+        "Digit_Thumb1.R",
+        "Digit_Thumb2.R"
+      ],
+      "construction": "Palm, all four fingers and thumb share the same boundary vertices; no separate floating fingers."
+    }
+  ],
+  "designed_height_m": 1.98,
+  "reference_ratios_approx": {
+    "hat_width_to_height": 0.3,
+    "shoulder_cloth_to_height": 0.26,
+    "hem_to_height": 0.33,
+    "waist_level_from_sole": 0.57
+  },
+  "measurement_note": "Approximate image-space silhouette guides; drawing has perspective and the front hands are posed. Under-clothing anatomy is not measurable from the illustration.",
+  "actions": [
+    {
+      "name": "AuraWeaver_Idle",
+      "source": "Archer_Idle",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Walk",
+      "source": "Archer_Walk",
+      "start": 1,
+      "end": 29,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Run",
+      "source": "Archer_Run",
+      "start": 1,
+      "end": 19,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_JumpStart",
+      "source": "Archer_JumpStart",
+      "start": 1,
+      "end": 7,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Airborne",
+      "source": "Archer_Airborne",
+      "start": 1,
+      "end": 31,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Fall",
+      "source": "Archer_Fall",
+      "start": 1,
+      "end": 25,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Land",
+      "source": "Archer_Land",
+      "start": 1,
+      "end": 9,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Cast",
+      "source": "Archer_Cast",
+      "start": 1,
+      "end": 25,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Hit",
+      "source": "Archer_Hit",
+      "start": 1,
+      "end": 11,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Death",
+      "source": "Archer_Death",
+      "start": 1,
+      "end": 46,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_AuraChannel",
+      "source": "AuraWeaver_Idle + new two-hand FK pose",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    }
+  ]
+}

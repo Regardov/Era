@@ -1,0 +1,3703 @@
+{
+  "ok": true,
+  "baseSkeletonPreserved": true,
+  "coreRestMaxError": 0.0,
+  "archerSourceUnchanged": true,
+  "sourceHash": "121d810b74dc150a88ee1ed213d76580d96ad479185cb4fdf87adf3a713236fd",
+  "meshObjectsBefore": 83,
+  "meshObjectsAfter": 21,
+  "joined": [
+    {
+      "result": "AW_Head",
+      "source": [
+        "AW_Brow_-1",
+        "AW_Brow_1",
+        "AW_Eye_-1",
+        "AW_Eye_1",
+        "AW_HumanEar_-1",
+        "AW_HumanEar_1",
+        "AW_HumanFace",
+        "AW_Mouth",
+        "AW_Nose"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Hair",
+      "source": [
+        "AW_FrontLock_0",
+        "AW_FrontLock_1",
+        "AW_FrontLock_2",
+        "AW_FrontLock_3",
+        "AW_HairScalp",
+        "AW_SideLock_-1",
+        "AW_SideLock_1"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Hat",
+      "source": [
+        "AW_BentHatCrown",
+        "AW_HatBuckle",
+        "AW_HatBuckleInset",
+        "AW_HatLeatherBand",
+        "AW_WideHatBrim"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_HoodAssembly",
+      "source": [
+        "AW_Hood",
+        "AW_HoodLapel_L",
+        "AW_HoodLapel_R",
+        "AW_HoodLapelEdge_L",
+        "AW_HoodLapelEdge_R",
+        "AW_HoodLining",
+        "AW_HoodRear",
+        "AW_HoodRim"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Scarf",
+      "source": [
+        "AW_ScarfLower",
+        "AW_ScarfUnder",
+        "AW_ScarfUpper"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_ShoulderMantle",
+      "source": [
+        "AW_BackCollar",
+        "AW_BackDiamond",
+        "AW_BackMantle",
+        "AW_ShoulderCape_L",
+        "AW_ShoulderCape_R",
+        "AW_ShoulderLeather_L",
+        "AW_ShoulderLeather_R"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_OuterCoat",
+      "source": [
+        "AW_Coat_Back.L",
+        "AW_Coat_Back.R",
+        "AW_Coat_Front.L",
+        "AW_Coat_Front.R",
+        "AW_Coat_Side.L",
+        "AW_Coat_Side.R",
+        "AW_CoatEdge_Back.L",
+        "AW_CoatEdge_Back.R",
+        "AW_CoatEdge_Front.L",
+        "AW_CoatEdge_Front.R"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_InnerCoat",
+      "source": [
+        "AW_CentralTabard",
+        "AW_InnerRobe_Back",
+        "AW_InnerRobe_Front"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Belt",
+      "source": [
+        "AW_BeltKeeper_-0.097",
+        "AW_BeltKeeper_0.005",
+        "AW_BeltKeeper_0.097",
+        "AW_BeltLower",
+        "AW_BuckleFrame",
+        "AW_BuckleInset",
+        "AW_WaistBelt"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_PouchAssembly_L",
+      "source": [
+        "AW_HangingStrap_L",
+        "AW_Pouch_L",
+        "AW_PouchClasp_L",
+        "AW_PouchFlap_L",
+        "AW_PouchStrap_L",
+        "AW_StrapTip_L"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Sleeve_L",
+      "source": [
+        "AW_BellSleeve_L",
+        "AW_Cuff_L"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_PouchAssembly_R",
+      "source": [
+        "AW_HangingStrap_R",
+        "AW_Pouch_R",
+        "AW_PouchClasp_R",
+        "AW_PouchFlap_R",
+        "AW_PouchStrap_R",
+        "AW_StrapTip_R"
+      ],
+      "welded": false
+    },
+    {
+      "result": "AW_Sleeve_R",
+      "source": [
+        "AW_BellSleeve_R",
+        "AW_Cuff_R"
+      ],
+      "welded": false
+    }
+  ],
+  "meshHealth": {
+    "meshes": [
+      {
+        "object": "AW_ShoulderMantle",
+        "islands": 7,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Sleeve_L",
+        "islands": 2,
+        "boundary_edges": 32,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Sleeve_R",
+        "islands": 2,
+        "boundary_edges": 32,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Belt",
+        "islands": 7,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Hat",
+        "islands": 5,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Bodice",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Boot_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Boot_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Head",
+        "islands": 9,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_InnerCoat",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_OuterCoat",
+        "islands": 10,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_ConnectedGlove_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_ConnectedGlove_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Hair",
+        "islands": 7,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchAssembly_L",
+        "islands": 6,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchAssembly_R",
+        "islands": 6,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_HoodAssembly",
+        "islands": 8,
+        "boundary_edges": 60,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Leg_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Leg_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Neck",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Scarf",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      }
+    ],
+    "weights": [
+      {
+        "object": "AW_ShoulderMantle",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Sleeve_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Sleeve_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Belt",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Hat",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Bodice",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Boot_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Boot_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Head",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_InnerCoat",
+        "max_influences": 4,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_OuterCoat",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_ConnectedGlove_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_ConnectedGlove_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Hair",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchAssembly_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchAssembly_R",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_HoodAssembly",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Leg_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Leg_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Neck",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Scarf",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      }
+    ]
+  },
+  "poseSamples": [
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.6641497611999512,
+          0.09999916702508926
+        ],
+        "max": [
+          0.355624258518219,
+          0.316155344247818,
+          1.945227861404419
+        ],
+        "size": [
+          0.7128003835678101,
+          0.9803051054477692,
+          1.8452286943793297
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 8.5,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.6669689416885376,
+          0.10298273712396622
+        ],
+        "max": [
+          0.355624258518219,
+          0.316155344247818,
+          1.948211431503296
+        ],
+        "size": [
+          0.7128003835678101,
+          0.9831242859363556,
+          1.8452286943793297
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 16.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.6641497611999512,
+          0.09999916702508926
+        ],
+        "max": [
+          0.355624258518219,
+          0.316155344247818,
+          1.945227861404419
+        ],
+        "size": [
+          0.7128003835678101,
+          0.9803051054477692,
+          1.8452286943793297
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 23.5,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.6613006591796875,
+          0.09701559692621231
+        ],
+        "max": [
+          0.355624258518219,
+          0.316155344247818,
+          1.942244291305542
+        ],
+        "size": [
+          0.7128003835678101,
+          0.9774560034275055,
+          1.8452286943793297
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 31.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.6641497611999512,
+          0.09999916702508926
+        ],
+        "max": [
+          0.355624258518219,
+          0.316155344247818,
+          1.945227861404419
+        ],
+        "size": [
+          0.7128003835678101,
+          0.9803051054477692,
+          1.8452286943793297
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.34159019589424133,
+          -0.4259891211986542,
+          0.003000018885359168
+        ],
+        "max": [
+          0.32035428285598755,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.6619444787502289,
+          0.7079891264438629,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 19.0,
+      "bounds": {
+        "min": [
+          -0.34066328406333923,
+          -0.427029550075531,
+          0.002999991411343217
+        ],
+        "max": [
+          0.32251429557800293,
+          0.27471885085105896,
+          1.9749383926391602
+        ],
+        "size": [
+          0.6631775796413422,
+          0.70174840092659,
+          1.971938401227817
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 37.0,
+      "bounds": {
+        "min": [
+          -0.34159019589424133,
+          -0.4259891211986542,
+          0.003000018885359168
+        ],
+        "max": [
+          0.32035428285598755,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.6619444787502289,
+          0.7079891264438629,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 55.0,
+      "bounds": {
+        "min": [
+          -0.34262388944625854,
+          -0.4250113070011139,
+          0.0030000265687704086
+        ],
+        "max": [
+          0.31843703985214233,
+          0.28930458426475525,
+          1.9698662757873535
+        ],
+        "size": [
+          0.6610609292984009,
+          0.7143158912658691,
+          1.966866249218583
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 73.0,
+      "bounds": {
+        "min": [
+          -0.34159019589424133,
+          -0.4259891211986542,
+          0.003000018885359168
+        ],
+        "max": [
+          0.32035428285598755,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.6619444787502289,
+          0.7079891264438629,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.3434441089630127,
+          -0.32318004965782166,
+          0.0029999723192304373
+        ],
+        "max": [
+          0.3743734657764435,
+          0.33993691205978394,
+          1.9687957763671875
+        ],
+        "size": [
+          0.7178175747394562,
+          0.6631169617176056,
+          1.965795804047957
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 7.0,
+      "bounds": {
+        "min": [
+          -0.3553483486175537,
+          -0.3116794228553772,
+          0.0030000151600688696
+        ],
+        "max": [
+          0.35840246081352234,
+          0.24986709654331207,
+          1.9752970933914185
+        ],
+        "size": [
+          0.713750809431076,
+          0.5615465193986893,
+          1.9722970782313496
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 13.0,
+      "bounds": {
+        "min": [
+          -0.35713061690330505,
+          -0.2878739833831787,
+          0.0029999723192304373
+        ],
+        "max": [
+          0.3561876118183136,
+          0.2757628560066223,
+          1.9736138582229614
+        ],
+        "size": [
+          0.7133182287216187,
+          0.563636839389801,
+          1.970613885903731
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 19.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.2837908864021301,
+          0.0029999790713191032
+        ],
+        "max": [
+          0.35562413930892944,
+          0.282000333070755,
+          1.9730006456375122
+        ],
+        "size": [
+          0.7128002643585205,
+          0.5657912194728851,
+          1.970000666566193
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 25.0,
+      "bounds": {
+        "min": [
+          -0.3571760654449463,
+          -0.28379106521606445,
+          0.0029999723192304373
+        ],
+        "max": [
+          0.3556242287158966,
+          0.2820000946521759,
+          1.9730008840560913
+        ],
+        "size": [
+          0.7128002941608429,
+          0.5657911598682404,
+          1.9700009117368609
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.36440926790237427,
+          -0.32753217220306396,
+          0.007999998517334461
+        ],
+        "max": [
+          0.36222049593925476,
+          0.2820000946521759,
+          1.9780008792877197
+        ],
+        "size": [
+          0.726629763841629,
+          0.6095322668552399,
+          1.9700008807703853
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 12,
+          "sample_pairs": [
+            [
+              28,
+              47
+            ],
+            [
+              28,
+              42
+            ],
+            [
+              28,
+              36
+            ],
+            [
+              28,
+              41
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 12,
+          "sample_pairs": [
+            [
+              28,
+              45
+            ],
+            [
+              28,
+              44
+            ],
+            [
+              28,
+              39
+            ],
+            [
+              28,
+              38
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 12.25,
+      "bounds": {
+        "min": [
+          -0.37384068965911865,
+          -0.6199560761451721,
+          0.00794300902634859
+        ],
+        "max": [
+          0.3712317943572998,
+          0.13307201862335205,
+          1.5449079275131226
+        ],
+        "size": [
+          0.7450724840164185,
+          0.7530280947685242,
+          1.536964918486774
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 23.5,
+      "bounds": {
+        "min": [
+          -0.35587507486343384,
+          -0.8711839914321899,
+          0.00433223694562912
+        ],
+        "max": [
+          0.39682042598724365,
+          0.9783733487129211,
+          1.0035701990127563
+        ],
+        "size": [
+          0.7526955008506775,
+          1.849557340145111,
+          0.9992379620671272
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 14,
+          "sample_pairs": [
+            [
+              51,
+              17
+            ],
+            [
+              51,
+              10
+            ],
+            [
+              19,
+              17
+            ],
+            [
+              19,
+              10
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 29,
+          "sample_pairs": [
+            [
+              19,
+              15
+            ],
+            [
+              19,
+              17
+            ],
+            [
+              18,
+              15
+            ],
+            [
+              18,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 34.75,
+      "bounds": {
+        "min": [
+          -0.33312684297561646,
+          -0.8976753950119019,
+          0.003000020980834961
+        ],
+        "max": [
+          0.3923056125640869,
+          1.1553326845169067,
+          0.5679528713226318
+        ],
+        "size": [
+          0.7254324555397034,
+          2.0530080795288086,
+          0.5649528503417969
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 46.0,
+      "bounds": {
+        "min": [
+          -0.3331267535686493,
+          -0.8976753950119019,
+          0.003000020980834961
+        ],
+        "max": [
+          0.3923056423664093,
+          1.1553326845169067,
+          0.5679528713226318
+        ],
+        "size": [
+          0.7254323959350586,
+          2.0530080795288086,
+          0.5649528503417969
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.3571760952472687,
+          -0.5764842629432678,
+          0.04331542178988457
+        ],
+        "max": [
+          0.35562440752983093,
+          0.2591087818145752,
+          1.9468127489089966
+        ],
+        "size": [
+          0.7128005027770996,
+          0.835593044757843,
+          1.903497327119112
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 7.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.5789109468460083,
+          0.04731520637869835
+        ],
+        "max": [
+          0.35562431812286377,
+          0.2591087818145752,
+          1.9488128423690796
+        ],
+        "size": [
+          0.7128004431724548,
+          0.8380197286605835,
+          1.9014976359903812
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 13.0,
+      "bounds": {
+        "min": [
+          -0.3571760952472687,
+          -0.5764842629432678,
+          0.04331542178988457
+        ],
+        "max": [
+          0.35562440752983093,
+          0.2591087818145752,
+          1.9468127489089966
+        ],
+        "size": [
+          0.7128005027770996,
+          0.835593044757843,
+          1.903497327119112
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 19.0,
+      "bounds": {
+        "min": [
+          -0.35717615485191345,
+          -0.5740319490432739,
+          0.039315272122621536
+        ],
+        "max": [
+          0.35562434792518616,
+          0.2591087818145752,
+          1.9448127746582031
+        ],
+        "size": [
+          0.7128005027770996,
+          0.8331407308578491,
+          1.9054975025355816
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 25.0,
+      "bounds": {
+        "min": [
+          -0.3571760952472687,
+          -0.5764842629432678,
+          0.04331542178988457
+        ],
+        "max": [
+          0.35562440752983093,
+          0.2591087818145752,
+          1.9468127489089966
+        ],
+        "size": [
+          0.7128005027770996,
+          0.835593044757843,
+          1.903497327119112
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.3571760654449463,
+          -0.28379106521606445,
+          0.0029999723192304373
+        ],
+        "max": [
+          0.3556242287158966,
+          0.2820000946521759,
+          1.9730008840560913
+        ],
+        "size": [
+          0.7128002941608429,
+          0.5657911598682404,
+          1.9700009117368609
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 3.5,
+      "bounds": {
+        "min": [
+          -0.3505830466747284,
+          -0.3620791435241699,
+          0.0029999972321093082
+        ],
+        "max": [
+          0.37077146768569946,
+          0.23109006881713867,
+          1.9730534553527832
+        ],
+        "size": [
+          0.7213545143604279,
+          0.5931692123413086,
+          1.970053458120674
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 6.0,
+      "bounds": {
+        "min": [
+          -0.35540223121643066,
+          -0.30402231216430664,
+          0.002999990712851286
+        ],
+        "max": [
+          0.3606014847755432,
+          0.25906285643577576,
+          1.974313497543335
+        ],
+        "size": [
+          0.7160037159919739,
+          0.5630851686000824,
+          1.9713135068304837
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 8.5,
+      "bounds": {
+        "min": [
+          -0.35630881786346436,
+          -0.29282182455062866,
+          0.0030000179540365934
+        ],
+        "max": [
+          0.35814398527145386,
+          0.2707788646221161,
+          1.9737651348114014
+        ],
+        "size": [
+          0.7144528031349182,
+          0.5636006891727448,
+          1.9707651168573648
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 11.0,
+      "bounds": {
+        "min": [
+          -0.3571760654449463,
+          -0.28379106521606445,
+          0.0029999723192304373
+        ],
+        "max": [
+          0.3556242287158966,
+          0.2820000946521759,
+          1.9730008840560913
+        ],
+        "size": [
+          0.7128002941608429,
+          0.5657911598682404,
+          1.9700009117368609
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.35717615485191345,
+          -0.2837911546230316,
+          0.003000018885359168
+        ],
+        "max": [
+          0.355624258518219,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.7128004133701324,
+          0.5657911598682404,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 19.0,
+      "bounds": {
+        "min": [
+          -0.3548610210418701,
+          -0.28912296891212463,
+          0.002999991411343217
+        ],
+        "max": [
+          0.35899943113327026,
+          0.27471885085105896,
+          1.9749383926391602
+        ],
+        "size": [
+          0.7138604521751404,
+          0.5638418197631836,
+          1.971938401227817
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 37.0,
+      "bounds": {
+        "min": [
+          -0.35717615485191345,
+          -0.2837911546230316,
+          0.003000018885359168
+        ],
+        "max": [
+          0.355624258518219,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.7128004133701324,
+          0.5657911598682404,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 55.0,
+      "bounds": {
+        "min": [
+          -0.35940057039260864,
+          -0.2887725234031677,
+          0.0030000265687704086
+        ],
+        "max": [
+          0.35212191939353943,
+          0.28930458426475525,
+          1.9698662757873535
+        ],
+        "size": [
+          0.7115224897861481,
+          0.578077107667923,
+          1.966866249218583
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 73.0,
+      "bounds": {
+        "min": [
+          -0.35717615485191345,
+          -0.2837911546230316,
+          0.003000018885359168
+        ],
+        "max": [
+          0.355624258518219,
+          0.28200000524520874,
+          1.9730002880096436
+        ],
+        "size": [
+          0.7128004133701324,
+          0.5657911598682404,
+          1.9700002691242844
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.3571760058403015,
+          -0.3401959240436554,
+          -1.2074210076207237e-07
+        ],
+        "max": [
+          0.35562434792518616,
+          0.28200003504753113,
+          1.9700006246566772
+        ],
+        "size": [
+          0.7128003537654877,
+          0.6221959590911865,
+          1.970000745398778
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 2.5,
+      "bounds": {
+        "min": [
+          -0.3571760654449463,
+          -0.5375244617462158,
+          0.014966893009841442
+        ],
+        "max": [
+          0.35562437772750854,
+          0.3131387233734131,
+          1.9205005168914795
+        ],
+        "size": [
+          0.7128004431724548,
+          0.8506631851196289,
+          1.905533623881638
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 4.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.5267607569694519,
+          0.044999752193689346
+        ],
+        "max": [
+          0.35562440752983093,
+          0.32735246419906616,
+          1.9630908966064453
+        ],
+        "size": [
+          0.712800532579422,
+          0.8541132211685181,
+          1.918091144412756
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 5.5,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.5901838541030884,
+          0.07480612397193909
+        ],
+        "max": [
+          0.35562434792518616,
+          0.3131387233734131,
+          1.9657541513442993
+        ],
+        "size": [
+          0.7128004729747772,
+          0.9033225774765015,
+          1.8909480273723602
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 7.0,
+      "bounds": {
+        "min": [
+          -0.3571760058403015,
+          -0.6113733649253845,
+          0.09000004827976227
+        ],
+        "max": [
+          0.35562434792518616,
+          0.28200003504753113,
+          1.9700006246566772
+        ],
+        "size": [
+          0.7128003537654877,
+          0.8933733999729156,
+          1.880000576376915
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.3571760058403015,
+          -0.33674177527427673,
+          0.0030000025872141123
+        ],
+        "max": [
+          0.35562434792518616,
+          0.28200003504753113,
+          1.9730006456375122
+        ],
+        "size": [
+          0.7128003537654877,
+          0.6187418103218079,
+          1.970000643050298
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 3.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.46240681409835815,
+          0.002999973716214299
+        ],
+        "max": [
+          0.35562431812286377,
+          0.32081520557403564,
+          1.9161478281021118
+        ],
+        "size": [
+          0.7128004431724548,
+          0.7832220196723938,
+          1.9131478543858975
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 5.0,
+      "bounds": {
+        "min": [
+          -0.3571760356426239,
+          -0.4983476400375366,
+          0.0029999776743352413
+        ],
+        "max": [
+          0.3556244373321533,
+          0.33844995498657227,
+          1.8886823654174805
+        ],
+        "size": [
+          0.7128004729747772,
+          0.8367975950241089,
+          1.8856823877431452
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 7.0,
+      "bounds": {
+        "min": [
+          -0.35717612504959106,
+          -0.46240681409835815,
+          0.002999973716214299
+        ],
+        "max": [
+          0.35562431812286377,
+          0.32081520557403564,
+          1.9161478281021118
+        ],
+        "size": [
+          0.7128004431724548,
+          0.7832220196723938,
+          1.9131478543858975
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 9.0,
+      "bounds": {
+        "min": [
+          -0.3571760058403015,
+          -0.33674177527427673,
+          0.0030000025872141123
+        ],
+        "max": [
+          0.35562434792518616,
+          0.28200003504753113,
+          1.9730006456375122
+        ],
+        "size": [
+          0.7128003537654877,
+          0.6187418103218079,
+          1.970000643050298
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.39253467321395874,
+          -0.6166079044342041,
+          0.003000018186867237
+        ],
+        "max": [
+          0.3653627932071686,
+          0.3808008134365082,
+          1.8533815145492554
+        ],
+        "size": [
+          0.7578974664211273,
+          0.9974087178707123,
+          1.8503814963623881
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 5.5,
+      "bounds": {
+        "min": [
+          -0.37516337633132935,
+          -0.725407600402832,
+          0.0013829432427883148
+        ],
+        "max": [
+          0.38054582476615906,
+          0.44813311100006104,
+          1.9082591533660889
+        ],
+        "size": [
+          0.7557092010974884,
+          1.173540711402893,
+          1.9068762101233006
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 10.0,
+      "bounds": {
+        "min": [
+          -0.39425307512283325,
+          -0.6166085004806519,
+          0.003000016789883375
+        ],
+        "max": [
+          0.3689287602901459,
+          0.3808008134365082,
+          1.8534049987792969
+        ],
+        "size": [
+          0.7631818354129791,
+          0.99740931391716,
+          1.8504049819894135
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 14.5,
+      "bounds": {
+        "min": [
+          -0.3705856502056122,
+          -0.7254476547241211,
+          0.0013829134404659271
+        ],
+        "max": [
+          0.35340532660484314,
+          0.44838351011276245,
+          1.9093791246414185
+        ],
+        "size": [
+          0.7239909768104553,
+          1.1738311648368835,
+          1.9079962112009525
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 19.0,
+      "bounds": {
+        "min": [
+          -0.39253467321395874,
+          -0.6166079044342041,
+          0.003000018186867237
+        ],
+        "max": [
+          0.3653627932071686,
+          0.3808008134365082,
+          1.8533815145492554
+        ],
+        "size": [
+          0.7578974664211273,
+          0.9974087178707123,
+          1.8503814963623881
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 1.0,
+      "bounds": {
+        "min": [
+          -0.35736674070358276,
+          -0.43789705634117126,
+          0.0030000340193510056
+        ],
+        "max": [
+          0.37012195587158203,
+          0.3022710680961609,
+          1.9600027799606323
+        ],
+        "size": [
+          0.7274886965751648,
+          0.7401681244373322,
+          1.9570027459412813
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 8.0,
+      "bounds": {
+        "min": [
+          -0.350006639957428,
+          -0.4189126491546631,
+          0.002999986056238413
+        ],
+        "max": [
+          0.37259259819984436,
+          0.30208998918533325,
+          1.956192135810852
+        ],
+        "size": [
+          0.7225992381572723,
+          0.7210026383399963,
+          1.9531921497546136
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 15.0,
+      "bounds": {
+        "min": [
+          -0.35736674070358276,
+          -0.4376331865787506,
+          0.0029999781399965286
+        ],
+        "max": [
+          0.37012195587158203,
+          0.3022710680961609,
+          1.9600375890731812
+        ],
+        "size": [
+          0.7274886965751648,
+          0.7399042546749115,
+          1.9570376109331846
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 22.0,
+      "bounds": {
+        "min": [
+          -0.3664773404598236,
+          -0.40362870693206787,
+          0.003000014228746295
+        ],
+        "max": [
+          0.3672941327095032,
+          0.30208998918533325,
+          1.9561452865600586
+        ],
+        "size": [
+          0.7337714731693268,
+          0.7057186961174011,
+          1.9531452723313123
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 29.0,
+      "bounds": {
+        "min": [
+          -0.35736674070358276,
+          -0.43789705634117126,
+          0.0030000340193510056
+        ],
+        "max": [
+          0.37012195587158203,
+          0.3022710680961609,
+          1.9600027799606323
+        ],
+        "size": [
+          0.7274886965751648,
+          0.7401681244373322,
+          1.9570027459412813
+        ]
+      },
+      "cloth_contacts": [
+        {
+          "a": "AW_Coat_Front.L",
+          "b": "AW_Leg_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Front.R",
+          "b": "AW_Leg_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.L",
+          "b": "AW_Boot_L",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Coat_Side.R",
+          "b": "AW_Boot_R",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "AuraWeaver_Idle",
+      "source": "Archer_Idle",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Walk",
+      "source": "Archer_Walk",
+      "start": 1,
+      "end": 29,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Run",
+      "source": "Archer_Run",
+      "start": 1,
+      "end": 19,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_JumpStart",
+      "source": "Archer_JumpStart",
+      "start": 1,
+      "end": 7,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Airborne",
+      "source": "Archer_Airborne",
+      "start": 1,
+      "end": 31,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Fall",
+      "source": "Archer_Fall",
+      "start": 1,
+      "end": 25,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Land",
+      "source": "Archer_Land",
+      "start": 1,
+      "end": 9,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Cast",
+      "source": "Archer_Cast",
+      "start": 1,
+      "end": 25,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Hit",
+      "source": "Archer_Hit",
+      "start": 1,
+      "end": 11,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Death",
+      "source": "Archer_Death",
+      "start": 1,
+      "end": 46,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_AuraChannel",
+      "source": "AuraWeaver_Idle + new two-hand FK pose",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    }
+  ],
+  "rigKind": "Generic, not certified Unity Humanoid",
+  "animationReadiness": "55 evaluated pose samples; see contact records and rendered poses. Continuous gameplay deformation is not certified."
+}

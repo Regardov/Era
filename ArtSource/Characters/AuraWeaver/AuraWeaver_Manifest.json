@@ -1,0 +1,223 @@
+{
+  "character": "AuraWeaver",
+  "fps": 30,
+  "sourceHeight": 1.98,
+  "baseRig": "ERA_Humanoid54_v1",
+  "coreRestMaxError": 0.0,
+  "extraBones": [
+    "Coat1.Back.L",
+    "Coat1.Back.R",
+    "Coat1.Front.L",
+    "Coat1.Front.R",
+    "Coat1.Side.L",
+    "Coat1.Side.R",
+    "Coat2.Back.L",
+    "Coat2.Back.R",
+    "Coat2.Front.L",
+    "Coat2.Front.R",
+    "Coat2.Side.L",
+    "Coat2.Side.R",
+    "Digit_Index1.L",
+    "Digit_Index1.R",
+    "Digit_Index2.L",
+    "Digit_Index2.R",
+    "Digit_Little1.L",
+    "Digit_Little1.R",
+    "Digit_Little2.L",
+    "Digit_Little2.R",
+    "Digit_Middle1.L",
+    "Digit_Middle1.R",
+    "Digit_Middle2.L",
+    "Digit_Middle2.R",
+    "Digit_Ring1.L",
+    "Digit_Ring1.R",
+    "Digit_Ring2.L",
+    "Digit_Ring2.R",
+    "Digit_Thumb1.L",
+    "Digit_Thumb1.R",
+    "Digit_Thumb2.L",
+    "Digit_Thumb2.R"
+  ],
+  "bones": 86,
+  "clips": [
+    {
+      "name": "AuraWeaver_Idle",
+      "source": "Archer_Idle",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Walk",
+      "source": "Archer_Walk",
+      "start": 1,
+      "end": 29,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Run",
+      "source": "Archer_Run",
+      "start": 1,
+      "end": 19,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_JumpStart",
+      "source": "Archer_JumpStart",
+      "start": 1,
+      "end": 7,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Airborne",
+      "source": "Archer_Airborne",
+      "start": 1,
+      "end": 31,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Fall",
+      "source": "Archer_Fall",
+      "start": 1,
+      "end": 25,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Land",
+      "source": "Archer_Land",
+      "start": 1,
+      "end": 9,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Cast",
+      "source": "Archer_Cast",
+      "start": 1,
+      "end": 25,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Hit",
+      "source": "Archer_Hit",
+      "start": 1,
+      "end": 11,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Death",
+      "source": "Archer_Death",
+      "start": 1,
+      "end": 46,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_AuraChannel",
+      "source": "AuraWeaver_Idle + new two-hand FK pose",
+      "start": 1,
+      "end": 73,
+      "loop": true
+    }
+  ],
+  "paletteSrgb": {
+    "ivory": "D8CEAF",
+    "sand": "C4B38D",
+    "fold": "B29C73",
+    "light": "E6DCC3",
+    "honey": "C5A063",
+    "amber": "B57D3F",
+    "ochre": "967044",
+    "bronze": "A47B48",
+    "leather": "6F4D34",
+    "leatherEdge": "8D6540",
+    "brown": "4C352A",
+    "charcoal": "24272A",
+    "inner": "30302C",
+    "hair": "292927",
+    "hairPlane": "3B3731",
+    "skin": "D1A080",
+    "skinShade": "B68062",
+    "eye": "362C27",
+    "sole": "272725"
+  },
+  "materials": [
+    {
+      "name": "AW_ivory",
+      "hex": "#D8CEAF"
+    },
+    {
+      "name": "AW_sand",
+      "hex": "#C4B38D"
+    },
+    {
+      "name": "AW_fold",
+      "hex": "#B29C73"
+    },
+    {
+      "name": "AW_light",
+      "hex": "#E6DCC3"
+    },
+    {
+      "name": "AW_honey",
+      "hex": "#C5A063"
+    },
+    {
+      "name": "AW_amber",
+      "hex": "#B57D3F"
+    },
+    {
+      "name": "AW_ochre",
+      "hex": "#967044"
+    },
+    {
+      "name": "AW_bronze",
+      "hex": "#A47B48"
+    },
+    {
+      "name": "AW_leather",
+      "hex": "#6F4D34"
+    },
+    {
+      "name": "AW_leatherEdge",
+      "hex": "#8D6540"
+    },
+    {
+      "name": "AW_brown",
+      "hex": "#4C352A"
+    },
+    {
+      "name": "AW_charcoal",
+      "hex": "#24272A"
+    },
+    {
+      "name": "AW_inner",
+      "hex": "#30302C"
+    },
+    {
+      "name": "AW_hair",
+      "hex": "#292927"
+    },
+    {
+      "name": "AW_hairPlane",
+      "hex": "#3B3731"
+    },
+    {
+      "name": "AW_skin",
+      "hex": "#D1A080"
+    },
+    {
+      "name": "AW_skinShade",
+      "hex": "#B68062"
+    },
+    {
+      "name": "AW_eye",
+      "hex": "#362C27"
+    },
+    {
+      "name": "AW_sole",
+      "hex": "#272725"
+    }
+  ],
+  "triangles": 3360,
+  "meshes": 21,
+  "sourceBlendSha256": "00e173c03cce6a796e150c8f8673aa281b0066d1306fc158229659388f4f936b"
+}
