@@ -1,0 +1,3368 @@
+{
+  "source": "C:\\Users\\kolon\\Documents\\Codex\\Era\\ArtSource\\Characters\\AuraWeaver\\ReconstructionV3\\AuraWeaver_Reconstructed.blend",
+  "source_sha256": "d30323d8d3e47aee842d0182056deaa772c262ad1a859926748b83d02f4dab41",
+  "source_unchanged": true,
+  "rest_bones_unchanged": true,
+  "original_actions_unchanged": true,
+  "bones": 86,
+  "actions": [
+    "AuraWeaver_Airborne",
+    "AuraWeaver_AuraChannel",
+    "AuraWeaver_Cast",
+    "AuraWeaver_Death",
+    "AuraWeaver_Fall",
+    "AuraWeaver_Hit",
+    "AuraWeaver_Idle",
+    "AuraWeaver_JumpStart",
+    "AuraWeaver_Land",
+    "AuraWeaver_Run",
+    "AuraWeaver_Walk"
+  ],
+  "before_bounds": {
+    "min": [
+      -0.3918054699897766,
+      -0.3072299659252167,
+      1.8432802506573864e-10
+    ],
+    "max": [
+      0.39111271500587463,
+      0.3072299659252167,
+      2.101494550704956
+    ],
+    "size": [
+      0.7829181849956512,
+      0.6144599318504333,
+      2.101494550520628
+    ]
+  },
+  "after_bounds": {
+    "min": [
+      -0.4012104868888855,
+      -0.3145449459552765,
+      1.8432802506573864e-10
+    ],
+    "max": [
+      0.4005177617073059,
+      0.3072299659252167,
+      2.101494550704956
+    ],
+    "size": [
+      0.8017282485961914,
+      0.6217749118804932,
+      2.101494550520628
+    ]
+  },
+  "mesh_count": 23,
+  "triangles": 3984,
+  "qa": {
+    "meshes": [
+      {
+        "object": "AW_Belt",
+        "islands": 7,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Bodice",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Boot_L",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Boot_R",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_ConnectedGlove_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_ConnectedGlove_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Hair",
+        "islands": 7,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Hat",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Head",
+        "islands": 9,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_HoodAssembly",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_InnerCoat",
+        "islands": 3,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Leg_L",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Leg_R",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Neck",
+        "islands": 1,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_OuterCoat",
+        "islands": 6,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchAssembly_L",
+        "islands": 6,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchAssembly_R",
+        "islands": 6,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchFittings_L",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_PouchFittings_R",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Scarf",
+        "islands": 4,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_ShoulderMantle",
+        "islands": 5,
+        "boundary_edges": 0,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Sleeve_L",
+        "islands": 2,
+        "boundary_edges": 32,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      },
+      {
+        "object": "AW_Sleeve_R",
+        "islands": 2,
+        "boundary_edges": 32,
+        "nonmanifold_nonboundary_edges": 0,
+        "zero_area_faces": 0,
+        "finite": true,
+        "negative_scale": false,
+        "subdivision": false,
+        "smooth_faces": 0
+      }
+    ],
+    "weights": [
+      {
+        "object": "AW_Belt",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Bodice",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Boot_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Boot_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_ConnectedGlove_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_ConnectedGlove_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Hair",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Hat",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Head",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_HoodAssembly",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_InnerCoat",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Leg_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Leg_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Neck",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_OuterCoat",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchAssembly_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchAssembly_R",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchFittings_L",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_PouchFittings_R",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Scarf",
+        "max_influences": 1,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_ShoulderMantle",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Sleeve_L",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      },
+      {
+        "object": "AW_Sleeve_R",
+        "max_influences": 2,
+        "unweighted": [],
+        "non_normalized": []
+      }
+    ]
+  },
+  "samples": [
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.7118116617202759,
+          0.09131337702274323
+        ],
+        "max": [
+          0.39300161600112915,
+          0.3456396758556366,
+          2.0770599842071533
+        ],
+        "size": [
+          0.7928178310394287,
+          1.0574513375759125,
+          1.98574660718441
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 46,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 40,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 16,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.7118116617202759,
+          0.09129512310028076
+        ],
+        "max": [
+          0.39300161600112915,
+          0.3456396758556366,
+          2.0770599842071533
+        ],
+        "size": [
+          0.7928178310394287,
+          1.0574513375759125,
+          1.9857648611068726
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 46,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 42,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Airborne",
+      "frame": 31,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.7118116617202759,
+          0.09131337702274323
+        ],
+        "max": [
+          0.39300161600112915,
+          0.3456396758556366,
+          2.0770599842071533
+        ],
+        "size": [
+          0.7928178310394287,
+          1.0574513375759125,
+          1.98574660718441
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 46,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 40,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.36204996705055237,
+          -0.5087442398071289,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.3391801118850708,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7012300789356232,
+          0.815974235534668,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              26
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              30
+            ],
+            [
+              1,
+              31
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 37,
+      "bounds": {
+        "min": [
+          -0.36204996705055237,
+          -0.5087442398071289,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.3391801118850708,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7012300789356232,
+          0.815974235534668,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              26
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              30
+            ],
+            [
+              1,
+              31
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_AuraChannel",
+      "frame": 73,
+      "bounds": {
+        "min": [
+          -0.36204996705055237,
+          -0.5087442398071289,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.3391801118850708,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7012300789356232,
+          0.815974235534668,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              26
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              30
+            ],
+            [
+              1,
+              31
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.38136252760887146,
+          -0.34633001685142517,
+          0.0031349710188806057
+        ],
+        "max": [
+          0.41764453053474426,
+          0.3713230490684509,
+          2.0990800857543945
+        ],
+        "size": [
+          0.7990070581436157,
+          0.7176530659198761,
+          2.095945114735514
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 26,
+          "sample_pairs": [
+            [
+              33,
+              360
+            ],
+            [
+              33,
+              101
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 13,
+      "bounds": {
+        "min": [
+          -0.39984580874443054,
+          -0.3207722008228302,
+          0.0031349710188806057
+        ],
+        "max": [
+          0.3935990333557129,
+          0.3001821041107178,
+          2.104989528656006
+        ],
+        "size": [
+          0.7934448421001434,
+          0.620954304933548,
+          2.1018545576371253
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Cast",
+      "frame": 25,
+      "bounds": {
+        "min": [
+          -0.3998161256313324,
+          -0.3145448863506317,
+          0.0031349710188806057
+        ],
+        "max": [
+          0.3930015563964844,
+          0.3072300851345062,
+          2.104630947113037
+        ],
+        "size": [
+          0.7928176820278168,
+          0.6217749714851379,
+          2.1014959760941565
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.3998161256313324,
+          -0.3674289584159851,
+          0.00835999846458435
+        ],
+        "max": [
+          0.40018367767333984,
+          0.3072300851345062,
+          2.1098556518554688
+        ],
+        "size": [
+          0.7999998033046722,
+          0.6746590435504913,
+          2.1014956533908844
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 40,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 50,
+          "sample_pairs": [
+            [
+              24,
+              361
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 24,
+      "bounds": {
+        "min": [
+          -0.38410788774490356,
+          -0.9704742431640625,
+          -0.141431987285614
+        ],
+        "max": [
+          0.43887433409690857,
+          1.0770245790481567,
+          0.9916907548904419
+        ],
+        "size": [
+          0.8229822218418121,
+          2.0474988222122192,
+          1.133122742176056
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              5,
+              18
+            ],
+            [
+              5,
+              19
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 12,
+          "sample_pairs": [
+            [
+              15,
+              14
+            ],
+            [
+              8,
+              14
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 42,
+          "sample_pairs": [
+            [
+              39,
+              316
+            ],
+            [
+              39,
+              290
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 36,
+          "sample_pairs": [
+            [
+              48,
+              363
+            ],
+            [
+              40,
+              363
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Death",
+      "frame": 46,
+      "bounds": {
+        "min": [
+          -0.36477628350257874,
+          -0.9830977916717529,
+          -0.13135312497615814
+        ],
+        "max": [
+          0.41921669244766235,
+          1.2179410457611084,
+          0.6096345782279968
+        ],
+        "size": [
+          0.7839929759502411,
+          2.2010388374328613,
+          0.740987703204155
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              4,
+              10
+            ],
+            [
+              5,
+              10
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              6,
+              14
+            ],
+            [
+              6,
+              22
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 36,
+          "sample_pairs": [
+            [
+              47,
+              316
+            ],
+            [
+              47,
+              290
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 36,
+          "sample_pairs": [
+            [
+              48,
+              389
+            ],
+            [
+              48,
+              363
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.3998161852359772,
+          -0.6179637908935547,
+          0.04482576251029968
+        ],
+        "max": [
+          0.3930017650127411,
+          0.2813681364059448,
+          2.076230525970459
+        ],
+        "size": [
+          0.7928179502487183,
+          0.8993319272994995,
+          2.0314047634601593
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 44,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 13,
+      "bounds": {
+        "min": [
+          -0.3998161852359772,
+          -0.6179637908935547,
+          0.04482576251029968
+        ],
+        "max": [
+          0.3930017650127411,
+          0.2813681364059448,
+          2.076230525970459
+        ],
+        "size": [
+          0.7928179502487183,
+          0.8993319272994995,
+          2.0314047634601593
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 44,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Fall",
+      "frame": 25,
+      "bounds": {
+        "min": [
+          -0.3998161852359772,
+          -0.6179637908935547,
+          0.04482576251029968
+        ],
+        "max": [
+          0.3930017650127411,
+          0.2813681364059448,
+          2.076230525970459
+        ],
+        "size": [
+          0.7928179502487183,
+          0.8993319272994995,
+          2.0314047634601593
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 44,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              295
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.3998161256313324,
+          -0.3145448863506317,
+          0.0031349710188806057
+        ],
+        "max": [
+          0.3930015563964844,
+          0.3072300851345062,
+          2.104630947113037
+        ],
+        "size": [
+          0.7928176820278168,
+          0.6217749714851379,
+          2.1014959760941565
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 6,
+      "bounds": {
+        "min": [
+          -0.3980218768119812,
+          -0.3377443552017212,
+          0.0031349901109933853
+        ],
+        "max": [
+          0.39829668402671814,
+          0.28211984038352966,
+          2.1053338050842285
+        ],
+        "size": [
+          0.7963185608386993,
+          0.6198641955852509,
+          2.102198814973235
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 36,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              39,
+              318
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 40,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              388
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Hit",
+      "frame": 11,
+      "bounds": {
+        "min": [
+          -0.3998161256313324,
+          -0.3145448863506317,
+          0.0031349710188806057
+        ],
+        "max": [
+          0.3930015563964844,
+          0.3072300851345062,
+          2.104630947113037
+        ],
+        "size": [
+          0.7928176820278168,
+          0.6217749714851379,
+          2.1014959760941565
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.3145449757575989,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.39300158619880676,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6217749714851379,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 37,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.3145449757575989,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.39300158619880676,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6217749714851379,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Idle",
+      "frame": 73,
+      "bounds": {
+        "min": [
+          -0.39981621503829956,
+          -0.3145449757575989,
+          0.0031350196804851294
+        ],
+        "max": [
+          0.39300158619880676,
+          0.30722999572753906,
+          2.1046299934387207
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6217749714851379,
+          2.1014949737582356
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 34,
+          "sample_pairs": [
+            [
+              39,
+              292
+            ],
+            [
+              47,
+              292
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.39981609582901,
+          -0.36641162633895874,
+          -1.2617549316473742e-07
+        ],
+        "max": [
+          0.3930017054080963,
+          0.30723002552986145,
+          2.1014955043792725
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6736416518688202,
+          2.1014956305547656
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              39,
+              318
+            ],
+            [
+              39,
+              294
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              361
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 4,
+      "bounds": {
+        "min": [
+          -0.3998161852359772,
+          -0.5650566220283508,
+          0.04702473804354668
+        ],
+        "max": [
+          0.3930017650127411,
+          0.35823753476142883,
+          2.096465826034546
+        ],
+        "size": [
+          0.7928179502487183,
+          0.9232941567897797,
+          2.049441087990999
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 39,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              320
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              414
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_JumpStart",
+      "frame": 7,
+      "bounds": {
+        "min": [
+          -0.39981609582901,
+          -0.6550775170326233,
+          0.09405004978179932
+        ],
+        "max": [
+          0.3930017054080963,
+          0.30723002552986145,
+          2.1014955043792725
+        ],
+        "size": [
+          0.7928178012371063,
+          0.9623075425624847,
+          2.007445454597473
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 44,
+          "sample_pairs": [
+            [
+              39,
+              295
+            ],
+            [
+              39,
+              320
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              414
+            ],
+            [
+              24,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.39981609582901,
+          -0.3627317249774933,
+          0.0031350026838481426
+        ],
+        "max": [
+          0.3930017054080963,
+          0.30723002552986145,
+          2.1046302318573
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6699617505073547,
+          2.1014952291734517
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              39,
+              318
+            ],
+            [
+              39,
+              294
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              414
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 5,
+      "bounds": {
+        "min": [
+          -0.39981609582901,
+          -0.5348173975944519,
+          0.0031349766068160534
+        ],
+        "max": [
+          0.3930017948150635,
+          0.3707263469696045,
+          2.0196821689605713
+        ],
+        "size": [
+          0.7928178906440735,
+          0.9055437445640564,
+          2.0165471923537552
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              39,
+              294
+            ],
+            [
+              39,
+              320
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 44,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              414
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Land",
+      "frame": 9,
+      "bounds": {
+        "min": [
+          -0.39981609582901,
+          -0.3627317249774933,
+          0.0031350026838481426
+        ],
+        "max": [
+          0.3930017054080963,
+          0.30723002552986145,
+          2.1046302318573
+        ],
+        "size": [
+          0.7928178012371063,
+          0.6699617505073547,
+          2.1014952291734517
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              25
+            ],
+            [
+              2,
+              17
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 11,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              39,
+              318
+            ],
+            [
+              39,
+              294
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 38,
+          "sample_pairs": [
+            [
+              24,
+              362
+            ],
+            [
+              24,
+              414
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.411301851272583,
+          -0.6606451869010925,
+          0.0031350189819931984
+        ],
+        "max": [
+          0.39481642842292786,
+          0.4195117652416229,
+          1.9876011610031128
+        ],
+        "size": [
+          0.8061182796955109,
+          1.0801569521427155,
+          1.9844661420211196
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 24,
+          "sample_pairs": [
+            [
+              33,
+              360
+            ],
+            [
+              33,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 10,
+      "bounds": {
+        "min": [
+          -0.4128831923007965,
+          -0.6576501727104187,
+          0.003135017352178693
+        ],
+        "max": [
+          0.3992829918861389,
+          0.4195117652416229,
+          1.9876257181167603
+        ],
+        "size": [
+          0.8121661841869354,
+          1.0771619379520416,
+          1.9844907007645816
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 22,
+          "sample_pairs": [
+            [
+              33,
+              361
+            ],
+            [
+              33,
+              360
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Run",
+      "frame": 19,
+      "bounds": {
+        "min": [
+          -0.411301851272583,
+          -0.6606451869010925,
+          0.0031350189819931984
+        ],
+        "max": [
+          0.39481642842292786,
+          0.4195117652416229,
+          1.9876011610031128
+        ],
+        "size": [
+          0.8061182796955109,
+          1.0801569521427155,
+          1.9844661420211196
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 24,
+          "sample_pairs": [
+            [
+              33,
+              360
+            ],
+            [
+              33,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 1,
+      "bounds": {
+        "min": [
+          -0.38471561670303345,
+          -0.4711357355117798,
+          0.0020273318514227867
+        ],
+        "max": [
+          0.4162813425064087,
+          0.33022913336753845,
+          2.092029333114624
+        ],
+        "size": [
+          0.8009969592094421,
+          0.8013648688793182,
+          2.0900020012632012
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 28,
+          "sample_pairs": [
+            [
+              33,
+              388
+            ],
+            [
+              33,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 15,
+      "bounds": {
+        "min": [
+          -0.38471561670303345,
+          -0.47085997462272644,
+          0.0020219869911670685
+        ],
+        "max": [
+          0.4162813425064087,
+          0.33022913336753845,
+          2.0920655727386475
+        ],
+        "size": [
+          0.8009969592094421,
+          0.8010891079902649,
+          2.0900435857474804
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 28,
+          "sample_pairs": [
+            [
+              33,
+              361
+            ],
+            [
+              33,
+              362
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    },
+    {
+      "action": "AuraWeaver_Walk",
+      "frame": 29,
+      "bounds": {
+        "min": [
+          -0.38471561670303345,
+          -0.4711357355117798,
+          0.0020273318514227867
+        ],
+        "max": [
+          0.4162813425064087,
+          0.33022913336753845,
+          2.092029333114624
+        ],
+        "size": [
+          0.8009969592094421,
+          0.8013648688793182,
+          2.0900020012632012
+        ]
+      },
+      "contacts": [
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_Bodice",
+          "face_pairs": 10,
+          "sample_pairs": [
+            [
+              2,
+              26
+            ],
+            [
+              2,
+              25
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_Bodice",
+          "face_pairs": 9,
+          "sample_pairs": [
+            [
+              1,
+              31
+            ],
+            [
+              1,
+              23
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        },
+        {
+          "a": "AW_Sleeve_L",
+          "b": "AW_OuterCoat",
+          "face_pairs": 0,
+          "sample_pairs": [],
+          "allow_reason": null,
+          "requires_review": false
+        },
+        {
+          "a": "AW_Sleeve_R",
+          "b": "AW_OuterCoat",
+          "face_pairs": 28,
+          "sample_pairs": [
+            [
+              33,
+              388
+            ],
+            [
+              33,
+              361
+            ]
+          ],
+          "allow_reason": null,
+          "requires_review": true
+        }
+      ]
+    }
+  ],
+  "colors_srgb": {
+    "ivory": "DEC99F",
+    "light": "EAD8B3",
+    "sand": "C5A36D",
+    "fold": "9D7D55",
+    "honey": "BF8D40",
+    "amber": "B4752D",
+    "ochre": "8C5B2D",
+    "brown": "403027",
+    "leather": "6E4A30",
+    "charcoal": "222628",
+    "inner": "302E29",
+    "skin": "CB9672",
+    "skinShade": "A76E52"
+  },
+  "rebuilt": [
+    "AW_HoodAssembly",
+    "AW_Scarf",
+    "AW_ShoulderMantle",
+    "AW_OuterCoat"
+  ],
+  "remaining": [
+    "Illustration is not an orthographic blueprint.",
+    "Motion samples do not certify complete gameplay deformation.",
+    "Unity, aura systems and Windows release unchanged."
+  ]
+}
