@@ -14,7 +14,7 @@ namespace Era
         [Serializable] public sealed class Phase
         {
             public string name;public int frames,airFrames,shots,airShots,recordedFrames,castFrames,castWithLocomotionFrames;
-            public float maxSpeed,maxRate,cyclesPerSecond,maxPlantError,maxGripError,maxQuiverDrift,maxAirThighMotion,maxShotOriginGap,maxShotRootLag,maxShotDirectionError,maxCloakDeflection,maxQuiverDeflection;
+            public float maxSpeed,maxRate,cyclesPerSecond,maxPlantError,maxGripError,maxQuiverDrift,maxAirThighMotion,maxShotOriginGap,maxShotRootLag,maxShotLocalOriginGap,maxShotPresentationError,maxShotDirectionError,maxCloakDeflection,maxQuiverDeflection;
             public bool groundedPinInAir,runInAir;public string[] clips,states;
         }
         [Serializable] public sealed class Report
@@ -149,6 +149,8 @@ namespace Era
                 int count=p.weaponCastSerial-lastShot;current.shots+=count;if(!p.grounded)current.airShots+=count;lastShot=p.weaponCastSerial;
                 current.maxShotOriginGap=Mathf.Max(current.maxShotOriginGap,Vector3.Distance(actor.LastArrowOrigin,ArcherShotProfile.Origin(p.position,p.weaponAimYaw)));
                 current.maxShotRootLag=Mathf.Max(current.maxShotRootLag,Vector3.Distance(actor.actorRoot.position,p.position));
+                current.maxShotLocalOriginGap=Mathf.Max(current.maxShotLocalOriginGap,Vector3.Distance(actor.LastArrowOrigin,ArcherShotProfile.Origin(actor.actorRoot.position,p.weaponAimYaw)));
+                current.maxShotPresentationError=Mathf.Max(current.maxShotPresentationError,Vector3.Distance(actor.actorRoot.position,App.LocalPresentationPosition(p)));
                 current.maxShotDirectionError=Mathf.Max(current.maxShotDirectionError,Vector3.Angle(actor.LastArrowDirection,Quaternion.Euler(0,p.weaponAimYaw,0)*Vector3.forward));
             }
             if(current.frames%9==0)foreach(var skin in actor.GetComponentsInChildren<SkinnedMeshRenderer>(true)){skin.BakeMesh(baked,true);report.finite&=baked.vertices.All(v=>ActorMotionMath.Finite(v)&&v.magnitude<8);}

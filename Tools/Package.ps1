@@ -14,6 +14,10 @@ foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.
     if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
 }
 $eraImageFolder = Join-Path $buildPath 'Images'
+foreach ($eraDocument in @('RELEASE-v0.25.1.md','VALIDATION-v0.25.1.md','release-validation-v0251.json','item-art-runtime-v0251.json')) {
+    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
+}
+Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\CharacterMotion-v0251') -Destination $buildPath -Recurse -Force
 foreach ($eraDocument in @('ITEMS-v0.25.md','RELEASE-v0.25.0.md','VALIDATION-v0.25.md','item-art-runtime-v025.json','item-art-validation-v025.json')) {
     Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
 }

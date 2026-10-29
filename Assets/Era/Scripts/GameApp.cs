@@ -43,7 +43,7 @@ namespace Era
         // Follow the host simulation one fixed tick behind. The remainder is a
         // render-time fraction, not a second simulation or a velocity prediction.
         // Teleports, new sessions and externally driven diagnostic poses snap.
-        public Vector3 LocalCameraPosition(PlayerState player)
+        public Vector3 LocalPresentationPosition(PlayerState player)
         {
             if(!IsHost||!ReferenceEquals(player,visualSamplePlayer)||State.stageSerial!=visualSampleStage||
                 player.position!=visualCurrent||(visualCurrent-visualPrevious).sqrMagnitude>9)

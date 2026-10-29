@@ -1,5 +1,5 @@
 param(
-    [ValidateSet(15,30,60)][int]$Fps=60,
+    [ValidateRange(10,360)][int]$Fps=150,
     [ValidateSet('Ember','Echo','Lumen')][string]$Hero='Ember',
     [switch]$Baseline,
     [string]$OutputFolder=''
@@ -17,7 +17,7 @@ try{
     $eraCameraPlayer.PriorityClass='BelowNormal'
     if(-not $eraCameraPlayer.WaitForExit(90000)){throw 'Camera motion test timed out'}
     $eraCameraResult=Get-Content -LiteralPath $eraCameraReport -Raw | ConvertFrom-Json
-    $eraCameraResult.phases | Select-Object direction,frames,stalledFrames,targetSpeedErrorRms,cameraAngularAccelerationRms | Format-Table
+    $eraCameraResult.phases | Select-Object direction,frames,measuredFps,actorStalledFrames,actorSpeedErrorRms,targetSpeedErrorRms,rawStalledFrames | Format-Table
     if($eraCameraPlayer.ExitCode -ne 0 -or (-not $Baseline -and -not $eraCameraResult.ok)){throw "Camera motion regression failed; see $eraCameraReport"}
     Write-Output "CameraMotion: hero=$Hero fps=$Fps baseline=$Baseline smooth=$($eraCameraResult.ok) version=$($eraCameraResult.version)"
 }finally{if(-not $eraCameraPlayer.HasExited){Stop-Process -Id $eraCameraPlayer.Id}}

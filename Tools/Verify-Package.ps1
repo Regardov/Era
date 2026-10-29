@@ -13,15 +13,19 @@ try {
         $eraEntry=$eraZip.GetEntry($eraName)
         if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing current item artwork evidence: $eraName"}
     }
-    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('item-art-runtime-v025.json').Open())
+    foreach ($eraName in @('RELEASE-v0.25.1.md','VALIDATION-v0.25.1.md','release-validation-v0251.json','item-art-runtime-v0251.json')) {
+        $eraEntry=$eraZip.GetEntry($eraName)
+        if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing current release evidence: $eraName"}
+    }
+    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('item-art-runtime-v0251.json').Open())
     try { $eraRuntime = $eraRuntimeReader.ReadToEnd() | ConvertFrom-Json }
     finally { $eraRuntimeReader.Dispose() }
-    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.25.0' -or $eraRuntime.icons -ne 129 -or $eraRuntime.activeIcons -ne 116 -or -not $eraRuntime.transparent -or -not $eraRuntime.styles -or -not $eraRuntime.colors -or -not $eraRuntime.collection) { throw 'ZIP must contain full item artwork and animation validation from the tested 0.25.0 Player' }
-    $eraMergedReader = [IO.StreamReader]::new($eraZip.GetEntry('item-art-validation-v025.json').Open())
+    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.25.1' -or $eraRuntime.icons -ne 129 -or $eraRuntime.activeIcons -ne 116 -or -not $eraRuntime.transparent -or -not $eraRuntime.styles -or -not $eraRuntime.colors -or -not $eraRuntime.collection) { throw 'ZIP must contain item artwork validation from the tested 0.25.1 Player' }
+    $eraMergedReader = [IO.StreamReader]::new($eraZip.GetEntry('release-validation-v0251.json').Open())
     try { $eraMergedValidation = $eraMergedReader.ReadToEnd() | ConvertFrom-Json }
     finally { $eraMergedReader.Dispose() }
     $eraAssemblyHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath 'Era_Data\Managed\Assembly-CSharp.dll') -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($eraMergedValidation.version -ne '0.25.0' -or $eraMergedValidation.managedSha256 -ne $eraAssemblyHash) { throw 'Item artwork validation belongs to a different Player build' }
+    if ($eraMergedValidation.version -ne '0.25.1' -or $eraMergedValidation.managedSha256 -ne $eraAssemblyHash) { throw 'Release validation belongs to a different Player build' }
     $eraGameDataHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath 'Era_Data/globalgamemanagers') -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($eraMergedValidation.gameDataSha256 -ne $eraGameDataHash) { throw 'Versioned game data differs from the tested build' }
     foreach ($eraTest in $eraMergedValidation.tests.PSObject.Properties) { if (-not $eraTest.Value.ok) { throw "Failed merged validation: $($eraTest.Name)" } }

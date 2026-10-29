@@ -109,11 +109,12 @@ namespace Era
             bool arriving = owner < 0;
             owner = p.id; presented = p; sampled = false;standing = false;
             var app = GameApp.Instance; bool paused = app != null && app.WorldPaused; animator.speed = paused ? 0 : 1; if (paused) return;
-            // The local simulation is already continuous. A second positional
-            // catch-up filter left its bow behind authoritative arrows and made
-            // planted feet chase the moving avatar. Remote interpolation stays
-            // in ArenaView; this changes only our local visual, never physics.
-            if(app!=null&&ReferenceEquals(p,app.LocalPlayer)&&actorRoot!=null)actorRoot.position=p.position;
+            // Simulation advances at 30 Hz, independently of the render rate.
+            // Use the same tick-pair interpolation as the camera, not the last
+            // authoritative sample (which stalls between ticks at high FPS).
+            // Clients keep ArenaView's snapshot smoothing; no second filter.
+            if(app!=null&&app.IsHost&&ReferenceEquals(p,app.LocalPlayer)&&actorRoot!=null)
+                actorRoot.position=app.LocalPresentationPosition(p);
             animator.enabled = true;
             float dt = PresentationMotion.Delta;
             float speed = Vector3.ProjectOnPlane(p.velocity, Vector3.up).magnitude;

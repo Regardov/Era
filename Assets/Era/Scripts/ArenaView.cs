@@ -8,7 +8,6 @@ namespace Era
         public Camera Camera {get;private set;}
         public HeroMotion Preview {get;private set;}
         public Vector3 CameraFollowTarget {get;private set;}
-        int cameraPlayer=-1;
         readonly VisualFactory v=new VisualFactory();
         EncounterView encounters;
         readonly Dictionary<int,Actor> actors=new Dictionary<int,Actor>();
@@ -161,16 +160,10 @@ namespace Era
             var p=app.LocalPlayer;if(p==null)return;
             if(p.eliminated){var partner=app.State.players.Find(other=>!other.eliminated&&!other.downed);if(partner!=null)p=partner;}
             Vector3 target=actors.TryGetValue(p.id,out var actor)?actor.root.transform.position:p.position;
-            if(actor?.hero?.archer!=null&&p.id==app.LocalId)
-            {
-                // Archer presentation intentionally registers the bow to the
-                // authoritative root. Do not feed that 30 Hz staircase into
-                // LookAt: use a separate continuous camera focus instead.
-                if(app.IsHost)target=app.LocalCameraPosition(p);
-                else target=cameraPlayer==p.id&&(CameraFollowTarget-p.position).sqrMagnitude<9?
-                    Vector3.Lerp(CameraFollowTarget,p.position,1-Mathf.Exp(-PresentationMotion.Delta*20)):p.position;
-            }
-            cameraPlayer=p.id;CameraFollowTarget=target;
+            // Camera and visible actor must share one presentation timeline.
+            // The archer now interpolates its root too; a separate focus would
+            // hide camera jitter while leaving the character stepping at 30 Hz.
+            CameraFollowTarget=target;
             cameraHeight=PresentationMotion.Damp(cameraHeight,p.crouching?1.12f:1.65f,12,PresentationMotion.Delta);
             var pivot=target+Vector3.up*cameraHeight;var rotation=Quaternion.Euler(app.CameraPitch,app.CameraYaw,0);
             var desired=pivot+rotation*new Vector3(0,0.25f,-8.7f);
