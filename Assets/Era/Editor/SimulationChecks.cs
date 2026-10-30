@@ -342,6 +342,18 @@ namespace Era.Editor
                     }
                 }
                 Check(HudTextLayout.Fit(font,"Первая строка\n\nТретья строка",16,400,90,false).lines.Length==3,"explicit paragraphs and blank lines are retained");
+                foreach(GameLanguage language in Enum.GetValues(typeof(GameLanguage)))
+                {
+                    var previous=I18n.Language;I18n.Language=language;
+                    try{for(int aura=0;aura<GameData.AuraIcons.Length;aura++)
+                    {
+                        var value=GameData.AuraDescription(aura,2);var block=HudTextLayout.Fit(font,value,15,314,61,true);
+                        var native=new GUIStyle{font=font,fontSize=block.size,fontStyle=FontStyle.Bold,richText=false,wordWrap=false,padding=new RectOffset()};
+                        Check(block.lines.Length*block.lineHeight<=61.1f,"aura description fits the full card height");
+                        foreach(var line in block.lines)Check(native.CalcSize(new GUIContent(line)).x<=314.1f,"aura line fits actual GUI.Label metrics");
+                        if(aura==0&&native.CalcSize(new GUIContent(value)).x>314.1f)Check(block.lines.Length>=2,"long Fortune description wraps instead of clipping");
+                    }}finally{I18n.Language=previous;}
+                }
             }
             finally{UnityEngine.Object.DestroyImmediate(font);}
         }

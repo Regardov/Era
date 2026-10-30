@@ -1,8 +1,12 @@
-# ERA: Seven Realms — v0.27.0
+# ERA: Seven Realms — v0.28.0
 
-**В текущих исходниках v0.27:** четыре постоянных слота бижутерии с растущими уровнями, максимум три ауры Люмена, видимые кисти V11, плавная полоска HP над персонажем и выбор лимита FPS, включая режим без лимита. [Правила](Docs/UPDATE-v0.27.md) · [Проверки](Docs/VALIDATION-v0.27.md) · [Blender V11](ArtSource/Characters/AuraWeaver/ReleaseV11/README.md). Сборка из исходников: `Tools/Build.ps1`.
+**В текущих исходниках v0.28:** исправленные переносы текста в карточках, новые шаги и свободное движение рук Люмена V12, видимая золотая аура с вращающимися дугами, лучами, искрами и нимбом. [Изменения](Docs/UPDATE-v0.28.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.28.md) · [Blender V12](ArtSource/Characters/AuraWeaver/ReleaseV12/README.md). Сборка из исходников: `Tools/Build.ps1`.
 
-**[Последний опубликованный Windows-архив: v0.26.1 — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.1). Для изменений v0.27 используйте текущие исходники или собранный локально Player.
+![Исправленные переносы в настоящем игровом интерфейсе](Docs/Polish-v028/Native-Russian-cards.png)
+
+**Сохранено из v0.27:** четыре постоянных слота бижутерии с растущими уровнями, максимум три ауры Люмена, плавная полоска HP над персонажем и выбор лимита FPS, включая режим без лимита. [Правила](Docs/UPDATE-v0.27.md) · [Проверки](Docs/VALIDATION-v0.27.md).
+
+**[Последний опубликованный Windows-архив: v0.26.1 — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.1). Для изменений v0.28 используйте текущие исходники или собранный локально Player.
 
 **v0.26.1 — исправления Люмена:** янтарная руна у ладоней вместо старого зелёного Aura-фокуса, разные походки и наклон корпуса, коррекция мантии по ногам, непрозрачная замкнутая шляпа с плавным кончиком и приподнятые передние сумки. [Изменения](Docs/RELEASE-v0.26.1.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.26.1.md) · [Blender V10](ArtSource/Characters/AuraWeaver/ReleaseV10/README.md).
 

@@ -83,9 +83,11 @@ namespace Era
     public sealed class SupportAuraPresentation:MonoBehaviour
     {
         float next;
+        LumenAuraVisual visual;
         public void Present(PlayerState source,WorldState state)
         {
-            transform.position=source.position;next-=PresentationMotion.Delta;if(next>0||PresentationMotion.Delta<=0)return;next=.8f;
+            if(visual==null)visual=gameObject.AddComponent<LumenAuraVisual>();visual.Present(source);
+            next-=PresentationMotion.Delta;if(next>0||PresentationMotion.Delta<=0)return;next=.8f;
             float radius=Simulation.AuraRadius(source);PresentationFx.EmitStyle(source.position+Vector3.up*1.1f,FeedbackStyle.Holy,source.auraSurge>0?.5f:.22f);
             foreach(var ally in state.players)if(ally.id!=source.id&&!ally.downed&&!ally.eliminated&&(ally.position-source.position).sqrMagnitude<radius*radius)
                 PresentationFx.EmitStyle(ally.position+Vector3.up*.7f,FeedbackStyle.Holy,.17f);

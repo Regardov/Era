@@ -8,7 +8,7 @@ namespace Era
     [DefaultExecutionOrder(98)]
     public sealed class LumenMotionDiagnostics:MonoBehaviour
     {
-        [Serializable] public sealed class Phase {public string name,worstPanel;public int frames;public float maxPenetration,maxCorrection,maxPalmError,maxLean,maxWalkWeight,maxRunWeight;public bool finite=true,rune;}
+        [Serializable] public sealed class Phase {public string name,worstPanel;public int frames;public float maxPenetration,maxCorrection,maxPalmError,maxLean,maxWalkWeight,maxRunWeight,leftHandTravel,rightHandTravel;public bool finite=true,rune;[NonSerialized]public float leftMin=1000,leftMax=-1000,rightMin=1000,rightMax=-1000;}
         [Serializable] public sealed class Report {public string version;public bool ok;public int errors;public Phase[] phases;}
         string[] names={"IdleRune","Walk","BoostRun","Strafe","Jump","Dash","HatTop","Hands"};Phase[] phases;int phase=-1,shot;float started,phaseStarted;
         GameApp App=>GameApp.Instance;LumenAnimationDriver actor;LumenGarmentClearance garment;string folder;int errors;
@@ -48,6 +48,9 @@ namespace Era
             if(rune!=null)row.maxPalmError=Mathf.Max(row.maxPalmError,rune.PalmError);
             var up=actor.Bone("Chest").TransformDirection(Vector3.up);float lean=Mathf.Abs(Vector3.SignedAngle(actor.actorRoot.up,up,actor.actorRoot.right));
             row.maxLean=Mathf.Max(row.maxLean,lean);
+            var left=actor.actorRoot.InverseTransformPoint(actor.Bone("Hand.L").position);var right=actor.actorRoot.InverseTransformPoint(actor.Bone("Hand.R").position);
+            row.leftMin=Mathf.Min(row.leftMin,left.z);row.leftMax=Mathf.Max(row.leftMax,left.z);row.rightMin=Mathf.Min(row.rightMin,right.z);row.rightMax=Mathf.Max(row.rightMax,right.z);
+            row.leftHandTravel=row.leftMax-row.leftMin;row.rightHandTravel=row.rightMax-row.rightMin;
             foreach(var clip in actor.animator.GetCurrentAnimatorClipInfo(0)){if(clip.clip.name=="AuraWeaver_Walk")row.maxWalkWeight=Mathf.Max(row.maxWalkWeight,clip.weight);if(clip.clip.name=="AuraWeaver_Run")row.maxRunWeight=Mathf.Max(row.maxRunWeight,clip.weight);}
             var camera=App.View.Camera;camera.GetComponent<StillwaterLens>().enabled=false;camera.orthographic=true;camera.orthographicSize=1.52f;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.68f,.69f,.68f);
             Vector3 offset=names[phase]=="HatTop"?new Vector3(0,4,.2f):shot%3==1?new Vector3(4,1.6f,0):shot%3==2?new Vector3(2,1.6f,-5):new Vector3(2.7f,1.8f,5);
@@ -62,7 +65,7 @@ namespace Era
         void Finish()
         {
             var report=new Report{version=Application.version,errors=errors,phases=phases};
-            report.ok=errors==0&&phases.All(p=>p.frames>5&&p.finite&&p.rune&&p.maxPalmError<.005f&&p.maxPenetration<.008f)&&phases[1].maxWalkWeight>.9f&&phases[1].maxLean>3&&phases[2].maxRunWeight>.9f&&phases[2].maxLean>10;
+            report.ok=errors==0&&phases.All(p=>p.frames>5&&p.finite&&p.rune&&p.maxPalmError<.005f&&p.maxPenetration<.008f)&&phases[1].maxWalkWeight>.9f&&phases[1].maxLean>3&&phases[2].maxRunWeight>.9f&&phases[2].maxLean>10&&phases[1].leftHandTravel>.15f&&phases[1].rightHandTravel>.15f&&phases[2].leftHandTravel>.15f&&phases[2].rightHandTravel>.15f;
             File.WriteAllText(Path.Combine(folder,"lumen-motion.json"),JsonUtility.ToJson(report,true));Debug.Log("ERA_LUMEN_MOTION "+JsonUtility.ToJson(report));enabled=false;Application.Quit(report.ok?0:2);
         }
         void OnDestroy(){Application.logMessageReceived-=Log;}

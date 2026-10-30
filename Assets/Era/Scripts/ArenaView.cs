@@ -10,9 +10,9 @@ namespace Era
         public Vector3 CameraFollowTarget {get;private set;}
         public Vector3 PlayerHealthAnchor(PlayerState player)
         {
-            Vector3 position=actors.TryGetValue(player.id,out var actor)?actor.root.transform.position:player.position;
-            return position+Vector3.up*(player.crouching?2.1f:2.6f);
+            return PlayerVisualPosition(player)+Vector3.up*(player.crouching?2.1f:2.6f);
         }
+        public Vector3 PlayerVisualPosition(PlayerState player)=>actors.TryGetValue(player.id,out var actor)?actor.root.transform.position:player.position;
         readonly VisualFactory v=new VisualFactory();
         EncounterView encounters;
         readonly Dictionary<int,Actor> actors=new Dictionary<int,Actor>();

@@ -31,7 +31,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 643864251077309794}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3546585288757524909
+--- !u!1 &4652972559341483793
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8577594617494488858}
+  - component: {fileID: 1064931779584071676}
   m_Layer: 0
   m_Name: ERA palm socket
   m_TagString: Untagged
@@ -47,13 +47,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8577594617494488858
+--- !u!4 &1064931779584071676
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3546585288757524909}
+  m_GameObject: {fileID: 4652972559341483793}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.04, z: 0}
@@ -132,7 +132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8408069029099913913, guid: 02889707e61dd4f43add1d7e4cd4dd19, type: 3}
       propertyPath: version
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8408069029099913913, guid: 02889707e61dd4f43add1d7e4cd4dd19, type: 3}
       propertyPath: details.Array.size
@@ -174,7 +174,7 @@ PrefabInstance:
       addedObject: {fileID: 1023926277232233810}
     - targetCorrespondingSourceObject: {fileID: 3349347855939368944, guid: 02889707e61dd4f43add1d7e4cd4dd19, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8577594617494488858}
+      addedObject: {fileID: 1064931779584071676}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8981536057687969236, guid: 02889707e61dd4f43add1d7e4cd4dd19, type: 3}
       insertIndex: -1

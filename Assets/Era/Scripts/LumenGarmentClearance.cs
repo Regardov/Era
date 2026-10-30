@@ -75,7 +75,7 @@ namespace Era
                 row.newLeft=row.left;row.newRight=row.right;row.newFront=row.front;row.newBack=row.back;
                 foreach(var c in localCaps)
                 {
-                    float radius=c.radius+.065f;if(!Covers(c,row.y,radius))continue;
+                    float radius=c.radius+.085f;if(!Covers(c,row.y,radius))continue;
                     row.newLeft=Mathf.Max(row.newLeft,Bound(c,row.y,0,1,radius));row.newRight=Mathf.Min(row.newRight,Bound(c,row.y,0,-1,radius));
                     row.newFront=Mathf.Max(row.newFront,Bound(c,row.y,2,1,radius));row.newBack=Mathf.Min(row.newBack,Bound(c,row.y,2,-1,radius));
                 }
@@ -89,7 +89,7 @@ namespace Era
                     var q=new Vector3(Mathf.LerpUnclamped(row.newRight,row.newLeft,(rest.x-row.right)/Mathf.Max(.01f,row.left-row.right)),rest.y,Mathf.LerpUnclamped(row.newBack,row.newFront,(rest.z-row.back)/Mathf.Max(.01f,row.front-row.back)));
                     for(int iteration=0;iteration<2;iteration++)foreach(var c in localCaps)
                     {
-                        var center=Nearest(c,q);var d=q-center;float length=d.magnitude,radius=c.radius+.035f;
+                        var center=Nearest(c,q);var d=q-center;float length=d.magnitude,radius=c.radius+.065f;
                         if(length<radius){if(length<.0001f)d=new Vector3(rest.x,0,rest.z).normalized;else d/=length;q=center+d*radius;}
                     }
                     var final=delta.MultiplyPoint3x4(q);MaxCorrection=Mathf.Max(MaxCorrection,Vector3.Distance(final,delta.MultiplyPoint3x4(rest)));if((q-rest).sqrMagnitude>.000001f)CorrectedVertices++;

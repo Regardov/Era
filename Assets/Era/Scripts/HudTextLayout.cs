@@ -15,9 +15,18 @@ namespace Era
             public float lineHeight;
         }
         static readonly Dictionary<string,Block> cache=new Dictionary<string,Block>();
+        static readonly Dictionary<string,GUIStyle> measurements=new Dictionary<string,GUIStyle>();
+        static readonly GUIContent content=new GUIContent();
+        static HudTextLayout(){Font.textureRebuilt+=_=>cache.Clear();}
         public static float Width(Font font,string value,int size,FontStyle style)
         {
-            float width=0;foreach(char c in value)if(font.GetCharacterInfo(c,out var glyph,size,style))width+=glyph.advance;return width;
+            string key=font.GetInstanceID()+"|"+size+"|"+(int)style;
+            if(!measurements.TryGetValue(key,out var measure))
+            {
+                if(measurements.Count>256)measurements.Clear();
+                measure=new GUIStyle{font=font,fontSize=size,fontStyle=style,richText=false,wordWrap=false,padding=new RectOffset()};measurements[key]=measure;
+            }
+            content.text=value??"";return measure.CalcSize(content).x;
         }
         public static Block Fit(Font font,string value,int size,float width,float height,bool bold)
         {

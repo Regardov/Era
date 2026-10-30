@@ -13,11 +13,14 @@ namespace Era
         int hoveredItem=-1,itemPage,cataloguePage;bool catalogue,ownedOnly;
         int captureItem=-1;
         int captureAttribute=-1;string pendingTooltip;Vector2 tooltipPoint;
+        public bool AuditTextLayout;
+        public int AuditedTextLines{get;private set;}
+        public readonly List<string> TextOverflows=new List<string>();
         GameApp App=>GameApp.Instance;
         void Init()
         {
             font=Font.CreateDynamicFontFromOSFont(new[]{"Trebuchet MS","Segoe UI","Arial"},20);
-            label=new GUIStyle{font=font,wordWrap=false,padding=new RectOffset(0,0,0,0),clipping=TextClipping.Clip};bold=new GUIStyle(label){fontStyle=FontStyle.Bold};
+            label=new GUIStyle{font=font,richText=false,wordWrap=false,padding=new RectOffset(0,0,0,0),clipping=TextClipping.Clip};bold=new GUIStyle(label){fontStyle=FontStyle.Bold};
             field=new GUIStyle{font=font,fontSize=20,padding=new RectOffset(14,14,10,10)};field.normal.textColor=Ink;field.focused.textColor=Ink;
             disc=new Texture2D(64,64,TextureFormat.RGBA32,false);var pixels=new Color[4096];
             for(int y=0;y<64;y++)for(int x=0;x<64;x++){float d=Vector2.Distance(new Vector2(x,y),new Vector2(31.5f,31.5f));pixels[y*64+x]=new Color(1,1,1,Mathf.Clamp01(31.5f-d));}disc.SetPixels(pixels);disc.Apply();
@@ -74,6 +77,13 @@ namespace Era
             bool center=align==TextAnchor.UpperCenter||align==TextAnchor.MiddleCenter||align==TextAnchor.LowerCenter;
             bool right=align==TextAnchor.UpperRight||align==TextAnchor.MiddleRight||align==TextAnchor.LowerRight;
             style.alignment=center?TextAnchor.UpperCenter:right?TextAnchor.UpperRight:TextAnchor.UpperLeft;
+            if(AuditTextLayout)
+            {
+                AuditedTextLines+=block.lines.Length;
+                bool fits=block.lines.Length*block.lineHeight<=h+.5f;
+                foreach(var line in block.lines)fits&=style.CalcSize(new GUIContent(line)).x<=w+.5f;
+                if(!fits&&TextOverflows.Count<30&&!TextOverflows.Contains(value))TextOverflows.Add(value);
+            }
             float top=HudTextLayout.Top(rect,block,align);
             GUI.BeginGroup(rect);
             for(int i=0;i<block.lines.Length;i++)GUI.Label(new Rect(0,top-y+i*block.lineHeight,w,block.lineHeight),block.lines[i],style);
@@ -399,15 +409,15 @@ namespace Era
             {
                 Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(220,238,1160,410,Panel,26);
                 Text(title,250,260,1100,38,23,Sage,true,TextAnchor.UpperCenter);
-                Text(aura?I18n.P("Three random new auras or upgrades. Up to three aura types.","Три случайные новые ауры или улучшения. До трёх типов аур."):weapon?I18n.P("The world is paused until you choose.","Мир на паузе до выбора."):I18n.P("Four permanent slots this run. Once full, only equipped accessories can improve.","Четыре слота до конца забега. После заполнения улучшается только выбранная бижутерия."),250,305,1100,30,16,Muted,false,TextAnchor.UpperCenter);
+                Text(aura?I18n.P("Three random new auras or upgrades. Up to three aura types.","Три случайные новые ауры или улучшения. До трёх типов аур."):weapon?I18n.P("The world is paused until you choose.","Мир на паузе до выбора."):I18n.P("Four permanent slots this run. Once full, only equipped accessories can improve.","Четыре слота до конца забега. После заполнения улучшается только выбранная бижутерия."),250,305,1100,44,16,Muted,false,TextAnchor.UpperCenter);
                 int cols=p.offers.Length>3?4:3;for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,245+(i%cols)*(cols==4?280:370),355+(i/cols)*161,cols==4?266:350,210,true);
                 Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),250,602,1100,26,15,Muted,false,TextAnchor.UpperCenter);
             }
             else
             {
-                Box(1214,235,362,Mathf.Max(380,116+p.offers.Length*65),Panel,20);Text(title,1232,248,326,49,16,Sage,true);
+                Box(1214,235,362,Mathf.Max(380,116+p.offers.Length*92),Panel,20);Text(title,1232,248,326,49,16,Sage,true);
                 Text(I18n.P("1–","1–")+p.offers.Length+I18n.P(" · ALT for cursor"," · ALT для курсора"),1232,298,326,22,13,Muted);
-                for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,1226,331+i*65,338,59,false);
+                for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,1226,331+i*92,338,86,false);
             }
         }
         void UpgradeCard(PlayerState p,int i,float x,float y,float w,float h,bool large)
@@ -418,11 +428,20 @@ namespace Era
             string name=aura?GameData.AuraName(attribute):weapon?GameData.Weapons[attribute].name:GameData.AccessoryName(attribute);
             string gain=aura?GameData.AuraDescription(attribute,p.auraLevels[attribute]+1):weapon?GameData.Weapons[attribute].description:GameData.AccessoryDescription(attribute,rarity);
             int accessoryLevel=GameData.AccessoryLevel(p,attribute);
-            string tag=aura?(p.auraLevels[attribute]>0?I18n.P("RANK ","РАНГ ")+p.auraLevels[attribute]+" → "+(p.auraLevels[attribute]+1)+I18n.P(" · UPGRADES "," · УЛУЧШЕНИЙ ")+p.auraLevels[attribute]:I18n.P("NEW · RANK 1 · UPGRADES 0","НОВАЯ · РАНГ 1 · УЛУЧШЕНИЙ 0")):weapon?I18n.P("SECOND SLOT","ВТОРОЙ СЛОТ"):GameData.RarityName(rarity)+" · "+(accessoryLevel==0?I18n.P("NEW · LV. 1","НОВОЕ · УР. 1"):I18n.P("LV. ","УР. ")+accessoryLevel+" → "+(accessoryLevel+1));
+            string tag=aura?(p.auraLevels[attribute]>0?I18n.P("RANK ","РАНГ ")+p.auraLevels[attribute]+" -> "+(p.auraLevels[attribute]+1)+I18n.P(" · UPGRADES "," · УЛУЧШЕНИЙ ")+p.auraLevels[attribute]:I18n.P("NEW · RANK 1 · UPGRADES 0","НОВАЯ · РАНГ 1 · УЛУЧШЕНИЙ 0")):weapon?I18n.P("SECOND SLOT","ВТОРОЙ СЛОТ"):GameData.RarityName(rarity)+" · "+(accessoryLevel==0?I18n.P("NEW · LV. 1","НОВОЕ · УР. 1"):I18n.P("LV. ","УР. ")+accessoryLevel+" -> "+(accessoryLevel+1));
             Flat(x-3,y-3,w+6,h+6,rarityColor);Box(x,y,w,h,Soft,14);
             string icon=aura?GameData.AuraIcons[attribute]:weapon?GameData.Weapons[attribute].icon:GameData.AccessoryIcons[attribute];
-            if(large){float iconSize=aura?43:60;Icon(icon,x+w/2-iconSize/2,y+8,iconSize);Text(tag,x+12,y+(aura?54:71),w-24,18,10,rarityColor,true,TextAnchor.UpperCenter);Text((i+1)+" · "+name,x+12,y+(aura?76:96),w-24,29,16,Ink,true,TextAnchor.UpperCenter);Text(gain,x+12,y+(aura?108:134),w-24,aura?36:68,weapon?14:15,rarityColor,true,TextAnchor.UpperCenter);}
-            else{Icon(icon,x+6,y+7,42);Text((i+1)+" · "+name,x+57,y+4,w-66,20,13,Ink,true);Text(gain,x+57,y+25,w-66,weapon?27:16,11,rarityColor,true);if(!weapon)Text(tag,x+57,y+43,w-66,15,9,Muted);}
+            if(large)
+            {
+                Icon(icon,x+w/2-23,y+10,46);Text(tag,x+12,y+63,w-24,22,10,rarityColor,true,TextAnchor.UpperCenter);
+                Text((i+1)+" · "+name,x+14,y+91,w-28,38,16,Ink,true,TextAnchor.UpperCenter);
+                Text(gain,x+18,y+137,w-36,h-149,15,rarityColor,true,TextAnchor.UpperCenter);
+            }
+            else
+            {
+                Icon(icon,x+7,y+12,40);Text((i+1)+" · "+name,x+57,y+5,w-66,30,13,Ink,true);
+                Text(tag,x+57,y+34,w-66,15,9,Muted);Text(gain,x+57,y+51,w-68,h-55,11,rarityColor,true);
+            }
             if(!capturing&&GUI.Button(new Rect(x,y,w,h),GUIContent.none,GUIStyle.none)){App.Choose(i);SynthAudio.Instance?.Play(10);}
         }
         void ItemHover(int item,Rect rect)

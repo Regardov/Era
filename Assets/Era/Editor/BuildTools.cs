@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.27.0";
+            PlayerSettings.bundleVersion = "0.28.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -46,7 +46,7 @@ namespace Era.Editor
             // Runtime-generated materials still need explicit shader references in the player build.
             var graphics = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")[0]);
             var included = graphics.FindProperty("m_AlwaysIncludedShaders");
-            foreach (string shaderName in new[] { "Standard", "Era/Character Surface", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture", "Era/Feedback Solid", "Era/Protective Field", "Era/Living Flame", "Era/Loot Glow" })
+            foreach (string shaderName in new[] { "Standard", "Era/Character Surface", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture", "Era/Feedback Solid", "Era/Protective Field", "Era/Living Flame", "Era/Loot Glow", "Era/Lumen Aura" })
             {
                 var shader = Shader.Find(shaderName); bool found = false;
                 if (shader == null) throw new Exception("Missing shader: " + shaderName);

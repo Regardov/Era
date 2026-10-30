@@ -7,12 +7,12 @@ namespace Era
     {
         public LumenAnimationDriver actor;
         public float PalmError{get;private set;}
-        Transform support;LineRenderer[] lines;float clock;
+        Transform support;LineRenderer[] lines;float clock,opacity=1;int owner;
         static Material material;
         public static GameObject Create(LumenAnimationDriver mage,Transform parent,int owner)
         {
             var root=new GameObject("Lumen / held amber rune");root.transform.SetParent(parent,false);
-            var rune=root.AddComponent<LumenRuneFocus>();rune.actor=mage;
+            var rune=root.AddComponent<LumenRuneFocus>();rune.actor=mage;rune.owner=owner;
             root.AddComponent<WeaponPresentation>().kind=WeaponKind.Aura;root.GetComponent<WeaponPresentation>().BindOwner(owner);
             return root;
         }
@@ -41,7 +41,9 @@ namespace Era
             var root=actor.actorRoot;var target=support.position+root.up*.15f+root.forward*.055f;
             transform.SetPositionAndRotation(target,root.rotation);PalmError=Vector3.Distance(transform.position,target);
             float pulse=1+Mathf.Sin(clock*2.2f)*.025f;transform.localScale=Vector3.one*pulse;
-            foreach(var line in lines)line.enabled=!actor.IsDead;
+            var player=GameApp.Instance?.State?.Player(owner);bool walking=player!=null&&player.velocity.sqrMagnitude>.2f&&player.castTime<=0&&player.auraSurge<=0;
+            opacity=PresentationMotion.Damp(opacity,walking?0:1,10,PresentationMotion.Delta);
+            foreach(var line in lines){line.enabled=!actor.IsDead;line.startColor=line.endColor=new Color(1,.57f,.09f,opacity);}
         }
     }
 }
