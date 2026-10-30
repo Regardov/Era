@@ -15,7 +15,7 @@ namespace Era.Editor
     // Loadouts and authoritative aura logic are not modified.
     public static class AuraWeaverImporter
     {
-        const string Source="ArtSource/Characters/AuraWeaver/ReleaseV9";
+        const string Source="ArtSource/Characters/AuraWeaver/ReleaseV10";
         public const float VisualScale=1.10f;
         const string Folder="Assets/Era/Art/Characters/AuraWeaver";
         const string Fbx=Folder+"/AuraWeaver_Rigged.fbx";
@@ -23,7 +23,7 @@ namespace Era.Editor
         public static void PrepareLumen()
         {
             const string target="Assets/Era/Resources/Characters/Lumen.prefab",marker="Assets/Era/Generated/Lumen-V9.txt";
-            string signature=File.ReadAllText(Source+"/AuraWeaver_Manifest.json")+"\nPalm sockets / V9.2";
+            string signature=File.ReadAllText(Source+"/AuraWeaver_Manifest.json")+"\nRune locomotion / V10.1";
             if(File.Exists(marker)&&File.ReadAllText(marker)==signature&&AssetDatabase.LoadAssetAtPath<GameObject>(target)?.GetComponent<HeroMotion>()?.lumen!=null)return;
             ImportAndValidate();
             var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));root.name="Lumen";
@@ -33,11 +33,12 @@ namespace Era.Editor
                 driver.animator=visual.GetComponent<Animator>();driver.actorRoot=root.transform;
                 driver.clips=JsonUtility.FromJson<Manifest>(File.ReadAllText(Source+"/AuraWeaver_Manifest.json")).clips.Select(c=>new ArcherClipReference{name=c.name,clip=AssetDatabase.LoadAssetAtPath<AnimationClip>(Folder+"/Animations/"+c.name+".anim"),loop=c.loop}).ToArray();
                 root.AddComponent<HeroMotion>().BindLumen(driver);
+                visual.gameObject.AddComponent<LumenGarmentClearance>().actor=driver;
                 foreach(string side in new[]{"L","R"})
                 {
                     var palm=new GameObject("ERA palm socket").transform;palm.SetParent(driver.Bone("Hand."+side),false);palm.localPosition=new Vector3(0,.04f,0);
                 }
-                var authored=root.GetComponent<AuthoredCharacter>();authored.model="Lumen";authored.version=9;
+                var authored=root.GetComponent<AuthoredCharacter>();authored.model="Lumen";authored.version=10;
                 authored.details=new[]{"Aura Weaver V8 pattern 09","V9 fitted mage skeleton","30 degree rear hat tip","11 mage animations","Existing Lumen abilities preserved"};
                 ActorBodyCollider.Attach(root).Present(new PlayerState());PrefabUtility.SaveAsPrefabAsset(root,target);
             }
@@ -54,7 +55,7 @@ namespace Era.Editor
         [Serializable] public class Report
         {
             public bool ok,avatarValid,basePathsCompatible,originalArcherUntouched;
-            public string unity,scope="FBX/editor validation only. Gameplay evidence is recorded separately in Docs/lumen-runtime-v026.json.";
+            public string unity,scope="FBX/editor validation only. See the current release's separate runtime validation in Docs.";
             public int skins,bones,clips,triangles;public ClipCheck[] results;public string[] originalClipPathsChecked;
         }
 
@@ -109,7 +110,7 @@ namespace Era.Editor
             controller.AddParameter("AuraChannel",AnimatorControllerParameterType.Bool);controller.AddParameter("IsGrounded",AnimatorControllerParameterType.Bool);controller.AddParameter("VerticalSpeed",AnimatorControllerParameterType.Float);
             var parameters=controller.parameters;foreach(var p in parameters){if(p.name=="LocomotionRate")p.defaultFloat=1;if(p.name=="IsGrounded")p.defaultBool=true;}controller.parameters=parameters;
             var locomotion=machine.AddState("Locomotion");var tree=new BlendTree{name="Aura Weaver locomotion",blendType=BlendTreeType.Simple1D,blendParameter="Speed",useAutomaticThresholds=false};
-            AssetDatabase.AddObjectToAsset(tree,controller);tree.AddChild(clips["AuraWeaver_Idle"],0);tree.AddChild(clips["AuraWeaver_Walk"],.9f*ArcherAnimationImporter.VisualScale);tree.AddChild(clips["AuraWeaver_Run"],2.8f*ArcherAnimationImporter.VisualScale);
+            AssetDatabase.AddObjectToAsset(tree,controller);tree.AddChild(clips["AuraWeaver_Idle"],0);tree.AddChild(clips["AuraWeaver_Walk"],GameData.BaseMoveSpeed);tree.AddChild(clips["AuraWeaver_Run"],GameData.BaseMoveSpeed*1.25f);
             locomotion.motion=tree;locomotion.speedParameterActive=true;locomotion.speedParameter="LocomotionRate";machine.defaultState=locomotion;
             var states=new Dictionary<string,AnimatorState>();
             foreach(string n in new[]{"JumpStart","Airborne","Fall","Land","AuraChannel","Cast","Hit","Death"}){var state=machine.AddState(n);state.motion=clips["AuraWeaver_"+n];states[n]=state;}
@@ -176,7 +177,7 @@ namespace Era.Editor
             foreach(var result in list)
             {
                 string name=result.name.Substring("AuraWeaver_".Length);string state=name=="Idle"||name=="Walk"||name=="Run"?"Locomotion":name;
-                animator.SetFloat("Speed",name=="Run"?4:name=="Walk"?1.2f:0);animator.SetBool("AuraChannel",name=="AuraChannel");animator.Play(state,0,0);animator.Update(.1f);
+                animator.SetFloat("Speed",name=="Run"?GameData.BaseMoveSpeed*1.3f:name=="Walk"?GameData.BaseMoveSpeed:0);animator.SetBool("AuraChannel",name=="AuraChannel");animator.Play(state,0,0);animator.Update(.1f);
                 result.controllerEvaluated=animator.GetCurrentAnimatorClipInfo(0).Any(c=>c.clip==clips[result.name]);
             }
             var baseNames=JsonUtility.FromJson<Schema>(File.ReadAllText("ArtSource/CharacterFactory/rig-schema.json")).skeleton.Select(b=>b.name).ToHashSet();

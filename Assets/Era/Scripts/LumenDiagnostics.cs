@@ -19,7 +19,7 @@ namespace Era
             var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--capture-folder");folder=at>=0?args[at+1]:"Artifacts/Lumen";Directory.CreateDirectory(folder);
             report.version=Application.version;report.animations=names.Select(n=>new Row{animation="AuraWeaver_"+n}).ToArray();
             Application.logMessageReceived+=Log;App.SelectedHero=Hero.Lumen;App.Solo();App.State.enemies.Clear();App.State.spawnTimer=100000;App.State.resourceNodes.Clear();
-            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.weapons=new[]{-1,-1};App.LocalPlayer.lastWeapon=-1;App.LocalPlayer.position=WorldMap.OnGround(0,0);
+            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.weapons=new[]{(int)WeaponKind.Aura,-1};App.LocalPlayer.lastWeapon=(int)WeaponKind.Aura;App.LocalPlayer.position=WorldMap.OnGround(0,0);
             // Keep the real gameplay actor/driver, but remove foliage occlusion
             // from pose evidence. The ordinary camera is tested separately.
             var environment=FindAnyObjectByType<WorldEnvironment>();if(environment!=null)environment.gameObject.SetActive(false);
@@ -46,7 +46,7 @@ namespace Era
                 if(names[phase]=="Hit")App.LocalPlayer.hp-=1;
             }
             var p=App.LocalPlayer;string n=names[phase];p.invulnerability=10000;p.pendingLevels=0;App.State.enemies.Clear();App.State.spawnTimer=100000;
-            p.velocity=n=="Walk"?Vector3.forward*1.1f:n=="Run"?Vector3.forward*4.4f:Vector3.zero;
+            p.velocity=n=="Walk"?Vector3.forward*GameData.BaseMoveSpeed:n=="Run"?Vector3.forward*GameData.BaseMoveSpeed*1.3f:Vector3.zero;
             p.grounded=!(n=="JumpStart"||n=="Airborne"||n=="Fall");p.verticalSpeed=n=="JumpStart"||n=="Airborne"?2:n=="Fall"?-2:0;
             p.auraSurge=n=="AuraChannel"?1:0;p.downed=n=="Death";
             if(n=="Land"&&Time.realtimeSinceStartup-phaseStart<.1f)p.landSerial++;

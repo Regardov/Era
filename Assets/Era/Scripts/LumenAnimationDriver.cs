@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Era
@@ -11,12 +12,14 @@ namespace Era
         public Animator animator;
         public Transform actorRoot;
         public ArcherClipReference[] clips=Array.Empty<ArcherClipReference>();
-        public float walkSpeed=1.10f,runSpeed=3.45f;
+        public float walkSpeed=GameData.BaseMoveSpeed,runSpeed=GameData.BaseMoveSpeed*1.25f;
+        public bool IsDead=>dead;
         int owner=-1,castSerial=-1,jumpSerial=-1,landSerial=-1;
         float lastHp=-1,speed,crouch;
         bool dead,manual,applied,standing;
         Transform[] changed;Vector3[] positions;Quaternion[] rotations;
-        public Transform Bone(string name)=>GetComponentsInChildren<Transform>(true).FirstOrDefault(t=>t.name==name);
+        readonly Dictionary<string,Transform> bones=new Dictionary<string,Transform>();
+        public Transform Bone(string name){if(bones.TryGetValue(name,out var found)&&found!=null)return found;foreach(var t in GetComponentsInChildren<Transform>(true))if(t.name==name){bones[name]=t;return t;}return null;}
         void Awake(){Bind();Stand();}
         void Bind()
         {
@@ -48,7 +51,7 @@ namespace Era
             speed=PresentationMotion.Damp(speed,p.grounded?target:0,12,PresentationMotion.Delta);
             crouch=PresentationMotion.Damp(crouch,p.crouching&&p.grounded?1:0,14,PresentationMotion.Delta);
             animator.SetFloat("Speed",speed);
-            float gait=target<walkSpeed?Mathf.Lerp(.65f,1,target/Mathf.Max(.01f,walkSpeed)):Mathf.Clamp(target/runSpeed,.8f,1.65f);
+            float gait=target<=walkSpeed*1.1f?Mathf.Clamp(target/walkSpeed,.6f,1.05f):Mathf.Clamp(target/runSpeed,.95f,1.25f);
             animator.SetFloat("LocomotionRate",target<.05f?1:gait);
             animator.SetBool("IsGrounded",p.grounded);animator.SetFloat("VerticalSpeed",p.verticalSpeed);
             animator.SetBool("AuraChannel",!p.downed&&p.grounded&&target<.08f&&p.auraSurge>0);

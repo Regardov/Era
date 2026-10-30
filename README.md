@@ -1,6 +1,10 @@
-# ERA: Seven Realms — v0.26.0
+# ERA: Seven Realms — v0.26.1
 
-**[Скачать последнюю игру v0.26.0 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.0). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать последнюю игру v0.26.1 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.1). Распакуйте архив целиком и запустите `Era.exe`.
+
+**v0.26.1 — исправления Люмена:** янтарная руна у ладоней вместо старого зелёного Aura-фокуса, разные походки и наклон корпуса, коррекция мантии по ногам, непрозрачная замкнутая шляпа с плавным кончиком и приподнятые передние сумки. [Изменения](Docs/RELEASE-v0.26.1.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.26.1.md) · [Blender V10](ArtSource/Characters/AuraWeaver/ReleaseV10/README.md).
+
+![Люмен с янтарной руной в готовом Player](Docs/Lumen-v0261/Walk-0.png)
 
 **v0.26.0 — новая внешность Люмена: Aura Weaver.** Янтарная мантия с рисунком 09, закрытый капюшон, шляпа с объёмным хвостом под 30° от направления назад, перчатки, каблуки и закреплённые сумки. Под текущие пропорции адаптирован отдельный Generic-риг и 11 клипов движения, магии, урона и смерти. Его способности, ауры и баланс сохранены; модель лучника не заменяется. [Изменения](Docs/RELEASE-v0.26.0.md) · [Проверки и кадры игры](Docs/VALIDATION-v0.26.md) · [Blender/FBX V9](ArtSource/Characters/AuraWeaver/ReleaseV9/README.md).
 

@@ -53,6 +53,11 @@ namespace Era
                     skin.BakeMesh(baked);foreach(var vertex in baked.vertices)report.finite&=ActorMotionMath.Finite(vertex)&&hero.transform.InverseTransformPoint(skin.transform.TransformPoint(vertex)).magnitude<6;
                 }
             }
+            foreach(var rune in FindObjectsByType<LumenRuneFocus>(FindObjectsSortMode.None))
+            {
+                report.poseSamples++;report.profiles&=rune.GetComponentsInChildren<LineRenderer>().Length>=10;
+                report.finite&=ActorMotionMath.Finite(rune.transform.position);report.primaryError=Mathf.Max(report.primaryError,rune.PalmError);
+            }
             if(phase%6==4)
             {
                 capture.Save(Path.Combine(folder,"grip-"+(WeaponKind)(phase/6)+"-v019.png"),camera,()=>{});

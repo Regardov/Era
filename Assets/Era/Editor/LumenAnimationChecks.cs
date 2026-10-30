@@ -15,9 +15,9 @@ namespace Era.Editor
             {
                 var hero=root.GetComponent<HeroMotion>();var actor=hero?.lumen;var meta=root.GetComponent<AuthoredCharacter>();
                 Check(hero!=null&&hero.Hero==Hero.Lumen&&actor!=null&&hero.archer==null&&hero.skeletal==null,"dedicated Lumen visual adapter");
-                Check(meta.model=="Lumen"&&meta.version==9&&meta.sourceHash.Length==64,"V9 source provenance");
+                Check(meta.model=="Lumen"&&meta.version==10&&meta.sourceHash.Length==64,"V10 source provenance");
                 using(var sha=System.Security.Cryptography.SHA256.Create())
-                    Check(BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes("ArtSource/Characters/AuraWeaver/ReleaseV9/AuraWeaver_Lumen_V9.blend"))).Replace("-","").ToLowerInvariant()==meta.sourceHash,"actual saved Blender source hash");
+                    Check(BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes("ArtSource/Characters/AuraWeaver/ReleaseV10/AuraWeaver_Lumen_V10.blend"))).Replace("-","").ToLowerInvariant()==meta.sourceHash,"actual saved Blender source hash");
                 Check(actor.animator.avatar!=null&&actor.animator.avatar.isValid&&!actor.animator.avatar.isHuman&&!actor.animator.applyRootMotion,"Generic Avatar without root motion");
                 Check(actor.clips.Length==11,"eleven retained mage clips");
                 var skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>();Check(skins.Length==26,"logical costume mesh count");

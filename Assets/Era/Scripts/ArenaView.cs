@@ -100,8 +100,10 @@ namespace Era
                     // Legacy WeaponGrip would fight the baked Generic arm animation.
                     if(actor.hero.archer==null||p.lastWeapon!=(int)WeaponKind.Bow)
                     {
-                        actor.weapon=WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)p.lastWeapon);actor.weapon.transform.localPosition=actor.hero.skeletal!=null||actor.hero.archer!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}
-                        if(actor.hero.archer==null){var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)p.lastWeapon;}
+                        bool rune=actor.hero.lumen!=null&&p.lastWeapon==(int)WeaponKind.Aura;
+                        actor.weapon=rune?LumenRuneFocus.Create(actor.hero.lumen,actor.root.transform,p.id):WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)p.lastWeapon);
+                        if(!rune){actor.weapon.transform.localPosition=actor.hero.skeletal!=null||actor.hero.archer!=null||actor.hero.lumen!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}}
+                        if(actor.hero.archer==null&&!rune){var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)p.lastWeapon;}
                         actor.weapon.GetComponent<WeaponPresentation>()?.BindOwner(p.id);
                     }
                 }
