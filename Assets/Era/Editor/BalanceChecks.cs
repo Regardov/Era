@@ -139,6 +139,16 @@ namespace Era.Editor
                 try
                 {
                     var archer=root.GetComponent<HeroMotion>()?.archer;
+                    var mage=root.GetComponent<HeroMotion>()?.lumen;
+                    if(mage!=null)
+                    {
+                        Check(mage.animator!=null&&mage.animator.avatar.isValid&&mage.Bone("Pelvis")!=null,"fitted Generic mage bind skeleton saved for "+hero);
+                        mage.SampleClip("AuraWeaver_Idle",0);var bones=mage.GetComponentsInChildren<Transform>(true);var positions=new Vector3[bones.Length];for(int i=0;i<bones.Length;i++)positions[i]=bones[i].localPosition;
+                        mage.ApplyCrouch(1);bool mageConnected=true;for(int i=0;i<bones.Length;i++)if(bones[i]!=mage.Bone("Pelvis"))mageConnected&=Vector3.Distance(bones[i].localPosition,positions[i])<.0001f;
+                        Check(mageConnected,"mage crouch preserves child bind offsets: "+hero);
+                        var skins=mage.GetComponentsInChildren<SkinnedMeshRenderer>();Check(skins.Length==26&&Array.TrueForAll(skins,skin=>skin.bones.Length==skin.sharedMesh.bindposes.Length&&Array.TrueForAll(skin.bones,bone=>bone!=null)),"mage costume uses valid skin bindposes: "+hero);
+                        continue;
+                    }
                     if(archer!=null)
                     {
                         Check(archer.animator!=null&&archer.animator.avatar.isValid&&archer.pelvis!=null,"Generic bind skeleton saved for "+hero);

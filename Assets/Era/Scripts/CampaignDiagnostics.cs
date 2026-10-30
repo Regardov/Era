@@ -45,7 +45,7 @@ namespace Era
                 }
                 if(age<1.7f)return;
                 App.LocalInput.jumpHeld=false;
-                var model=UnityEngine.Object.FindObjectsByType<HeroMotion>(FindObjectsSortMode.None);foreach(var hero in model)if(hero.Hero==Hero.Lumen&&hero.skeletal!=null)report.lumenModel=true;
+                var model=UnityEngine.Object.FindObjectsByType<HeroMotion>(FindObjectsSortMode.None);foreach(var hero in model)if(hero.Hero==Hero.Lumen&&hero.lumen!=null&&hero.lumen.animator.avatar.isValid&&hero.lumen.clips.Length==11)report.lumenModel=true;
                 var grass=UnityEngine.Object.FindAnyObjectByType<LivingGrass>();report.grass|=grass!=null&&grass.patches.Length>70&&Shader.GetGlobalVector("_GrassBend0").w==1;
                 foreach(string shader in new[]{"Era/Meadow Grass","Era/Realm Surface","Era/Realm Terrain","Era/Actor Satin","Era/Rift Portal"})report.shaders&=Shader.Find(shader)!=null&&Shader.Find(shader).isSupported;
                 Shot("realm-"+App.State.stage+"-v08.png");phase=2;phaseAt=Time.realtimeSinceStartup;return;

@@ -1,6 +1,10 @@
-# ERA: Seven Realms — v0.25.1
+# ERA: Seven Realms — v0.26.0
 
-**[Скачать последнюю игру v0.25.1 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.25.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.25.1). Распакуйте архив целиком и запустите `Era.exe`.
+**[Скачать последнюю игру v0.26.0 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.0). Распакуйте архив целиком и запустите `Era.exe`.
+
+**v0.26.0 — новая внешность Люмена: Aura Weaver.** Янтарная мантия с рисунком 09, закрытый капюшон, шляпа с объёмным хвостом под 30° от направления назад, перчатки, каблуки и закреплённые сумки. Под текущие пропорции адаптирован отдельный Generic-риг и 11 клипов движения, магии, урона и смерти. Его способности, ауры и баланс сохранены; модель лучника не заменяется. [Изменения](Docs/RELEASE-v0.26.0.md) · [Проверки и кадры игры](Docs/VALIDATION-v0.26.md) · [Blender/FBX V9](ArtSource/Characters/AuraWeaver/ReleaseV9/README.md).
+
+![Обновлённый Люмен в Windows Player](Docs/Lumen-v026/Character-studio.png)
 
 **v0.25.1 — устранены рывки самого лучника при высоком FPS.** Модель и камера используют одну интерполированную позицию между шагами симуляции 30 Гц. Убрана принудительная постановка модели в ступенчатую координату; на сетевом клиенте сохранено сглаживание снимков. Анимационные клипы, частота симуляции, урон, баланс и предметы v0.25 сохранены. [Изменения](Docs/RELEASE-v0.25.1.md) · [Проверки FPS и сборки](Docs/VALIDATION-v0.25.1.md).
 
@@ -18,7 +22,7 @@
 
 В исходниках также доступна [ERA Character Factory](ERA_CHARACTER_WORKFLOW.md): библиотека компонентов Blender, измеренный Style Guide и инструменты для будущих персонажей.
 
-Отдельно подготовлен [Aura Weaver — модель, риг, 11 клипов и Unity Prefab](ArtSource/Characters/AuraWeaver/README.md). Это новый ассет в исходниках: в выбор героя и Windows-релиз v0.23.2 он пока не включён; существующая механика аур не менялась.
+[Aura Weaver](ArtSource/Characters/AuraWeaver/README.md) развивался как отдельный ассет; с v0.26.0 версия V9 используется как внешность существующего Люмена. Новая механика аур или отдельный класс не добавлялись.
 
 ![Лучник v0.23.1: бег, каст и стрельба в Windows Player](Docs/Images/archer-run-cast-v0231.png)
 

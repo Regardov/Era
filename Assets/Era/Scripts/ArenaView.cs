@@ -91,7 +91,7 @@ namespace Era
                 actor.root.transform.position=Vector3.Lerp(actor.root.transform.position,p.position,blend);
                 actor.root.transform.rotation=actor.hero.archer!=null?Quaternion.Euler(0,actor.hero.archer.ResolveFacing(p,PresentationMotion.Delta),0):Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
                 if(actor.root.GetComponent<AbilityPresentation>()==null)actor.root.AddComponent<AbilityPresentation>().owner=p.id;
-                if(actor.hero.archer!=null)actor.hero.archer.Present(p);else if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
+                if(actor.hero.archer!=null)actor.hero.archer.Present(p);else if(actor.hero.lumen!=null)actor.hero.lumen.Present(p);else if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
                 if(actor.weaponKind!=p.lastWeapon&&p.lastWeapon>=0)
                 {
                     if(actor.weapon!=null){actor.weapon.SetActive(false);Destroy(actor.weapon);}var wand=actor.hero.rightElbow.Find("Wand");if(wand!=null)wand.gameObject.SetActive(false);

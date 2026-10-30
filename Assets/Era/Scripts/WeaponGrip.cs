@@ -5,7 +5,7 @@ namespace Era
     public sealed class WeaponGrip:MonoBehaviour
     {
         public Transform actor,hand;public int owner;public WeaponKind kind;
-        WeaponPresentation presentation;WeaponGripPoints points;SkeletalActor skeleton;
+        WeaponPresentation presentation;WeaponGripPoints points;SkeletalActor skeleton;LumenAnimationDriver mage;
         Transform rightUpper,rightElbow,rightWrist,leftUpper,leftElbow,leftWrist,rightPalm,leftPalm,chest;
         Transform[] modified;Quaternion[] before;bool applied,initialized;
         SkinnedMeshRenderer skin;int leftFingers=-1,rightFingers=-1;
@@ -14,8 +14,9 @@ namespace Era
         void Bind()
         {
             if(initialized||actor==null)return;points=GetComponent<WeaponGripPoints>();presentation=GetComponent<WeaponPresentation>();skeleton=actor.GetComponent<SkeletalActor>();
-            if(skeleton==null)return;
-            rightUpper=skeleton.Bone("upperarm.r");rightElbow=skeleton.Bone("lowerarm.r");rightWrist=skeleton.Bone("hand.r");leftUpper=skeleton.Bone("upperarm.l");leftElbow=skeleton.Bone("lowerarm.l");leftWrist=skeleton.Bone("hand.l");chest=skeleton.Bone("chest");
+            mage=actor.GetComponent<HeroMotion>()?.lumen;
+            if(skeleton==null&&mage==null)return;
+            rightUpper=mage!=null?mage.Bone("UpperArm.R"):skeleton.Bone("upperarm.r");rightElbow=mage!=null?mage.Bone("Forearm.R"):skeleton.Bone("lowerarm.r");rightWrist=mage!=null?mage.Bone("Hand.R"):skeleton.Bone("hand.r");leftUpper=mage!=null?mage.Bone("UpperArm.L"):skeleton.Bone("upperarm.l");leftElbow=mage!=null?mage.Bone("Forearm.L"):skeleton.Bone("lowerarm.l");leftWrist=mage!=null?mage.Bone("Hand.L"):skeleton.Bone("hand.l");chest=mage!=null?mage.Bone("Chest"):skeleton.Bone("chest");
             rightPalm=rightWrist?.Find("ERA palm socket");leftPalm=leftWrist?.Find("ERA palm socket");
             if(rightPalm==null||leftPalm==null||points==null||points.profile==null)return;
             modified=new[]{rightUpper,rightElbow,rightWrist,leftUpper,leftElbow,leftWrist};before=new Quaternion[modified.Length];skin=actor.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -28,7 +29,13 @@ namespace Era
         void Restore(){if(!applied||modified==null)return;for(int i=0;i<modified.Length;i++)if(modified[i]!=null)modified[i].localRotation=before[i];applied=false;}
         void LateUpdate()
         {
-            var app=GameApp.Instance;var p=app?.State?.Player(owner);if(p==null||actor==null||hand==null||app.WorldPaused)return;Bind();if(!initialized||skeleton.PoseFrozen)return;
+            var app=GameApp.Instance;var p=app?.State?.Player(owner);if(p==null||actor==null||hand==null||app.WorldPaused)return;Bind();if(!initialized||skeleton?.PoseFrozen==true)return;
+            if(mage!=null&&kind==WeaponKind.Aura)
+            {
+                bool channel=p.castTime>0||p.auraSurge>0;
+                foreach(var renderer in GetComponentsInChildren<Renderer>())renderer.enabled=!channel;
+                if(channel)return;
+            }
             for(int i=0;i<modified.Length;i++)before[i]=modified[i].localRotation;applied=true;
             presentation?.BindOwner(owner);var sample=presentation!=null?presentation.Sample:default;var profile=points.profile;
             float yaw=p.weaponPoseTime>0?p.weaponAimYaw:actor.eulerAngles.y;if(presentation!=null&&presentation.Anticipation>.02f)yaw=presentation.AimYaw;

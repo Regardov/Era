@@ -1,223 +1,216 @@
 {
-  "character": "AuraWeaver",
+  "bones": 90,
+  "meshes": 26,
+  "triangles": 8680,
   "fps": 30,
-  "sourceHeight": 1.98,
-  "baseRig": "ERA_Humanoid54_v1",
-  "coreRestMaxError": 0.0,
-  "extraBones": [
-    "Coat1.Back.L",
-    "Coat1.Back.R",
-    "Coat1.Front.L",
-    "Coat1.Front.R",
-    "Coat1.Side.L",
-    "Coat1.Side.R",
-    "Coat2.Back.L",
-    "Coat2.Back.R",
-    "Coat2.Front.L",
-    "Coat2.Front.R",
-    "Coat2.Side.L",
-    "Coat2.Side.R",
-    "Digit_Index1.L",
-    "Digit_Index1.R",
-    "Digit_Index2.L",
-    "Digit_Index2.R",
-    "Digit_Little1.L",
-    "Digit_Little1.R",
-    "Digit_Little2.L",
-    "Digit_Little2.R",
-    "Digit_Middle1.L",
-    "Digit_Middle1.R",
-    "Digit_Middle2.L",
-    "Digit_Middle2.R",
-    "Digit_Ring1.L",
-    "Digit_Ring1.R",
-    "Digit_Ring2.L",
-    "Digit_Ring2.R",
-    "Digit_Thumb1.L",
-    "Digit_Thumb1.R",
-    "Digit_Thumb2.L",
-    "Digit_Thumb2.R"
-  ],
-  "bones": 86,
+  "sourceBlendSha256": "a0bf195952de2a07f9ed4c13f5033d73f6792739633387e5c787e1a4d27a2700",
   "clips": [
     {
-      "name": "AuraWeaver_Idle",
-      "source": "Archer_Idle",
-      "start": 1,
-      "end": 73,
-      "loop": true
-    },
-    {
-      "name": "AuraWeaver_Walk",
-      "source": "Archer_Walk",
-      "start": 1,
-      "end": 29,
-      "loop": true
-    },
-    {
-      "name": "AuraWeaver_Run",
-      "source": "Archer_Run",
-      "start": 1,
-      "end": 19,
-      "loop": true
-    },
-    {
-      "name": "AuraWeaver_JumpStart",
-      "source": "Archer_JumpStart",
-      "start": 1,
-      "end": 7,
-      "loop": false
-    },
-    {
       "name": "AuraWeaver_Airborne",
-      "source": "Archer_Airborne",
-      "start": 1,
-      "end": 31,
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 31.0,
       "loop": true
     },
     {
-      "name": "AuraWeaver_Fall",
-      "source": "Archer_Fall",
-      "start": 1,
-      "end": 25,
+      "name": "AuraWeaver_AuraChannel",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 73.0,
       "loop": true
-    },
-    {
-      "name": "AuraWeaver_Land",
-      "source": "Archer_Land",
-      "start": 1,
-      "end": 9,
-      "loop": false
     },
     {
       "name": "AuraWeaver_Cast",
-      "source": "Archer_Cast",
-      "start": 1,
-      "end": 25,
-      "loop": false
-    },
-    {
-      "name": "AuraWeaver_Hit",
-      "source": "Archer_Hit",
-      "start": 1,
-      "end": 11,
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 25.0,
       "loop": false
     },
     {
       "name": "AuraWeaver_Death",
-      "source": "Archer_Death",
-      "start": 1,
-      "end": 46,
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 46.0,
       "loop": false
     },
     {
-      "name": "AuraWeaver_AuraChannel",
-      "source": "AuraWeaver_Idle + new two-hand FK pose",
-      "start": 1,
-      "end": 73,
+      "name": "AuraWeaver_Fall",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 25.0,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Hit",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 11.0,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Idle",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 73.0,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_JumpStart",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 7.0,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Land",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 9.0,
+      "loop": false
+    },
+    {
+      "name": "AuraWeaver_Run",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 19.0,
+      "loop": true
+    },
+    {
+      "name": "AuraWeaver_Walk",
+      "source": "V8 fitted mage copy",
+      "start": 1.0,
+      "end": 29.0,
       "loop": true
     }
   ],
-  "paletteSrgb": {
-    "ivory": "D8CEAF",
-    "sand": "C4B38D",
-    "fold": "B29C73",
-    "light": "E6DCC3",
-    "honey": "C5A063",
-    "amber": "B57D3F",
-    "ochre": "967044",
-    "bronze": "A47B48",
-    "leather": "6F4D34",
-    "leatherEdge": "8D6540",
-    "brown": "4C352A",
-    "charcoal": "24272A",
-    "inner": "30302C",
-    "hair": "292927",
-    "hairPlane": "3B3731",
-    "skin": "D1A080",
-    "skinShade": "B68062",
-    "eye": "362C27",
-    "sole": "272725"
-  },
   "materials": [
     {
-      "name": "AW_ivory",
-      "hex": "#D8CEAF"
+      "name": "AW_Pixel00",
+      "hex": "#F1DEB7"
     },
     {
-      "name": "AW_sand",
-      "hex": "#C4B38D"
+      "name": "AW_Pixel01",
+      "hex": "#E7D2A6"
     },
     {
-      "name": "AW_fold",
-      "hex": "#B29C73"
+      "name": "AW_Pixel02",
+      "hex": "#DCC193"
     },
     {
-      "name": "AW_light",
-      "hex": "#E6DCC3"
+      "name": "AW_Pixel03",
+      "hex": "#E2BA82"
     },
     {
-      "name": "AW_honey",
-      "hex": "#C5A063"
+      "name": "AW_Pixel04",
+      "hex": "#D2AE77"
+    },
+    {
+      "name": "AW_Pixel05",
+      "hex": "#D7A047"
+    },
+    {
+      "name": "AW_Pixel06",
+      "hex": "#C68F41"
+    },
+    {
+      "name": "AW_Pixel07",
+      "hex": "#D9953C"
+    },
+    {
+      "name": "AW_Pixel08",
+      "hex": "#BF7C29"
+    },
+    {
+      "name": "AW_Pixel09",
+      "hex": "#885029"
+    },
+    {
+      "name": "AW_Pixel10",
+      "hex": "#67412C"
+    },
+    {
+      "name": "AW_Pixel11",
+      "hex": "#4D3027"
+    },
+    {
+      "name": "AW_Pixel12",
+      "hex": "#3B2925"
     },
     {
       "name": "AW_amber",
-      "hex": "#B57D3F"
-    },
-    {
-      "name": "AW_ochre",
-      "hex": "#967044"
+      "hex": "#BF7C29"
     },
     {
       "name": "AW_bronze",
-      "hex": "#A47B48"
-    },
-    {
-      "name": "AW_leather",
-      "hex": "#6F4D34"
-    },
-    {
-      "name": "AW_leatherEdge",
-      "hex": "#8D6540"
+      "hex": "#BC8435"
     },
     {
       "name": "AW_brown",
-      "hex": "#4C352A"
+      "hex": "#3B2925"
     },
     {
       "name": "AW_charcoal",
-      "hex": "#24272A"
-    },
-    {
-      "name": "AW_inner",
-      "hex": "#30302C"
-    },
-    {
-      "name": "AW_hair",
-      "hex": "#292927"
-    },
-    {
-      "name": "AW_hairPlane",
-      "hex": "#3B3731"
-    },
-    {
-      "name": "AW_skin",
-      "hex": "#D1A080"
-    },
-    {
-      "name": "AW_skinShade",
-      "hex": "#B68062"
+      "hex": "#242323"
     },
     {
       "name": "AW_eye",
       "hex": "#362C27"
     },
     {
+      "name": "AW_fold",
+      "hex": "#96774F"
+    },
+    {
+      "name": "AW_hair",
+      "hex": "#1B2020"
+    },
+    {
+      "name": "AW_hairPlane",
+      "hex": "#34332E"
+    },
+    {
+      "name": "AW_honey",
+      "hex": "#D7A047"
+    },
+    {
+      "name": "AW_inner",
+      "hex": "#302923"
+    },
+    {
+      "name": "AW_ivory",
+      "hex": "#E7D2A6"
+    },
+    {
+      "name": "AW_leather",
+      "hex": "#633D2A"
+    },
+    {
+      "name": "AW_leatherEdge",
+      "hex": "#8F5630"
+    },
+    {
+      "name": "AW_light",
+      "hex": "#F1DEB7"
+    },
+    {
+      "name": "AW_ochre",
+      "hex": "#885029"
+    },
+    {
+      "name": "AW_sand",
+      "hex": "#D2AE77"
+    },
+    {
+      "name": "AW_skin",
+      "hex": "#D19B79"
+    },
+    {
+      "name": "AW_skinShade",
+      "hex": "#AC7454"
+    },
+    {
       "name": "AW_sole",
       "hex": "#272725"
     }
-  ],
-  "triangles": 3360,
-  "meshes": 21,
-  "sourceBlendSha256": "00e173c03cce6a796e150c8f8673aa281b0066d1306fc158229659388f4f936b"
+  ]
 }

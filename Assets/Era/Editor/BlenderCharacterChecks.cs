@@ -16,6 +16,7 @@ namespace Era.Editor
                 string resource=(name=="Stalker"||name=="Wisp"?"Creatures/":name=="Wayfarer"||name=="DuskMage"?"Characters/Library/":"Characters/")+name;
                 var source=Resources.Load<GameObject>(resource);Check(source!=null,"prefab exists: "+name);
                 if(source.GetComponent<HeroMotion>()?.archer!=null){count+=ArcherAnimationChecks.RunPrefab(source);continue;}
+                if(source.GetComponent<HeroMotion>()?.lumen!=null){count+=LumenAnimationChecks.RunPrefab(source);continue;}
                 var metadata=source.GetComponent<AuthoredCharacter>();var skin=source.GetComponentInChildren<SkinnedMeshRenderer>();var mesh=skin.sharedMesh;
                 Check(metadata!=null&&metadata.version==19&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
                 if(name!="Stalker"&&name!="Wisp")Check(metadata.details.Any(d=>d.StartsWith("Hair / continuous fitted scalp")),"continuous hair covers the scalp: "+name);

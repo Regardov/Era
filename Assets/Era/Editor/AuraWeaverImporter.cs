@@ -11,13 +11,39 @@ using Object=UnityEngine.Object;
 
 namespace Era.Editor
 {
-    // Asset-only preparation. Does not migrate existing heroes, loadouts or aura logic.
+    // Imports the standalone art asset and binds it to the existing Lumen hero.
+    // Loadouts and authoritative aura logic are not modified.
     public static class AuraWeaverImporter
     {
-        const string Source="ArtSource/Characters/AuraWeaver";
+        const string Source="ArtSource/Characters/AuraWeaver/ReleaseV9";
+        public const float VisualScale=1.10f;
         const string Folder="Assets/Era/Art/Characters/AuraWeaver";
         const string Fbx=Folder+"/AuraWeaver_Rigged.fbx";
         public const string PrefabPath=Folder+"/AuraWeaver.prefab";
+        public static void PrepareLumen()
+        {
+            const string target="Assets/Era/Resources/Characters/Lumen.prefab",marker="Assets/Era/Generated/Lumen-V9.txt";
+            string signature=File.ReadAllText(Source+"/AuraWeaver_Manifest.json")+"\nPalm sockets / V9.2";
+            if(File.Exists(marker)&&File.ReadAllText(marker)==signature&&AssetDatabase.LoadAssetAtPath<GameObject>(target)?.GetComponent<HeroMotion>()?.lumen!=null)return;
+            ImportAndValidate();
+            var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));root.name="Lumen";
+            try
+            {
+                var visual=root.transform.Find("AuraWeaverVisual");var driver=visual.gameObject.AddComponent<LumenAnimationDriver>();
+                driver.animator=visual.GetComponent<Animator>();driver.actorRoot=root.transform;
+                driver.clips=JsonUtility.FromJson<Manifest>(File.ReadAllText(Source+"/AuraWeaver_Manifest.json")).clips.Select(c=>new ArcherClipReference{name=c.name,clip=AssetDatabase.LoadAssetAtPath<AnimationClip>(Folder+"/Animations/"+c.name+".anim"),loop=c.loop}).ToArray();
+                root.AddComponent<HeroMotion>().BindLumen(driver);
+                foreach(string side in new[]{"L","R"})
+                {
+                    var palm=new GameObject("ERA palm socket").transform;palm.SetParent(driver.Bone("Hand."+side),false);palm.localPosition=new Vector3(0,.04f,0);
+                }
+                var authored=root.GetComponent<AuthoredCharacter>();authored.model="Lumen";authored.version=9;
+                authored.details=new[]{"Aura Weaver V8 pattern 09","V9 fitted mage skeleton","30 degree rear hat tip","11 mage animations","Existing Lumen abilities preserved"};
+                ActorBodyCollider.Attach(root).Present(new PlayerState());PrefabUtility.SaveAsPrefabAsset(root,target);
+            }
+            finally{Object.DestroyImmediate(root);}
+            File.WriteAllText(marker,signature);AssetDatabase.SaveAssets();Debug.Log("ERA_LUMEN_V9_INTEGRATED: visual only; existing aura simulation retained");
+        }
         [Serializable] public class ClipData {public string name,source;public float start,end;public bool loop;}
         [Serializable] public class Palette {public string name,hex;}
         [Serializable] public class Manifest {public int bones,meshes,triangles,fps;public string sourceBlendSha256;public ClipData[] clips;public Palette[] materials;}
@@ -28,7 +54,7 @@ namespace Era.Editor
         [Serializable] public class Report
         {
             public bool ok,avatarValid,basePathsCompatible,originalArcherUntouched;
-            public string unity,scope="Asset/Editor validation; not wired to player selection or aura gameplay.";
+            public string unity,scope="FBX/editor validation only. Gameplay evidence is recorded separately in Docs/lumen-runtime-v026.json.";
             public int skins,bones,clips,triangles;public ClipCheck[] results;public string[] originalClipPathsChecked;
         }
 
@@ -101,7 +127,7 @@ namespace Era.Editor
             var root=new GameObject("AuraWeaver");
             try
             {
-                var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(Fbx),root.transform);visual.name="AuraWeaverVisual";visual.transform.localScale=Vector3.one*ArcherAnimationImporter.VisualScale;
+                var visual=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(Fbx),root.transform);visual.name="AuraWeaverVisual";visual.transform.localScale=Vector3.one*VisualScale;
                 var animator=visual.GetComponent<Animator>();animator.runtimeAnimatorController=controller;animator.avatar=avatar;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
                 foreach(var skin in visual.GetComponentsInChildren<SkinnedMeshRenderer>(true)){skin.sharedMaterials=skin.sharedMaterials.Select(m=>materials.TryGetValue(m.name,out var mat)?mat:throw new Exception("Missing palette role "+m.name)).ToArray();skin.updateWhenOffscreen=true;}
                 var body=root.AddComponent<CapsuleCollider>();body.height=2.05f;body.radius=.28f;body.center=Vector3.up*1.025f;
@@ -157,7 +183,7 @@ namespace Era.Editor
             var skeletonRoot=model.transform.Find("Archer_Rig");
             int boneCount=all.Count(t=>t!=skeletonRoot&&t.IsChildOf(skeletonRoot)&&!t.name.StartsWith("AW_",StringComparison.Ordinal));
             originalCompatible&=baseNames.All(n=>all.Count(t=>t.name==n)==1);
-            string expected=JsonUtility.FromJson<Construction>(File.ReadAllText(Source+"/construction.json")).source_archer_sha256;
+            string expected=JsonUtility.FromJson<Construction>(File.ReadAllText("ArtSource/Characters/AuraWeaver/construction.json")).source_archer_sha256;
             string currentHash;using(var sha=System.Security.Cryptography.SHA256.Create())currentHash=BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes("ArtSource/Characters/Archer/Archer_Animated.blend"))).Replace("-","").ToLowerInvariant();
             var report=new Report{unity=Application.unityVersion,avatarValid=animator.avatar.isValid,bones=boneCount,skins=skins.Length,clips=clips.Count,triangles=manifest.triangles,basePathsCompatible=originalCompatible,originalArcherUntouched=currentHash==expected,results=list.ToArray(),originalClipPathsChecked=originalPaths.ToArray()};
             report.ok=report.avatarValid&&originalCompatible&&report.originalArcherUntouched&&report.bones==manifest.bones&&report.skins==manifest.meshes&&list.All(r=>r.curves>0&&r.missingPaths==0&&r.finite&&r.controllerEvaluated);

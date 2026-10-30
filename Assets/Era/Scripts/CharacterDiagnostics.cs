@@ -24,7 +24,15 @@ namespace Era
             {
                 string path=(i==2||i==3?"Creatures/":i<2?"Characters/Library/":"Characters/")+Names[i];models[i]=Instantiate(Resources.Load<GameObject>(path));
                 var archer=models[i].GetComponent<HeroMotion>()?.archer;
-                if(archer!=null)
+                var mage=models[i].GetComponent<HeroMotion>()?.lumen;
+                if(mage!=null)
+                {
+                    mage.enabled=false;mage.SampleClip("AuraWeaver_Idle",.1f);
+                    ankleFloors[i,0]=models[i].transform.InverseTransformPoint(mage.Bone("Foot.L").position).y;ankleFloors[i,1]=models[i].transform.InverseTransformPoint(mage.Bone("Foot.R").position).y;
+                    report.clips&=mage.clips.Length==11&&Array.TrueForAll(mage.clips,c=>c.clip!=null&&!c.clip.empty)&&mage.animator.avatar.isValid;
+                    report.skins&=models[i].GetComponentsInChildren<SkinnedMeshRenderer>().Length==26;
+                }
+                else if(archer!=null)
                 {
                     archer.enabled=false;archer.SampleClip("Archer_Idle",.1f);ankleFloors[i,0]=models[i].transform.InverseTransformPoint(archer.leftFoot.position).y;ankleFloors[i,1]=models[i].transform.InverseTransformPoint(archer.rightFoot.position).y;
                     report.clips&=archer.clips.Length==ArcherAnimationDriver.ExpectedClipCount&&Array.TrueForAll(archer.clips,c=>c.clip!=null&&!c.clip.empty)&&archer.animator.avatar.isValid;report.skins&=models[i].GetComponentsInChildren<SkinnedMeshRenderer>().Length>0;
@@ -41,6 +49,8 @@ namespace Era
         void Pose(GameObject model,string clip,float time,bool crouch=false)
         {
             var archer=model.GetComponent<HeroMotion>()?.archer;
+            var mage=model.GetComponent<HeroMotion>()?.lumen;
+            if(mage!=null){mage.SampleClip(clip=="Running_A"?"AuraWeaver_Run":"AuraWeaver_Idle",time);if(crouch)mage.ApplyCrouch(1);return;}
             if(archer!=null){archer.SampleClip(clip=="Running_A"?"Archer_Run":"Archer_Idle",time);if(crouch)archer.ApplyCrouch(1);return;}
             var shape=model.GetComponent<HumanRigShape>();var skeleton=model.GetComponent<SkeletalActor>();
             for(int i=0;i<shape.bones.Length;i++)shape.bones[i].localPosition=shape.originalLocalPositions[i];
@@ -70,6 +80,12 @@ namespace Era
                     for(int i=4;i<7;i++)foreach(string side in new[]{"l","r"})
                     {
                         var archer=models[i].GetComponent<HeroMotion>()?.archer;var actor=models[i].GetComponent<SkeletalActor>();
+                        var mage=models[i].GetComponent<HeroMotion>()?.lumen;
+                        if(mage!=null)
+                        {
+                            var mh=mage.Bone("Thigh."+side.ToUpperInvariant()).position;var mk=mage.Bone("Shin."+side.ToUpperInvariant()).position;var mf=mage.Bone("Foot."+side.ToUpperInvariant()).position;
+                            report.crouch&=Vector3.Dot(Vector3.ProjectOnPlane(mk-mh,mf-mh),models[i].transform.forward)>.01f&&Mathf.Abs(models[i].transform.InverseTransformPoint(mf).y-ankleFloors[i,side=="l"?0:1])<.025f;continue;
+                        }
                         var hip=archer!=null?archer.Bone("Thigh."+side.ToUpperInvariant()).position:actor.Bone("upperleg."+side).position;var knee=archer!=null?archer.Bone("Shin."+side.ToUpperInvariant()).position:actor.Bone("lowerleg."+side).position;var foot=archer!=null?archer.Bone("Foot."+side.ToUpperInvariant()).position:actor.Bone("foot."+side).position;
                         float floor=archer!=null?ankleFloors[i,side=="l"?0:1]:.14f;
                         report.crouch&=Vector3.Dot(Vector3.ProjectOnPlane(knee-hip,foot-hip),models[i].transform.forward)>.01f&&Mathf.Abs(models[i].transform.InverseTransformPoint(foot).y-floor)<.025f;

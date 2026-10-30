@@ -209,7 +209,7 @@ namespace Era.Editor
                 if(IconLibrary.HasSuppliedItemArt(i)){supplied++;Check(cells.Add(texture.name+" / "+r),"each supplied item has its own cell: "+i);}
             }
             Check(supplied==120,"all 120 supplied pictures are mapped to distinct existing items");
-            foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);var archer=model.GetComponent<HeroMotion>()?.archer;Check(archer!=null?archer.animator.avatar.isValid&&archer.pelvis!=null&&archer.leftFoot!=null&&archer.rightFoot!=null:model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses a complete imported proportion rig: "+hero);}
+            foreach(Hero hero in Enum.GetValues(typeof(Hero))){var model=Resources.Load<GameObject>("Characters/"+hero);var archer=model.GetComponent<HeroMotion>()?.archer;var mage=model.GetComponent<HeroMotion>()?.lumen;Check(mage!=null?mage.animator.avatar.isValid&&mage.Bone("Pelvis")!=null&&mage.Bone("Foot.L")!=null&&mage.Bone("Foot.R")!=null:archer!=null?archer.animator.avatar.isValid&&archer.pelvis!=null&&archer.leftFoot!=null&&archer.rightFoot!=null:model.GetComponent<HumanRigShape>()?.bones.Length>10,"hero uses a complete imported proportion rig: "+hero);}
             Check(MusicCatalog.Count==CampaignData.StageCount+1,"menu and all seven realms have separate scores");
             var musicPaths=new System.Collections.Generic.HashSet<string>();
             for(int music=0;music<MusicCatalog.Count;music++)
@@ -268,6 +268,13 @@ namespace Era.Editor
             foreach(string character in new[]{"Characters/Ember","Characters/Echo","Characters/Lumen","Creatures/Wisp","Creatures/Stalker","Creatures/Warden"})
             {
                 var model=Resources.Load<GameObject>(character);var skeletal=model.GetComponent<SkeletalActor>();
+                var mage=model.GetComponent<HeroMotion>()?.lumen;
+                if(mage!=null)
+                {
+                    Check(mage.animator!=null&&mage.animator.avatar.isValid&&mage.animator.runtimeAnimatorController!=null&&mage.clips.Length==11,"Generic Lumen has assigned mage animation clips");
+                    foreach(var renderer in mage.GetComponentsInChildren<SkinnedMeshRenderer>())Check(renderer.sharedMesh.vertexCount<60000&&renderer.sharedMesh.normals.Length==renderer.sharedMesh.vertexCount&&Array.TrueForAll(renderer.sharedMaterials,m=>m!=null&&m.shader!=null),"Lumen mesh retains palette and normals: "+renderer.name);
+                    continue;
+                }
                 var archer=model.GetComponent<HeroMotion>()?.archer;
                 if(archer!=null)
                 {
@@ -286,8 +293,9 @@ namespace Era.Editor
                 Check(boss!=null&&boss.GetComponent<CreatureMotion>().kind==EnemyKind.Warden&&boss.GetComponent<SkeletalActor>()!=null,"distinct animated boss prefab for stage "+stage);
             }
             var lumenArt=Resources.Load<GameObject>("Characters/Lumen");
-            Check(lumenArt.GetComponentsInChildren<SkinnedMeshRenderer>().Length==1&&lumenArt.GetComponent<HumanRigShape>()!=null,"aura keeper costume is a single animated faceted mesh");
-            Check(lumenArt.GetComponentInChildren<SkinnedMeshRenderer>().name=="Blender character / Lumen","bearded aura keeper uses the Blender reference costume");
+            var lumenDriver=lumenArt.GetComponent<HeroMotion>()?.lumen;
+            Check(lumenArt.GetComponentsInChildren<SkinnedMeshRenderer>().Length==26&&lumenDriver!=null,"Lumen has the fitted 26-part Aura Weaver costume");
+            Check(lumenDriver.clips.Length==11&&Array.TrueForAll(lumenDriver.clips,c=>c.clip!=null&&!c.clip.empty)&&!lumenDriver.animator.applyRootMotion,"Lumen uses eleven mage clips without gameplay root motion");
             TextLayouts();
             var environment=UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>();
             Check(environment.bakedVersion==WorldEnvironment.CurrentVersion&&environment.GetComponentsInChildren<Renderer>().Length<800,"terrain, trees and grass use bounded chunk renderer count");

@@ -11,6 +11,14 @@ namespace Era
         public Hero Hero=>heroType;
         public SkeletalActor skeletal;
         public ArcherAnimationDriver archer;
+        public LumenAnimationDriver lumen;
+        public void BindLumen(LumenAnimationDriver actor)
+        {
+            heroType=Hero.Lumen;lumen=actor;archer=null;skeletal=null;
+            rig=actor.transform;hips=actor.Bone("Pelvis");spine=actor.Bone("Spine");head=actor.Bone("Head");
+            leftArm=actor.Bone("UpperArm.L");rightArm=actor.Bone("UpperArm.R");leftElbow=actor.Bone("Hand.L");rightElbow=actor.Bone("Hand.R");
+            leftThigh=actor.Bone("Thigh.L");rightThigh=actor.Bone("Thigh.R");leftKnee=actor.Bone("Shin.L");rightKnee=actor.Bone("Shin.R");cape=actor.Bone("Coat1.Back.L")??spine;
+        }
         public void BindArcher(ArcherAnimationDriver actor)
         {
             heroType=Hero.Ember;archer=actor;skeletal=null;
@@ -96,6 +104,7 @@ namespace Era
         public void Pose(Vector3 velocity,bool grounded,float vertical,float cast,bool downed,bool dashing)
         {
             if(archer!=null){archer.Stand();return;}
+            if(lumen!=null){lumen.Stand();return;}
             if(skeletal!=null){skeletal.Stand();return;}
             if(GameApp.Instance?.WorldPaused==true)return;
             float time=GameApp.Instance?.InRun==true?GameApp.Instance.State.elapsed:Time.unscaledTime;
