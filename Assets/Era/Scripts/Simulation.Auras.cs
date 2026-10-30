@@ -54,11 +54,18 @@ namespace Era
             }
         }
 
-        public void ApplyAccessory(PlayerState p,int stat,int rarity)
+        public bool ApplyAccessory(PlayerState p,int stat,int rarity)
         {
-            if(stat<0||stat>=GameData.Attributes.Length)return;
+            if(!GameData.CanReceiveAccessory(p,stat))return false;
+            int slot=GameData.AccessorySlot(p,stat);
+            if(slot<0){slot=Array.IndexOf(p.accessorySlots,-1);p.accessorySlots[slot]=stat;}
+            int previousRank=p.accessoryLevels[slot]==0?-1:Array.IndexOf(ItemCatalog.RarityOrder,p.accessoryRarities[slot]);
+            rarity=Mathf.Clamp(rarity,0,3);
+            if(Array.IndexOf(ItemCatalog.RarityOrder,rarity)>previousRank)p.accessoryRarities[slot]=rarity;
+            p.accessoryLevels[slot]++;
             rarity=Mathf.Clamp(rarity,0,3);p.accessories[stat*4+rarity]++;
             ApplyAttribute(p,stat,rarity);Reward(p,RewardKind.Accessory,stat,1,rarity);
+            return true;
         }
 
         void AddHit(int target,Vector3 position,float damage,bool critical,bool player,bool evaded=false,float absorbed=0)

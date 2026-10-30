@@ -386,7 +386,7 @@ namespace Era
                 p.offers=choices.GetRange(0,Mathf.Min(3,choices.Count)).ToArray();p.offerRarities=new int[p.offers.Length];return;
             }
             p.offerKind=RewardKind.Accessory;
-            for (int i = 0; i < GameData.Attributes.Length; i++) choices.Add(i);
+            for (int i = 0; i < GameData.Attributes.Length; i++) if(GameData.CanReceiveAccessory(p,i))choices.Add(i);
             for (int i = choices.Count - 1; i > 0; i--) { int j = random.Next(i + 1); int v = choices[i]; choices[i] = choices[j]; choices[j] = v; }
             p.offers = choices.GetRange(0, 3).ToArray();
             p.offerRarities=new int[3];for(int i=0;i<3;i++)p.offerRarities[i]=RollRarity(p,0,false);
@@ -402,7 +402,7 @@ namespace Era
             else
             {
                 int rarity=slot<p.offerRarities.Length?p.offerRarities[slot]:0;
-                ApplyAccessory(p,content,rarity);
+                if(!ApplyAccessory(p,content,rarity))return false;
                 if(p.hero==Hero.Lumen){p.upgradeStage=2;RollOffers(p);return true;}
             }
             p.pendingLevels--;p.completedLevel++;p.upgradeStage=0;

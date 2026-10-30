@@ -28,7 +28,7 @@ namespace Era.Editor
         [MenuItem("ERA/Run simulation and network checks")]
         public static void Run()
         {
-            assertions = 0;
+            assertions = 0;assertions+=AccessoryChecks.Run();
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
             TuningAndRandomStarts();assertions+=PassiveAutumnChecks.Run();assertions+=LootBalanceChecks.Run();assertions+=ItemArtChecks.Run();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");
@@ -447,8 +447,8 @@ namespace Era.Editor
             Check(highHigh>lowHigh&&highRare<lowRare,"luck shifts rolls from low tier toward epic and legendary rewards");
             for(int stat=0;stat<GameData.Attributes.Length;stat++)
             {
-                int count=a.attributes[stat],stack=a.accessories[stat*4+2];sim.ApplyAccessory(a,stat,2);
-                Check(a.attributes[stat]==count+1&&a.accessories[stat*4+2]==stack+1&&!string.IsNullOrEmpty(GameData.AccessoryName(stat)),"accessory improves stat and records rarity stack "+stat);
+                var wearer=new PlayerState{id=a.id};sim.ApplyAccessory(wearer,stat,2);
+                Check(wearer.attributes[stat]==1&&wearer.accessories[stat*4+2]==1&&wearer.accessorySlots[0]==stat&&wearer.accessoryLevels[0]==1&&!string.IsNullOrEmpty(GameData.AccessoryName(stat)),"accessory improves stat and occupies its permanent slot "+stat);
             }
             Check(GameData.Attributes.Length==21&&GameData.AccessoryIcons.Length==21,"accessory catalogue covers all stats including gold gain");
         }
@@ -462,10 +462,10 @@ namespace Era.Editor
             for(int i=0;i<50;i++)sim.RefreshAuras();Check(Mathf.Abs(ally.maxHp-hp)<.01f,"repeated aura refresh never compounds max health");
             ally.position=lumen.position+Vector3.forward*40;sim.RefreshAuras();Check(ally.auraBonuses[0]==0&&Mathf.Abs(ally.maxHp-100)<.01f,"leaving aura range removes temporary buffs");
             ally.position=lumen.position;sim.RefreshAuras();lumen.downed=true;sim.RefreshAuras();Check(ally.auraBonuses[0]==0&&Mathf.Abs(ally.maxHp-100)<.01f,"downed Lumen cannot buff allies");lumen.downed=false;
-            sim.LearnAura(lumen,1);sim.LearnAura(lumen,2);sim.LearnAura(lumen,4);Check(!sim.LearnAura(lumen,5)&&Array.FindAll(lumen.auraLevels,n=>n>0).Length==5,"five-aura limit blocks learning a sixth type");
+            sim.LearnAura(lumen,1);sim.LearnAura(lumen,2);Check(!sim.LearnAura(lumen,4)&&Array.FindAll(lumen.auraLevels,n=>n>0).Length==3,"three-aura limit blocks learning a fourth type");
             int rank=lumen.auraLevels[0];Check(sim.LearnAura(lumen,0)&&lumen.auraLevels[0]==rank+1,"existing auras can always be improved");
             sim.GrantExperience(GameData.ExperienceRequired(1));Check(lumen.offerKind==RewardKind.Accessory,"Lumen receives an accessory on each level");sim.ChooseItem(lumen,0);
-            Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==3&&Array.TrueForAll(lumen.offers,a=>lumen.auraLevels[a]>0),"Lumen chooses three random owned upgrades once five auras are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
+            Check(lumen.offerKind==RewardKind.Aura&&lumen.pendingLevels==1&&lumen.offers.Length==3&&Array.TrueForAll(lumen.offers,a=>lumen.auraLevels[a]>0),"Lumen chooses three owned upgrades once three auras are learned");sim.ChooseItem(lumen,0);Check(lumen.pendingLevels==0&&lumen.completedLevel==2,"accessory and aura together finish one level");
             int total=0;for(int level=2;level<26;level++)total+=GameData.ExperienceRequired(level);sim.GrantExperience(total);
             bool milestone=false;int choices=0;while(ally.pendingLevels>0&&choices++<100)
             {

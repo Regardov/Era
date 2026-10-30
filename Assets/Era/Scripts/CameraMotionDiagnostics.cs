@@ -17,10 +17,11 @@ namespace Era
         [Serializable] public sealed class Phase
         {
             public string direction;
-            public int frames,stalledFrames,actorStalledFrames,rawStalledFrames;
+            public int frames,stalledFrames,actorStalledFrames,rawStalledFrames,healthBarStalledFrames;
             public float targetSpeedErrorRms,cameraAngularAccelerationRms,maxTargetLag,maxFrameTime;
             public float actorSpeedErrorRms,rawSpeedErrorRms,maxActorTargetGap,measuredFps;
-            [NonSerialized] public double speedSquared,angularSquared,actorSquared,rawSquared,seconds;
+            public float healthBarSpeedErrorRms,maxHealthBarActorGap;
+            [NonSerialized] public double speedSquared,angularSquared,actorSquared,rawSquared,healthBarSquared,seconds;
         }
         [Serializable] public sealed class Report
         {
@@ -39,7 +40,7 @@ namespace Era
         float started,phaseStarted,previousAngular;
         int phase=-1;
         bool previous,allowFailure,captured;
-        Vector3 previousRoot,previousActor,previousSimulation;
+        Vector3 previousRoot,previousActor,previousSimulation,previousHealthAnchor;
         Quaternion previousCamera;
         HeroMotion actor;
         Phase current;
@@ -53,7 +54,7 @@ namespace Era
             App.SelectedHero=(Hero)Enum.Parse(typeof(Hero),Arg("--camera-hero","Ember"));
             report.hero=App.SelectedHero.ToString();report.version=Application.version;
             allowFailure=Array.IndexOf(args,"--camera-baseline")>=0;
-            Application.targetFrameRate=report.requestedFps;QualitySettings.vSyncCount=0;
+            Application.targetFrameRate=report.requestedFps==0?-1:report.requestedFps;QualitySettings.vSyncCount=0;
             Application.logMessageReceived+=Log;
             App.Solo();App.CameraYaw=0;App.CameraPitch=25;
             App.State.enemies.Clear();App.State.resourceNodes.Clear();App.State.spawnTimer=100000;
@@ -90,6 +91,7 @@ namespace Era
             float dt=Time.unscaledDeltaTime,age=Time.realtimeSinceStartup-phaseStarted;
             var root=App.View.CameraFollowTarget;
             var visual=actor.transform.position;
+            var healthAnchor=App.View.PlayerHealthAnchor(p);
             report.finite&=ActorMotionMath.Finite(root)&&ActorMotionMath.Finite(cam.transform.position);
             if(previous&&dt>0&&age>1.5f&&p.velocity.magnitude>1)
             {
@@ -98,10 +100,14 @@ namespace Era
                 float angular=Quaternion.Angle(previousCamera,cam.transform.rotation)/dt;
                 float actorRatio=Vector3.Dot(visual-previousActor,velocity.normalized)/(velocity.magnitude*dt);
                 float rawRatio=Vector3.Dot(p.position-previousSimulation,velocity.normalized)/(velocity.magnitude*dt);
+                float healthRatio=Vector3.Dot(healthAnchor-previousHealthAnchor,velocity.normalized)/(velocity.magnitude*dt);
                 float acceleration=(angular-previousAngular)/dt;
                 current.frames++;if(Mathf.Abs(ratio)<.02f)current.stalledFrames++;
                 if(Mathf.Abs(actorRatio)<.02f)current.actorStalledFrames++;
                 if(Mathf.Abs(rawRatio)<.02f)current.rawStalledFrames++;
+                if(Mathf.Abs(healthRatio)<.02f)current.healthBarStalledFrames++;
+                current.healthBarSquared+=(healthRatio-1)*(healthRatio-1);
+                current.maxHealthBarActorGap=Mathf.Max(current.maxHealthBarActorGap,Vector3.ProjectOnPlane(healthAnchor-visual,Vector3.up).magnitude);
                 current.actorSquared+=(actorRatio-1)*(actorRatio-1);current.rawSquared+=(rawRatio-1)*(rawRatio-1);current.seconds+=dt;
                 current.maxActorTargetGap=Mathf.Max(current.maxActorTargetGap,Vector3.Distance(visual,root));
                 current.speedSquared+=(ratio-1)*(ratio-1);
@@ -112,7 +118,7 @@ namespace Era
                 previousAngular=angular;
             }
             else previousAngular=0;
-            previous=true;previousRoot=root;previousActor=visual;previousSimulation=p.position;previousCamera=cam.transform.rotation;
+            previous=true;previousRoot=root;previousActor=visual;previousSimulation=p.position;previousCamera=cam.transform.rotation;previousHealthAnchor=healthAnchor;
             // Capture before the measured window: synchronous GPU readback must
             // not create an artificial long frame in the camera cadence sample.
             if(!captured&&age>.85f){captured=true;App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,current.direction+".png"));}
@@ -122,6 +128,7 @@ namespace Era
             current.targetSpeedErrorRms=(float)Math.Sqrt(current.speedSquared/Math.Max(1,current.frames));
             current.actorSpeedErrorRms=(float)Math.Sqrt(current.actorSquared/Math.Max(1,current.frames));
             current.rawSpeedErrorRms=(float)Math.Sqrt(current.rawSquared/Math.Max(1,current.frames));
+            current.healthBarSpeedErrorRms=(float)Math.Sqrt(current.healthBarSquared/Math.Max(1,current.frames));
             current.measuredFps=(float)(current.frames/Math.Max(.001,current.seconds));
             current.cameraAngularAccelerationRms=(float)Math.Sqrt(current.angularSquared/Math.Max(1,current.frames));
             phases.Add(current);
@@ -130,7 +137,7 @@ namespace Era
         {
             enabled=false;App.LocalInput.x=App.LocalInput.z=0;
             report.phases=phases.ToArray();
-            report.ok=report.finite&&report.errors==0&&phases.Count==4&&phases.All(p=>p.frames>=8&&p.targetSpeedErrorRms<.20f&&p.stalledFrames<=p.frames*.05f&&p.actorSpeedErrorRms<.20f&&p.actorStalledFrames<=p.frames*.05f);
+            report.ok=report.finite&&report.errors==0&&phases.Count==4&&phases.All(p=>p.frames>=8&&p.targetSpeedErrorRms<.20f&&p.stalledFrames<=p.frames*.05f&&p.actorSpeedErrorRms<.20f&&p.actorStalledFrames<=p.frames*.05f&&p.healthBarSpeedErrorRms<.20f&&p.healthBarStalledFrames<=p.frames*.05f&&p.maxHealthBarActorGap<.001f);
             File.WriteAllText(Path.Combine(folder,"camera-motion.json"),JsonUtility.ToJson(report,true));
             File.WriteAllText(Path.Combine(folder,"camera-motion.csv"),rows.ToString());
             Debug.Log("ERA_CAMERA_MOTION "+JsonUtility.ToJson(report));Application.Quit(report.ok||allowFailure?0:2);

@@ -24,6 +24,13 @@ namespace Era
         public string HostAddresses {get;private set;}
         public ArenaView View {get;private set;}
         public float MouseSensitivity=2.2f,CameraYaw=30,CameraPitch=25,Volume=0.5f,MusicVolume=0.30f;
+        public int FrameLimit {get;private set;}
+        public static readonly int[] FrameLimits={0,60,120,144,165,240};
+        public void SetFrameLimit(int limit)
+        {
+            FrameLimit=Array.IndexOf(FrameLimits,limit)>=0?limit:0;
+            QualitySettings.vSyncCount=0;Application.targetFrameRate=FrameLimit==0?-1:FrameLimit;
+        }
         public PlayerState LocalPlayer=>State?.Player(LocalId);
         public InputFrame LocalInput=>local;
         public bool InRun=>State!=null && State.phase!=RunPhase.Lobby;
@@ -58,10 +65,10 @@ namespace Era
             Instance=this;Time.timeScale=1;I18n.Load();
             var args=Environment.GetCommandLineArgs();
             Automated=Array.Exists(args,a=>a.StartsWith("--smoke-") || a.StartsWith("--capture-"));
-            Application.targetFrameRate=Automated?20:60;Application.runInBackground=true;
-            QualitySettings.vSyncCount=1;QualitySettings.antiAliasing=4;QualitySettings.shadowDistance=110;QualitySettings.shadows=ShadowQuality.All;
+            SetFrameLimit(PlayerPrefs.GetInt("era.fps-limit",0));Application.runInBackground=true;
+            QualitySettings.antiAliasing=4;QualitySettings.shadowDistance=110;QualitySettings.shadows=ShadowQuality.All;
             QualitySettings.shadowResolution=ShadowResolution.VeryHigh;QualitySettings.shadowCascades=4;QualitySettings.anisotropicFiltering=AnisotropicFiltering.Enable;
-            if(Automated){QualitySettings.vSyncCount=0;QualitySettings.antiAliasing=0;QualitySettings.shadowDistance=35;QualitySettings.shadowResolution=ShadowResolution.Low;QualitySettings.shadowCascades=0;}
+            if(Automated){Application.targetFrameRate=20;QualitySettings.antiAliasing=0;QualitySettings.shadowDistance=35;QualitySettings.shadowResolution=ShadowResolution.Low;QualitySettings.shadowCascades=0;}
             PlayerName=PlayerPrefs.GetString("era.name","Wanderer");if(PlayerName=="Странник")PlayerName="Wanderer";
             Address=PlayerPrefs.GetString("era.address","127.0.0.1");
             SelectedHero=(Hero)Mathf.Clamp(PlayerPrefs.GetInt("era.hero",0),0,2);
@@ -74,6 +81,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
+            if(Automated&&Array.IndexOf(args,"--smoke-accessories")>=0){gameObject.AddComponent<AccessoryDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-item-art")>=0){gameObject.AddComponent<ItemArtDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-camera-motion")>=0){gameObject.AddComponent<CameraMotionDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-lumen")>=0){gameObject.AddComponent<LumenDiagnostics>();return;}
@@ -242,6 +250,7 @@ namespace Era
         {
             if(Automated)return;
             PlayerPrefs.SetInt("era.fullscreen",Screen.fullScreen?1:0);
+            PlayerPrefs.SetInt("era.fps-limit",FrameLimit);
             PlayerPrefs.SetInt("era.language",(int)I18n.Language);PlayerPrefs.SetString("era.name",PlayerName);PlayerPrefs.SetString("era.address",Address);PlayerPrefs.SetInt("era.hero",(int)SelectedHero);PlayerPrefs.SetInt("era.relic",(int)SelectedRelic);
             PlayerPrefs.SetFloat("era.sensitivity",MouseSensitivity);PlayerPrefs.SetFloat("era.volume",Volume);PlayerPrefs.SetFloat("era.music",MusicVolume);PlayerPrefs.Save();
         }

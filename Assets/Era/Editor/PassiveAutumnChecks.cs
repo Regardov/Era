@@ -28,7 +28,7 @@ namespace Era.Editor
                     Check(lumen.offers.Length==3&&new HashSet<int>(lumen.offers).Count==3,"exactly three distinct aura choices at every level");
                     var sorted=(int[])lumen.offers.Clone();Array.Sort(sorted);sets.Add(string.Join(",",sorted));
                     foreach(int aura in lumen.offers){sawNew|=lumen.auraLevels[aura]==0;sawUpgrade|=lumen.auraLevels[aura]>0;}
-                    if(Array.FindAll(lumen.auraLevels,a=>a>0).Length==5)Check(Array.TrueForAll(lumen.offers,a=>lumen.auraLevels[a]>0),"five-type cap offers owned auras only");
+                    if(Array.FindAll(lumen.auraLevels,a=>a>0).Length==GameData.MaxAuras)Check(Array.TrueForAll(lumen.offers,a=>lumen.auraLevels[a]>0),"three-type cap offers owned auras only");
                 }
                 if(lumen.offerKind==RewardKind.Weapon)milestone=lumen.completedLevel+1==25;
                 int slot=0;if(lumen.offerKind==RewardKind.Accessory)slot=Array.FindIndex(lumen.offers,a=>a!=14);
@@ -36,7 +36,7 @@ namespace Era.Editor
                 Check(sim.ChooseItem(lumen,slot),"valid queued choice accepted");
             }
             Check(lumen.completedLevel==26&&lumen.pendingLevels==0&&lumen.levelUps==25&&milestone,"aura and weapon choices finish levels without granting passive twice");
-            Check(sawNew&&sawUpgrade&&sets.Count>4,"aura offers include acquisition and upgrades and change across levels");
+            Check(sawNew&&sawUpgrade&&sets.Count>=2,"aura offers include acquisition and upgrades before the three-type cap");
             var copy=JsonUtility.FromJson<WorldState>(JsonUtility.ToJson(sim.State));
             Check(copy.Player(1).levelUps==25&&Mathf.Approximately(copy.Player(0).critChance,archer.critChance)&&Mathf.Approximately(Simulation.AuraRadius(copy.Player(2)),Simulation.AuraRadius(lumen)),"network snapshot retains all passive gains");
         }

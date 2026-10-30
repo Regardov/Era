@@ -67,6 +67,7 @@ namespace Era
         }
         void Text(string value,float x,float y,float w,float h,int size=20,Color? c=null,bool heavy=false,TextAnchor align=TextAnchor.UpperLeft)
         {
+            if(!capturing&&Event.current.type!=EventType.Repaint)return;
             value=I18n.T(value);var rect=new Rect(x,y,w,h);
             if(capturing){capture.Text(value,rect,size,WithAlpha(c??Ink),heavy,align);return;}
             var block=HudTextLayout.Fit(font,value,size,w,h,heavy);var style=heavy?bold:label;style.fontSize=block.size;style.normal.textColor=WithAlpha(c??Ink);
@@ -263,6 +264,8 @@ namespace Era
                 {Box(460,610,680,74,Panel);Text(I18n.P("[ F ]  Enter portal · moves the whole party","[ F ]  Войти в портал · переход всей команды"),477,622,646,26,19,Sage,true,TextAnchor.UpperCenter);Text(CampaignData.Name(s.stage+1),477,655,646,21,14,Muted,false,TextAnchor.UpperCenter);}
             }
             for(int i=0;i<GameData.WeaponSlots;i++)WeaponSlot(p,i,346+i*57,24);
+            for(int i=0;i<GameData.AccessorySlots;i++)AccessorySlotCard(p,i,346+i*57,82,49,48,true);
+            Text(I18n.P("ACCESSORIES","БИЖУТЕРИЯ"),346,135,220,15,9,Muted);
             EncounterHud(s,p);AuraHud(p);DamageNumbers(s);
             Ability("Q",GameData.QIcon(p.hero),GameData.Q(p.hero),p.qCooldown,p.hero==Hero.Echo?10:8,690);
             Ability("E",GameData.EIcon(p.hero),GameData.E(p.hero),p.eCooldown,p.hero==Hero.Echo?16:18,747);
@@ -299,7 +302,7 @@ namespace Era
         }
         void PlayerHealth(PlayerState p)
         {
-            var point=Project(p.position+Vector3.up*(p.crouching?2.1f:2.6f));if(point.z<=0||point.x<70||point.x>1530||point.y<130||point.y>735)return;
+            var point=Project(App.View.PlayerHealthAnchor(p));if(point.z<=0||point.x<70||point.x>1530||point.y<130||point.y>735)return;
             float width=p.id==App.LocalId?72:88;Box(point.x-width/2-3,point.y-3,width+6,12,Panel,5);Bar(point.x-width/2,point.y,width,6,p.hp/p.maxHp,Red);
             if(p.id!=App.LocalId)Text(p.downed?"[F] "+p.name:p.name,point.x-100,point.y-26,200,22,12,Ink,true,TextAnchor.UpperCenter);
         }
@@ -348,7 +351,7 @@ namespace Era
             if(p.hero!=Hero.Lumen)return;
             int owned=System.Array.FindAll(p.auraLevels,a=>a>0).Length;
             Box(24,282,294,84+owned*52,Panel,16);
-            Text(I18n.P("LUMEN · AURAS ","ЛЮМЕН · АУРЫ ")+owned+" / 5",40,292,260,22,13,Sage,true);
+            Text(I18n.P("LUMEN · AURAS ","ЛЮМЕН · АУРЫ ")+owned+" / "+GameData.MaxAuras,40,292,260,22,13,Sage,true);
             Text(I18n.P("Current: ","Текущая: ")+GameData.AuraName(p.currentAura),40,316,260,20,12,Ink);
             Text(Simulation.AuraRadius(p).ToString("0.00")+I18n.P(" m · Conduit Lv."," м · Проводник ур.")+p.weaponLevels[0],40,338,260,19,11,Muted);
             int row=0;for(int a=0;a<p.auraLevels.Length;a++)if(p.auraLevels[a]>0)
@@ -396,7 +399,7 @@ namespace Era
             {
                 Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(220,238,1160,410,Panel,26);
                 Text(title,250,260,1100,38,23,Sage,true,TextAnchor.UpperCenter);
-                Text(aura?I18n.P("Three random new auras or upgrades. Up to five aura types.","Три случайные новые ауры или улучшения. До пяти типов аур."):"The world is paused until you choose.",250,305,1100,30,16,Muted,false,TextAnchor.UpperCenter);
+                Text(aura?I18n.P("Three random new auras or upgrades. Up to three aura types.","Три случайные новые ауры или улучшения. До трёх типов аур."):weapon?I18n.P("The world is paused until you choose.","Мир на паузе до выбора."):I18n.P("Four permanent slots this run. Once full, only equipped accessories can improve.","Четыре слота до конца забега. После заполнения улучшается только выбранная бижутерия."),250,305,1100,30,16,Muted,false,TextAnchor.UpperCenter);
                 int cols=p.offers.Length>3?4:3;for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,245+(i%cols)*(cols==4?280:370),355+(i/cols)*161,cols==4?266:350,210,true);
                 Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),250,602,1100,26,15,Muted,false,TextAnchor.UpperCenter);
             }
@@ -414,11 +417,12 @@ namespace Era
             Color rarityColor=aura?GameData.AuraColors[attribute]:weapon?Sage:GameData.RarityColors[rarity];
             string name=aura?GameData.AuraName(attribute):weapon?GameData.Weapons[attribute].name:GameData.AccessoryName(attribute);
             string gain=aura?GameData.AuraDescription(attribute,p.auraLevels[attribute]+1):weapon?GameData.Weapons[attribute].description:GameData.AccessoryDescription(attribute,rarity);
-            string tag=aura?(p.auraLevels[attribute]>0?I18n.P("RANK ","РАНГ ")+p.auraLevels[attribute]+" → "+(p.auraLevels[attribute]+1)+I18n.P(" · UPGRADES "," · УЛУЧШЕНИЙ ")+p.auraLevels[attribute]:I18n.P("NEW · RANK 1 · UPGRADES 0","НОВАЯ · РАНГ 1 · УЛУЧШЕНИЙ 0")):weapon?I18n.P("SECOND SLOT","ВТОРОЙ СЛОТ"):GameData.RarityName(rarity);
+            int accessoryLevel=GameData.AccessoryLevel(p,attribute);
+            string tag=aura?(p.auraLevels[attribute]>0?I18n.P("RANK ","РАНГ ")+p.auraLevels[attribute]+" → "+(p.auraLevels[attribute]+1)+I18n.P(" · UPGRADES "," · УЛУЧШЕНИЙ ")+p.auraLevels[attribute]:I18n.P("NEW · RANK 1 · UPGRADES 0","НОВАЯ · РАНГ 1 · УЛУЧШЕНИЙ 0")):weapon?I18n.P("SECOND SLOT","ВТОРОЙ СЛОТ"):GameData.RarityName(rarity)+" · "+(accessoryLevel==0?I18n.P("NEW · LV. 1","НОВОЕ · УР. 1"):I18n.P("LV. ","УР. ")+accessoryLevel+" → "+(accessoryLevel+1));
             Flat(x-3,y-3,w+6,h+6,rarityColor);Box(x,y,w,h,Soft,14);
             string icon=aura?GameData.AuraIcons[attribute]:weapon?GameData.Weapons[attribute].icon:GameData.AccessoryIcons[attribute];
             if(large){float iconSize=aura?43:60;Icon(icon,x+w/2-iconSize/2,y+8,iconSize);Text(tag,x+12,y+(aura?54:71),w-24,18,10,rarityColor,true,TextAnchor.UpperCenter);Text((i+1)+" · "+name,x+12,y+(aura?76:96),w-24,29,16,Ink,true,TextAnchor.UpperCenter);Text(gain,x+12,y+(aura?108:134),w-24,aura?36:68,weapon?14:15,rarityColor,true,TextAnchor.UpperCenter);}
-            else{Icon(icon,x+6,y+7,42);Text((i+1)+" · "+name,x+57,y+4,w-66,20,13,Ink,true);Text(gain,x+57,y+25,w-66,aura?16:27,11,rarityColor,true);if(aura)Text(tag,x+57,y+43,w-66,15,9,Muted);}
+            else{Icon(icon,x+6,y+7,42);Text((i+1)+" · "+name,x+57,y+4,w-66,20,13,Ink,true);Text(gain,x+57,y+25,w-66,weapon?27:16,11,rarityColor,true);if(!weapon)Text(tag,x+57,y+43,w-66,15,9,Muted);}
             if(!capturing&&GUI.Button(new Rect(x,y,w,h),GUIContent.none,GUIStyle.none)){App.Choose(i);SynthAudio.Instance?.Play(10);}
         }
         void ItemHover(int item,Rect rect)
@@ -478,16 +482,17 @@ namespace Era
             if(owned.Count>10){if(Button("‹",70,820,45,27))itemPage=Mathf.Max(0,itemPage-1);Text((itemPage+1)+" / "+((owned.Count+9)/10),130,824,230,21,12,Muted,false,TextAnchor.UpperCenter);if(Button("›",385,820,45,27))itemPage=Mathf.Min((owned.Count-1)/10,itemPage+1);}
             if(Button(catalogue?I18n.P("Attributes","Атрибуты"):I18n.P("Item catalogue · ","Каталог · ")+ItemCatalog.ActiveCount,1190,62,340,35)){catalogue=!catalogue;cataloguePage=0;}
             if(catalogue){ItemCatalogue(p);return;}
-            Text(I18n.P("ATTRIBUTES","АТРИБУТЫ"),490,99,1040,25,15,Sage,true);
-            for(int attribute=0;attribute<GameData.Attributes.Length;attribute++)AttributeTile(p,attribute,490+(attribute%5)*207,140+(attribute/5)*132,194,121);
+            Text(I18n.P("ACCESSORIES · ","БИЖУТЕРИЯ · ")+System.Array.FindAll(p.accessorySlots,a=>a>=0).Length+" / "+GameData.AccessorySlots+I18n.P(" · LOCKED FOR THIS RUN"," · ДО КОНЦА ЗАБЕГА"),490,99,1040,25,15,Sage,true);
+            for(int i=0;i<GameData.AccessorySlots;i++)AccessorySlotCard(p,i,490+i*260,140,248,96,false);
+            for(int attribute=0;attribute<GameData.Attributes.Length;attribute++)AttributeTile(p,attribute,490+(attribute%5)*207,252+(attribute/5)*105,194,96);
             if(p.hero==Hero.Lumen)
             {
                 int index=0;for(int a=0;a<p.auraLevels.Length;a++)if(p.auraLevels[a]>0)
                 {
-                    float x=697+index++*166;Box(x,668,155,121,Soft);Icon(GameData.AuraIcons[a],x+10,677,30);
-                    Text(I18n.P("RANK ","РАНГ ")+p.auraLevels[a],x+48,684,99,22,14,GameData.AuraColors[a],true);
-                    Text(GameData.AuraName(a),x+10,716,138,33,12,Ink,true);
-                    Text(I18n.P("Upgrades: ","Улучшений: ")+GameData.AuraUpgradeCount(p,a),x+10,763,138,20,11,Muted);
+                    float x=697+index++*276;Box(x,672,263,96,Soft);Icon(GameData.AuraIcons[a],x+10,682,30);
+                    Text(I18n.P("RANK ","РАНГ ")+p.auraLevels[a],x+48,684,201,22,14,GameData.AuraColors[a],true);
+                    Text(GameData.AuraName(a),x+10,717,243,22,12,Ink,true);
+                    Text(I18n.P("Upgrades: ","Улучшений: ")+GameData.AuraUpgradeCount(p,a),x+10,745,243,18,11,Muted);
                 }
             }
             Text(I18n.P("TAB to return · The world keeps moving","TAB — вернуться · Мир продолжает двигаться"),490,817,1035,25,13,Muted,false,TextAnchor.UpperRight);
@@ -495,8 +500,27 @@ namespace Era
         void AttributeTile(PlayerState p,int attribute,float x,float y,float w,float h)
         {
             Box(x,y,w,h,Soft);AttributeIcon(attribute,x+8,y+8,48);Text(GameData.Attributes[attribute].name,x+64,y+12,w-72,36,12,Ink,true);
-            Text(AttributeStat(p,attribute),x+64,y+52,w-72,26,17,Sage,true);Text(GameData.AccessoryName(attribute)+" ×"+p.attributes[attribute],x+9,y+88,w-18,28,11,Muted);
+            Text(AttributeStat(p,attribute),x+64,y+49,w-72,24,17,Sage,true);
+            int level=GameData.AccessoryLevel(p,attribute);if(level>0)Text(I18n.P("Equipped · level ","В бижутерии · ур. ")+level,x+9,y+77,w-18,15,10,Muted);
             if(!capturing&&new Rect(x,y,w,h).Contains(Event.current.mousePosition))Tooltip(GameData.Attributes[attribute].name+"\n"+StatHelp(attribute),x+w/2,y+h);
+        }
+        void AccessorySlotCard(PlayerState p,int slot,float x,float y,float w,float h,bool compact)
+        {
+            int stat=p.accessorySlots[slot],level=p.accessoryLevels[slot];bool owned=stat>=0;
+            Color color=owned?GameData.RarityColors[p.accessoryRarities[slot]]:Muted;
+            Box(x,y,w,h,Panel);Flat(x+2,y+2,2,h-4,color);
+            if(compact)
+            {
+                if(owned){Icon(GameData.AccessoryIcons[stat],x+12,y+4,26);Text(level.ToString(),x+4,y+31,w-8,14,10,color,true,TextAnchor.UpperCenter);}
+                else Text((slot+1).ToString(),x+5,y+14,w-10,22,15,Muted,true,TextAnchor.UpperCenter);
+            }
+            else
+            {
+                if(owned)Icon(GameData.AccessoryIcons[stat],x+12,y+16,42);
+                Text(owned?GameData.AccessoryName(stat):I18n.P("Empty slot ","Пустой слот ")+(slot+1),x+64,y+12,w-76,43,14,owned?Ink:Muted,true);
+                Text(owned?I18n.P("LEVEL ","УРОВЕНЬ ")+level:I18n.P("Choose on level-up","Выберите при повышении уровня"),x+12,y+70,w-24,18,11,color,true);
+            }
+            if(owned&&!capturing&&new Rect(x,y,w,h).Contains(Event.current.mousePosition))Tooltip(GameData.AccessoryName(stat)+I18n.P(" · level "," · уровень ")+level+"\n"+GameData.Attributes[stat].name+": "+AttributeStat(p,stat)+I18n.P("\nStays equipped until the run ends.","\nОстаётся в слоте до конца забега."),x+w/2,y+h+5);
         }
         string AttributeStat(PlayerState p,int a)
         {
@@ -526,7 +550,9 @@ namespace Era
             if(Button(I18n.P("Windowed","Окно"),806,570,120,35,!Screen.fullScreen))App.SetFullscreen(false);
             if(Button(I18n.P("Fullscreen","Полный экран"),934,570,153,35,Screen.fullScreen))App.SetFullscreen(true);
             Text("Language",513,619,360,28,18,Ink,true);LanguageToggle(950,614);
-            Text(I18n.P("Visual effects","Интенсивность эффектов"),513,659,574,26,18,Ink,true);if(!capturing)PresentationMotion.Intensity=GUI.HorizontalSlider(new Rect(513,698,574,24),PresentationMotion.Intensity,0,1);
+            Text(I18n.P("Visual effects","Интенсивность эффектов"),513,659,285,26,16,Ink,true);if(!capturing)PresentationMotion.Intensity=GUI.HorizontalSlider(new Rect(513,698,275,24),PresentationMotion.Intensity,0,1);
+            string frameLabel=App.FrameLimit==0?I18n.P("FPS: Unlimited","FPS: Без лимита"):"FPS: "+App.FrameLimit;
+            if(Button(frameLabel,814,668,273,40)){int next=(System.Array.IndexOf(GameApp.FrameLimits,App.FrameLimit)+1)%GameApp.FrameLimits.Length;App.SetFrameLimit(GameApp.FrameLimits[next]);}
             if(Button(paused?"Keep wandering":"Save & return",512,739,576,42,true)){App.SavePreferences();if(paused)App.Paused=false;else App.Page=MenuPage.Home;}
             if(paused&&Button("Return to main menu",512,792,576,36))App.ReturnToMenu();
         }

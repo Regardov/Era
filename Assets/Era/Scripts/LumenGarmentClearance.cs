@@ -18,6 +18,7 @@ namespace Era
         public LumenAnimationDriver actor;public bool auditCollisions;
         Panel[] panels;Row[] rows;Transform pelvis;Matrix4x4 pelvisRestInverse;
         Capsule[] caps=new Capsule[6],localCaps=new Capsule[6];
+        Transform[] legBones;
         public float MaxPenetration{get;private set;}public float MaxCorrection{get;private set;}public int CorrectedVertices{get;private set;}
         public string WorstPanel{get;private set;}="";public bool finite{get;private set;}=true;
         void Start(){Bind();}
@@ -25,6 +26,7 @@ namespace Era
         {
             if(panels!=null)return;if(actor==null)actor=GetComponent<LumenAnimationDriver>();
             pelvis=actor.Bone("Pelvis");pelvisRestInverse=(actor.actorRoot.worldToLocalMatrix*pelvis.localToWorldMatrix).inverse;
+            legBones=new[]{actor.Bone("Thigh.L"),actor.Bone("Shin.L"),actor.Bone("Foot.L"),actor.Bone("Toe.L"),actor.Bone("Thigh.R"),actor.Bone("Shin.R"),actor.Bone("Foot.R"),actor.Bone("Toe.R")};
             panels=GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.name=="AW_OuterCoat"||s.name=="AW_InnerCoat"||s.name=="AW_RearRobeInlay").Select(s=>
             {
                 var mesh=Instantiate(s.sharedMesh);mesh.name=s.sharedMesh.name+" / continuous robe instance";mesh.MarkDynamic();
@@ -60,12 +62,12 @@ namespace Era
         }
         void LateUpdate()
         {
-            Bind();if(actor==null)return;MaxPenetration=MaxCorrection=0;CorrectedVertices=0;finite=true;WorstPanel="";
+            Bind();if(actor==null||GameApp.Instance?.WorldPaused==true)return;MaxPenetration=MaxCorrection=0;CorrectedVertices=0;finite=true;WorstPanel="";
             var inv=actor.actorRoot.worldToLocalMatrix;var delta=inv*pelvis.localToWorldMatrix*pelvisRestInverse;var unpose=delta.inverse;int index=0;
-            foreach(string side in new[]{"L","R"})
+            for(int side=0;side<2;side++)
             {
-                Vector3 P(string name)=>inv.MultiplyPoint3x4(actor.Bone(name+"."+side).position);
-                caps[index++]=new Capsule{a=P("Thigh"),b=P("Shin"),radius=.080f};caps[index++]=new Capsule{a=P("Shin"),b=P("Foot"),radius=.084f};caps[index++]=new Capsule{a=P("Foot"),b=P("Toe"),radius=.070f};
+                int bone=side*4;var thigh=inv.MultiplyPoint3x4(legBones[bone].position);var shin=inv.MultiplyPoint3x4(legBones[bone+1].position);var foot=inv.MultiplyPoint3x4(legBones[bone+2].position);var toe=inv.MultiplyPoint3x4(legBones[bone+3].position);
+                caps[index++]=new Capsule{a=thigh,b=shin,radius=.080f};caps[index++]=new Capsule{a=shin,b=foot,radius=.084f};caps[index++]=new Capsule{a=foot,b=toe,radius=.070f};
             }
             for(int i=0;i<caps.Length;i++)localCaps[i]=new Capsule{a=unpose.MultiplyPoint3x4(caps[i].a),b=unpose.MultiplyPoint3x4(caps[i].b),radius=caps[i].radius};
             foreach(var row in rows)

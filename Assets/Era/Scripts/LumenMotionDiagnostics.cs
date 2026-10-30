@@ -10,7 +10,7 @@ namespace Era
     {
         [Serializable] public sealed class Phase {public string name,worstPanel;public int frames;public float maxPenetration,maxCorrection,maxPalmError,maxLean,maxWalkWeight,maxRunWeight;public bool finite=true,rune;}
         [Serializable] public sealed class Report {public string version;public bool ok;public int errors;public Phase[] phases;}
-        string[] names={"IdleRune","Walk","BoostRun","Strafe","Jump","Dash","HatTop"};Phase[] phases;int phase=-1,shot;float started,phaseStarted;
+        string[] names={"IdleRune","Walk","BoostRun","Strafe","Jump","Dash","HatTop","Hands"};Phase[] phases;int phase=-1,shot;float started,phaseStarted;
         GameApp App=>GameApp.Instance;LumenAnimationDriver actor;LumenGarmentClearance garment;string folder;int errors;
         void Start()
         {
@@ -52,6 +52,11 @@ namespace Era
             var camera=App.View.Camera;camera.GetComponent<StillwaterLens>().enabled=false;camera.orthographic=true;camera.orthographicSize=1.52f;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.68f,.69f,.68f);
             Vector3 offset=names[phase]=="HatTop"?new Vector3(0,4,.2f):shot%3==1?new Vector3(4,1.6f,0):shot%3==2?new Vector3(2,1.6f,-5):new Vector3(2.7f,1.8f,5);
             camera.transform.position=actor.actorRoot.position+offset;camera.transform.LookAt(actor.actorRoot.position+Vector3.up*(names[phase]=="HatTop"?1.7f:1.18f));
+            if(names[phase]=="Hands")
+            {
+                var center=(actor.Bone("Hand.L").position+actor.Bone("Hand.R").position)*.5f;camera.orthographicSize=.42f;
+                camera.transform.position=center+(shot%3==1?new Vector3(-2,.6f,4):shot%3==2?new Vector3(3,.4f,2):new Vector3(1,.5f,4));camera.transform.LookAt(center);
+            }
             if(Time.realtimeSinceStartup-phaseStarted>.55f+shot*.55f&&shot<4){App.GetComponent<GameHud>().RequestCapture(Path.Combine(folder,row.name+"-"+shot+".png"));shot++;}
         }
         void Finish()

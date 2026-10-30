@@ -55,6 +55,8 @@ namespace Era
         public List<WeaponBurstState> bursts = new List<WeaponBurstState>();
         public int[] attributes = new int[21];
         public int[] accessories = new int[84]; // One stack counter per stat and rarity.
+        public int[] accessorySlots = { -1, -1, -1, -1 };
+        public int[] accessoryLevels = new int[4], accessoryRarities = new int[4];
         public int completedLevel = 1, upgradeStage, levelUps;
         public RewardKind offerKind = RewardKind.Accessory;
         public int[] auraLevels = new int[8];
@@ -295,7 +297,7 @@ namespace Era
     public static class GameData
     {
         public const int Port = 7777;
-        public const int Protocol = 17;
+        public const int Protocol = 18;
         public const int MaxPlayers = 3;
         public const float ArenaRadius = 300;
         public const int ChestCount=30,ResourceNodeCount=72;
@@ -304,7 +306,7 @@ namespace Era
         public static float HeroBaseDamageBonus(Hero hero)=>hero==Hero.Lumen?0:12;
         public static float WeaponBaseDamage(Hero hero,WeaponKind weapon)=>Weapons[(int)weapon].damage+HeroBaseDamageBonus(hero);
         public static float QBaseDamage(Hero hero)=>(hero==Hero.Lumen?45:hero==Hero.Ember?65:35)+HeroBaseDamageBonus(hero);
-        public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Growing light: +3% aura radius per level-up. Each level offers three random new auras or upgrades; up to five types.","Растущий свет: +3% к радиусу аур за каждое повышение уровня. На каждом уровне — три случайные новые ауры или улучшения; до пяти типов."):hero==Hero.Ember?I18n.P("Hunter's instinct: +3 percentage points of critical chance per level-up.","Инстинкт охотника: +3 процентных пункта к шансу крита за каждое повышение уровня."):I18n.P("Chain lightning: +10% weapon lightning ricochet per level-up. Each 100% guarantees one extra bounce; the remainder is the chance for another.","Цепная молния: +10% к рикошету молний оружия за каждое повышение уровня. Каждые 100% гарантируют ещё один переход; остаток — шанс следующего.");
+        public static string PassiveDescription(Hero hero)=>hero==Hero.Lumen?I18n.P("Growing light: +3% aura radius per level-up. Each level offers three random new auras or upgrades; up to three types.","Растущий свет: +3% к радиусу аур за каждое повышение уровня. На каждом уровне — три случайные новые ауры или улучшения; до трёх типов."):hero==Hero.Ember?I18n.P("Hunter's instinct: +3 percentage points of critical chance per level-up.","Инстинкт охотника: +3 процентных пункта к шансу крита за каждое повышение уровня."):I18n.P("Chain lightning: +10% weapon lightning ricochet per level-up. Each 100% guarantees one extra bounce; the remainder is the chance for another.","Цепная молния: +10% к рикошету молний оружия за каждое повышение уровня. Каждые 100% гарантируют ещё один переход; остаток — шанс следующего.");
         public static int LightningRicochetPercent(PlayerState p)=>p.hero==Hero.Echo?p.levelUps*10:0;
         public static int ChanceRicochets(int percent,double roll)=>Mathf.Max(0,percent)/100+(roll<(Mathf.Max(0,percent)%100)/100.0?1:0);
         public static string PassiveProgress(PlayerState p)=>p.hero==Hero.Ember?I18n.P("Passive crit chance: +","Крит от пассивки: +")+(p.levelUps*3)+"%":p.hero==Hero.Lumen?I18n.P("Passive aura radius: +","Радиус аур от пассивки: +")+(p.levelUps*3)+"%":I18n.P("Ricochet: ","Рикошет: ")+LightningRicochetPercent(p)+"% · "+LightningRicochetPercent(p)/100+I18n.P(" + chance "," + шанс ")+LightningRicochetPercent(p)%100+"%";
@@ -313,7 +315,7 @@ namespace Era
         public const int MaxProjectiles=384,MaxEffects=320;
         public static readonly Color Amber = new Color(0.93f, 0.65f, 0.49f);
         public static readonly Color Mint = new Color(0.57f, 0.78f, 0.70f);
-        public const int WeaponSlots = 2, MaxWeaponLevel = 5, SecondWeaponLevel = 25, MaxAuras = 5;
+        public const int WeaponSlots = 2, MaxWeaponLevel = 5, SecondWeaponLevel = 25, MaxAuras = 3, AccessorySlots = 4;
         public static readonly Color[] RarityColors={new Color(.10f,.60f,1),new Color(.10f,.88f,.31f),new Color(.76f,.08f,1),new Color(1,.73f,.06f),new Color(1,.22f,.40f)};
         public static readonly string[] RarityNamesEn={"SUPER RARE","RARE","EPIC","LEGENDARY","MYTHIC"};
         public static readonly string[] RarityNamesRu={"СВЕРХРЕДКОЕ","РЕДКОЕ","ЭПИЧЕСКОЕ","ЛЕГЕНДАРНОЕ","МИФИЧЕСКОЕ"};
@@ -362,6 +364,9 @@ namespace Era
         static readonly string[] AccessoriesRu={"Талисман воина","Перчатки быстроты","Кольцо точности","Линза охотника","Амулет жизни","Подвеска целителя","Живой росток","Печать стража","Железная брошь","Кровавый рубин","Сапоги странника","Браслет пера","Медальон времени","Монокль орла","Орбитальный браслет","Оберег колчана","Оперение ветра","Магнитный камень","Клевер удачи","Том учёного","Кошель торговца"};
         public static string AccessoryName(int stat)=>I18n.P(AccessoriesEn[stat],AccessoriesRu[stat]);
         public static string AccessoryDescription(int stat,int rarity)=>Attributes[stat].name+" "+Attributes[stat].Value(rarity);
+        public static int AccessorySlot(PlayerState p,int stat)=>Array.IndexOf(p.accessorySlots,stat);
+        public static int AccessoryLevel(PlayerState p,int stat){int slot=AccessorySlot(p,stat);return slot<0?0:p.accessoryLevels[slot];}
+        public static bool CanReceiveAccessory(PlayerState p,int stat)=>stat>=0&&stat<Attributes.Length&&(AccessorySlot(p,stat)>=0||Array.IndexOf(p.accessorySlots,-1)>=0);
         public static readonly string[] AuraIcons={"clover","blade","gloves","heart","wingboots","shield","hourglass","book"};
         public static readonly Color[] AuraColors={new Color(.46f,1,.48f),new Color(1,.48f,.30f),new Color(1,.80f,.25f),new Color(1,.4f,.61f),new Color(.3f,.9f,1),new Color(.42f,.62f,1),new Color(.8f,.48f,1),new Color(1,.93f,.55f)};
         public static readonly float[] AuraBase={.15f,.12f,.12f,.15f,.10f,.10f,.12f,.15f};

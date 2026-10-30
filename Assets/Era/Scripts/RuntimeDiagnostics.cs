@@ -9,7 +9,7 @@ namespace Era
         string[] args;string folder;float start;bool smoke,client,readyPressed,readySeen,jumpIssued,jumpSeen,castIssued,castsSeen,xpGranted,reported,lobbyShot,gameShot,jumpShot;
         bool homeShot,characterShot,tourStarted,groveShot,upgradeShot,levelKeepsMoving,crouchSeen,channelSeen,third,milestoneGranted,fixtureReady;float pendingAt=-1;int exit,chosenOffer=-1;
         GameApp App=>GameApp.Instance;
-        [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,secondWeapons,difficulty;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
+        [Serializable]class Report {public bool ok,connected,ready,jump,actions,music,noLevelPause,crouch,blessing,reward,auras,accessories,secondWeapons,difficulty;public int players,localId,level,kills,items,chests,gold,weapons,hostWeapons;}
         void Start()
         {
             args=Environment.GetCommandLineArgs();start=Time.realtimeSinceStartup;folder=Path.GetFullPath(Path.Combine(Application.dataPath,"..","Artifacts"));
@@ -130,11 +130,12 @@ namespace Era
                 var report=new Report{connected=s?.players.Count==GameData.MaxPlayers,localId=App.LocalId,ready=readySeen,jump=jumpSeen,actions=castsSeen,music=SynthAudio.Instance!=null&&SynthAudio.Instance.MusicReady,
                     noLevelPause=levelKeepsMoving,crouch=crouchSeen,blessing=channelSeen&&s?.shrines[0].spent==true&&s.Player(0).blessings[s.shrines[0].buff]>0,players=s?.players.Count??0,level=s?.level??0,kills=s?.kills??0,items=items,chests=s?.openedChests??0,gold=s?.earnedCoins??0,weapons=me==null?0:Array.FindAll(me.weapons,w=>w>=0).Length,hostWeapons=s?.Player(0)==null?0:Array.FindAll(s.Player(0).weapons,w=>w>=0).Length};
                 report.reward=s!=null&&s.players.Exists(p=>Array.Exists(p.items,count=>count>0));
-                report.auras=s!=null&&s.players.Exists(p=>p.hero==Hero.Lumen&&Array.FindAll(p.auraLevels,n=>n>0).Length==5);
+                report.auras=s!=null&&s.players.Exists(p=>p.hero==Hero.Lumen&&Array.FindAll(p.auraLevels,n=>n>0).Length==GameData.MaxAuras);
+                report.accessories=s!=null&&s.players.TrueForAll(p=>p.accessorySlots.Length==4&&Array.TrueForAll(p.accessorySlots,a=>a>=0)&&Array.TrueForAll(p.accessoryLevels,l=>l>0)&&Array.Exists(p.accessoryLevels,l=>l>1));
                 if(!report.auras&&s!=null)File.WriteAllText(Path.Combine(folder,third?"smoke-aura-client2.json":client?"smoke-aura-client.json":"smoke-aura-host.json"),JsonUtility.ToJson(s));
                 report.secondWeapons=s!=null&&s.players.TrueForAll(p=>p.weapons.Length==2&&p.weapons[1]>=0);
                 report.difficulty=s!=null&&Mathf.Approximately(s.enemyPartyScale,4);
-                report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.secondWeapons&&report.difficulty&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;
+                report.ok=report.connected&&report.ready&&report.jump&&report.actions&&report.music&&report.noLevelPause&&report.crouch&&report.blessing&&report.level>=25&&report.reward&&report.auras&&report.accessories&&report.secondWeapons&&report.difficulty&&report.chests>0&&report.gold>0&&s.phase==RunPhase.Playing;
                 string json=JsonUtility.ToJson(report);File.WriteAllText(Path.Combine(folder,third?"smoke-client2.json":client?"smoke-client.json":"smoke-host.json"),json);Debug.Log("ERA_SMOKE "+json);exit=report.ok?0:2;reported=true;
             }
             if(age>(client?42:45))Application.Quit(exit);

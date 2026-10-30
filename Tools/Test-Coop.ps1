@@ -31,7 +31,7 @@ try {
     foreach ($report in @($hostReport, $clientReport, $thirdReport)) {
         if (-not (Test-Path -LiteralPath $report)) { throw "Missing test report: $report" }
         $result = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
-        if (-not $result.ok -or $result.players -ne 3 -or -not $result.secondWeapons -or -not $result.auras -or -not $result.difficulty) { throw "Co-op check failed: $(Get-Content -LiteralPath $report -Raw)" }
+        if (-not $result.ok -or $result.players -ne 3 -or -not $result.secondWeapons -or -not $result.auras -or -not $result.accessories -or -not $result.difficulty) { throw "Co-op check failed: $(Get-Content -LiteralPath $report -Raw)" }
         Write-Output "PASS $report : players=$($result.players), ready=$($result.ready), jump=$($result.jump), chests=$($result.chests), gold=$($result.gold), music=$($result.music)"
     }
 } finally {

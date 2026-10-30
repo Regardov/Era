@@ -15,15 +15,15 @@ namespace Era.Editor
     // Loadouts and authoritative aura logic are not modified.
     public static class AuraWeaverImporter
     {
-        const string Source="ArtSource/Characters/AuraWeaver/ReleaseV10";
+        const string Source="ArtSource/Characters/AuraWeaver/ReleaseV11";
         public const float VisualScale=1.10f;
         const string Folder="Assets/Era/Art/Characters/AuraWeaver";
         const string Fbx=Folder+"/AuraWeaver_Rigged.fbx";
         public const string PrefabPath=Folder+"/AuraWeaver.prefab";
         public static void PrepareLumen()
         {
-            const string target="Assets/Era/Resources/Characters/Lumen.prefab",marker="Assets/Era/Generated/Lumen-V9.txt";
-            string signature=File.ReadAllText(Source+"/AuraWeaver_Manifest.json")+"\nRune locomotion / V10.1";
+            const string target="Assets/Era/Resources/Characters/Lumen.prefab",marker="Assets/Era/Generated/Lumen-V11.txt";
+            string signature=File.ReadAllText(Source+"/AuraWeaver_Manifest.json")+"\nVisible articulated gloves / V11";
             if(File.Exists(marker)&&File.ReadAllText(marker)==signature&&AssetDatabase.LoadAssetAtPath<GameObject>(target)?.GetComponent<HeroMotion>()?.lumen!=null)return;
             ImportAndValidate();
             var root=(GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath));root.name="Lumen";
@@ -38,12 +38,12 @@ namespace Era.Editor
                 {
                     var palm=new GameObject("ERA palm socket").transform;palm.SetParent(driver.Bone("Hand."+side),false);palm.localPosition=new Vector3(0,.04f,0);
                 }
-                var authored=root.GetComponent<AuthoredCharacter>();authored.model="Lumen";authored.version=10;
+                var authored=root.GetComponent<AuthoredCharacter>();authored.model="Lumen";authored.version=11;
                 authored.details=new[]{"Aura Weaver V8 pattern 09","V9 fitted mage skeleton","30 degree rear hat tip","11 mage animations","Existing Lumen abilities preserved"};
                 ActorBodyCollider.Attach(root).Present(new PlayerState());PrefabUtility.SaveAsPrefabAsset(root,target);
             }
             finally{Object.DestroyImmediate(root);}
-            File.WriteAllText(marker,signature);AssetDatabase.SaveAssets();Debug.Log("ERA_LUMEN_V9_INTEGRATED: visual only; existing aura simulation retained");
+            File.WriteAllText(marker,signature);AssetDatabase.SaveAssets();Debug.Log("ERA_LUMEN_V11_INTEGRATED: visible gloves and fitted sleeves");
         }
         [Serializable] public class ClipData {public string name,source;public float start,end;public bool loop;}
         [Serializable] public class Palette {public string name,hex;}
