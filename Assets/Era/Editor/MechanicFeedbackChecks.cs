@@ -11,11 +11,11 @@ namespace Era.Editor
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA mechanic feedback: "+label);}
         static Simulation New(params ItemId[] items)
         {
-            var s=new Simulation(712);var p=s.AddPlayer(0,"Feedback",Hero.Ember);s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();p.position=WorldMap.OnGround(12,0);p.weapons=new[]{-1,-1};p.critChance=0;
+            var s=new Simulation(712);var p=s.AddPlayer(0,"Feedback",Hero.Ember);s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();p.position=WorldMap.OnGround(20,0);p.weapons=new[]{-1,-1};p.critChance=0;
             foreach(var item in items)s.ApplyItem(p,(int)item);s.State.effects.Clear();return s;
         }
         static EnemyState Target(Simulation s,EnemyKind kind=EnemyKind.Skeleton)
-        {var e=s.SpawnEnemy(kind);e.position=WorldMap.OnGround(12,4);e.hp=e.maxHp=10000;e.frozen=0;e.spawnGrace=0;return e;}
+        {var e=s.SpawnEnemy(kind);e.position=WorldMap.OnGround(20,4);e.hp=e.maxHp=10000;e.frozen=0;e.spawnGrace=0;return e;}
         static void Step(Simulation s,int frames=1){for(int i=0;i<frames;i++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
         {
@@ -34,7 +34,7 @@ namespace Era.Editor
             var echo=New(ItemId.TimeMaster);victim=Target(echo);var player=echo.State.Player(0);echo.DamageEnemy(victim,player,100,true,true);
             Check(echo.State.itemFields.Count==1&&echo.State.itemFields[0].visual==FeedbackStyle.Echo,"delayed echo retains source style");Step(echo,32);
             Check(echo.State.effects.Exists(e=>e.style==FeedbackStyle.Echo)&&Mathf.Abs(victim.hp-9880)<.01f,"echo occurs only at delayed damage and preserves twenty percent");
-            var root=New(ItemId.Overgrowth);root.State.itemFields.Add(new ItemFieldState{id=900,owner=0,item=(int)ItemId.Overgrowth,position=WorldMap.OnGround(12,4),time=2,radius=4,power=10,visual=FeedbackStyle.Root});victim=Target(root);Step(root);
+            var root=New(ItemId.Overgrowth);root.State.itemFields.Add(new ItemFieldState{id=900,owner=0,item=(int)ItemId.Overgrowth,position=WorldMap.OnGround(20,4),time=2,radius=4,power=10,visual=FeedbackStyle.Root});victim=Target(root);Step(root);
             Check(victim.ailments.Exists(a=>a.kind==Ailment.Chill&&a.visual==FeedbackStyle.Root),"root slow remains distinct from frost");
             var shield=New();player=shield.State.Player(0);player.shield=20;shield.DamagePlayer(player,12);
             Check(Mathf.Abs(player.shield-8)<.01f&&shield.State.hits.Exists(h=>Mathf.Abs(h.absorbed-12)<.01f),"shield hit reports actual absorbed amount");

@@ -59,7 +59,7 @@ namespace Era
             App.Solo();App.CameraYaw=0;App.CameraPitch=25;
             App.State.enemies.Clear();App.State.resourceNodes.Clear();App.State.spawnTimer=100000;
             App.LocalPlayer.weapons=new[]{-1,-1};App.LocalPlayer.lastWeapon=App.SelectedHero==Hero.Ember?(int)WeaponKind.Bow:-1;
-            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.position=WorldMap.OnGround(0,0);
+            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.position=WorldMap.OnGround(0,-24);
             started=Time.realtimeSinceStartup;
             gameObject.AddComponent<CameraMotionInputStage>().owner=this;
         }
@@ -77,7 +77,7 @@ namespace Era
                 phaseStarted=Time.realtimeSinceStartup;previous=false;
                 current=new Phase{direction=names[phase]};
                 // Start each route inside the ordinary flat central clearing.
-                var d=directions[phase];App.LocalPlayer.position=WorldMap.OnGround(-d.x*9,-d.z*9);
+                var d=directions[phase];App.LocalPlayer.position=(d.x!=0?WorldMap.OnGround(-d.x*12,-20):WorldMap.OnGround(20,-d.z*12));
                 App.LocalPlayer.velocity=Vector3.zero;App.LocalPlayer.yaw=0;captured=false;
             }
             App.LocalInput.x=directions[phase].x;App.LocalInput.z=directions[phase].z;App.LocalInput.yaw=0;

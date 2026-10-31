@@ -1,8 +1,8 @@
 param(
-    [string]$Tag = 'v0.29.0',
+    [string]$Tag = 'v0.29.1',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.29.0.md',
-    [string]$Archive = 'Releases/v0.29.0/Era-Windows.zip',
+    [string]$NotesFile = 'Docs/RELEASE-v0.29.1.md',
+    [string]$Archive = 'Releases/v0.29.1/Era-Windows.zip',
     [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'

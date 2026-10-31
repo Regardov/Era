@@ -7,7 +7,7 @@ namespace Era.Editor
     {
         static int count;
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA balance check failed: "+label);}
-        static Simulation New(){var s=new Simulation(401);var p=s.AddPlayer(0,"Balance",Hero.Ember);p.position=WorldMap.OnGround(12,0);p.weapons=new[]{-1,-1};p.critChance=0;s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();return s;}
+        static Simulation New(){var s=new Simulation(401);var p=s.AddPlayer(0,"Balance",Hero.Ember);p.position=WorldMap.OnGround(20,0);p.weapons=new[]{-1,-1};p.critChance=0;s.Start();s.State.spawnTimer=10000;s.State.resourceNodes.Clear();return s;}
         static EnemyState Target(Simulation s,float z){var e=s.SpawnEnemy(EnemyKind.Skeleton);e.position=s.State.Player(0).position+Vector3.forward*z;e.hp=e.maxHp=1000000;e.frozen=100;return e;}
         static void Step(Simulation s,float time){for(int n=0;n<Mathf.CeilToInt(time*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         public static int Run()
@@ -24,8 +24,8 @@ namespace Era.Editor
             }
             foreach(Hero hero in Enum.GetValues(typeof(Hero)))
             {
-                s=new Simulation(675);var p=s.AddPlayer(0,"Damage",hero);p.position=new Vector3(12,0,0);p.critChance=0;p.weapons=new[]{(int)WeaponKind.LightningStaff,-1};p.weaponLevels=new[]{1,0};s.State.resourceNodes.Clear();s.Start();s.State.spawnTimer=100000;
-                var e=new EnemyState{id=s.State.nextId++,kind=EnemyKind.Wisp,position=new Vector3(12,0,3),hp=10000,maxHp=10000,frozen=10000,spawnGrace=10000};s.State.enemies.Add(e);
+                s=new Simulation(675);var p=s.AddPlayer(0,"Damage",hero);p.position=new Vector3(20,0,0);p.critChance=0;p.weapons=new[]{(int)WeaponKind.LightningStaff,-1};p.weaponLevels=new[]{1,0};s.State.resourceNodes.Clear();s.Start();s.State.spawnTimer=100000;
+                var e=new EnemyState{id=s.State.nextId++,kind=EnemyKind.Wisp,position=new Vector3(20,0,3),hp=10000,maxHp=10000,frozen=10000,spawnGrace=10000};s.State.enemies.Add(e);
                 s.Step(.01f,new Dictionary<int,InputFrame>());float expected=(hero==Hero.Lumen?24:36)*(hero==Hero.Echo?.9f:1);
                 Check(Mathf.Abs(10000-e.hp-expected)<.001f,"hero-specific flat weapon damage and Echo multiplier: "+hero);
                 p.weapons=new[]{-1,-1};e.hp=10000;s.Step(.01f,new Dictionary<int,InputFrame>{{0,new InputFrame{primary=true}}});

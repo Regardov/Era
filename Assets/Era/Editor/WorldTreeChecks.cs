@@ -8,11 +8,12 @@ namespace Era.Editor
 {
     public static class WorldTreeChecks
     {
-        [Serializable]sealed class PackedReport{public string version="0.29.0";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
+        [Serializable]sealed class PackedReport{public string version="0.29.1";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
         public static void Run()
         {
             var prefab=Resources.Load<GameObject>("Environment/Yggdrasil");
             if(prefab==null||prefab.GetComponent<LODGroup>().GetLODs().Length!=3)throw new Exception("World tree prefab/LOD missing");
+            if(GameApp.MinCameraPitch>-70||GameApp.MaxCameraPitch!=65)throw new Exception("Camera cannot look up");
             int previous=WorldMap.Stage;
             for(int stage=1;stage<=CampaignData.StageCount;stage++)
             {

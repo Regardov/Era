@@ -39,7 +39,7 @@ namespace Era
             if(FindAnyObjectByType<WorldEnvironment>()==null)new GameObject("World / Stillwater Reach").AddComponent<WorldEnvironment>().Build();
             WorldEnvironment.ApplyAtmosphere();environment=FindAnyObjectByType<WorldEnvironment>();if(environment!=null)SurfaceDetail.Apply(environment.transform);
             var cam=new GameObject("Player camera");Camera=cam.AddComponent<Camera>();cam.tag="MainCamera";cam.AddComponent<AudioListener>();
-            Camera.fieldOfView=60;Camera.nearClipPlane=0.13f;Camera.farClipPlane=360;
+            Camera.fieldOfView=60;Camera.nearClipPlane=0.13f;Camera.farClipPlane=520;
             Camera.backgroundColor=new Color(0.64f,0.77f,0.78f);Camera.clearFlags=CameraClearFlags.Skybox;Camera.allowHDR=true;
             Camera.depthTextureMode=DepthTextureMode.Depth|DepthTextureMode.DepthNormals;
             cam.AddComponent<StillwaterLens>();
@@ -174,7 +174,11 @@ namespace Era
             // hide camera jitter while leaving the character stepping at 30 Hz.
             CameraFollowTarget=target;
             cameraHeight=PresentationMotion.Damp(cameraHeight,p.crouching?1.12f:1.65f,12,PresentationMotion.Delta);
-            var pivot=target+Vector3.up*cameraHeight;var rotation=Quaternion.Euler(app.CameraPitch,app.CameraYaw,0);
+            // Keep the orbit above ground when looking up; rotate the view independently.
+            // At pitch >= 8 this retains the previous follow framing exactly.
+            float lookPitch=Mathf.Clamp(app.CameraPitch,GameApp.MinCameraPitch,GameApp.MaxCameraPitch);
+            float orbitPitch=Mathf.Max(8,lookPitch);
+            var pivot=target+Vector3.up*cameraHeight;var rotation=Quaternion.Euler(orbitPitch,app.CameraYaw,0);
             var desired=pivot+rotation*new Vector3(0,0.25f,-8.7f);
             Vector3 ray=(desired-pivot).normalized;float distance=Vector3.Distance(pivot,desired),safe=distance;
             foreach(var prop in WorldMap.Props)
@@ -189,6 +193,7 @@ namespace Era
             for(int i=1;i<=12;i++){var sample=Vector3.Lerp(pivot,desired,i/12f);float floor=WorldMap.Ground(sample)+0.65f;if(sample.y<floor)desired.y+=floor-sample.y;}
             Camera.transform.position=Vector3.Lerp(Camera.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*12));
             Camera.transform.LookAt(pivot+rotation*Vector3.forward*1.2f);
+            Camera.transform.Rotate(Vector3.right,lookPitch-orbitPitch,Space.Self);
             if(shake>0){shake=Mathf.Max(0,shake-PresentationMotion.Delta);float t=app.State.elapsed;Camera.transform.position+=new Vector3(Mathf.Sin(t*53),Mathf.Sin(t*67+.4f),0)*shake*.12f*PresentationMotion.Intensity;}
         }
         static float CameraClearance(Vector3 pivot,Vector3 direction,float distance,Vector3 center,float radius)

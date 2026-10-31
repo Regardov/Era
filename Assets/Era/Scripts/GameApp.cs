@@ -24,6 +24,12 @@ namespace Era
         public string HostAddresses {get;private set;}
         public ArenaView View {get;private set;}
         public float MouseSensitivity=2.2f,CameraYaw=30,CameraPitch=25,Volume=0.5f,MusicVolume=0.30f;
+        public const float MinCameraPitch=-75,MaxCameraPitch=65;
+        public void ApplyMouseLook(float x,float y)
+        {
+            CameraYaw+=x*MouseSensitivity;
+            CameraPitch=Mathf.Clamp(CameraPitch-y*MouseSensitivity,MinCameraPitch,MaxCameraPitch);
+        }
         public int FrameLimit {get;private set;}
         public static readonly int[] FrameLimits={0,60,120,144,165,240};
         public void SetFrameLimit(int limit)
@@ -151,7 +157,7 @@ namespace Era
             if(running && Input.GetKeyDown(KeyCode.Escape)){Paused=!Paused;Inventory=false;}
             if(running && Input.GetKeyDown(KeyCode.Tab)){Inventory=!Inventory;Paused=false;}
             if(CapturingMouse && !Automated)
-            {CameraYaw+=Input.GetAxisRaw("Mouse X")*MouseSensitivity;CameraPitch=Mathf.Clamp(CameraPitch-Input.GetAxisRaw("Mouse Y")*MouseSensitivity,8,65);}
+            {ApplyMouseLook(Input.GetAxisRaw("Mouse X"),Input.GetAxisRaw("Mouse Y"));}
             bool capture=CapturingMouse&&!Automated;
             Cursor.lockState=capture?CursorLockMode.Locked:CursorLockMode.None;Cursor.visible=!capture;
             if(!Automated)ReadInput(running);
