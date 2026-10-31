@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.29.2";
+            PlayerSettings.bundleVersion = "0.30.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -154,7 +154,7 @@ namespace Era.Editor
         public static void BuildWindows()
         {
             PrepareProject();
-            SimulationChecks.Run();WorldTreeChecks.Run();GolemTreeChecks.Run();
+            SimulationChecks.Run();WorldTreeChecks.Run();GolemTreeChecks.Run();CreatureLibraryChecks.Run();
             string output="Builds/Windows";var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--era-output");if(at>=0&&at+1<args.Length)output=Path.GetFullPath(args[at+1]);Directory.CreateDirectory(output);
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                 scenes = new[] { ScenePath }, locationPathName = Path.Combine(output,"Era.exe"),

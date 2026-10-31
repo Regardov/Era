@@ -132,6 +132,7 @@ namespace Era
                 seen.Add(e.id);
                 if(!actors.TryGetValue(e.id,out var actor))
                 {var creature=e.kind==EnemyKind.Warden?BossArt.Create(v,dynamicRoot,Mathf.Max(1,e.bossStage)):CreatureMotion.Create(v,dynamicRoot,e.kind);actor=new Actor{root=creature.gameObject,creature=creature};actor.renderers=actor.root.GetComponentsInChildren<Renderer>();actor.colors=new Color[actor.renderers.Length][];for(int r=0;r<actor.renderers.Length;r++){var mats=actor.renderers[r].sharedMaterials;actor.colors[r]=new Color[mats.Length];for(int m=0;m<mats.Length;m++)actor.colors[r][m]=mats[m]!=null&&mats[m].HasProperty("_Color")?mats[m].color:Color.white;}actors[e.id]=actor;actor.root.transform.position=e.position;var target=state.players.Find(p=>!p.downed&&!p.eliminated);if(target!=null){var facing=target.position-e.position;facing.y=0;if(facing.sqrMagnitude>.01f)actor.root.transform.rotation=Quaternion.LookRotation(facing);}}
+                var visualBefore=actor.root.transform.position;
                 var direction=e.position-actor.root.transform.position;direction.y=0;
                 if(e.eliteShrine>=0&&actor.root.transform.Find("Elite guardian halo")==null){actor.root.transform.localScale*=1.2f;v.Ring("Elite guardian halo",actor.root.transform,.9f,new Color(1,.25f,.12f),.065f).transform.localPosition=Vector3.up*.06f;}
                 if(direction.sqrMagnitude>0.0004f)actor.root.transform.rotation=Quaternion.Slerp(actor.root.transform.rotation,Quaternion.LookRotation(direction),blend);
@@ -150,7 +151,10 @@ namespace Era
                     actor.attackTelegraph.position=center;actor.attackTelegraph.localScale=Vector3.one*(e.attackStyle==3?3:e.attackStyle==1?.8f:e.attackStyle==2?2.5f:EnemyCatalog.Reach(e.kind)*.65f);
                 }
                 else if(actor.attackTelegraph!=null){Destroy(actor.attackTelegraph.gameObject);actor.attackTelegraph=null;}
-                float measured=PresentationMotion.Delta>0?Mathf.Min(e.speed,(e.position-actor.lastPosition).magnitude/PresentationMotion.Delta):0;
+                // Articulated creatures use render displacement, not sparse 30 Hz state deltas.
+                bool articulated=actor.creature.golem!=null||actor.creature.bat!=null;
+                var travel=articulated?actor.root.transform.position-visualBefore:e.position-actor.lastPosition;if(articulated)travel.y=0;
+                float measured=PresentationMotion.Delta>0?Mathf.Min(e.speed*(articulated?1.6f:1),travel.magnitude/PresentationMotion.Delta):0;
                 actor.body??=ActorBodyCollider.Attach(actor.root);actor.body.Present(e);
                 var status=actor.root.GetComponent<StatusPresentation>();if(status==null)status=actor.root.AddComponent<StatusPresentation>();status.Present(e);
                 actor.creature.Present(e,measured);actor.lastPosition=e.position;

@@ -13,6 +13,7 @@ namespace Era
         public float hit;
         public SkeletalActor skeletal;
         public GolemMotion golem;
+        public BatMotion bat;
         public static CreatureMotion Create(VisualFactory v,Transform parent,EnemyKind kind)
         {
             if(Application.isPlaying)
@@ -105,12 +106,12 @@ namespace Era
         public void Present(EnemyState enemy,float speed)
         {
             if(dying)return;
-            if(golem!=null)
+            if(golem!=null||bat!=null)
             {
                 if(enemy.frozen>0||GameApp.Instance?.WorldPaused==true)return;
                 float delta=ActorMotionMath.Delta;if(delta<=0)return;
                 if(freezeTime>0){freezeTime=Mathf.Max(0,freezeTime-delta);return;}
-                golem.Present(enemy,speed,delta,hit);hit=Mathf.Max(0,hit-delta*5.5f);return;
+                if(golem!=null)golem.Present(enemy,speed,delta,hit);else bat.Present(enemy,speed,delta,hit);hit=Mathf.Max(0,hit-delta*5.5f);return;
             }
             if(skeletal!=null){skeletal.Enemy(enemy,speed);return;}
             BindPose();if(!poseBound||enemy.frozen>0||GameApp.Instance?.WorldPaused==true)return;

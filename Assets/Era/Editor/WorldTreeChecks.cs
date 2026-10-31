@@ -8,7 +8,7 @@ namespace Era.Editor
 {
     public static class WorldTreeChecks
     {
-        [Serializable]sealed class PackedReport{public string version="0.29.2";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
+        [Serializable]sealed class PackedReport{public string version="0.30.0";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
         public static void Run()
         {
             var prefab=Resources.Load<GameObject>("Environment/Yggdrasil");
