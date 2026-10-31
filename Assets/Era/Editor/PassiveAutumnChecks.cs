@@ -44,8 +44,8 @@ namespace Era.Editor
         {
             Check(GameData.ChanceRicochets(0,0)==0&&GameData.ChanceRicochets(100,.999999)==1&&GameData.ChanceRicochets(200,0)==2,"exact hundreds guarantee only their complete bounces");
             Check(GameData.ChanceRicochets(230,.299999)==3&&GameData.ChanceRicochets(230,.30)==2,"230% adds two guaranteed bounces and a 30% remainder");
-            var sim=new Simulation(717);var p=sim.AddPlayer(0,"Echo",Hero.Echo);sim.Start();sim.State.multiplayer=true;sim.State.resourceNodes.Clear();sim.State.spawnTimer=10000;p.position=Vector3.zero;p.invulnerability=10000;p.critChance=0;
-            for(int i=0;i<9;i++)sim.State.enemies.Add(new EnemyState{id=sim.State.nextId++,kind=EnemyKind.Wisp,position=new Vector3(2+i*.55f,0,3),hp=100000,maxHp=100000,frozen=10000,spawnGrace=10000});
+            var sim=new Simulation(717);var p=sim.AddPlayer(0,"Echo",Hero.Echo);sim.Start();sim.State.multiplayer=true;sim.State.resourceNodes.Clear();sim.State.spawnTimer=10000;p.position=new Vector3(12,0,0);p.invulnerability=10000;p.critChance=0;
+            for(int i=0;i<9;i++)sim.State.enemies.Add(new EnemyState{id=sim.State.nextId++,kind=EnemyKind.Wisp,position=new Vector3(14+i*.55f,0,3),hp=100000,maxHp=100000,frozen=10000,spawnGrace=10000});
             var inputs=new Dictionary<int,InputFrame>();
             foreach(int levels in new[]{0,10,20,50})
             {

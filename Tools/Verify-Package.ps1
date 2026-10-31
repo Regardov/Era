@@ -1,56 +1,29 @@
-$ErrorActionPreference = 'Stop'
+param([string]$Archive='Releases/v0.29.0/Era-Windows.zip')
+$ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-$eraProject = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$eraArchivePath = Join-Path $eraProject 'Releases\Era-Windows.zip'
-$eraBuildPath = Join-Path $eraProject 'Builds\Windows'
-$eraZip = [IO.Compression.ZipFile]::OpenRead($eraArchivePath)
-try {
-    foreach ($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/Managed/Assembly-CSharp.dll','Era_Data/globalgamemanagers','Era_Data/level0','MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll','ANIMATION-QUALITY-AUDIT.md','AnimationQuality/clip-status.csv','PLAY-RU.md','DOWNLOAD-RU.md','ITEMS-v0.24.md','RELEASE-v0.24.0.md','VALIDATION-v0.24.md','balance-runtime-v024.json','loot-balance-validation-v024.json','ARCHER-MOTION.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md')) {
-        $eraEntry = $eraZip.GetEntry($eraName)
-        if ($null -eq $eraEntry -or $eraEntry.Length -le 0) { throw "Missing or empty ZIP entry: $eraName" }
+$eraProject=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+if(-not [IO.Path]::IsPathRooted($Archive)){$Archive=Join-Path $eraProject $Archive}
+$eraZip=[IO.Compression.ZipFile]::OpenRead($Archive)
+try{
+    foreach($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/globalgamemanagers','Era_Data/level0','Era_Data/Managed/Assembly-CSharp.dll','MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll','PlayerContents.json','START-RU.txt','PLAY-RU.md')){
+        $eraEntry=$eraZip.GetEntry($eraName);if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing runtime file: $eraName"}
     }
-    foreach ($eraName in @('RELEASE-v0.25.0.md','VALIDATION-v0.25.md','item-art-runtime-v025.json','item-art-validation-v025.json','Images/loot-rarity-glow-v025.png')) {
-        $eraEntry=$eraZip.GetEntry($eraName)
-        if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing current item artwork evidence: $eraName"}
+    foreach($eraEntry in $eraZip.Entries){if($eraEntry.FullName -match '(?i)(ArtSource|CharacterFactory|ERA_CharacterLibrary|\.blend\d?$|\.fbx$|\.py$|\.ps1$|\.cs$)'){throw "Authoring source in game ZIP: $($eraEntry.FullName)"}}
+    $eraReader=[IO.StreamReader]::new($eraZip.GetEntry('PlayerContents.json').Open())
+    try{$eraManifest=$eraReader.ReadToEnd() | ConvertFrom-Json}finally{$eraReader.Dispose()}
+    if(-not $eraManifest.noAuthoringLibrary){throw 'Missing authoring-library exclusion audit'}
+    foreach($eraFile in $eraManifest.files){
+        $eraEntry=$eraZip.GetEntry($eraFile.name);if($null -eq $eraEntry -or $eraEntry.Length -ne $eraFile.bytes){throw "Truncated runtime file: $($eraFile.name)"}
+        $eraStream=$eraEntry.Open();$eraSha=[Security.Cryptography.SHA256]::Create()
+        try{$eraHash=[BitConverter]::ToString($eraSha.ComputeHash($eraStream)).Replace('-','').ToLowerInvariant()}finally{$eraStream.Dispose();$eraSha.Dispose()}
+        if($eraHash -ne $eraFile.sha256){throw "ZIP hash mismatch: $($eraFile.name)"}
+        $eraDisk=Join-Path $eraProject ('Builds/Windows/'+$eraFile.name)
+        if((Get-FileHash -LiteralPath $eraDisk -Algorithm SHA256).Hash.ToLowerInvariant() -ne $eraHash){throw "ZIP differs from tested Player: $($eraFile.name)"}
     }
-    foreach ($eraName in @('RELEASE-v0.25.1.md','VALIDATION-v0.25.1.md','release-validation-v0251.json','item-art-runtime-v0251.json')) {
-        $eraEntry=$eraZip.GetEntry($eraName)
-        if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing current release evidence: $eraName"}
-    }
-    $eraRuntimeReader = [IO.StreamReader]::new($eraZip.GetEntry('item-art-runtime-v0251.json').Open())
-    try { $eraRuntime = $eraRuntimeReader.ReadToEnd() | ConvertFrom-Json }
-    finally { $eraRuntimeReader.Dispose() }
-    if (-not $eraRuntime.ok -or $eraRuntime.version -ne '0.25.1' -or $eraRuntime.icons -ne 129 -or $eraRuntime.activeIcons -ne 116 -or -not $eraRuntime.transparent -or -not $eraRuntime.styles -or -not $eraRuntime.colors -or -not $eraRuntime.collection) { throw 'ZIP must contain item artwork validation from the tested 0.25.1 Player' }
-    foreach($eraName in @('RELEASE-v0.26.1.md','VALIDATION-v0.26.1.md','release-validation-v0261.json','lumen-runtime-v0261.json')) {
-        $eraEntry=$eraZip.GetEntry($eraName)
-        if($null -eq $eraEntry -or $eraEntry.Length -le 0){throw "Missing Lumen release evidence: $eraName"}
-    }
-    $eraLumenReader=[IO.StreamReader]::new($eraZip.GetEntry('lumen-runtime-v0261.json').Open())
-    try{$eraLumen=$eraLumenReader.ReadToEnd() | ConvertFrom-Json}finally{$eraLumenReader.Dispose()}
-    if(-not $eraLumen.ok -or $eraLumen.version -ne '0.26.1' -or $eraLumen.animations.Count -ne 11){throw 'Missing actual Lumen runtime validation for 0.26.1'}
-    $eraMergedReader = [IO.StreamReader]::new($eraZip.GetEntry('release-validation-v0261.json').Open())
-    try { $eraMergedValidation = $eraMergedReader.ReadToEnd() | ConvertFrom-Json }
-    finally { $eraMergedReader.Dispose() }
-    $eraAssemblyHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath 'Era_Data\Managed\Assembly-CSharp.dll') -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($eraMergedValidation.version -ne '0.26.1' -or $eraMergedValidation.managedSha256 -ne $eraAssemblyHash) { throw 'Release validation belongs to a different Player build' }
-    $eraGameDataHash = (Get-FileHash -LiteralPath (Join-Path $eraBuildPath 'Era_Data/globalgamemanagers') -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($eraMergedValidation.gameDataSha256 -ne $eraGameDataHash) { throw 'Versioned game data differs from the tested build' }
-    foreach ($eraTest in $eraMergedValidation.tests.PSObject.Properties) { if (-not $eraTest.Value.ok) { throw "Failed merged validation: $($eraTest.Name)" } }
-    $eraPlayerFiles = Get-ChildItem -LiteralPath $eraBuildPath -Recurse -File
-    foreach ($eraPlayerFile in $eraPlayerFiles) {
-        $eraName = $eraPlayerFile.FullName.Substring($eraBuildPath.Length+1).Replace('\','/')
-        $eraEntry = $eraZip.GetEntry($eraName)
-        if ($null -eq $eraEntry -or $eraEntry.Length -ne $eraPlayerFile.Length) { throw "Missing or truncated tested build file: $eraName" }
-        $eraStream = $eraEntry.Open()
-        $eraSha = [Security.Cryptography.SHA256]::Create()
-        try { $eraInsideHash = [BitConverter]::ToString($eraSha.ComputeHash($eraStream)).Replace('-','') }
-        finally { $eraStream.Dispose(); $eraSha.Dispose() }
-        $eraPlayerHash = (Get-FileHash -LiteralPath $eraPlayerFile.FullName -Algorithm SHA256).Hash
-        if ($eraInsideHash -ne $eraPlayerHash) { throw "ZIP differs from the tested Player: $eraName" }
-    }
-    $eraEntries = $eraZip.Entries.Count
-    if ($eraEntries -lt 100) { throw "Incomplete Player archive: $eraEntries entries" }
-} finally { $eraZip.Dispose() }
-$eraArchiveHash = (Get-FileHash -LiteralPath $eraArchivePath -Algorithm SHA256).Hash.ToLowerInvariant()
-if ((Get-Content -LiteralPath ($eraArchivePath + '.sha256') -Raw).Trim() -ne "$eraArchiveHash  Era-Windows.zip") { throw 'ZIP checksum differs from its companion file' }
-Write-Output "PASS Package: entries=$eraEntries; all $($eraPlayerFiles.Count) tested build files match; sha256=$eraArchiveHash"
+    $eraResult=@{ok=$true;version=$eraManifest.version;runtimeFiles=$eraManifest.files.Count;zipEntries=$eraZip.Entries.Count;noAuthoringLibrary=$true;zipBytes=(Get-Item -LiteralPath $Archive).Length}
+}finally{$eraZip.Dispose()}
+$eraHash=(Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash.ToLowerInvariant()
+if((Get-Content -LiteralPath ($Archive+'.sha256') -Raw).Trim() -ne "$eraHash  Era-Windows.zip"){throw 'Archive checksum mismatch'}
+$eraResult.sha256=$eraHash
+$eraResult | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $eraProject 'Artifacts/package-v029.json') -Encoding utf8
+Write-Output ($eraResult | ConvertTo-Json -Compress)

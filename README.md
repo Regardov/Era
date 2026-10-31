@@ -1,4 +1,10 @@
-# ERA: Seven Realms — v0.28.0
+# ERA: Seven Realms — v0.29.0
+
+**[Скачать ERA v0.29.0 для Windows — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.29.0/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.29.0). Распакуйте архив целиком и запустите `Era.exe`.
+
+**v0.29.0 — Иггдрасиль в центре всех семи миров:** высота около 52 м, крона около 48 м, три LOD и безопасный ствол. В контрольных игровых ракурсах листва не перекрывает всё небо. Игровой ZIP содержит только Player, инструкции и лицензии; библиотека создания Люмена/лучника и история Blender/Python остаются локально вне игры. Последние изменения v0.27/v0.28 сохранены. [Изменения](Docs/RELEASE-v0.29.0.md) · [Проверки](Docs/VALIDATION-v0.29.md).
+
+![Иггдрасиль в игре](Docs/WorldTree-v029/World-1-gameplay.png)
 
 **В текущих исходниках v0.28:** исправленные переносы текста в карточках, новые шаги и свободное движение рук Люмена V12, видимая золотая аура с вращающимися дугами, лучами, искрами и нимбом. [Изменения](Docs/UPDATE-v0.28.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.28.md) · [Blender V12](ArtSource/Characters/AuraWeaver/ReleaseV12/README.md). Сборка из исходников: `Tools/Build.ps1`.
 

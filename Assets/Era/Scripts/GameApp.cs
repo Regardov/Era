@@ -81,6 +81,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
+            if(Automated&&Array.IndexOf(args,"--smoke-world-tree")>=0){gameObject.AddComponent<WorldTreeDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-polish")>=0){gameObject.AddComponent<PolishDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-accessories")>=0){gameObject.AddComponent<AccessoryDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-item-art")>=0){gameObject.AddComponent<ItemArtDiagnostics>();return;}

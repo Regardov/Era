@@ -26,7 +26,7 @@ namespace Era
         readonly Dictionary<int,GameObject> auraRings=new Dictionary<int,GameObject>();
         readonly Dictionary<int,GameObject> hazardRings=new Dictionary<int,GameObject>();
         readonly Dictionary<int,GameObject> itemFields=new Dictionary<int,GameObject>();
-        WorldEnvironment environment;GameObject portalVisual;int presentedStage=-1,presentedSerial=-1;
+        WorldEnvironment environment;WorldTreeView worldTree;GameObject portalVisual;int presentedStage=-1,presentedSerial=-1;
         readonly MaterialPropertyBlock hitBlock=new MaterialPropertyBlock();
         readonly HashSet<int> seen=new HashSet<int>();
         Transform dynamicRoot,previewRoot;
@@ -63,6 +63,8 @@ namespace Era
                 presentedStage=stage;presentedSerial=app.State?.stageSerial??0;
                 if(app.LocalPlayer!=null)Camera.transform.position=app.LocalPlayer.position+new Vector3(0,5,-8);
             }
+            if(worldTree==null)worldTree=new GameObject("World tree / persistent centre landmark").AddComponent<WorldTreeView>();
+            worldTree.Present(stage,app.InRun);
             if(!app.InRun)
             {
                 Camera.fieldOfView=app.Page==MenuPage.Characters?42:50;
@@ -180,6 +182,7 @@ namespace Era
                 var center=prop.position+Vector3.up*(prop.kind==0?4.2f:0.7f)*prop.size;
                 safe=CameraClearance(pivot,ray,safe,center,(prop.kind==0?2.3f:0.95f)*prop.size);
             }
+            safe=CameraClearance(pivot,ray,safe,new Vector3(0,pivot.y,0),WorldTreeLayout.TrunkRadius+.25f);
             foreach(var enemy in app.State.enemies)
                 safe=CameraClearance(pivot,ray,safe,enemy.position+Vector3.up*(enemy.kind==EnemyKind.Warden?2.8f:enemy.kind==EnemyKind.Brute?1.5f:0.9f),enemy.kind==EnemyKind.Warden?2.2f:enemy.kind==EnemyKind.Brute?1.15f:0.5f);
             desired=pivot+ray*Mathf.Clamp(safe,2.4f,distance);

@@ -5,7 +5,7 @@ namespace Era
 {
     public sealed class WorldEnvironment : MonoBehaviour
     {
-        public const int CurrentVersion=25;
+        public const int CurrentVersion=26;
         public int bakedVersion,stage=1;
         public string mapName="Seven Realms / streams, rolling hills, old trees and living meadow";
         bool runtimeGenerated;

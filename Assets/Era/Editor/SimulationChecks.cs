@@ -18,7 +18,8 @@ namespace Era.Editor
         {
             var sim = new Simulation(23,coop); sim.AddPlayer(0, "Искра", Hero.Ember);
             if (coop) {sim.AddPlayer(1, "Echo", Hero.Echo);sim.SetReady(0,true);sim.SetReady(1,true);}
-            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear();foreach(var p in sim.State.players)p.position=WorldMap.OnGround((p.id-1)*3,0);return sim;
+            // A flat, unobstructed fixture beside the new solid centre landmark.
+            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear();foreach(var p in sim.State.players)p.position=WorldMap.OnGround((p.id-1)*3,-24);return sim;
         }
         static void Step(Simulation sim, float seconds, Dictionary<int, InputFrame> inputs = null)
         {
@@ -39,6 +40,8 @@ namespace Era.Editor
         static void Movement()
         {
             var sim = New(); var p = sim.State.Player(0);
+            // The map origin is now a solid world-tree trunk; test unobstructed speed at the flat sanctuary.
+            p.position=WorldMap.OnGround(0,-24);
             Vector3 start = p.position;
             Step(sim, 1, new Dictionary<int, InputFrame> { [0] = new InputFrame { x = 999, z = 999 } });
             float travelled = Vector3.Distance(start, p.position);
@@ -120,7 +123,7 @@ namespace Era.Editor
             b.position=sim.State.loot[0].origin;Check(sim.TryCollectLoot(b)&&!sim.TryCollectLoot(a),"ally may claim chest loot and claim is atomic");
             Step(sim,.4f);Check(sim.State.loot.Count==0&&b.items[chest.reward]==1&&a.items[chest.reward]==0,"reward goes to the actual collector");
             var second=sim.State.chests[1];sim.State.coins=after=second.cost-1;a.position=second.position;Check(!sim.TryOpenChest(a)&&!second.opened,"insufficient gold leaves chest closed");
-            a.position=Vector3.zero;sim.State.pickups.Add(new PickupState{id=500,value=7,kind=PickupKind.Gold,position=Vector3.zero});Step(sim,.4f);
+            var collectPoint=WorldMap.OnGround(0,-24);a.position=collectPoint;sim.State.pickups.Add(new PickupState{id=500,value=7,kind=PickupKind.Gold,position=collectPoint});Step(sim,.4f);
             Check(sim.State.coins==after+7&&sim.State.earnedCoins==7,"gold pickups credit team wallet");
             sim.State.pickups.Add(new PickupState{id=501,value=8,kind=PickupKind.Gold,position=Vector3.forward*30});
             sim.State.pickups.Add(new PickupState{id=502,value=3,kind=PickupKind.Experience,position=Vector3.forward*30});

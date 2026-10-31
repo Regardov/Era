@@ -25,7 +25,7 @@ namespace Era
         static List<WorldBuilding> buildings;
         public static List<WorldProp> Props=>props??(props=CreateProps());
         public static List<WorldBuilding> Buildings=>buildings??(buildings=CreateBuildings());
-        public static readonly Vector3[] Landmarks = { new Vector3(0,0,0), new Vector3(-95,0,70), new Vector3(105,0,80), new Vector3(60,0,-110) };
+        public static readonly Vector3[] Landmarks = { WorldTreeLayout.Sanctuary, new Vector3(-95,0,70), new Vector3(105,0,80), new Vector3(60,0,-110) };
         public static void SetStage(int stage)
         {stage=Mathf.Clamp(stage,1,CampaignData.StageCount);if(Stage==stage)return;Stage=stage;props=null;buildings=null;}
         public static float Height(float x,float z)
@@ -61,6 +61,7 @@ namespace Era
         public static Vector3 OnGround(float x, float z) => new Vector3(x, Height(x,z), z);
         public static bool ClearLocation(Vector3 point,float clearance)
         {
+            if(WorldTreeLayout.ContainsTrunk(point,clearance))return false;
             if(new Vector2(point.x,point.z).magnitude>GameData.ArenaRadius-clearance-8||InWater(point.x,point.z,clearance))return false;
             foreach(var building in Buildings)if(BuildingContains(building,point,clearance))return false;
             foreach(var prop in Props)
@@ -79,7 +80,7 @@ namespace Era
             }
             // The sanctuary is authored flat and clear; retain a safe fallback for future terrain.
             foreach(var point in Landmarks)if(Vector3.Distance(point,avoid)>=separation&&ClearLocation(OnGround(point.x,point.z),clearance))return OnGround(point.x,point.z);
-            return OnGround(0,0);
+            return OnGround(WorldTreeLayout.Sanctuary.x,WorldTreeLayout.Sanctuary.z);
         }
         public static string Region(Vector3 p)
         {
@@ -134,6 +135,7 @@ namespace Era
             next.x=planar.x; next.z=planar.y;
             for (int pass=0; pass<2; pass++)
             {
+            next=WorldTreeLayout.ResolveTrunk(next,radius);
             foreach(var building in Buildings)
             {
                 var inverse=Quaternion.Euler(0,-building.angle,0);var local=inverse*(next-building.position);var half=building.HalfSize+Vector2.one*radius;

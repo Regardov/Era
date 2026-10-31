@@ -1,0 +1,263 @@
+{
+  "version": "0.29.0",
+  "base_commit": "ce8526e",
+  "unity": "2023.1.22f1",
+  "build_succeeded": true,
+  "managedSha256": "09bb78d4b586c59898db025a6e969b3ea05d435d50806e9544284b8c589334b9",
+  "gameDataSha256": "43d7af86d03dcbdc9db48e74d9a8415199bbee6c6ba116aee911a4aafcf8d4f6",
+  "world_tree": {
+    "version": "0.29.0",
+    "ok": true,
+    "worlds": [
+      {
+        "stage": 1,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.14141413569450378,
+        "skyPixels": 8910,
+        "leafOnSkyPixels": 1260
+      },
+      {
+        "stage": 2,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0016778523568063974,
+        "skyPixels": 2384,
+        "leafOnSkyPixels": 4
+      },
+      {
+        "stage": 3,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0007850833935663104,
+        "skyPixels": 5095,
+        "leafOnSkyPixels": 4
+      },
+      {
+        "stage": 4,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0007625826401636004,
+        "skyPixels": 3934,
+        "leafOnSkyPixels": 3
+      },
+      {
+        "stage": 5,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0,
+        "skyPixels": 178,
+        "leafOnSkyPixels": 0
+      },
+      {
+        "stage": 6,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0046600294299423695,
+        "skyPixels": 4721,
+        "leafOnSkyPixels": 22
+      },
+      {
+        "stage": 7,
+        "centred": true,
+        "dimensions": true,
+        "oneInstance": true,
+        "lods": true,
+        "solidTrunk": true,
+        "clearSanctuary": true,
+        "opaque": true,
+        "leafShadowsOff": true,
+        "height": 52.0,
+        "crown": 48.08638000488281,
+        "skyCovered": 0.0017974835354834795,
+        "skyPixels": 1669,
+        "leafOnSkyPixels": 3
+      }
+    ],
+    "fpsWithTree": 149.38336181640625,
+    "fpsWithoutTree": 149.0568084716797,
+    "skyMethod": "Replacement masks: foliage pixels over otherwise visible sky, upper screen half, real gameplay camera at 90m / pitch 8"
+  },
+  "editor": {
+    "ok": true,
+    "assertions": 75012
+  },
+  "campaign": {
+    "ok": true,
+    "jump": true,
+    "grass": true,
+    "lumenModel": true,
+    "keptBuilds": true,
+    "shaders": true,
+    "realms": 7,
+    "bosses": 7,
+    "portals": 6
+  },
+  "lumen": {
+    "version": "0.29.0",
+    "ok": true,
+    "liveLumen": true,
+    "avatar": true,
+    "noRootMotion": true,
+    "errors": 0,
+    "skins": 26,
+    "animations": [
+      {
+        "animation": "AuraWeaver_Idle",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 3.543776512145996
+      },
+      {
+        "animation": "AuraWeaver_Walk",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 121.31204223632812
+      },
+      {
+        "animation": "AuraWeaver_Run",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 57.58926010131836
+      },
+      {
+        "animation": "AuraWeaver_JumpStart",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 58.27861785888672
+      },
+      {
+        "animation": "AuraWeaver_Airborne",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 1.7839421033859253
+      },
+      {
+        "animation": "AuraWeaver_Fall",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 24.75985336303711
+      },
+      {
+        "animation": "AuraWeaver_Land",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 113.95697784423828
+      },
+      {
+        "animation": "AuraWeaver_AuraChannel",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 68.60861206054688
+      },
+      {
+        "animation": "AuraWeaver_Cast",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 92.396728515625
+      },
+      {
+        "animation": "AuraWeaver_Hit",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 113.6883544921875
+      },
+      {
+        "animation": "AuraWeaver_Death",
+        "exists": true,
+        "assigned": true,
+        "runtimePlayed": true,
+        "finite": true,
+        "boneMotionDegrees": 120.19666290283203
+      }
+    ]
+  },
+  "no_authoring_library_in_player": true,
+  "native_ui_hidden_capture": {
+    "passed": false,
+    "nativeScreens": false,
+    "aura": true,
+    "range": true,
+    "following": true,
+    "pause": true,
+    "cleanup": true,
+    "errors": 0
+  },
+  "package": {
+    "zipBytes": 402509695,
+    "ok": true,
+    "version": "0.29.0",
+    "runtimeFiles": 132,
+    "zipEntries": 138,
+    "sha256": "f46ec9b793605bdc34052bdeff4837c01b2ce3f970bc0097acd026227a37943e",
+    "noAuthoringLibrary": true
+  }
+}

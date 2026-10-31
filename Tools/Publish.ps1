@@ -1,7 +1,8 @@
 param(
-    [string]$Tag = 'v0.26.1',
+    [string]$Tag = 'v0.29.0',
     [string]$Repository = 'Regardov/Era',
-    [string]$NotesFile = 'Docs/RELEASE-v0.26.1.md',
+    [string]$NotesFile = 'Docs/RELEASE-v0.29.0.md',
+    [string]$Archive = 'Releases/v0.29.0/Era-Windows.zip',
     [string[]]$PreserveUncommittedPaths = @()
 )
 $ErrorActionPreference = 'Stop'
@@ -22,7 +23,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Create and push the release tag first.' }
     $eraRemoteTag = git ls-remote "https://github.com/$Repository.git" "refs/tags/$Tag"
     if ($LASTEXITCODE -ne 0 -or $eraRemoteTag -notmatch "^$eraCommit\s") { throw 'The remote release tag must match the local commit.' }
-    $eraArchive = Join-Path $eraProject 'Releases\Era-Windows.zip'
+    $eraArchive = Join-Path $eraProject $Archive
     $eraChecksum = $eraArchive + '.sha256'
     $eraHash = (Get-FileHash -LiteralPath $eraArchive -Algorithm SHA256).Hash.ToLowerInvariant()
     if ((Get-Content -LiteralPath $eraChecksum -Raw).Trim() -ne "$eraHash  Era-Windows.zip") { throw 'Repackage the game: checksum does not match.' }

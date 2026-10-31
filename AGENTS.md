@@ -8,4 +8,6 @@
 
 ## Персонажи ERA
 
+- Расширенная рабочая библиотека Люмена/лучника хранится локально: `C:/Users/kolon/Documents/Codex/ERA-Character-Library`. Не переносите её в `Assets`, `Resources`, `StreamingAssets` или игровой ZIP. В игру переносятся только нужные runtime-модели, материалы, prefab и клипы; библиотечные `.blend`, Python и история вариантов остаются отдельно. Свежие V11/V12 и снимок интеграции сохранены в `Snapshots/v0.28.0-ce8526e/` этой библиотеки.
+
 - Перед работой над моделями/ригами прочитайте [Style Guide](ERA_CHARACTER_STYLE_GUIDE.md) и [Character Factory Workflow](ERA_CHARACTER_WORKFLOW.md). Совместимый шаблон, измерения и bpy-инструменты находятся в `ArtSource/CharacterFactory/`. Эталон лучника не перезаписывайте; изменение rest pose не считается автоматически совместимым с готовыми Generic-анимациями.

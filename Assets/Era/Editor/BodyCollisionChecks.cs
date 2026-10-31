@@ -8,11 +8,13 @@ namespace Era.Editor
     public static class BodyCollisionChecks
     {
         static int count;
+        // Keep Z-based contact expectations unchanged, on flat terrain beside the centre trunk.
+        static readonly Vector3 FixtureOrigin=new Vector3(12,0,0);
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA body collision: "+label);}
         static Simulation New(EnemyKind kind,Vector3 player,Vector3 enemy)
         {
-            var sim=new Simulation(501);var p=sim.AddPlayer(0,"Contact",Hero.Ember);sim.Start();sim.State.spawnTimer=100000;sim.State.resourceNodes.Clear();p.position=player;p.weapons=new[]{-1,-1};p.invulnerability=1000;
-            var e=sim.SpawnEnemy(kind);e.position=enemy;e.frozen=1000;e.spawnGrace=0;return sim;
+            var sim=new Simulation(501);var p=sim.AddPlayer(0,"Contact",Hero.Ember);sim.Start();sim.State.spawnTimer=100000;sim.State.resourceNodes.Clear();p.position=player+FixtureOrigin;p.weapons=new[]{-1,-1};p.invulnerability=1000;
+            var e=sim.SpawnEnemy(kind);e.position=enemy+FixtureOrigin;e.frozen=1000;e.spawnGrace=0;return sim;
         }
         static void Walk(Simulation sim,InputFrame input,float time,float dt=1f/30)
         {var inputs=new Dictionary<int,InputFrame>{{0,input}};for(int i=0;i<Mathf.CeilToInt(time/dt);i++){sim.Step(dt,inputs);input.ConsumeEdges();}}
@@ -43,12 +45,12 @@ namespace Era.Editor
             Walk(sim,new InputFrame(),.45f);Check(e.position.y>1.5f,"diving creature recovers to hover height");
             sim=New(EnemyKind.StoneGolem,new Vector3(-1.5f,0,-3),Vector3.zero);p=sim.State.Player(0);Walk(sim,new InputFrame{x=.15f,z=1},1.5f);Check(p.position.z>3,"tangential motion slides around the body");
             var slow=New(EnemyKind.StoneGolem,Vector3.back*3,Vector3.zero);Walk(slow,new InputFrame{z=1},2,1f/60);Check(Mathf.Abs(slow.State.Player(0).position.z-stop)<.005f,"same contact at 30 and 60 steps");
-            sim=new Simulation(712);p=sim.AddPlayer(0,"Crowd",Hero.Ember);sim.Start();sim.State.spawnTimer=10000;p.position=Vector3.zero;p.invulnerability=1000;p.weapons=new[]{-1,-1};
-            for(int i=0;i<20;i++){float a=i*Mathf.PI*2/20;var mob=sim.SpawnEnemy(EnemyKind.Skeleton);mob.position=new Vector3(Mathf.Cos(a)*4,0,Mathf.Sin(a)*4);mob.spawnGrace=0;}
+            sim=new Simulation(712);p=sim.AddPlayer(0,"Crowd",Hero.Ember);sim.Start();sim.State.spawnTimer=10000;p.position=FixtureOrigin;p.invulnerability=1000;p.weapons=new[]{-1,-1};
+            for(int i=0;i<20;i++){float a=i*Mathf.PI*2/20;var mob=sim.SpawnEnemy(EnemyKind.Skeleton);mob.position=FixtureOrigin+new Vector3(Mathf.Cos(a)*4,0,Mathf.Sin(a)*4);mob.spawnGrace=0;}
             Walk(sim,new InputFrame(),5);
             foreach(var mob in sim.State.enemies)Check(!ActorBodies.Overlap(ActorBodies.Player(p),p.position,ActorBodies.Enemy(mob),mob.position,.015f),"crowd cannot enter player / "+mob.id);
             for(int i=0;i<sim.State.enemies.Count;i++)for(int j=i+1;j<sim.State.enemies.Count;j++)Check(!ActorBodies.Overlap(ActorBodies.Enemy(sim.State.enemies[i]),sim.State.enemies[i].position,ActorBodies.Enemy(sim.State.enemies[j]),sim.State.enemies[j].position,.025f),"crowd body spacing");
-            var prop=new WorldProp{position=Vector3.forward*2,size=2,kind=1};WorldMap.Props.Add(prop);
+            var prop=new WorldProp{position=FixtureOrigin+Vector3.forward*2,size=2,kind=1};WorldMap.Props.Add(prop);
             try {sim=New(EnemyKind.Ogre,Vector3.zero,Vector3.back*2);p=sim.State.Player(0);sim.State.enemies[0].frozen=0;Walk(sim,new InputFrame{z=1},3);Check(new Vector2(p.position.x-prop.position.x,p.position.z-prop.position.z).magnitude>=2.09f,"crowd pressure cannot push player into wall");}
             finally{WorldMap.Props.Remove(prop);}
             Directory.CreateDirectory("Artifacts");File.WriteAllText("Artifacts/body-checks.json","{\"ok\":true,\"assertions\":"+count+"}");return count;
