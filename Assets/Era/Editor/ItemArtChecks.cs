@@ -8,19 +8,28 @@ namespace Era.Editor
 {
     public static class ItemArtChecks
     {
+        [Serializable]sealed class SuppliedRecord{public string item,sha256;}
+        [Serializable]sealed class SuppliedManifest{public SuppliedRecord[] items;}
         static int count;
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA item art check failed: "+label);}
         public static int Run()
         {
             count=0;var hashes=new HashSet<string>();int active=0;
+            var supplied=JsonUtility.FromJson<SuppliedManifest>("{\"items\":"+File.ReadAllText("ArtSource/Items/v0.29/manifest.json")+"}");
+            Check(supplied.items.Length==10&&IconLibrary.SuppliedObjects.Length==10,"exactly ten supplied replacement objects");
             using(var sha=SHA256.Create())for(int item=0;item<ItemCatalog.Count;item++)
             {
-                string name=((ItemId)item).ToString(),png="Assets/Era/Resources/Items/v025/"+name+".png",svg="ArtSource/Items/v0.25/"+name+".svg";
+                string name=((ItemId)item).ToString(),png="Assets/Era/Resources/"+IconLibrary.ItemResourcePath(item)+".png",svg="ArtSource/Items/v0.25/"+name+".svg";
                 var texture=IconLibrary.ItemTexture(item);var sprite=IconLibrary.ItemSprite(item);
                 Check(File.Exists(png)&&File.Exists(svg)&&texture!=null&&sprite!=null,"individual PNG/SVG and runtime sprite: "+name);
                 Check(texture.name==name&&texture.width==256&&texture.height==256&&sprite.texture==texture,"stable item mapping and full resolution: "+name);
                 Check(IconLibrary.ItemUV(item)==new Rect(0,0,1,1),"no cropped card or atlas rectangle: "+name);
                 Check(hashes.Add(BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(png)))),"distinct rendered artwork: "+name);
+                if(IconLibrary.HasSuppliedObject(item))
+                {
+                    var original=Array.Find(supplied.items,p=>p.item==name);
+                    Check(original!=null&&BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(png))).Replace("-","").ToLowerInvariant()==original.sha256,"selected cutout PNG and item identity: "+name);
+                }
                 int visible=0,transparent=0,minX=256,minY=256,maxX=0,maxY=0;var pixels=texture.GetPixels32();bool border=true;
                 for(int y=0;y<256;y++)for(int x=0;x<256;x++)
                 {

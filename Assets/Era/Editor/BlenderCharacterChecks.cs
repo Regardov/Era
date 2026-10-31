@@ -18,9 +18,9 @@ namespace Era.Editor
                 if(source.GetComponent<HeroMotion>()?.archer!=null){count+=ArcherAnimationChecks.RunPrefab(source);continue;}
                 if(source.GetComponent<HeroMotion>()?.lumen!=null){count+=LumenAnimationChecks.RunPrefab(source);continue;}
                 var metadata=source.GetComponent<AuthoredCharacter>();var skin=source.GetComponentInChildren<SkinnedMeshRenderer>();var mesh=skin.sharedMesh;
-                Check(metadata!=null&&metadata.version==19&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
+                Check(metadata!=null&&metadata.version==(name=="Echo"?29:19)&&metadata.model==name&&metadata.sourceHash.Length==64,"Blender source provenance: "+name);
                 if(name!="Stalker"&&name!="Wisp")Check(metadata.details.Any(d=>d.StartsWith("Hair / continuous fitted scalp")),"continuous hair covers the scalp: "+name);
-                Check(metadata.details.Length>=65&&metadata.triangles>=1500&&metadata.triangles<7000,"named costume details and bounded polygon budget: "+name);
+                Check(metadata.details.Length>=65&&metadata.triangles>=1500&&metadata.triangles<(name=="Echo"?14000:7000),"named costume details and bounded polygon budget: "+name);
                 Check(mesh.vertexCount==metadata.triangles*3&&mesh.vertexCount<60000&&mesh.colors.Length==mesh.vertexCount,"smooth low-poly surfaces carry their authored palette: "+name);
                 Check(mesh.bounds.min.y>=-.08f&&mesh.bounds.max.y>2&&mesh.bounds.max.y<3,"boots meet the floor and proportions stay human scale: "+name);
                 Check(mesh.normals.Length==mesh.vertexCount&&mesh.normals.All(n=>n.sqrMagnitude>.98f&&n.sqrMagnitude<1.02f),"authored unit normals preserved: "+name);

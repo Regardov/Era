@@ -97,18 +97,21 @@ namespace Era
                 actor.root.transform.rotation=actor.hero.archer!=null?Quaternion.Euler(0,actor.hero.archer.ResolveFacing(p,PresentationMotion.Delta),0):Quaternion.Slerp(actor.root.transform.rotation,Quaternion.Euler(0,p.yaw,0),blend);
                 if(actor.root.GetComponent<AbilityPresentation>()==null)actor.root.AddComponent<AbilityPresentation>().owner=p.id;
                 if(actor.hero.archer!=null)actor.hero.archer.Present(p);else if(actor.hero.lumen!=null)actor.hero.lumen.Present(p);else if(actor.hero.skeletal!=null)actor.hero.skeletal.Hero(p);else actor.hero.Pose(p.velocity,p.grounded,p.verticalSpeed,Mathf.Max(p.castTime,p.weaponPoseTime*2),p.downed,p.dashTime>0);
-                if(actor.weaponKind!=p.lastWeapon&&p.lastWeapon>=0)
+                int shownWeapon=p.lastWeapon;
+                if(p.hero==Hero.Echo&&shownWeapon<0&&p.weapons.Length>0)shownWeapon=p.weapons[0];
+                if(actor.weaponKind!=shownWeapon&&shownWeapon>=0)
                 {
                     if(actor.weapon!=null){actor.weapon.SetActive(false);Destroy(actor.weapon);}var wand=actor.hero.rightElbow.Find("Wand");if(wand!=null)wand.gameObject.SetActive(false);
-                    actor.weapon=null;actor.weaponKind=p.lastWeapon;
+                    actor.weapon=null;actor.weaponKind=shownWeapon;
                     // The authored archer bow/string are already skinned and animated.
                     // Legacy WeaponGrip would fight the baked Generic arm animation.
-                    if(actor.hero.archer==null||p.lastWeapon!=(int)WeaponKind.Bow)
+                    if(actor.hero.archer==null||shownWeapon!=(int)WeaponKind.Bow)
                     {
-                        bool rune=actor.hero.lumen!=null&&p.lastWeapon==(int)WeaponKind.Aura;
-                        actor.weapon=rune?LumenRuneFocus.Create(actor.hero.lumen,actor.root.transform,p.id):WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)p.lastWeapon);
-                        if(!rune){actor.weapon.transform.localPosition=actor.hero.skeletal!=null||actor.hero.archer!=null||actor.hero.lumen!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}}
-                        if(actor.hero.archer==null&&!rune){var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)p.lastWeapon;}
+                        bool rune=actor.hero.lumen!=null&&shownWeapon==(int)WeaponKind.Aura;
+                        bool echoWand=p.hero==Hero.Echo&&shownWeapon==(int)WeaponKind.LightningStaff;
+                        actor.weapon=rune?LumenRuneFocus.Create(actor.hero.lumen,actor.root.transform,p.id):echoWand?Instantiate(Resources.Load<GameObject>("Weapons/EchoWand"),actor.hero.rightElbow,false):WeaponVisuals.Create(v,actor.hero.rightElbow,(WeaponKind)shownWeapon);
+                        if(!rune){actor.weapon.transform.localPosition=actor.hero.skeletal!=null||actor.hero.archer!=null||actor.hero.lumen!=null?Vector3.zero:new Vector3(0,-.30f,.07f);if(actor.hero.skeletal!=null&&!echoWand){actor.weapon.transform.localRotation=Quaternion.Euler(90,0,0);actor.weapon.transform.localScale=Vector3.one*.8f;}}
+                        if(actor.hero.archer==null&&!rune){var grip=actor.weapon.AddComponent<WeaponGrip>();grip.actor=actor.root.transform;grip.hand=actor.hero.rightElbow;grip.owner=p.id;grip.kind=(WeaponKind)shownWeapon;}
                         actor.weapon.GetComponent<WeaponPresentation>()?.BindOwner(p.id);
                     }
                 }

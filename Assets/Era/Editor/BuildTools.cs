@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.28.0";
+            PlayerSettings.bundleVersion = "0.29.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -61,8 +61,8 @@ namespace Era.Editor
             if(waterShader==null||stillWater==null)throw new Exception("Missing transparent water shader");
             for(int i=0;i<included.arraySize;i++)if(included.GetArrayElementAtIndex(i).objectReferenceValue==stillWater)stillIncluded=true;
             if(!stillIncluded){included.InsertArrayElementAtIndex(included.arraySize);included.GetArrayElementAtIndex(included.arraySize-1).objectReferenceValue=stillWater;graphics.ApplyModifiedPropertiesWithoutUndo();}
-            IconBuilder.Prepare();PrepareItemArtwork();ItemArtworkBuilder.Prepare();SurfaceTextureBuilder.Prepare();FeedbackPrefabBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();
+            IconBuilder.Prepare();PrepareItemArtwork();ItemArtworkBuilder.Prepare();SuppliedItemArtwork.Prepare();SurfaceTextureBuilder.Prepare();FeedbackPrefabBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();EchoWandBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();BlenderCharacterImporter.Prepare(true);ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);

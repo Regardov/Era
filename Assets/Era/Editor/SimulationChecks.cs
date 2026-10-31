@@ -28,7 +28,7 @@ namespace Era.Editor
         [MenuItem("ERA/Run simulation and network checks")]
         public static void Run()
         {
-            assertions = 0;assertions+=AccessoryChecks.Run();
+            assertions = 0;assertions+=AccessoryChecks.Run();assertions+=UpgradeChecks.Run();
             Readiness();Movement();Jumping();Crouching();Shrines();Combat();Weapons();Progression();AurasAndMilestone();Campaign();LevelPause();Economy();ChestPricesAndAuraProgress();Encounters();Cooperation();Endings();Serialization();Presentation();Localization();Network();WorldMap.SetStage(1);
             TuningAndRandomStarts();assertions+=PassiveAutumnChecks.Run();assertions+=LootBalanceChecks.Run();assertions+=ItemArtChecks.Run();assertions+=BodyCollisionChecks.Run();assertions+=MechanicFeedbackChecks.Run();assertions+=PresentationChecks.Run();assertions+=RoguelikeChecks.Run();assertions+=BalanceChecks.Run();assertions+=DifficultyChecks.Run();assertions+=BlenderCharacterChecks.Run();
             Directory.CreateDirectory("Artifacts");

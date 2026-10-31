@@ -405,19 +405,20 @@ namespace Era
             var p=App.LocalPlayer;bool solo=!App.Online;
             bool aura=p.offerKind==RewardKind.Aura,weapon=p.offerKind==RewardKind.Weapon;
             string title=weapon?I18n.P("LEVEL 25 · CHOOSE YOUR SECOND WEAPON","УРОВЕНЬ 25 · ВЫБЕРИТЕ ВТОРОЕ ОРУЖИЕ"):aura?I18n.P("LUMEN · CHOOSE ONE OF THREE AURAS","ЛЮМЕН · ВЫБЕРИТЕ ОДНУ ИЗ ТРЁХ АУР"):I18n.P("CHOOSE AN ACCESSORY","ВЫБЕРИТЕ АКСЕССУАР");
+            var layout=UpgradeLayout.Create(p.offers.Length,!solo);
             if(solo)
             {
-                Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(220,238,1160,410,Panel,26);
-                Text(title,250,260,1100,38,23,Sage,true,TextAnchor.UpperCenter);
-                Text(aura?I18n.P("Three random new auras or upgrades. Up to three aura types.","Три случайные новые ауры или улучшения. До трёх типов аур."):weapon?I18n.P("The world is paused until you choose.","Мир на паузе до выбора."):I18n.P("Four permanent slots this run. Once full, only equipped accessories can improve.","Четыре слота до конца забега. После заполнения улучшается только выбранная бижутерия."),250,305,1100,44,16,Muted,false,TextAnchor.UpperCenter);
-                int cols=p.offers.Length>3?4:3;for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,245+(i%cols)*(cols==4?280:370),355+(i/cols)*161,cols==4?266:350,210,true);
-                Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),250,602,1100,26,15,Muted,false,TextAnchor.UpperCenter);
+                Flat(0,0,1600,900,new Color(.20f,.29f,.25f,.52f));Box(layout.panel.x,layout.panel.y,layout.panel.width,layout.panel.height,Panel,26);
+                Text(title,layout.title.x,layout.title.y,layout.title.width,layout.title.height,23,Sage,true,TextAnchor.UpperCenter);
+                Text(aura?I18n.P("Three random new auras or upgrades. Up to three aura types.","Три случайные новые ауры или улучшения. До трёх типов аур."):weapon?I18n.P("The world is paused until you choose.","Мир на паузе до выбора."):I18n.P("Four permanent slots this run. Once full, only equipped accessories can improve.","Четыре слота до конца забега. После заполнения улучшается только выбранная бижутерия."),layout.subtitle.x,layout.subtitle.y,layout.subtitle.width,layout.subtitle.height,16,Muted,false,TextAnchor.UpperCenter);
+                for(int i=0;i<p.offers.Length;i++){var r=layout.cards[i];UpgradeCard(p,i,r.x,r.y,r.width,r.height,true);}
+                Text(I18n.P("Mouse or keys 1–","Мышь или клавиши 1–")+p.offers.Length+I18n.P(" · Level "," · Уровень ")+(p.completedLevel+1),layout.footer.x,layout.footer.y,layout.footer.width,layout.footer.height,15,Muted,false,TextAnchor.UpperCenter);
             }
             else
             {
-                Box(1214,235,362,Mathf.Max(380,116+p.offers.Length*92),Panel,20);Text(title,1232,248,326,49,16,Sage,true);
+                Box(layout.panel.x,layout.panel.y,layout.panel.width,layout.panel.height,Panel,20);Text(title,1232,248,326,49,16,Sage,true);
                 Text(I18n.P("1–","1–")+p.offers.Length+I18n.P(" · ALT for cursor"," · ALT для курсора"),1232,298,326,22,13,Muted);
-                for(int i=0;i<p.offers.Length;i++)UpgradeCard(p,i,1226,331+i*92,338,86,false);
+                for(int i=0;i<p.offers.Length;i++){var r=layout.cards[i];UpgradeCard(p,i,r.x,r.y,r.width,r.height,false);}
             }
         }
         void UpgradeCard(PlayerState p,int i,float x,float y,float w,float h,bool large)

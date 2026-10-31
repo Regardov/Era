@@ -81,6 +81,7 @@ namespace Era
         void Start()
         {
             var args=Environment.GetCommandLineArgs();
+            if(Automated&&Array.IndexOf(args,"--smoke-update29")>=0){gameObject.AddComponent<Update29Diagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-polish")>=0){gameObject.AddComponent<PolishDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-accessories")>=0){gameObject.AddComponent<AccessoryDiagnostics>();return;}
             if(Automated&&Array.IndexOf(args,"--smoke-item-art")>=0){gameObject.AddComponent<ItemArtDiagnostics>();return;}
@@ -178,7 +179,7 @@ namespace Era
         void ReadInput(bool running)
         {
             if(running&&UpgradeSelection&&!Paused&&!Inventory)
-            {for(int i=0;i<LocalPlayer.offers.Length&&i<8;i++)if(Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i)))Choose(i);}
+            {for(int i=0;i<LocalPlayer.offers.Length&&i<8;i++)if(Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i))){Choose(i);break;}}
             if(!running || Paused || Inventory || (UpgradeSelection&&!Online))
             {int choice=local.choice;local.x=local.z=0;local.crouch=local.jumpHeld=false;local.revive=running&&UpgradeSelection&&!Paused&&!Inventory&&Input.GetKey(KeyCode.F);local.ConsumeEdges();if(running&&!Paused&&!Inventory)local.choice=choice;return;}
             var raw=new Vector3(Input.GetKey(KeyCode.D)?1:Input.GetKey(KeyCode.A)?-1:0,0,Input.GetKey(KeyCode.W)?1:Input.GetKey(KeyCode.S)?-1:0);
@@ -188,7 +189,6 @@ namespace Era
             local.revive=Input.GetKey(KeyCode.F);local.interact|=Input.GetKeyDown(KeyCode.F);
             if(Input.GetMouseButtonDown(0)&&LocalPlayer!=null&&Physics.Raycast(View.Camera.ScreenPointToRay(Input.mousePosition),out var hit,20,~((1<<ActorBodyCollider.PlayerLayer)|(1<<ActorBodyCollider.EnemyLayer))))
             {var target=hit.collider.GetComponentInParent<ClickInteractable>();if(target!=null&&Vector3.Distance(LocalPlayer.position,target.transform.position)<target.radius)local.interact=true;}
-            if(Input.GetKeyDown(KeyCode.Alpha1))Choose(0);if(Input.GetKeyDown(KeyCode.Alpha2))Choose(1);if(Input.GetKeyDown(KeyCode.Alpha3))Choose(2);
         }
         void Send(string kind,string payload="",bool snapshot=false)=>transport?.Send(JsonUtility.ToJson(new WireMessage{kind=kind,payload=payload}),snapshot);
         void SendTo(int peer,string kind,string payload="",int playerId=-1)=>transport?.SendTo(peer,JsonUtility.ToJson(new WireMessage{kind=kind,payload=payload,playerId=playerId}));

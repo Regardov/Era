@@ -1,12 +1,16 @@
-# ERA: Seven Realms — v0.28.0
+# ERA: Seven Realms — v0.29.0
 
-**В текущих исходниках v0.28:** исправленные переносы текста в карточках, новые шаги и свободное движение рук Люмена V12, видимая золотая аура с вращающимися дугами, лучами, искрами и нимбом. [Изменения](Docs/UPDATE-v0.28.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.28.md) · [Blender V12](ArtSource/Characters/AuraWeaver/ReleaseV12/README.md). Сборка из исходников: `Tools/Build.ps1`.
+**В текущих исходниках v0.29:** десять присланных иконок с очищенной прозрачностью, улучшенная собственная модель Эхо с короткой палочкой и исправленное окно второго оружия на 25-м уровне. [Изменения](Docs/UPDATE-v0.29.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.29.md) · [Исходник Эхо](ArtSource/Characters/Echo/ReleaseV29/README.md) · [Иконки](ArtSource/Items/v0.29/README.md).
+
+![Пять вариантов второго оружия полностью внутри окна](Docs/Update-v029/Weapons-Lumen-RU.png)
+
+**Сохранено из v0.28:** исправленные переносы текста в карточках, новые шаги и свободное движение рук Люмена V12, видимая золотая аура с вращающимися дугами, лучами, искрами и нимбом. [Изменения](Docs/UPDATE-v0.28.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.28.md) · [Blender V12](ArtSource/Characters/AuraWeaver/ReleaseV12/README.md). Сборка из исходников: `Tools/Build.ps1`.
 
 ![Исправленные переносы в настоящем игровом интерфейсе](Docs/Polish-v028/Native-Russian-cards.png)
 
 **Сохранено из v0.27:** четыре постоянных слота бижутерии с растущими уровнями, максимум три ауры Люмена, плавная полоска HP над персонажем и выбор лимита FPS, включая режим без лимита. [Правила](Docs/UPDATE-v0.27.md) · [Проверки](Docs/VALIDATION-v0.27.md).
 
-**[Последний опубликованный Windows-архив: v0.26.1 — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.1). Для изменений v0.28 используйте текущие исходники или собранный локально Player.
+**[Последний опубликованный Windows-архив: v0.26.1 — Era-Windows.zip](https://github.com/Regardov/Era/releases/download/v0.26.1/Era-Windows.zip)** · [Страница релиза](https://github.com/Regardov/Era/releases/tag/v0.26.1). Для изменений v0.29 используйте текущие исходники или собранный локально Player.
 
 **v0.26.1 — исправления Люмена:** янтарная руна у ладоней вместо старого зелёного Aura-фокуса, разные походки и наклон корпуса, коррекция мантии по ногам, непрозрачная замкнутая шляпа с плавным кончиком и приподнятые передние сумки. [Изменения](Docs/RELEASE-v0.26.1.md) · [Проверки и игровые кадры](Docs/VALIDATION-v0.26.1.md) · [Blender V10](ArtSource/Characters/AuraWeaver/ReleaseV10/README.md).
 

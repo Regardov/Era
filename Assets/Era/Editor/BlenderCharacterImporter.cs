@@ -12,24 +12,27 @@ namespace Era.Editor
     public static class BlenderCharacterImporter
     {
         const string Input="Assets/Era/Art/BlenderCharacters/",Library="Assets/Era/Generated/BlenderCharacters-v16.asset",Marker="Assets/Era/Generated/BlenderCharacters-v16.txt";
+        public const string EchoSource="ArtSource/Characters/Echo/ReleaseV29/Echo.era-mesh.json";
         public static readonly string[] Models={"Wayfarer","DuskMage","Stalker","Wisp","Ember","Lumen","Echo"};
         [Serializable]sealed class Part{public string name;public int first,count;}
         [Serializable]sealed class Model{public string name;public string[] bones;public float[] bindPositions,positions,normals,surfaces,colors,weights;public int[] joints;public Part[] parts;}
         static string Hash(string path){using var sha=SHA256.Create();return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path))).Replace("-","").ToLowerInvariant();}
         public static string PrefabPath(string name)=>"Assets/Era/Resources/"+(name=="Stalker"||name=="Wisp"?"Creatures/":name=="Wayfarer"||name=="DuskMage"?"Characters/Library/":"Characters/")+name+".prefab";
         [MenuItem("ERA/Import Blender character workshop")]
-        public static void Prepare()
+        public static void Prepare()=>Prepare(false);
+        public static void Prepare(bool echoOnly)
         {
-            string signature="Blender character workshop v19 / smooth closed clothing / grips / "+string.Join(" / ",Models.Select(n=>Hash(Input+n+".era-mesh.json")));
-            if(File.Exists(Marker)&&File.ReadAllText(Marker).Trim()==signature)return;
+            string signature=echoOnly?"Refined Earthbound Monk v29 / "+Hash(EchoSource):"Blender character workshop v19 / smooth closed clothing / grips / "+string.Join(" / ",Models.Select(n=>Hash(Input+n+".era-mesh.json")));
+            string marker=echoOnly?"Assets/Era/Generated/Echo-v029.txt":Marker,libraryPath=echoOnly?"Assets/Era/Generated/Echo-v029.asset":Library;
+            if(File.Exists(marker)&&File.ReadAllText(marker).Trim()==signature&&(!echoOnly||AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath("Echo"))?.GetComponent<AuthoredCharacter>()?.version==29))return;
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            if(File.Exists(Library))AssetDatabase.DeleteAsset(Library);
-            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,Library);
+            if(File.Exists(libraryPath))AssetDatabase.DeleteAsset(libraryPath);
+            var library=ScriptableObject.CreateInstance<WorldAssetLibrary>();AssetDatabase.CreateAsset(library,libraryPath);
             var material=new Material(Shader.Find("Era/Character Surface")){name="Blender / smooth cloth, skin, hair and hard metal"};AssetDatabase.AddObjectToAsset(material,library);
             Directory.CreateDirectory("Assets/Era/Resources/Characters/Library");
-            foreach(string name in Models)
+            foreach(string name in echoOnly?new[]{"Echo"}:Models)
             {
-                string file=Input+name+".era-mesh.json";var data=JsonUtility.FromJson<Model>(File.ReadAllText(file));
+                string file=echoOnly?EchoSource:Input+name+".era-mesh.json";var data=JsonUtility.FromJson<Model>(File.ReadAllText(file));
                 string source=PrefabPath(name=="Wayfarer"?"Lumen":name=="DuskMage"?"Echo":name);
                 if(name=="Wayfarer"&&AssetDatabase.LoadAssetAtPath<GameObject>(source)?.GetComponent<HeroMotion>()?.lumen!=null)source=PrefabPath("Wayfarer");
                 if(name=="Lumen"&&AssetDatabase.LoadAssetAtPath<GameObject>(source)?.GetComponent<HeroMotion>()?.lumen!=null)continue;
@@ -86,7 +89,7 @@ namespace Era.Editor
                     AssetDatabase.AddObjectToAsset(mesh,library);
                     var part=new GameObject("Blender character / "+name);part.transform.SetParent(root.transform,false);
                     var surface=part.AddComponent<SkinnedMeshRenderer>();surface.sharedMesh=mesh;surface.sharedMaterial=material;surface.bones=bones;surface.rootBone=rig.hips;surface.localBounds=new Bounds(Vector3.up*1.4f,new Vector3(4,5,4));
-                    var metadata=root.GetComponent<AuthoredCharacter>()??root.AddComponent<AuthoredCharacter>();metadata.version=19;metadata.model=name;metadata.sourceHash=Hash(file);metadata.triangles=count/3;metadata.details=data.parts.Select(p=>p.name).ToArray();
+                    var metadata=root.GetComponent<AuthoredCharacter>()??root.AddComponent<AuthoredCharacter>();metadata.version=echoOnly?29:19;metadata.model=name;metadata.sourceHash=Hash(file);metadata.triangles=count/3;metadata.details=data.parts.Select(p=>p.name).ToArray();
                     if(root.GetComponent<CostumeMotion>()==null)root.AddComponent<CostumeMotion>();
                     rig.animationPlayer.enabled=true;
                     PrefabUtility.SaveAsPrefabAsset(root,PrefabPath(name));
@@ -94,7 +97,7 @@ namespace Era.Editor
                 }
                 finally{Object.DestroyImmediate(root);}
             }
-            File.WriteAllText(Marker,signature+"\n");AssetDatabase.SaveAssets();AssetDatabase.Refresh();
+            File.WriteAllText(marker,signature+"\n");AssetDatabase.SaveAssets();AssetDatabase.Refresh();
         }
     }
 }

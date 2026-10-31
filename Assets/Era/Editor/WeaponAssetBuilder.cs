@@ -9,7 +9,7 @@ namespace Era.Editor
     {
         const string Folder="Assets/Era/Resources/Weapons/",Marker="Assets/Era/Generated/Weapons-v19.txt",Signature="smooth weapons / fitted sockets / v19.3";
         static readonly Color Wood=new Color(.29f,.17f,.085f),Grip=new Color(.15f,.085f,.05f),Gold=new Color(.78f,.53f,.19f),Metal=new Color(.66f,.74f,.76f);
-        sealed class Draft
+        internal sealed class Draft
         {
             readonly List<Vector3> vertices=new List<Vector3>(),normals=new List<Vector3>();readonly List<Color> colors=new List<Color>();readonly List<int> triangles=new List<int>();readonly List<Vector2> surfaces=new List<Vector2>();
             int Vertex(Vector3 p,Vector3 n,Color c,bool metal){int at=vertices.Count;vertices.Add(p);normals.Add(n);colors.Add(c.linear);surfaces.Add(metal?new Vector2(.38f,.72f):new Vector2(.10f,0));return at;}

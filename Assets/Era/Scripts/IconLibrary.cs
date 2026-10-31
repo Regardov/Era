@@ -44,10 +44,13 @@ namespace Era
         public static Texture2D ItemAtlas=>Resources.Load<Texture2D>("UI/item-sheet-1");
         public static bool HasSuppliedItemArt(int item)=>Cell(item,out _,out _);
         static readonly Texture2D[] ItemTextures=new Texture2D[ItemCatalog.Count];
+        public static readonly ItemId[] SuppliedObjects={ItemId.SharpBlade,ItemId.SteelShield,ItemId.GoldenCoin,ItemId.StoutHeart,ItemId.SpikedGloves,ItemId.WingedBoots,ItemId.Hourglass,ItemId.HeartyMeal,ItemId.SmallPotion,ItemId.BeginnersLuck};
+        public static bool HasSuppliedObject(int item)=>System.Array.IndexOf(SuppliedObjects,(ItemId)item)>=0;
+        public static string ItemResourcePath(int item)=>"Items/"+(HasSuppliedObject(item)?"v029/":"v025/")+(ItemId)item;
         public static Texture2D ItemTexture(int item)
         {
             if(item<0||item>=ItemCatalog.Count)return null;
-            if(ItemTextures[item]==null)ItemTextures[item]=Resources.Load<Texture2D>("Items/v025/"+(ItemId)item);
+            if(ItemTextures[item]==null)ItemTextures[item]=Resources.Load<Texture2D>(ItemResourcePath(item));
             return ItemTextures[item];
         }
         public static Rect ItemPixels(int item)
