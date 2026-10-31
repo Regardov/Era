@@ -59,7 +59,7 @@ namespace Era
             App.Solo();App.CameraYaw=0;App.CameraPitch=25;
             App.State.enemies.Clear();App.State.resourceNodes.Clear();App.State.spawnTimer=100000;
             App.LocalPlayer.weapons=new[]{-1,-1};App.LocalPlayer.lastWeapon=App.SelectedHero==Hero.Ember?(int)WeaponKind.Bow:-1;
-            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.position=WorldMap.OnGround(0,0);
+            App.LocalPlayer.invulnerability=10000;App.LocalPlayer.position=WorldMap.OnGround(0,-24);
             started=Time.realtimeSinceStartup;
             gameObject.AddComponent<CameraMotionInputStage>().owner=this;
         }
@@ -77,10 +77,22 @@ namespace Era
                 phaseStarted=Time.realtimeSinceStartup;previous=false;
                 current=new Phase{direction=names[phase]};
                 // Start each route inside the ordinary flat central clearing.
-                var d=directions[phase];App.LocalPlayer.position=WorldMap.OnGround(-d.x*9,-d.z*9);
+                var d=directions[phase];App.LocalPlayer.position=ClearRoute(d);
                 App.LocalPlayer.velocity=Vector3.zero;App.LocalPlayer.yaw=0;captured=false;
             }
             App.LocalInput.x=directions[phase].x;App.LocalInput.z=directions[phase].z;App.LocalInput.yaw=0;
+        }
+        static Vector3 ClearRoute(Vector3 direction)
+        {
+            var sideways=Vector3.Cross(direction,Vector3.up);
+            foreach(var landmark in new[]{new Vector3(105,0,80),new Vector3(60,0,-110),new Vector3(-95,0,70)})
+            for(int k=0;k<20;k++)
+            {
+                var offset=sideways*((k%2==0?1:-1)*(k/2)*2);var start=landmark-direction*12+offset;bool clear=true;
+                for(int i=0;i<=60;i++){var q=start+direction*(i*25f/60);q.y=WorldMap.Ground(q);if(!WorldMap.ClearLocation(q,.6f)){clear=false;break;}}
+                if(clear)return WorldMap.OnGround(start.x,start.z);
+            }
+            throw new InvalidOperationException("No unobstructed camera test route");
         }
         void LateUpdate()
         {

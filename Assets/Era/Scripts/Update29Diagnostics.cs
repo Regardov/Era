@@ -37,7 +37,7 @@ namespace Era
         void Enter()
         {
             phaseAt=Time.realtimeSinceStartup;captured=false;
-            if(phase<=5){App.LocalPlayer.position=WorldMap.OnGround(0,0);App.LocalPlayer.velocity=Vector3.zero;App.LocalInput.jump|=phase==5;App.LocalInput.primary|=phase==3;return;}
+            if(phase<=5){App.LocalPlayer.position=WorldMap.OnGround(0,-24);App.LocalPlayer.velocity=Vector3.zero;App.LocalInput.jump|=phase==5;App.LocalInput.primary|=phase==3;return;}
             if(phase==6){App.Paused=false;hud.enabled=false;return;}
             hud.enabled=true;App.Paused=false;App.View.Camera.orthographic=false;App.View.Camera.GetComponent<StillwaterLens>().enabled=true;typeof(GameApp).GetProperty(nameof(GameApp.Online)).SetValue(App,false);
             App.SelectedHero=phase==9?Hero.Echo:phase==10?Hero.Ember:Hero.Lumen;App.Solo();

@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.29.0";
+            PlayerSettings.bundleVersion = "0.30.0";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -46,7 +46,7 @@ namespace Era.Editor
             // Runtime-generated materials still need explicit shader references in the player build.
             var graphics = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")[0]);
             var included = graphics.FindProperty("m_AlwaysIncludedShaders");
-            foreach (string shaderName in new[] { "Standard", "Era/Character Surface", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture", "Era/Feedback Solid", "Era/Protective Field", "Era/Living Flame", "Era/Loot Glow", "Era/Lumen Aura" })
+            foreach (string shaderName in new[] { "Standard", "Era/Character Surface", "Sprites/Default", "Era/Rift Portal", "Era/Actor Satin", "Era/Faceted Realm", "Era/Low Poly", "Era/Foliage", "Era/Realm Surface", "Era/Realm Terrain", "Era/Realm Leaves", "Era/Meadow Grass", "Era/Painted Sky", "Hidden/Era/Stillwater Lens", "Hidden/Era/Capture", "Era/Feedback Solid", "Era/Protective Field", "Era/Living Flame", "Era/Loot Glow", "Era/Lumen Aura", "Hidden/Era/WorldTreeMask" })
             {
                 var shader = Shader.Find(shaderName); bool found = false;
                 if (shader == null) throw new Exception("Missing shader: " + shaderName);
@@ -62,7 +62,7 @@ namespace Era.Editor
             for(int i=0;i<included.arraySize;i++)if(included.GetArrayElementAtIndex(i).objectReferenceValue==stillWater)stillIncluded=true;
             if(!stillIncluded){included.InsertArrayElementAtIndex(included.arraySize);included.GetArrayElementAtIndex(included.arraySize-1).objectReferenceValue=stillWater;graphics.ApplyModifiedPropertiesWithoutUndo();}
             IconBuilder.Prepare();PrepareItemArtwork();ItemArtworkBuilder.Prepare();SuppliedItemArtwork.Prepare();SurfaceTextureBuilder.Prepare();FeedbackPrefabBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();EchoWandBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();BlenderCharacterImporter.Prepare(true);ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();EchoWandBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();BlenderCharacterImporter.Prepare(true);ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();GolemImporter.Prepare();WorldTreeImporter.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);
@@ -154,14 +154,15 @@ namespace Era.Editor
         public static void BuildWindows()
         {
             PrepareProject();
-            SimulationChecks.Run();
+            SimulationChecks.Run();WorldTreeChecks.Run();GolemTreeChecks.Run();
             string output="Builds/Windows";var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--era-output");if(at>=0&&at+1<args.Length)output=Path.GetFullPath(args[at+1]);Directory.CreateDirectory(output);
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                 scenes = new[] { ScenePath }, locationPathName = Path.Combine(output,"Era.exe"),
-                target = BuildTarget.StandaloneWindows64, options = BuildOptions.None
+                target = BuildTarget.StandaloneWindows64, options = BuildOptions.DetailedBuildReport | (Array.IndexOf(args,"--era-clean-build")>=0?BuildOptions.CleanBuildCache:BuildOptions.None)
             });
             if (report.summary.result != BuildResult.Succeeded)
                 throw new Exception("Windows build failed: " + report.summary.result + " / " + report.summary.totalErrors);
+            WorldTreeChecks.RecordBuild(report);
             Debug.Log("ERA_BUILD_OK " + report.summary.totalSize + " bytes");
         }
         [MenuItem("ERA/Open game scene")]

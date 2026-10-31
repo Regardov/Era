@@ -8,4 +8,4 @@
 
 ![Контрольные виды улучшенной собственной модели Эхо](Echo-turnaround.png)
 
-Повторение: `blender --background --threads 2 --python-exit-code 3 --python ArtSource/Characters/Echo/ReleaseV29/refine_echo.py` из корня проекта. Скрипт загружает v19, сохраняет отдельные исходники и JSON, сравнивает rest skeleton и bind positions и проверяет контрольную сумму исходной мастерской. [Отчёт экспорта](validation.json). Реальная деформация, все комбинации оружия и захват проверяются отдельно в Unity Player; [итоговый отчёт](../../../../Docs/VALIDATION-v0.29.md).
+Повторение: `blender --background --threads 2 --python-exit-code 3 --python ArtSource/Characters/Echo/ReleaseV29/refine_echo.py` из корня проекта. Скрипт загружает v19, сохраняет отдельные исходники и JSON, сравнивает rest skeleton и bind positions и проверяет контрольную сумму исходной мастерской. [Отчёт экспорта](validation.json). Реальная деформация, все комбинации оружия и захват проверяются отдельно в Unity Player; [итоговый отчёт](../../../../Docs/VALIDATION-v0.30.md).

@@ -1,87 +1,56 @@
-$ErrorActionPreference = 'Stop'
-$projectPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$buildPath = Join-Path $projectPath 'Builds\Windows'
-if (-not (Test-Path -LiteralPath (Join-Path $buildPath 'Era.exe'))) { throw 'Build with Tools\Build.ps1 first' }
-# Only remove outdated documents from this generated build folder.
-foreach ($eraOldDocument in @('ITEMS-v0.12.md','RELEASE-v0.12.0.md','VALIDATION-v0.12.md','ITEMS-v0.13.md','RELEASE-v0.13.0.md','VALIDATION-v0.13.md','RELEASE-v0.14.0.md','VALIDATION-v0.14.md','RELEASE-v0.15.0.md','VALIDATION-v0.15.md','RELEASE-v0.16.0.md','VALIDATION-v0.16.md','RELEASE-v0.17.0.md','VALIDATION-v0.17.md','RELEASE-v0.18.0.md','VALIDATION-v0.18.md')) {
-    $eraOldPath = Join-Path $buildPath $eraOldDocument
-    if (Test-Path -LiteralPath $eraOldPath) { Remove-Item -LiteralPath $eraOldPath }
+param([string]$Version='0.30.0')
+$ErrorActionPreference='Stop'
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$eraProject=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$eraBuild=Join-Path $eraProject 'Builds/Windows'
+$eraOut=Join-Path $eraProject "Releases/v$Version"
+New-Item -ItemType Directory -Path $eraOut -Force | Out-Null
+$eraArchive=Join-Path $eraOut 'Era-Windows.zip'
+$eraPacked=Get-Content (Join-Path $eraProject 'Artifacts/player-content.json') -Raw | ConvertFrom-Json
+$eraTreeReportPath=Join-Path $eraProject 'Artifacts/WorldTree/world-tree.json'
+$eraTreeReport=Get-Content $eraTreeReportPath -Raw | ConvertFrom-Json
+if($eraPacked.assetCount -lt 1 -or -not $eraPacked.noAuthoringLibrary -or $eraPacked.version -ne $Version -or -not $eraTreeReport.ok -or $eraTreeReport.worlds.Count -ne 7){throw 'Player content audit and seven-realm runtime validation must pass first'}
+if((Get-Item $eraTreeReportPath).LastWriteTime -lt (Get-Item (Join-Path $eraBuild 'Era_Data/Managed/Assembly-CSharp.dll')).LastWriteTime){throw 'Runtime report predates this Player build'}
+if([version]$Version -ge [version]'0.29.2'){
+    $eraGolemPath=Join-Path $eraProject 'Artifacts/GolemTree-v0292/golem-tree-runtime.json'
+    $eraGolem=Get-Content -LiteralPath $eraGolemPath -Raw | ConvertFrom-Json
+    if(-not $eraGolem.ok -or $eraGolem.version -ne $Version -or (Get-Item $eraGolemPath).LastWriteTime -lt (Get-Item (Join-Path $eraBuild 'Era_Data/Managed/Assembly-CSharp.dll')).LastWriteTime){throw 'Fresh golem / root runtime validation required'}
 }
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\PLAY-RU.md') -Destination (Join-Path $buildPath 'PLAY-RU.md') -Force
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\DOWNLOAD-RU.md') -Destination (Join-Path $buildPath 'DOWNLOAD-RU.md') -Force
-foreach ($eraDocument in @('ITEMS-v0.14.md','RELEASE-v0.21.0.md','VALIDATION-v0.21.md','ARCHER-RECOVERY-v0.21.md','archer-runtime-v021.json','archer-runtime-before-recovery.json','archer-editor-v021.json','archer-source-v021.json','archer-preservation-v021.json','characters-smoke-v021.json','rig-smoke-v021.json','animation-smoke-v021.json','feedback-smoke-v021.json','RELEASE-v0.20.0.md','FEEDBACK-VALIDATION.md','MECHANIC-FEEDBACK-AUDIT.md','feedback-changed-files.txt','ENVIRONMENT-POLISH.md','MUSIC.md','CHARACTER-BODY-v0.19.md','ANIMATION-AUDIT-v0.18.md','body-checks-v019.json','rig-smoke-v019.json','animation-smoke-v019.json')) {
-    $eraDocumentPath = Join-Path $projectPath "Docs\$eraDocument"
-    if (Test-Path -LiteralPath $eraDocumentPath) { Copy-Item -LiteralPath $eraDocumentPath -Destination (Join-Path $buildPath $eraDocument) -Force }
+$eraFiles=[Collections.Generic.List[object]]::new()
+foreach($eraTop in @('Era.exe','UnityPlayer.dll','UnityCrashHandler64.exe','Era_Data','MonoBleedingEdge','D3D12')){
+    $eraPath=Join-Path $eraBuild $eraTop
+    if(Test-Path -LiteralPath $eraPath){
+        if((Get-Item -LiteralPath $eraPath).PSIsContainer){foreach($eraFile in Get-ChildItem -LiteralPath $eraPath -Recurse -File){$eraFiles.Add($eraFile)}}
+        else{$eraFiles.Add((Get-Item -LiteralPath $eraPath))}
+    }
 }
-$eraImageFolder = Join-Path $buildPath 'Images'
-foreach($eraDocument in @('RELEASE-v0.26.1.md','VALIDATION-v0.26.1.md','release-validation-v0261.json','lumen-runtime-v0261.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination $buildPath -Force
+foreach($eraName in @('Era.exe','UnityPlayer.dll','Era_Data/globalgamemanagers','Era_Data/Managed/Assembly-CSharp.dll','MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll')){
+    if(-not (Test-Path -LiteralPath (Join-Path $eraBuild $eraName))){throw "Missing Player dependency: $eraName"}
 }
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\Lumen-v0261') -Destination $buildPath -Recurse -Force
-foreach($eraDocument in @('RELEASE-v0.26.0.md','VALIDATION-v0.26.md','release-validation-v026.json','lumen-runtime-v026.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination $buildPath -Force
+$eraStage=Join-Path $eraOut 'PackageMetadata'
+New-Item -ItemType Directory -Path $eraStage -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $eraProject 'Docs/PLAY-RU.md') -Destination (Join-Path $eraStage 'PLAY-RU.md') -Force
+$eraReadme="ERA: Seven Realms v$Version`r`n`r`nРаспакуйте весь архив и запустите Era.exe. Не переносите EXE отдельно от Era_Data и UnityPlayer.dll.`r`n`r`nИггдрасиль находится в центре каждого из семи миров. Исходники Blender, библиотека персонажей, отчёты и исторические рендеры в эту игровую сборку не включены.`r`nУправление — PLAY-RU.md.`r`n"
+[IO.File]::WriteAllText((Join-Path $eraStage 'START-RU.txt'),$eraReadme,[Text.UTF8Encoding]::new($false))
+$eraManifest=@{version=$Version;noAuthoringLibrary=$true;files=@()}
+foreach($eraFile in $eraFiles){
+    $eraName=$eraFile.FullName.Substring($eraBuild.Length+1).Replace('\','/')
+    if($eraName -match '(?i)(ArtSource|CharacterFactory|ERA_CharacterLibrary|\.blend\d?$|\.fbx$|\.py$|\.ps1$)'){throw "Forbidden authoring file: $eraName"}
+    $eraManifest.files+=@{name=$eraName;bytes=$eraFile.Length;sha256=(Get-FileHash -LiteralPath $eraFile.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 }
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\Lumen-v026') -Destination $buildPath -Recurse -Force
-foreach ($eraDocument in @('RELEASE-v0.25.1.md','VALIDATION-v0.25.1.md','release-validation-v0251.json','item-art-runtime-v0251.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\CharacterMotion-v0251') -Destination $buildPath -Recurse -Force
-foreach ($eraDocument in @('ITEMS-v0.25.md','RELEASE-v0.25.0.md','VALIDATION-v0.25.md','item-art-runtime-v025.json','item-art-validation-v025.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-foreach ($eraDocument in @('ITEMS-v0.24.md','RELEASE-v0.24.0.md','VALIDATION-v0.24.md','balance-runtime-v024.json','loot-balance-validation-v024.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-foreach ($eraDocument in @('RELEASE-v0.23.0.md','VALIDATION-v0.23.md','RELEASE-v0.22.0.md','VALIDATION-v0.22.md','archer-runtime-v022.json','campaign-smoke-v022.json','ARCHER-MOTION.md','VALIDATION-AUTUMN-v0.22.md','VALIDATION-v0.22.1.md','archer-runtime-v023.json','archer-motion-release-v023.json','campaign-smoke-v023.json','merged-validation-v023.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'archer-motion-*.json' | Copy-Item -Destination $buildPath -Force
-New-Item -ItemType Directory -Force -Path $eraImageFolder | Out-Null
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter 'archer-motion-*.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath $eraImageFolder -File -Filter '*.png' | Where-Object { $_.Name -match 'v01[23]\.png$' } | ForEach-Object { Remove-Item -LiteralPath $_.FullName }
-foreach ($eraImage in @('balance-menu-catalogue-v014.png','balance-item-tooltip-v014.png','balance-models-standing-v014.png','balance-models-crouching-v014.png','balance-stat-tooltip-v014.png','balance-shield-evade-v014.png','balance-boss-health-v014.png')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
-}
-foreach ($eraImage in @('living-meadow-v015.png','raised-boss-hud-v015.png','boss-aftermath-v015.png','new-icons-1-v015.png','new-icons-2-v015.png','new-icons-3-v015.png','new-icons-4-v015.png','character-Ember-v016.png','character-Lumen-v016.png','character-Echo-v016.png','character-Stalker-v016.png','character-Wisp-v016.png','characters-running-v016.png','characters-crouching-v016.png')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
-}
-foreach ($eraHero in @('ember','echo','lumen')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\hero-$eraHero-v016.png") -Destination (Join-Path $eraImageFolder "hero-$eraHero-v016.png") -Force
-}
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v019.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v021.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v023.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0231.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v024.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v025.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0221.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v022.png' | Copy-Item -Destination $eraImageFolder -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs') -File -Filter 'feedback-*.json' | Copy-Item -Destination $buildPath -Force
-foreach ($eraImage in @('character-Echo-v017.png','characters-crouching-v017.png','characters-crouching-side-v017.png')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\Images\$eraImage") -Destination (Join-Path $eraImageFolder $eraImage) -Force
-}
-if (Test-Path -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\THIRD-PARTY.md') -Destination (Join-Path $buildPath 'THIRD-PARTY.md') -Force
-    $licenseFolder = Join-Path $buildPath 'Licenses'
-    New-Item -ItemType Directory -Force -Path $licenseFolder | Out-Null
-    Get-ChildItem -LiteralPath (Join-Path $projectPath 'Assets\Era\Art\KayKit') -Filter 'LICENSE-*.txt' | Copy-Item -Destination $licenseFolder -Force
-}
-foreach ($eraDocument in @('RELEASE-v0.23.1.md','VALIDATION-v0.23.1.md','archer-runtime-v0231.json','archer-quality-v0231.json','campaign-smoke-v0231.json','release-validation-v0231.json','ANIMATION-QUALITY-AUDIT.md','ARCHER-REFINEMENT.md')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-$eraQualityFolder = Join-Path $buildPath 'AnimationQuality'
-foreach ($eraDocument in @('RELEASE-v0.23.2.md','VALIDATION-v0.23.2.md','camera-motion-v0232.json','archer-runtime-v0232.json','archer-refinement-v0232.json','campaign-smoke-v0232.json','release-validation-v0232.json','coop-first-v0232.json')) {
-    Copy-Item -LiteralPath (Join-Path $projectPath "Docs\$eraDocument") -Destination (Join-Path $buildPath $eraDocument) -Force
-}
-Copy-Item -LiteralPath (Join-Path $projectPath 'Docs\CameraMotion-v0232') -Destination $buildPath -Recurse -Force
-Get-ChildItem -LiteralPath (Join-Path $projectPath 'Docs\Images') -File -Filter '*-v0232.png' | Copy-Item -Destination $eraImageFolder -Force
-New-Item -ItemType Directory -Force -Path $eraQualityFolder | Out-Null
-Copy-Item -Path (Join-Path $projectPath 'Docs\AnimationQuality\*') -Destination $eraQualityFolder -Recurse -Force
-New-Item -ItemType Directory -Force -Path (Join-Path $projectPath 'Releases') | Out-Null
-$archive = Join-Path $projectPath 'Releases\Era-Windows.zip'
-Compress-Archive -Path (Join-Path $buildPath '*') -DestinationPath $archive -Force
-$eraHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
-[IO.File]::WriteAllText($archive + '.sha256', "$eraHash  Era-Windows.zip`n", [Text.UTF8Encoding]::new($false))
-Write-Output "Ready to share: $archive"
-& (Join-Path $PSScriptRoot 'Package-ItemArtwork.ps1')
-& (Join-Path $PSScriptRoot 'Verify-Package.ps1')
+$eraManifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $eraStage 'PlayerContents.json') -Encoding utf8
+if(Test-Path -LiteralPath $eraArchive){throw "Versioned archive already exists: $eraArchive; do not overwrite a published release"}
+$eraZip=[IO.Compression.ZipFile]::Open($eraArchive,[IO.Compression.ZipArchiveMode]::Create)
+try{
+    foreach($eraFile in $eraFiles){$eraName=$eraFile.FullName.Substring($eraBuild.Length+1).Replace('\','/');[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($eraZip,$eraFile.FullName,$eraName,[IO.Compression.CompressionLevel]::Optimal) | Out-Null}
+    foreach($eraFile in Get-ChildItem -LiteralPath $eraStage -File){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($eraZip,$eraFile.FullName,$eraFile.Name,[IO.Compression.CompressionLevel]::Optimal) | Out-Null}
+    $eraThirdParty=Join-Path $eraProject 'Docs/THIRD-PARTY.md'
+    if(Test-Path -LiteralPath $eraThirdParty){[IO.Compression.ZipFileExtensions]::CreateEntryFromFile($eraZip,$eraThirdParty,'Licenses/THIRD-PARTY.md') | Out-Null}
+    foreach($eraLicense in Get-ChildItem (Join-Path $eraProject 'Assets/Era/Art/KayKit') -Filter 'LICENSE-*.txt'){
+        [IO.Compression.ZipFileExtensions]::CreateEntryFromFile($eraZip,$eraLicense.FullName,('Licenses/'+$eraLicense.Name)) | Out-Null
+    }
+}finally{$eraZip.Dispose()}
+$eraHash=(Get-FileHash -LiteralPath $eraArchive -Algorithm SHA256).Hash.ToLowerInvariant()
+[IO.File]::WriteAllText($eraArchive+'.sha256',"$eraHash  Era-Windows.zip`n",[Text.UTF8Encoding]::new($false))
+& (Join-Path $PSScriptRoot 'Verify-Package.ps1') -Archive $eraArchive
+Write-Output "Ready: $eraArchive"

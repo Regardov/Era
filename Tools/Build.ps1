@@ -1,5 +1,6 @@
 param(
-    [string]$Unity = 'C:\Program Files\Unity\Hub\Editor\2023.1.22f1\Editor\Unity.exe'
+    [string]$Unity = 'C:\Program Files\Unity\Hub\Editor\2023.1.22f1\Editor\Unity.exe',
+    [switch]$CleanCache
 )
 $ErrorActionPreference = 'Stop'
 $projectPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -7,6 +8,7 @@ if (-not (Test-Path -LiteralPath $Unity)) { throw "Unity 2023.1.22f1 not found: 
 New-Item -ItemType Directory -Force -Path (Join-Path $projectPath 'Artifacts') | Out-Null
 $buildLog = Join-Path $projectPath 'Artifacts\unity-build.log'
 $unityArgs = @('-batchmode', '-nographics', '-quit', '-job-worker-count', '2', '-projectPath', "`"$projectPath`"", '-executeMethod', 'Era.Editor.BuildTools.BuildWindows', '-logFile', "`"$buildLog`"")
+if($CleanCache){$unityArgs+='--era-clean-build'}
 $eraBuildStarted = Get-Date
 $process = Start-Process -FilePath $Unity -ArgumentList $unityArgs -PassThru -WindowStyle Hidden
 try { $process.PriorityClass = 'BelowNormal' } catch { Write-Warning 'Could not lower Unity process priority.' }

@@ -9,7 +9,7 @@ namespace Era.Editor
         static int count;
         static void Check(bool ok,string label){count++;if(!ok)throw new Exception("ERA roguelike check failed: "+label);}
         static Simulation New()
-        {var sim=new Simulation(173);var p=sim.AddPlayer(0,"Builder",Hero.Ember);p.position=WorldMap.OnGround(0,0);p.critChance=0;p.weapons=new[]{-1,-1};sim.Start();sim.State.spawnTimer=10000;sim.State.resourceNodes.Clear();return sim;}
+        {var sim=new Simulation(173);var p=sim.AddPlayer(0,"Builder",Hero.Ember);p.position=WorldMap.OnGround(105,80);p.critChance=0;p.weapons=new[]{-1,-1};sim.Start();sim.State.spawnTimer=10000;sim.State.resourceNodes.Clear();return sim;}
         static void Step(Simulation s,float seconds)
         {for(int n=0;n<Mathf.CeilToInt(seconds*30);n++)s.Step(1f/30,new Dictionary<int,InputFrame>());}
         static EnemyState Target(Simulation s,float z=5,EnemyKind kind=EnemyKind.Skeleton)
