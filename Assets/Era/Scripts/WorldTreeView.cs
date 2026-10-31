@@ -39,7 +39,7 @@ namespace Era
                     var p=root.filter.transform.TransformPoint(root.source[i]);
                     float r=new Vector2(p.x,p.z).magnitude;
                     // Outside the solid trunk, roots become low, ground-hugging ridges.
-                    float compress=Mathf.Lerp(1,.20f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(WorldTreeLayout.TrunkRadius*.873f,WorldTreeLayout.TrunkRadius*1.636f,r)));
+                    float compress=WorldTreeLayout.RootCompression(r);
                     p.y=transform.position.y+(p.y-transform.position.y)*compress+WorldMap.Ground(p)-transform.position.y-.035f;
                     vertices[i]=root.filter.transform.InverseTransformPoint(p);
                 }

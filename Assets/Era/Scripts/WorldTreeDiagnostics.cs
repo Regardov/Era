@@ -8,7 +8,7 @@ namespace Era
     public sealed class WorldTreeDiagnostics:MonoBehaviour
     {
         [Serializable]sealed class Sample{public int stage;public bool centred,dimensions,oneInstance,lods,solidTrunk,clearSanctuary,opaque,leafShadowsOff;public float height,crown,skyCovered;public int skyPixels,leafOnSkyPixels;}
-        [Serializable]sealed class CameraSample{public float requestedPitch,forwardY,groundClearance;public bool finite;}
+        [Serializable]sealed class CameraSample{public float requestedPitch,forwardY,groundClearance;public bool finite,characterCentred;public float focusViewportX,focusViewportY;}
         [Serializable]sealed class Report
         {
             public string version=Application.version;public bool ok,mouseLookClamps;public List<Sample> worlds=new List<Sample>();
@@ -17,7 +17,7 @@ namespace Era
         }
         readonly Report report=new Report();GameApp App=>GameApp.Instance;
         readonly float[] pitches={-75,-45,0,7.9f,8.1f,65};
-        string folder;int stage=1,phase,cameraIndex;float deadline,benchStarted;int benchFrames;WorldTreeView tree;
+        string folder;int stage=1,phase,cameraIndex,settledFrames;float deadline,benchStarted;int benchFrames;WorldTreeView tree;
         void Start()
         {
             var args=Environment.GetCommandLineArgs();int i=Array.IndexOf(args,"--capture-folder");folder=i>=0?args[i+1]:Path.Combine(Application.dataPath,"../Artifacts/WorldTree");Directory.CreateDirectory(folder);
@@ -29,6 +29,7 @@ namespace Era
         }
         void SetStage(int value)
         {
+            settledFrames=0;
             App.State.stage=value;App.State.stageSerial++;App.State.stageElapsed=0;App.State.enemies.Clear();App.State.spawnTimer=100000;
             WorldMap.SetStage(value);App.LocalPlayer.position=WorldMap.OnGround(0,-90);App.LocalPlayer.velocity=Vector3.zero;
             App.CameraYaw=0;App.CameraPitch=8;
@@ -71,7 +72,8 @@ namespace Era
             if(App?.LocalPlayer==null)return;
             App.State.spawnTimer=100000;App.State.enemies.Clear();App.LocalPlayer.invulnerability=10000;
             if(phase==5||phase==6)benchFrames++;
-            if(Time.realtimeSinceStartup<deadline)return;
+            settledFrames++;
+            if(Time.realtimeSinceStartup<deadline||settledFrames<90)return;
             if(phase==0)
             {
                 report.worlds.Add(Measure());Shot("World-"+stage+"-gameplay");phase=1;deadline=Time.realtimeSinceStartup+.5f;
@@ -86,9 +88,10 @@ namespace Era
             else if(phase==4)
             {
                 var cam=App.View.Camera;var pos=cam.transform.position;
-                report.camera.Add(new CameraSample{requestedPitch=pitches[cameraIndex],forwardY=cam.transform.forward.y,groundClearance=pos.y-WorldMap.Ground(pos),finite=ActorMotionMath.Finite(pos)&&ActorMotionMath.Finite(cam.transform.forward)});
+                var focus=cam.WorldToViewportPoint(App.View.CameraFocus);
+                report.camera.Add(new CameraSample{characterCentred=focus.z>0&&Mathf.Abs(focus.x-.5f)<.015f&&Mathf.Abs(focus.y-.5f)<.015f,focusViewportX=focus.x,focusViewportY=focus.y,requestedPitch=pitches[cameraIndex],forwardY=cam.transform.forward.y,groundClearance=pos.y-WorldMap.Ground(pos),finite=ActorMotionMath.Finite(pos)&&ActorMotionMath.Finite(cam.transform.forward)});
                 Shot("Camera-pitch-"+cameraIndex);
-                if(++cameraIndex<pitches.Length){App.CameraPitch=pitches[cameraIndex];deadline=Time.realtimeSinceStartup+1.5f;}
+                if(++cameraIndex<pitches.Length){App.CameraPitch=pitches[cameraIndex];settledFrames=0;deadline=Time.realtimeSinceStartup+1.5f;}
                 else{App.CameraPitch=8;phase=5;deadline=Time.realtimeSinceStartup+3;benchStarted=Time.realtimeSinceStartup;benchFrames=0;}
             }
             else if(phase==5)
@@ -100,7 +103,7 @@ namespace Era
             {
                 report.fpsWithoutTree=benchFrames/(Time.realtimeSinceStartup-benchStarted);tree.gameObject.SetActive(true);
                 report.ok=report.worlds.Count==7&&report.worlds.TrueForAll(s=>s.centred&&s.dimensions&&s.oneInstance&&s.lods&&s.solidTrunk&&s.clearSanctuary&&s.opaque&&s.leafShadowsOff&&s.skyPixels>0&&s.skyCovered<.65f)
-                    &&report.mouseLookClamps&&report.camera.Count==pitches.Length&&report.camera.TrueForAll(s=>s.finite&&s.groundClearance>.6f)
+                    &&report.mouseLookClamps&&report.camera.Count==pitches.Length&&report.camera.TrueForAll(s=>s.finite&&s.groundClearance>.6f&&s.characterCentred)
                     &&report.camera[0].forwardY>.85f&&report.camera[1].forwardY>.5f&&Mathf.Abs(report.camera[2].forwardY)<.1f&&report.camera[5].forwardY<-.8f
                     &&Mathf.Abs(report.camera[3].forwardY-report.camera[4].forwardY)<.02f;
                 File.WriteAllText(Path.Combine(folder,"world-tree.json"),JsonUtility.ToJson(report,true));

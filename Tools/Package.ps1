@@ -1,4 +1,4 @@
-param([string]$Version='0.29.1')
+param([string]$Version='0.29.2')
 $ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $eraProject=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -9,8 +9,13 @@ $eraArchive=Join-Path $eraOut 'Era-Windows.zip'
 $eraPacked=Get-Content (Join-Path $eraProject 'Artifacts/player-content-v029.json') -Raw | ConvertFrom-Json
 $eraTreeReportPath=Join-Path $eraProject 'Artifacts/WorldTree/world-tree.json'
 $eraTreeReport=Get-Content $eraTreeReportPath -Raw | ConvertFrom-Json
-if(-not $eraPacked.noAuthoringLibrary -or $eraPacked.version -ne $Version -or -not $eraTreeReport.ok -or $eraTreeReport.worlds.Count -ne 7){throw 'Player content audit and seven-realm runtime validation must pass first'}
+if($eraPacked.assetCount -lt 1 -or -not $eraPacked.noAuthoringLibrary -or $eraPacked.version -ne $Version -or -not $eraTreeReport.ok -or $eraTreeReport.worlds.Count -ne 7){throw 'Player content audit and seven-realm runtime validation must pass first'}
 if((Get-Item $eraTreeReportPath).LastWriteTime -lt (Get-Item (Join-Path $eraBuild 'Era_Data/Managed/Assembly-CSharp.dll')).LastWriteTime){throw 'Runtime report predates this Player build'}
+if($Version -eq '0.29.2'){
+    $eraGolemPath=Join-Path $eraProject 'Artifacts/GolemTree-v0292/golem-tree-runtime.json'
+    $eraGolem=Get-Content -LiteralPath $eraGolemPath -Raw | ConvertFrom-Json
+    if(-not $eraGolem.ok -or $eraGolem.version -ne $Version -or (Get-Item $eraGolemPath).LastWriteTime -lt (Get-Item (Join-Path $eraBuild 'Era_Data/Managed/Assembly-CSharp.dll')).LastWriteTime){throw 'Fresh golem / root runtime validation required'}
+}
 $eraFiles=[Collections.Generic.List[object]]::new()
 foreach($eraTop in @('Era.exe','UnityPlayer.dll','UnityCrashHandler64.exe','Era_Data','MonoBleedingEdge','D3D12')){
     $eraPath=Join-Path $eraBuild $eraTop

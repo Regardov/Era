@@ -156,7 +156,7 @@ namespace Era
             }
             }
             var inside=Vector2.ClampMagnitude(new Vector2(next.x,next.z),GameData.ArenaRadius-radius-6);next.x=inside.x;next.z=inside.y;
-            return next;
+            return WorldTreeLayout.ResolveTrunk(next,radius);
         }
         public static void PopulateChests(WorldState state)
         {

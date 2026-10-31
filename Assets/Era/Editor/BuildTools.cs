@@ -33,7 +33,7 @@ namespace Era.Editor
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             PlayerSettings.companyName = "Era Studio";
             PlayerSettings.productName = "ERA - Rift";
-            PlayerSettings.bundleVersion = "0.29.1";
+            PlayerSettings.bundleVersion = "0.29.2";
             PlayerSettings.defaultScreenWidth = 1600;
             PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
@@ -62,7 +62,7 @@ namespace Era.Editor
             for(int i=0;i<included.arraySize;i++)if(included.GetArrayElementAtIndex(i).objectReferenceValue==stillWater)stillIncluded=true;
             if(!stillIncluded){included.InsertArrayElementAtIndex(included.arraySize);included.GetArrayElementAtIndex(included.arraySize-1).objectReferenceValue=stillWater;graphics.ApplyModifiedPropertiesWithoutUndo();}
             IconBuilder.Prepare();PrepareItemArtwork();ItemArtworkBuilder.Prepare();SurfaceTextureBuilder.Prepare();FeedbackPrefabBuilder.Prepare();KayKitImporter.Prepare();PrepareMusic();
-            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();WorldTreeImporter.Prepare();
+            PrepareCharacterPrefabs();ActorArtBuilder.Prepare();FacetedArtBuilder.Prepare();WeaponAssetBuilder.Prepare();RoguelikeArtBuilder.Prepare();BlenderCharacterImporter.Prepare();ArcherAnimationImporter.PrepareIfAvailable();AuraWeaverImporter.PrepareLumen();CharacterBodyBuilder.Prepare();GolemImporter.Prepare();WorldTreeImporter.Prepare();
             if(UnityEngine.Object.FindAnyObjectByType<WorldEnvironment>()==null)
             {
                 EditorSceneManager.OpenScene(ScenePath);
@@ -154,11 +154,11 @@ namespace Era.Editor
         public static void BuildWindows()
         {
             PrepareProject();
-            SimulationChecks.Run();WorldTreeChecks.Run();
+            SimulationChecks.Run();WorldTreeChecks.Run();GolemTreeChecks.Run();
             string output="Builds/Windows";var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--era-output");if(at>=0&&at+1<args.Length)output=Path.GetFullPath(args[at+1]);Directory.CreateDirectory(output);
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions {
                 scenes = new[] { ScenePath }, locationPathName = Path.Combine(output,"Era.exe"),
-                target = BuildTarget.StandaloneWindows64, options = BuildOptions.DetailedBuildReport
+                target = BuildTarget.StandaloneWindows64, options = BuildOptions.DetailedBuildReport | (Array.IndexOf(args,"--era-clean-build")>=0?BuildOptions.CleanBuildCache:BuildOptions.None)
             });
             if (report.summary.result != BuildResult.Succeeded)
                 throw new Exception("Windows build failed: " + report.summary.result + " / " + report.summary.totalErrors);

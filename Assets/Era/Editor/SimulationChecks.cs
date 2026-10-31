@@ -19,7 +19,7 @@ namespace Era.Editor
             var sim = new Simulation(23,coop); sim.AddPlayer(0, "Искра", Hero.Ember);
             if (coop) {sim.AddPlayer(1, "Echo", Hero.Echo);sim.SetReady(0,true);sim.SetReady(1,true);}
             // A flat, unobstructed fixture beside the new solid centre landmark.
-            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear();foreach(var p in sim.State.players)p.position=WorldMap.OnGround((p.id-1)*3,-24);return sim;
+            sim.Start(); sim.State.spawnTimer = 1000;sim.State.resourceNodes.Clear();foreach(var p in sim.State.players)p.position=WorldMap.OnGround(105+(p.id-1)*3,80);return sim;
         }
         static void Step(Simulation sim, float seconds, Dictionary<int, InputFrame> inputs = null)
         {
@@ -41,7 +41,7 @@ namespace Era.Editor
         {
             var sim = New(); var p = sim.State.Player(0);
             // The map origin is now a solid world-tree trunk; test unobstructed speed at the flat sanctuary.
-            p.position=WorldMap.OnGround(0,-24);
+            p.position=WorldMap.OnGround(102,77);
             Vector3 start = p.position;
             Step(sim, 1, new Dictionary<int, InputFrame> { [0] = new InputFrame { x = 999, z = 999 } });
             float travelled = Vector3.Distance(start, p.position);

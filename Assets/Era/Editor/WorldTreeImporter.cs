@@ -75,6 +75,7 @@ namespace Era.Editor
                 var allBounds=BoundsOf(target);
                 if(Mathf.Abs(allBounds.max.y-WorldTreeLayout.Height)>.25f||Mathf.Max(allBounds.size.x,allBounds.size.z)>WorldTreeLayout.CrownDiameter+1)
                     throw new Exception("Tree dimensions failed layout contract: "+allBounds);
+                WorldTreeCollisionBuilder.Bake(target);
                 PrefabUtility.SaveAsPrefabAsset(target,Output+"/Yggdrasil.prefab");AssetDatabase.SaveAssets();
                 Debug.Log("ERA_WORLD_TREE_IMPORTED height="+allBounds.max.y+" crown="+Mathf.Max(allBounds.size.x,allBounds.size.z));
             }

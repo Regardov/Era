@@ -8,7 +8,7 @@ namespace Era.Editor
 {
     public static class WorldTreeChecks
     {
-        [Serializable]sealed class PackedReport{public string version="0.29.1";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
+        [Serializable]sealed class PackedReport{public string version="0.29.2";public bool noAuthoringLibrary;public int assetCount;public string[] sourceAssets;}
         public static void Run()
         {
             var prefab=Resources.Load<GameObject>("Environment/Yggdrasil");
@@ -30,6 +30,7 @@ namespace Era.Editor
         public static void RecordBuild(BuildReport report)
         {
             var sources=report.packedAssets.SelectMany(p=>p.contents).Select(c=>c.sourceAssetPath).Where(p=>!string.IsNullOrEmpty(p)).Distinct().OrderBy(p=>p).ToArray();
+            if(sources.Length==0)throw new Exception("Unity returned no packed asset details for this incremental build. Repeat Tools/Build.ps1 -CleanCache before packaging.");
             var forbidden=sources.Where(p=>p.Contains("ArtSource/")||p.Contains("CharacterFactory")||p.Contains("ERA_CharacterLibrary")||p.EndsWith(".blend")||p.EndsWith(".py")).ToArray();
             if(forbidden.Length>0)throw new Exception("Authoring library included in Player: "+string.Join(",",forbidden));
             Directory.CreateDirectory("Artifacts");

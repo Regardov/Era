@@ -8,6 +8,7 @@ namespace Era
         public Camera Camera {get;private set;}
         public HeroMotion Preview {get;private set;}
         public Vector3 CameraFollowTarget {get;private set;}
+        public Vector3 CameraFocus {get;private set;}
         public Vector3 PlayerHealthAnchor(PlayerState player)
         {
             return PlayerVisualPosition(player)+Vector3.up*(player.crouching?2.1f:2.6f);
@@ -174,10 +175,10 @@ namespace Era
             // hide camera jitter while leaving the character stepping at 30 Hz.
             CameraFollowTarget=target;
             cameraHeight=PresentationMotion.Damp(cameraHeight,p.crouching?1.12f:1.65f,12,PresentationMotion.Delta);
-            // Keep the orbit above ground when looking up; rotate the view independently.
-            // At pitch >= 8 this retains the previous follow framing exactly.
+            // Orbit around the visible character, including when looking upward.
+            // Terrain shortens the boom rather than decoupling the view from its pivot.
             float lookPitch=Mathf.Clamp(app.CameraPitch,GameApp.MinCameraPitch,GameApp.MaxCameraPitch);
-            float orbitPitch=Mathf.Max(8,lookPitch);
+            float orbitPitch=lookPitch;
             var pivot=target+Vector3.up*cameraHeight;var rotation=Quaternion.Euler(orbitPitch,app.CameraYaw,0);
             var desired=pivot+rotation*new Vector3(0,0.25f,-8.7f);
             Vector3 ray=(desired-pivot).normalized;float distance=Vector3.Distance(pivot,desired),safe=distance;
@@ -186,14 +187,28 @@ namespace Era
                 var center=prop.position+Vector3.up*(prop.kind==0?4.2f:0.7f)*prop.size;
                 safe=CameraClearance(pivot,ray,safe,center,(prop.kind==0?2.3f:0.95f)*prop.size);
             }
-            safe=CameraClearance(pivot,ray,safe,new Vector3(0,pivot.y,0),WorldTreeLayout.TrunkRadius+.25f);
+
             foreach(var enemy in app.State.enemies)
                 safe=CameraClearance(pivot,ray,safe,enemy.position+Vector3.up*(enemy.kind==EnemyKind.Warden?2.8f:enemy.kind==EnemyKind.Brute?1.5f:0.9f),enemy.kind==EnemyKind.Warden?2.2f:enemy.kind==EnemyKind.Brute?1.15f:0.5f);
-            desired=pivot+ray*Mathf.Clamp(safe,2.4f,distance);
-            for(int i=1;i<=12;i++){var sample=Vector3.Lerp(pivot,desired,i/12f);float floor=WorldMap.Ground(sample)+0.65f;if(sample.y<floor)desired.y+=floor-sample.y;}
-            Camera.transform.position=Vector3.Lerp(Camera.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*12));
-            Camera.transform.LookAt(pivot+rotation*Vector3.forward*1.2f);
-            Camera.transform.Rotate(Vector3.right,lookPitch-orbitPitch,Space.Self);
+            float lastClear=0;
+            for(int i=1;i<=48;i++)
+            {
+                float along=safe*i/48f;var sample=pivot+ray*along;
+                if(sample.y<WorldMap.Ground(sample)+.65f||WorldTreeLayout.ContainsTrunk(sample,.25f))
+                {
+                    float lo=lastClear,hi=along;
+                    for(int j=0;j<10;j++){float mid=(lo+hi)*.5f;var q=pivot+ray*mid;if(q.y<WorldMap.Ground(q)+.65f||WorldTreeLayout.ContainsTrunk(q,.25f))hi=mid;else lo=mid;}
+                    safe=lo;break;
+                }
+                lastClear=along;
+            }
+            desired=pivot+ray*Mathf.Max(.05f,safe);
+            var nextCamera=Vector3.Lerp(Camera.transform.position,desired,1-Mathf.Exp(-Time.unscaledDeltaTime*12));
+            nextCamera.y=Mathf.Max(nextCamera.y,WorldMap.Ground(nextCamera)+.65f);
+            // Collision corrections apply immediately; never smooth through a solid root.
+            nextCamera=WorldTreeLayout.ResolveTrunk(nextCamera,.25f);
+            Camera.transform.position=nextCamera;CameraFocus=pivot;
+            Camera.transform.LookAt(pivot);
             if(shake>0){shake=Mathf.Max(0,shake-PresentationMotion.Delta);float t=app.State.elapsed;Camera.transform.position+=new Vector3(Mathf.Sin(t*53),Mathf.Sin(t*67+.4f),0)*shake*.12f*PresentationMotion.Intensity;}
         }
         static float CameraClearance(Vector3 pivot,Vector3 direction,float distance,Vector3 center,float radius)
@@ -201,7 +216,7 @@ namespace Era
             var delta=center-pivot;float along=Vector3.Dot(delta,direction);
             if(along<1.8f||along>distance+radius)return distance;
             float side=delta.sqrMagnitude-along*along;if(side>=radius*radius)return distance;
-            return Mathf.Min(distance,Mathf.Max(2.4f,along-Mathf.Sqrt(radius*radius-side)-0.35f));
+            return Mathf.Min(distance,Mathf.Max(.05f,along-Mathf.Sqrt(radius*radius-side)-0.35f));
         }
         void SyncItemFields(WorldState state)
         {

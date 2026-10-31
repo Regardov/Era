@@ -9,7 +9,7 @@ namespace Era.Editor
     {
         static int count;
         // Compare contact distances in local fixture coordinates, on the flat sanctuary beside the trunk.
-        static readonly Vector3 FixtureOrigin=new Vector3(0,0,-24);
+        static readonly Vector3 FixtureOrigin=new Vector3(105,0,80);
         static void Check(bool value,string label){count++;if(!value)throw new Exception("ERA body collision: "+label);}
         static Simulation New(EnemyKind kind,Vector3 player,Vector3 enemy)
         {
